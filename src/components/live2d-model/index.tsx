@@ -8,6 +8,7 @@ import { useLive2DStore } from '@/stores/use-live2d-store'
 import { useDebounce } from '@/hooks/use-debounce'
 
 import type { Live2DCreatePixiApp, Live2DCreateModel } from './types'
+import { useStorage } from '@/hooks/use-storage'
 
 interface Live2dModelProps extends React.ComponentProps<'div'> {}
 
@@ -20,6 +21,7 @@ const Live2DModel = (props: Live2dModelProps) => {
   const {
     model,
     showWelcome,
+    setIsMute,
     setModel,
     setModelEl,
     setShowWelcome,
@@ -28,6 +30,7 @@ const Live2DModel = (props: Live2dModelProps) => {
     randomSpeakWisdom,
   } = useLive2DStore()
   const randomWisdom = useDebounce(randomSpeakWisdom, 300)
+  const { getIsMuted } = useStorage()
 
   const createPixiApp: Live2DCreatePixiApp = () => {
     // @ts-ignore
@@ -84,6 +87,11 @@ const Live2DModel = (props: Live2dModelProps) => {
     const { mobile, mobileKeyboarShow } = LIVE2D_CONFIG
     Object.assign(model, isShowKeyboard ? mobileKeyboarShow : mobile.config)
   }, [isShowKeyboard])
+
+  // Get cached model mute status.
+  useEffect(() => {
+    setIsMute(getIsMuted() == 'true')
+  }, [])
 
   return (
     <>

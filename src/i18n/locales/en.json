@@ -10,5 +10,7 @@
   "chat.ask": "Ask",
   "chat.asking": "Asking...",
   "satoshiai": "SatoshiAI",
-  "login.tosignin": "Sign in"
+  "login.tosignin": "Sign in",
+  "mute": "Mute",
+  "unmute": "Unmute"
 }
