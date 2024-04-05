@@ -8,14 +8,14 @@ import '@/theme/global.scss'
 import i18nConfig from '@/i18n'
 import { themeOptions } from '@/theme/material-ui'
 import { useStorage } from '@/hooks/use-storage'
+import { useThemeStore } from '@/stores/use-theme-store'
 
 import type { AppProps } from 'next/app'
 
 export default function App({ Component, pageProps }: AppProps) {
   const { t, i18n } = useTranslation()
   const [isMounted, setIsMounted] = useState(false)
-  // TODO: implement theming detection hook
-  const isDark = true
+  const { isDark } = useThemeStore()
   const materialTheme = createTheme(themeOptions(isDark))
   const { getLang } = useStorage()
 

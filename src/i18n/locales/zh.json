@@ -10,5 +10,7 @@
   "chat.ask": "提问",
   "chat.asking": "提问中...",
   "satoshiai": "中本聪AI",
-  "login.tosignin": "登录"
+  "login.tosignin": "登录",
+  "mute": "静音",
+  "unmute": "取消静音"
 }

@@ -46,6 +46,8 @@ export const useStorage = (useSessionStorage = false) => {
     getLang: () => get('lang'),
     setLang: (val: string) => set('lang', val),
 
-    // Add more to here.
+    // Live2D model related.
+    getIsMuted: () => get('model_is_muted'),
+    setIsMuted: (val: string) => set('model_is_muted', val),
   }
 }

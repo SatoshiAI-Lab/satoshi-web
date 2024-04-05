@@ -6,6 +6,12 @@ import { BsVolumeUp, BsVolumeMute } from 'react-icons/bs'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
 
+import { useBackground } from '@/hooks/use-background'
+import { useShow } from '@/hooks/use-show'
+import { useDebounce } from '@/hooks/use-debounce'
+import { useLive2DStore } from '@/stores/use-live2d-store'
+import { useStorage } from '@/hooks/use-storage'
+
 enum AnimateType {
   None,
   Rotate,
@@ -19,7 +25,12 @@ const shakeTransition = {
 export const InputMenu: React.FC<{ className?: string }> = (props) => {
   const { className = '' } = props
   const { t } = useTranslation()
+  const { changeBackground } = useBackground()
+  const { show, open, hidden } = useShow()
   const [walletOpen, setWalletOpen] = useState(false)
+  const changeScene = useDebounce(changeBackground)
+  const { isMute, setIsMute } = useLive2DStore()
+  const { setIsMuted } = useStorage()
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
 
   const items = [
@@ -27,7 +38,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
       label: t('monitor'),
       icon: <AiOutlineSetting size={18} />,
       animate: AnimateType.Rotate,
-      onClick: () => {},
+      onClick: open,
     },
     {
       label: t('wallet'),
@@ -42,7 +53,21 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
       label: t('scene'),
       icon: <BiSolidChess size={18} />,
       animate: AnimateType.Rotate,
-      onClick: () => {},
+      onClick: changeScene,
+    },
+    {
+      label: isMute ? t('unmute') : t('mute'),
+      animate: AnimateType.Shake,
+      transition: shakeTransition,
+      icon: isMute ? (
+        <BsVolumeMute fontSize={22} />
+      ) : (
+        <BsVolumeUp fontSize={22} />
+      ),
+      onClick() {
+        setIsMute(!isMute)
+        setIsMuted(String(!isMute)) // Cache model mute status.
+      },
     },
   ]
 
