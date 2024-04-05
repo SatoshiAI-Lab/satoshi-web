@@ -112,9 +112,11 @@ export const Favorites: React.FC<React.ComponentProps<'div'>> = (props) => {
             {coins.map((item, i) => {
               return (
                 <div
-                  className={`flex justify-between py-3  px-5 ${
+                  key={i}
+                  className={clsx(
+                    'flex justify-between py-3 px-5',
                     i != coins.length ? 'border-b border-gray-200' : ''
-                  }`}
+                  )}
                 >
                   <div className="flex items-center">
                     <img
