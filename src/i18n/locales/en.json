@@ -1,1 +1,5 @@
-{}
+{
+  "favorites": "Favorites",
+  "search": "Search",
+  "search.input.placeholder": "Search by contract address or token name"
+}

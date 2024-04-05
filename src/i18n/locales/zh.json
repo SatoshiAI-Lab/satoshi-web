@@ -1,1 +1,5 @@
-{}
+{
+  "favorites": "Favorites",
+  "search": "搜索",
+  "search.input.placeholder": "通过合约地址或代币名称搜索"
+}

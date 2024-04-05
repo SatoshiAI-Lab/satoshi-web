@@ -12,6 +12,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.14.17",
+    "clsx": "^2.1.0",
     "dayjs": "^1.11.10",
     "i18next": "23.2.11",
     "next": "14.1.4",
