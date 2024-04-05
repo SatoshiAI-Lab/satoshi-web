@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import MessageBubble from './components/message-bubble'
 import MessageInput from './components/message-input'
+import Live2DModel from '@/components/live2d-model'
 import { utilDom } from '@/utils/dom'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
@@ -31,6 +32,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
         className
       )}
     >
+      {/* Live2D model placeholder element */}
       <div
         className={clsx(
           'w-80 bottom-0 left-0 max-md:absolute max-lg:self-end',
@@ -44,6 +46,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
           'flex flex-col gap-4 z-10 max-sm:pr-0'
         )}
       >
+        <Live2DModel />
         <div
           className={clsx(
             'flex flex-col items-start grow',
