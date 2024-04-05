@@ -1,5 +1,14 @@
 {
   "favorites": "Favorites",
   "search": "Search",
-  "search.input.placeholder": "Search by contract address or token name"
+  "search.input.placeholder": "Search by contract address or token name",
+  "message-default": "I am Satoshi. Is there anything I can help with?",
+  "monitor": "Monitor",
+  "wallet": "Wallet",
+  "scene": "Scene",
+  "chat.placeholder": "Feel free to ask me any question you have, no need to hesitate.",
+  "chat.ask": "Ask",
+  "chat.asking": "Asking...",
+  "satoshiai": "SatoshiAI",
+  "login.tosignin": "Sign in"
 }

@@ -7,8 +7,10 @@ import EN from './locales/en.json'
 export const resources = {
   zh: {
     translation: ZH,
+    name: '中文',
   },
   en: {
+    name: 'English',
     translation: EN,
   },
 }
