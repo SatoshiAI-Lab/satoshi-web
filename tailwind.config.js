@@ -14,7 +14,7 @@ const baseColors = {
 }
 
 const baseSizes = {
-  header: '80px',
+  header: '60px',
   body: 'calc(100vh - 60px)',
   logo: '200px',
   favorites: '300px',
@@ -32,6 +32,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        bubble: '2px 2px 2px 1px rgb(0,0,0,0.3)',
+      },
       height: {
         ...baseSizes,
       },

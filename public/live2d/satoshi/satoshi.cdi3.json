@@ -1,0 +1,11 @@
+{
+  "Version": 3,
+  "Parameters": [],
+  "ParameterGroups": [],
+  "Parts": [],
+  "CombinedParameters": [
+    ["ParamAngleX", "ParamAngleY"],
+    ["ParamEyeBallX", "ParamEyeBallY"],
+    ["ParamMouthForm", "ParamMouthOpenY"]
+  ]
+}

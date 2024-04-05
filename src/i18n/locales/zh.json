@@ -1,1 +1,14 @@
-{}
+{
+  "favorites": "Favorites",
+  "search": "搜索",
+  "search.input.placeholder": "通过合约地址或代币名称搜索",
+  "message-default": "我是中本聪，有什么我可以帮忙的吗？",
+  "monitor": "监控",
+  "wallet": "钱包",
+  "scene": "场景",
+  "chat.placeholder": "有什么问题尽管问我，不必客气。",
+  "chat.ask": "提问",
+  "chat.asking": "提问中...",
+  "satoshiai": "中本聪AI",
+  "login.tosignin": "登录"
+}

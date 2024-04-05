@@ -1,17 +1,39 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { Button } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import { IoLanguageOutline } from 'react-icons/io5'
 
+import MobileHeader from './components/mobile'
+import DesktopHeader from './components/desktop'
+import CustomDropdown from '../custom-dropdown'
 import { utilFmt } from '@/utils/format'
 import { Routes } from '@/routes'
 import { useResponsive } from '@/hooks/use-responsive'
-import MobileHeader from './mobile'
-import DesktopHeader from './desktop'
+import { resources } from '@/i18n'
+import { useStorage } from '@/hooks/use-storage'
+import { utilArr } from '@/utils/array'
+
+import type { CustomDropdownItem } from '../custom-dropdown/types'
 
 function Header() {
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const { isMobile, isDesktop } = useResponsive()
-  const items = ['Satoshi', 'KLine']
+  const { getLang, setLang } = useStorage()
+  const langs = useMemo(() => {
+    return Object.entries(resources ?? {}).map(([key, value]) => ({
+      key: key,
+      label: value.name as string,
+    }))
+  }, [])
+
+  const onLangChange = (item: CustomDropdownItem) => {
+    const lang = String(item.key)
+
+    i18n.changeLanguage(lang)
+    setLang(lang)
+  }
 
   return (
     <div className={`sticky top-0 z-50`}>
@@ -23,7 +45,7 @@ function Header() {
         )}
       >
         <div className="flex items-center">
-          {isMobile && <MobileHeader items={items} />}
+          {isMobile && <MobileHeader items={[]} />}
           <img
             src={'images/logos/white.png'}
             alt="logo"
@@ -33,18 +55,31 @@ function Header() {
             )}
             onClick={() => router.push(Routes.index)}
           />
-          {isDesktop && <DesktopHeader items={items} />}
+          {isDesktop && <DesktopHeader items={[]} />}
         </div>
 
-        <Button
-          variant="contained"
-          color="primary"
-          classes={{
-            root: utilFmt.classes('!mx-10 max-sm:!mx-4'),
-          }}
-        >
-          login
-        </Button>
+        <div className="flex items-center">
+          {/* Language dropdown */}
+          <CustomDropdown
+            items={langs}
+            active={getLang() ?? utilArr.first(langs).key}
+            onItemClick={onLangChange}
+          >
+            <IoLanguageOutline
+              size={22}
+              className="text-black dark:text-white"
+            />
+          </CustomDropdown>
+          {/* Login button */}
+          <Button
+            variant="contained"
+            color="primary"
+            classes={{ root: '!mx-10 max-sm:!mx-4' }}
+            onClick={() => {}}
+          >
+            {t('login.tosignin')}
+          </Button>
+        </div>
       </div>
     </div>
   )

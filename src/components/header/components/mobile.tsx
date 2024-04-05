@@ -8,6 +8,8 @@ import {
   SwipeableDrawer,
 } from '@mui/material'
 
+import type { HeaderItem } from '../types'
+
 export interface MobileHeaderProps {
   items: string[]
 }
