@@ -206,4 +206,5 @@ export interface ChatResponseMetaWallet {
   remark: string
   content: string
   data_type: string
+  hash: string
 }

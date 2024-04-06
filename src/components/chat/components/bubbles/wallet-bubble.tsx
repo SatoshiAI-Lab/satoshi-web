@@ -17,6 +17,7 @@ const WalletBubble = ({
   currency_symbol,
   side_amount,
   side_symbol,
+  hash,
 }: ChatResponseMetaWallet) => {
   const { t } = useTranslation()
 
@@ -64,7 +65,7 @@ const WalletBubble = ({
       </div>
       {/* Transaction hash */}
       <a
-        href="https://solscan.io/tx/1234567890"
+        href={`https://solscan.io/tx/${hash}`}
         target="_blank"
         className="text-primary"
       >
