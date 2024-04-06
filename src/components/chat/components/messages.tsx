@@ -11,6 +11,7 @@ import { IntentMessage } from './intention-message'
 import {
   ChatResponseMetaAnnounceMent,
   ChatResponseMetaNewsInfo,
+  ChatResponseMetaTwitter,
 } from '@/api/chat/types'
 import NewsBubble from './bubbles/news-bubble'
 import ExchangeAnnouncementBubble from './bubbles/exchange-announcement-bubble'
@@ -65,7 +66,12 @@ const Messages = memo((props: MessagesProps) => {
     }
 
     if (msg.data_type === DataType.TwitterInfo) {
-      return <TwitterBubble key={i} />
+      return (
+        <TwitterBubble
+          key={i}
+          {...(msg as unknown as ChatResponseMetaTwitter)}
+        />
+      )
     }
 
     if (msg.isInteractive) {

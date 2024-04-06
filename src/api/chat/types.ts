@@ -178,3 +178,17 @@ export interface ChatResponseMetaAnnounceMent {
   title: I18
   url: I18
 }
+
+export interface ChatResponseMetaTwitter {
+  id: number
+  content: I18
+  created_at: string
+  twitter_id: string
+  name: string
+  tweets_id: string
+  twitter: string
+  url: []
+  photo: []
+  twitter_logo: string
+  data_type: string
+}
