@@ -7,7 +7,6 @@ import {
   Divider,
   List,
   ListItemButton,
-  OutlinedInput,
   Skeleton,
 } from '@mui/material'
 import clsx from 'clsx'
