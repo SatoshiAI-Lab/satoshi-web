@@ -1,0 +1,149 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "https://img.mysatoshi.ai/live2d/model/Satoshi.moc3",
+    "Textures": ["https://img.mysatoshi.ai/live2d/model/Satoshi.png"],
+    "DisplayInfo": "satoshi.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "white-clothes",
+        "File": "expressions/white-clothes.exp3.json"
+      },
+      {
+        "Name": "white-sunglasses",
+        "File": "expressions/white-sunglasses.exp3.json"
+      },
+      {
+        "Name": "black-sunglasses",
+        "File": "expressions/black-sunglasses.exp3.json"
+      },
+      {
+        "Name": "default",
+        "File": "expressions/default.exp3.json"
+      }
+    ],
+    "Motions": {
+      "Wow": [
+        {
+          "File": "motions/Wow.motion3.json"
+        }
+      ],
+      "Grinning": [
+        {
+          "File": "motions/Grinning.motion3.json"
+        }
+      ],
+      "Happy": [
+        {
+          "File": "motions/Happy.motion3.json"
+        }
+      ],
+      "Smile": [
+        {
+          "File": "motions/Smile.motion3.json"
+        }
+      ],
+      "Sad": [
+        {
+          "File": "motions/Sad.motion3.json"
+        }
+      ],
+      "Thanks": [
+        {
+          "File": "motions/Thanks.motion3.json"
+        }
+      ],
+      "Awkward": [
+        {
+          "File": "motions/Awkward.motion3.json"
+        }
+      ],
+      "Denial": [
+        {
+          "File": "motions/Denial.motion3.json"
+        }
+      ],
+      "Thinking-open": [
+        {
+          "File": "motions/Thinking-open.motion3.json"
+        }
+      ],
+      "Thinking": [
+        {
+          "File": "motions/Thinking.motion3.json"
+        }
+      ],
+      "Welcome": [
+        {
+          "File": "motions/Welcome.motion3.json"
+        }
+      ],
+      "Angry": [
+        {
+          "File": "motions/Angry.motion3.json"
+        }
+      ],
+      "Eye-open": [
+        {
+          "File": "motions/Eye-open.motion3.json"
+        }
+      ],
+      "Eye-close": [
+        {
+          "File": "motions/Eye-close.motion3.json"
+        }
+      ],
+      "Default": [
+        {
+          "File": "motions/Default.motion3.json"
+        }
+      ],
+      "Encouragement": [
+        {
+          "File": "motions/Encouragement.motion3.json"
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": ["ParamEyeLOpen", "ParamEyeROpen"]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": ["ParamMouthOpenY"]
+    }
+  ],
+  "HitAreas": [],
+  "Sounds": {
+    "motions": {
+      "Grinning": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Grinning.wav",
+      "Denial": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Denial.wav",
+      "Thanks": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Thanks.wav",
+      "Encouragement": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Encouragement.wav",
+      "Welcome": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Welcome.wav",
+      "Happy": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Happy.wav",
+      "Awkward": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Awkward.wav",
+      "Sad": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Sad.wav",
+      "Angry": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Angry.wav",
+      "Thinking": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Thinking.wav",
+      "Smile": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Smile.wav",
+      "Wow": "https://img.mysatoshi.ai/live2d/sounds/{lang}/motions/Wow.wav"
+    },
+    "wisdoms": {
+      "wisdom1": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom1.wav",
+      "wisdom2": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom2.wav",
+      "wisdom3": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom3.wav",
+      "wisdom4": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom4.wav",
+      "wisdom5": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom5.wav",
+      "wisdom6": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom6.wav",
+      "wisdom7": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom7.wav",
+      "wisdom8": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom8.wav",
+      "wisdom9": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom9.wav",
+      "wisdom10": "https://img.mysatoshi.ai/live2d/sounds/{lang}/wisdoms/wisdom10.wav"
+    }
+  }
+}
