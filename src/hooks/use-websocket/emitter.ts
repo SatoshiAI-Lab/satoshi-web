@@ -14,18 +14,26 @@ export class Emitter<OnEvents, EmitEvents> {
     name: N,
     handler: EventHandler<OnEvents[N]>
   ): void {
-    if (!this.events[name]) {
-      this.events[name] = []
+    if (!this.events[name as string]) {
+      this.events[name as string] = []
     }
-    this.events[name].push(handler)
+    this.events[name as string].push(handler)
   }
 
   public emit<N extends keyof EmitEvents>(name: N, data: EmitEvents[N]): void {
-    const handlers = this.events[name]
+    const handlers = this.events[name as string]
     if (handlers) {
       handlers.forEach((handler) => {
         handler(data)
       })
+    }
+  }
+
+  public off<N extends keyof OnEvents>(name: N) {
+    delete this.events[name as string]
+
+    if (Object.keys(this.events).length === 0) {
+      this.events = {}
     }
   }
 }
