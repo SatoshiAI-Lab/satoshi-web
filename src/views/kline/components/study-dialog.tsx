@@ -41,7 +41,7 @@ export const StudyDialog: React.FC<StudyDialogProps> = (props) => {
   const { chart } = useKLineStore()
   const [showStudy, setShowStudy] = useState(false)
 
-  const draggableDialog = (props: PaperProps) => {
+  const DraggableDialog = (props: PaperProps) => {
     return draggable ? (
       <Draggable handle="#dialog-title">
         <Paper {...props} />
@@ -70,7 +70,7 @@ export const StudyDialog: React.FC<StudyDialogProps> = (props) => {
 
   return (
     <>
-      <Dialog open={open} onClose={onClose} PaperComponent={draggableDialog}>
+      <Dialog open={open} onClose={onClose} PaperComponent={DraggableDialog}>
         <DialogTitle
           id="dialog-title"
           className={`${draggable && '!cursor-move'}`}

@@ -1,4 +1,4 @@
-import { Emitter, type OnEvents, type EmitEvents } from './emitter'
+import { useEmitter, type EmitEvents, type OnEvents } from '@/hooks/use-emitter'
 
 import type { UseWebSocketOptions } from './types'
 
@@ -12,7 +12,7 @@ export const useWebSocket = <O extends OnEvents, E extends EmitEvents>(
   options?: UseWebSocketOptions
 ) => {
   const { url, heartbeat, interval = 10 } = options ?? {}
-  const emitter = new Emitter<O, E>()
+  const emitter = useEmitter<O, E>()
   let ws = url ? new WebSocket(url) : null
   let timer: number
 
