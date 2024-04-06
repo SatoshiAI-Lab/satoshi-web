@@ -6,9 +6,9 @@ import { useResponsive } from '@/hooks/use-responsive'
 import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
 import { useLive2DStore } from '@/stores/use-live2d-store'
 import { useDebounce } from '@/hooks/use-debounce'
+import { useStorage } from '@/hooks/use-storage'
 
 import type { Live2DCreatePixiApp, Live2DCreateModel } from './types'
-import { useStorage } from '@/hooks/use-storage'
 
 interface Live2dModelProps extends React.ComponentProps<'div'> {}
 

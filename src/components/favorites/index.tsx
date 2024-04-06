@@ -10,16 +10,23 @@ import {
   Skeleton,
 } from '@mui/material'
 import clsx from 'clsx'
+import { useRouter } from 'next/router'
 import { IoSearch, IoCloseOutline, IoAddOutline } from 'react-icons/io5'
 
-import { DialogHeader } from './dialog-header'
-import { useRouter } from 'next/router'
+import PercentTag from '../percent-tag'
+import { useFavorites } from './hooks/use-favorites'
+import { ListToken } from '@/api/token/types'
+import { useShow } from '@/hooks/use-show'
+import { DialogHeader } from '../dialog-header'
 import { Routes } from '@/routes'
 
 export const Favorites: React.FC<React.ComponentProps<'div'>> = (props) => {
   const { className } = props
   const { t } = useTranslation()
+  const { tokenList, isFirstLoadingToken } = useFavorites()
   const router = useRouter()
+
+  const { show, open, hidden } = useShow()
 
   const coins = [
     {
@@ -34,14 +41,18 @@ export const Favorites: React.FC<React.ComponentProps<'div'>> = (props) => {
     },
   ]
 
-  const onAddClick = () => {}
+  const onAddClick = () => {
+    open()
+  }
 
   const onMenuClick = () => {}
 
-  const onTokenClick = () => {
+  const onTokenClick = (token: ListToken) => {
     router.push({
       pathname: Routes.kline,
-      query: { symbol: 'BTC', interval: '1d' },
+      query: {
+        symbol: token.symbol,
+      },
     })
   }
 
@@ -74,13 +85,13 @@ export const Favorites: React.FC<React.ComponentProps<'div'>> = (props) => {
           />
         </div>
       </div>
-      {false && <FavoritesSkeleton />}
+      {isFirstLoadingToken && <FavoritesSkeleton />}
       <List className="!bg-transparent">
-        {[{ logo: '', symbol: 'BTC', price: 100000 }].map((t, i) => (
+        {tokenList.map((t, i) => (
           <React.Fragment key={i}>
             <Divider />
             <ListItemButton
-              onClick={() => onTokenClick()}
+              onClick={() => onTokenClick(t)}
               className={'dark:!text-white'}
             >
               <div className="flex items-center gap-2 grow">
@@ -97,16 +108,17 @@ export const Favorites: React.FC<React.ComponentProps<'div'>> = (props) => {
                 <span className="text-end basis-20 ">
                   {t.price?.toFixed(5)}
                 </span>
+                <PercentTag percent={t.percent_change_24_h} />
               </div>
             </ListItemButton>
           </React.Fragment>
         ))}
       </List>
-      <Dialog open={false}>
+      <Dialog open={show}>
         <DialogHeader
           text={<span>{t('search')}</span>}
+          onClose={hidden}
           showCloseBtn
-          onClose={() => {}}
         ></DialogHeader>
         <div className="min-w-[450px]">
           <div className="flex items-center border-y border-gray-200 px-5 py-2">
@@ -142,13 +154,13 @@ export const Favorites: React.FC<React.ComponentProps<'div'>> = (props) => {
                         size={20}
                         color="#00000088"
                         className="cursor-pointer"
-                      ></IoCloseOutline>
+                      />
                     ) : (
                       <IoAddOutline
                         size={20}
                         color="blue"
                         className="cursor-pointer"
-                      ></IoAddOutline>
+                      />
                     )}
                   </div>
                 </div>
