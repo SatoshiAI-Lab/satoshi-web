@@ -14,11 +14,12 @@ export const useFavorites = () => {
       return tokenApi.tokenList({
         // Default tokens
         ids: [
-          { type: 1, id: 1 },
-          { type: 1, id: 141 },
-          { type: 1, id: 325 },
-          { type: 1, id: 26 },
-          { type: 1, id: 1785 },
+          { type: 1, id: 1 }, // BTC
+          { type: 1, id: 141 }, // ETH
+          { type: 1, id: 1563 }, // SOL
+          { type: 1, id: 325 }, // BNB
+          { type: 1, id: 26 }, // DOGE
+          { type: 1, id: 1785 }, // SHIB
         ],
       })
     },
