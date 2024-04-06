@@ -1,8 +1,8 @@
 import { DialogTitle, IconButton } from '@mui/material'
 import { IoCloseOutline, IoChevronBack } from 'react-icons/io5'
 
-interface Props {
-  text: JSX.Element
+interface Props extends React.ComponentProps<'div'> {
+  text?: JSX.Element
   textAlign?: 'left' | 'center' | 'right'
   textStyle?: string
   showCloseBtn?: boolean
@@ -14,6 +14,7 @@ interface Props {
 export const DialogHeader = (props: Props) => {
   const {
     text,
+    children,
     textAlign = 'center',
     showCloseBtn = false,
     onClose,
@@ -29,7 +30,8 @@ export const DialogHeader = (props: Props) => {
           </IconButton>
         </div>
       )}
-      <span>{text}</span>
+      {text && <span>{text}</span>}
+      {children && children}
       {showCloseBtn && (
         <div className="absolute top-[50%] right-[10px] translate-y-[-50%] z-10">
           <IconButton onClick={onClose}>

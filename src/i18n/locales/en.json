@@ -92,5 +92,7 @@
   "wallet.list.tips": "Only the first 10 wallets are shown",
   "no.balance": "This wallet doesn't have any tokens",
   "on": "On",
-  "off": "Off"
+  "off": "Off",
+  "no-token": "No token yet.",
+  "no-login": "Please Signin / Signup before"
 }
