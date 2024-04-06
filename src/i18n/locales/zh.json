@@ -4,6 +4,7 @@
   "monitor": "监控",
   "scene": "场景",
   "mute": "静音",
+  "unmute": "取消静音",
   "wallet": "钱包",
   "chat.placeholder": "有什么问题尽管问我，不必客气。",
   "input-null": "输入不能为空！",
