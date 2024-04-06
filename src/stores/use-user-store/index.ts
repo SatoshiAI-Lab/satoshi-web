@@ -9,16 +9,21 @@ import type { States, Actions } from './types'
 
 export const useUserStore = create<States & Actions>((set, get) => ({
   isLogined: false,
-  userInfo: '',
+  userInfo: undefined,
   setIsLogined: (isLogined) => set({ isLogined }),
-  setUserInfo: (userInfo: string) => set({ userInfo }),
+  setUserInfo: (userInfo) => set({ userInfo }),
   async login(email, password, showTips = true): Promise<string | void> {
     const { data } = await userApi.login({ email, password })
 
     const self = get()
     self.setIsLogined(true)
-    self.setUserInfo(email)
-    self.setToken(data.access!, data.refresh!)
+    await self.fetchUserInfo()
+
+    const { setLoginToken, setLoginTokenRefresh } = useStorage()
+    setLoginToken(data.access!)
+    setLoginTokenRefresh(data.refresh!)
+
+    useTokenRefresh().watch()
 
     return data.access
   },
@@ -27,27 +32,23 @@ export const useUserStore = create<States & Actions>((set, get) => ({
     await userApi.register({ email, password })
     return await self.login(email, password, false)
   },
-  async setToken(access: string, refresh: string) {
-    const { setLoginToken, setLoginTokenRefresh } = useStorage()
-
-    const self = get()
-    self.setIsLogined(true)
-
-    setLoginToken(access!)
-    setLoginTokenRefresh(refresh!)
-    useTokenRefresh().watch()
-  },
   async logout() {
-    const { setLoginToken } = useStorage()
+    const { setLoginToken, setLoginTokenRefresh } = useStorage()
     const self = get()
-    self.setIsLogined(true)
-    self.setUserInfo('')
+    self.setIsLogined(false)
+    self.setUserInfo(undefined)
     setLoginToken('')
+    setLoginTokenRefresh('')
   },
   async fetchUserInfo() {
     try {
+      const token = useStorage().getLoginToken()
+      if (!token) return
+
       const { data } = await userApi.getInfo()
-      get().setUserInfo(data.email!)
+      const self = get()
+      self.setUserInfo(data)
+      self.setIsLogined(true)
     } catch (e) {
       // Toast Error
       console.log('err', e)

@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { t } from 'i18next'
 import {
   Button,
   CircularProgress,
@@ -11,13 +10,14 @@ import {
 } from '@mui/material'
 import clsx from 'clsx'
 import { MdOutlineArrowBackIosNew } from 'react-icons/md'
-import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 import { useUserStore } from '@/stores/use-user-store'
-import { LoginDialogProps } from './types'
 import { validator } from '@/utils/validator'
 import { useShow } from '@/hooks/use-show'
+
+import type { LoginDialogProps } from './types'
 
 export const LoginDialog: React.FC<LoginDialogProps> = ({
   open,
@@ -102,6 +102,11 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
     onClose?.()
   }
 
+  useEffect(() => {
+    if (!open) return
+    setSignIn(signin)
+  }, [signin, open])
+
   return (
     <>
       <Dialog open={open} onClose={onClose} fullScreen>
@@ -109,7 +114,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
           {/* left side image */}
           <div
             className={clsx(
-              'hidden md:block xl:min-w-[720px]',
+              'hidden md:block xl:min-w-[650px]',
               'min-w-[480px] h-full transition-all bg-cover bg-center bg-no-repeat',
               (isSignIn && 'bg-[url(/images/i2.png)]') ||
                 'bg-[url(/images/i1.png)]'

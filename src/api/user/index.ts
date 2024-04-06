@@ -27,7 +27,7 @@ export const userApi = {
   },
   /** refresh token */
   refresh(refresh: string) {
-    return fetchSatoshi.post<LoginRes>('/api/v1/token/refresh', { refresh })
+    return fetchSatoshi.post<LoginRes>('/api/v1/token/refresh/', { refresh })
   },
 
   /** forgot password */

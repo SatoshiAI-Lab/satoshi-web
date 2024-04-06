@@ -1,13 +1,14 @@
 import { UserEmailVerifyParams } from '@/api/user/params'
+import { UserInfoRes } from '@/api/user/responses/getUserInfo'
 
 export interface States {
   isLogined: boolean
-  userInfo: string
+  userInfo?: UserInfoRes
 }
 
 export interface Actions {
   setIsLogined(isLogined: boolean): void
-  setUserInfo(userInfo: string): void
+  setUserInfo(userInfo?: UserInfoRes): void
   fetchUserInfo(): Promise<string | void>
   login(
     userEmail: string,
@@ -15,7 +16,6 @@ export interface Actions {
     showTips?: boolean
   ): Promise<string | void>
   logout(): Promise<void>
-  setToken(access: string, refresh: string): void
   register(
     userEmail: string,
     verifyCode: string,

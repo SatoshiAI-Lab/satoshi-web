@@ -1,5 +1,6 @@
 export interface UserInfoRes {
   email?: string
+  id?: string
 }
 
 export interface UserInfoIds {

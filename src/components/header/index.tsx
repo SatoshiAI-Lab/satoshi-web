@@ -1,10 +1,9 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Menu, MenuItem } from '@mui/material'
 import { IoLanguageOutline } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 import { IoLogOutOutline } from 'react-icons/io5'
-import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
 
@@ -17,18 +16,20 @@ import { useResponsive } from '@/hooks/use-responsive'
 import { utilArr } from '@/utils/array'
 import { useStorage } from '@/hooks/use-storage'
 import { useThemeStore } from '@/stores/use-theme-store'
-import { utilFmt } from '@/utils/format'
 import { useUserStore } from '@/stores/use-user-store'
+import { useShow } from '@/hooks/use-show'
+import { utilFmt } from '@/utils/format'
 
 import type { CustomDropdownItem } from '../custom-dropdown/types'
 import type { HeaderItem } from './types'
 
-const Header = () => {
+function Header() {
   const router = useRouter()
   const { isMobile, isDesktop } = useResponsive()
   const { t, i18n } = useTranslation()
 
-  const [open, setOpen] = useState(false)
+  const [isSignIn, setSignInStatus] = useState(true)
+  const { show, open, hidden } = useShow()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const openLogoutWallet = Boolean(anchorEl)
@@ -39,6 +40,17 @@ const Header = () => {
       label: value.name as string,
     }))
   }, [])
+
+  const items: HeaderItem[] = [
+    // {
+    //   label: t('satoshi'),
+    //   route: Routes.index,
+    // },
+    // {
+    //   label: t('kline'),
+    //   route: Routes.kline,
+    // },
+  ]
 
   const handleLogoutClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -71,23 +83,26 @@ const Header = () => {
     toast.success(t('logout.success'))
   }
 
-  useQuery({
-    queryKey: [fetchUserInfo.name],
-    queryFn: fetchUserInfo,
-    refetchInterval: 15_000,
-  })
+  const changeStatus = (status: boolean) => {
+    setSignInStatus(status)
+    open()
+  }
+
+  useEffect(() => {
+    fetchUserInfo()
+  }, [])
 
   return (
     <div className={`sticky top-0 z-50`}>
       <div
         className={clsx(
-          'h-header bg-header dark:bg-header-dark',
+          'h-[70px] bg-header dark:bg-header-dark',
           'flex justify-between items-center z-10 relative',
-          'max-sm:h-header-m'
+          'max-md:h-header-m'
         )}
       >
         <div className="flex items-center">
-          {isMobile && <MobileHeader items={[]} onItemClick={onItemClick} />}
+          {isMobile && <MobileHeader items={items} onItemClick={onItemClick} />}
           <img
             src={isDark ? 'images/logos/white.png' : 'images/logos/black.png'}
             alt="logo"
@@ -97,7 +112,9 @@ const Header = () => {
             )}
             onClick={() => router.push(Routes.index)}
           />
-          {isDesktop && <DesktopHeader items={[]} onItemClick={onItemClick} />}
+          {isDesktop && (
+            <DesktopHeader items={items} onItemClick={onItemClick} />
+          )}
         </div>
         <div className="flex items-center">
           {/* Language dropdown */}
@@ -115,27 +132,41 @@ const Header = () => {
           {userInfo ? (
             <div className="mx-10" onClick={(e) => handleLogoutClick(e)}>
               <Button
-                variant="outlined"
+                variant="contained"
                 classes={{
-                  root: clsx(' max-sm:!mx-4'),
+                  root: clsx(' max-sm:!mx-4 !rounded-full'),
                 }}
               >
-                <span className="truncate max-w-[120px]">
-                  {utilFmt.email(userInfo)}
+                <span className="truncate max-w-[120px] ">
+                  {utilFmt.email(userInfo.email)}
                 </span>
               </Button>
             </div>
           ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              classes={{
-                root: clsx('!mx-10 max-sm:!mx-4'),
-              }}
-              onClick={() => setOpen(true)}
-            >
-              {t('login.tosignin')}
-            </Button>
+            <>
+              <Button
+                variant="text"
+                color="primary"
+                classes={{
+                  root: clsx(
+                    '!ml-10 !mr-2 max-sm:!mx-4 !rounded-full !text-black dark:!text-white'
+                  ),
+                }}
+                onClick={() => changeStatus(true)}
+              >
+                {t('login')}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                classes={{
+                  root: clsx('!mr-10 max-sm:!mx-4 !rounded-full'),
+                }}
+                onClick={() => changeStatus(false)}
+              >
+                {t('register')}
+              </Button>
+            </>
           )}
         </div>
       </div>
@@ -169,7 +200,7 @@ const Header = () => {
           </div>
         </MenuItem>
       </Menu>
-      <LoginDialog signin={true} open={open} onClose={() => setOpen(false)} />
+      <LoginDialog signin={isSignIn} open={show} onClose={hidden} />
     </div>
   )
 }
