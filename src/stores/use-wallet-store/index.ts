@@ -55,17 +55,15 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   getWallets: async (): Promise<boolean> => {
     set({ wallets: [], loading: true })
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        walletApi
-          .getWallets()
-          .then((res) => {
-            set({ wallets: res.data.reverse(), loading: false })
-          })
-          .then(() => resolve(true))
-          .catch((err) => {
-            reject(false)
-          })
-      }, 3000)
+      walletApi
+        .getWallets()
+        .then((res) => {
+          set({ wallets: res.data.reverse(), loading: false })
+        })
+        .then(() => resolve(true))
+        .catch((err) => {
+          reject(false)
+        })
     })
   },
   deleteWallet: async (wallet_id: string) => {
