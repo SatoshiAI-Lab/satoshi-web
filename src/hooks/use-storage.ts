@@ -36,7 +36,7 @@ export const useStorage = (useSessionStorage = false) => {
   }
 
   const getLoginTokenRefresh = () => {
-    const token = get('user-token-refresh') ?? '{}'
+    const token = get('user-token-refresh') || '{}'
 
     return JSON.parse(token) as {
       token: string
@@ -45,13 +45,17 @@ export const useStorage = (useSessionStorage = false) => {
   }
 
   const setLoginTokenRefresh = (val: string) => {
-    set(
-      'user-token-refresh',
-      JSON.stringify({
-        token: val,
-        time: Date.now(),
-      })
-    )
+    if (val) {
+      set(
+        'user-token-refresh',
+        JSON.stringify({
+          token: val,
+          time: Date.now(),
+        })
+      )
+    } else {
+      set('user-token-refresh', '')
+    }
   }
 
   return {
