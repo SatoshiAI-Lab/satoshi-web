@@ -17,7 +17,8 @@ export interface ChatResponseAnswerMeta
   extends Partial<ChatResponseMetaInteractive>,
     Partial<ChatResponseMetaReference>,
     Partial<ChatResponseWalletListRaw>,
-    Partial<ChatResponseMetaBalance> {
+    Partial<ChatResponseMetaBalance>,
+    Partial<ChatResponseTxConfrim> {
   emotion?:
     | 'natural'
     | 'happy'
@@ -48,9 +49,32 @@ export interface ChatResponseMetaBalance {
   }
 }
 
+export interface ChatResponseTxConfrim {
+  from_token_name: string
+  from_token_contract: string
+  from_amount: number
+  to_token_name: string
+  to_token_contract: string
+  match_wallets: ChatResponseWalletList[]
+}
+
 export interface ChatResponseWalletListRaw {
   status: number
   data: ChatResponseWalletList[]
+}
+
+export interface ChatResponseWalletBalance {
+  address: string
+  tokens: {
+    symbol?: string
+    name?: string
+    decimals?: number
+    amount?: number
+    address?: string
+    priceUsd?: number
+    valueUsd?: number
+    logoUrl?: string
+  }[]
 }
 
 export interface ChatResponseWalletList {

@@ -186,9 +186,13 @@ export const useChat = () => {
       reference,
       end,
       intentStream,
+      intention,
     } = CHAT_CONFIG.answerType
-    const { changeNameWalletList, walletList: metaWalletList, walletBalance } =
-      CHAT_CONFIG.metadataType
+    const {
+      changeNameWalletList,
+      walletList: metaWalletList,
+      walletBalance,
+    } = CHAT_CONFIG.metadataType
 
     console.log('Chat Data: ', data)
 
@@ -198,19 +202,6 @@ export const useChat = () => {
 
     if (isIntention) {
       setIntention(answerType!)
-    }
-
-    /**
-     * meta.type Whether it is an intent recognition type
-     * @returns boolean
-     */
-    const inIntentStream = () => {
-      const metaType = data.meta?.type
-      return (
-        metaType == changeNameWalletList ||
-        metaType == metaWalletList ||
-        metaType == walletBalance
-      )
     }
 
     // The AI's metadata may contain a prompt to log in
@@ -226,7 +217,7 @@ export const useChat = () => {
       return
     }
 
-    if (inIntentStream()) {
+    if (intention.includes(answerType) || isIntention) {
       if (data.text) {
         addStreamMessage(data.text)
       }
@@ -243,7 +234,7 @@ export const useChat = () => {
     }
 
     // streaming answer
-    if (streams.includes(answerType) || isIntention) {
+    if (streams.includes(answerType) ) {
       if (!data.text)
         // Don't use trim
         return
