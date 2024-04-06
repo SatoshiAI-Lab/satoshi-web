@@ -374,10 +374,6 @@ export interface LibrarySubsessionInfo {
 	 * Session corrections string. See {@link LibrarySymbolInfo.corrections}.
 	 */
 	"session-correction"?: string;
-	/**
-	 * Session to display. See {@link LibrarySymbolInfo.session_display}.
-	 */
-	"session-display"?: string;
 }
 export interface LibrarySymbolInfo {
 	/**
@@ -584,12 +580,10 @@ export interface LibrarySymbolInfo {
 	 */
 	seconds_multipliers?: string[];
 	/**
-	 * The boolean value specifying whether the datafeed can supply historical data at the daily resolution.
+	 * The boolean value showing whether data feed has its own daily resolution bars or not.
 	 *
-	 * If `has_daily` is set to `false`, all buttons for resolutions that include days are disabled for this particular symbol.
-	 * Otherwise, the library requests daily bars from the datafeed.
-	 * All daily resolutions that the datafeed supplies must be included in the {@link LibrarySymbolInfo.daily_multipliers} array.
-	 *
+	 * If `has_daily` = `false` then the library will build the respective resolutions using 1-minute bars by itself.
+	 * If not, then it will request those bars from the data feed only if specified resolution belongs to `daily_multipliers`, otherwise an error will be thrown.
 	 * @default true
 	 */
 	has_daily?: boolean;
