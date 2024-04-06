@@ -8,9 +8,12 @@ import { motion } from 'framer-motion'
 
 import { useBackground } from '@/hooks/use-background'
 import { useShow } from '@/hooks/use-show'
+import { MonitorEntryPointer } from '@/components/monitor/monitor-entry-point'
+import { Wallet } from '@/components/wallet'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useLive2DStore } from '@/stores/use-live2d-store'
 import { useStorage } from '@/hooks/use-storage'
+import { useWalletStore } from '@/stores/use-wallet-store'
 
 enum AnimateType {
   None,
@@ -33,6 +36,8 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
   const { setIsMuted } = useStorage()
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
 
+  const { getWallets } = useWalletStore()
+
   const items = [
     {
       label: t('monitor'),
@@ -47,6 +52,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
       transition: shakeTransition,
       onClick: () => {
         setWalletOpen(true)
+        getWallets()
       },
     },
     {
@@ -109,6 +115,12 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
           )
         })}
       </div>
+      <MonitorEntryPointer
+        show={show}
+        open={open}
+        hidden={hidden}
+      ></MonitorEntryPointer>
+      <Wallet open={walletOpen} onClose={() => setWalletOpen(false)} />
     </>
   )
 }

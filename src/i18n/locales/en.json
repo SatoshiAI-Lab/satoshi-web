@@ -4,6 +4,7 @@
   "monitor": "Monitor",
   "scene": "Scene",
   "mute": "Mute",
+  "unmute": "Unmute",
   "wallet": "Wallet",
   "chat.placeholder": "Feel free to ask me any question you have, no need to hesitate.",
   "input-null": "Enter must not be null!",
