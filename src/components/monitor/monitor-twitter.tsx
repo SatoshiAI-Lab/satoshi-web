@@ -1,52 +1,62 @@
-import { Button, Switch } from '@mui/material'
+import { Switch } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
-export const MonitorTwitter = () => {
-  const {t} = useTranslation()
-  const xList = [
-    {
-      name: 'Elon Musk',
-      url: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Elon Musk',
-      url: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Elon Musk',
-      url: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Elon Musk',
-      url: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Elon Musk',
-      url: '/images/monitor/monitor.png',
-    },
-  ]
+import { MonitorConfig } from '@/config/monitor'
+import { useMonitorStore } from '@/stores/use-monitor-store'
+
+import type { MonitorConfigData, TwitterList } from '@/api/monitor/type'
+
+interface Props {
+  data?: MonitorConfigData
+}
+
+export const MonitorTwitter = ({ data }: Props) => {
+  const { t } = useTranslation()
+  const { setConfig } = useMonitorStore()
+  if (!data) return <></>
+
+  const { content: xList } = data.twitter
+
+  const onSwitch = (item: TwitterList, checked: boolean) => {
+    item.subscribed = checked
+
+    const content = xList
+      .filter((item) => item.subscribed)
+      .map((item) => item.twitter_id)
+
+    const data = {
+      message_type: MonitorConfig.twitter,
+      content,
+    }
+
+    setConfig(data, xList)
+  }
 
   return (
-    <div className="min-w-[500px] px-10 max-sm:px-6 max-sm:min-w-[auto]">
-      <div className="max-w-[230px] flex flex-col max-sm:mx-auto">
-        {xList.map((item, i) => {
+    <div className="px-10 max-sm:px-6 max-sm:min-w-[auto]">
+      <div className="inline-flex flex-col max-sm:mx-auto justify-start">
+        {xList?.map((item, i) => {
           return (
             <div
-              className={`max-w-[300px] flex justify-between pl-3 pr-2 border border-black rounded-lg ${
+              className={`flex justify-between pl-3 pr-2 border border-black rounded-lg ${
                 i !== xList.length ? '!mb-4' : ''
               }`}
             >
               <div className="flex items-center">
                 <img
                   key={item.name}
-                  src={item.url}
+                  src={item.logo}
                   alt="Logo"
                   width={20}
                   height={20}
+                  className="w-[20px] h-[20px] object-cover"
                 />
                 <span className="ml-5">{item.name}</span>
               </div>
-              <Switch></Switch>
+              <Switch
+                checked={item.subscribed}
+                onChange={(_, checked) => onSwitch(item, checked)}
+              ></Switch>
             </div>
           )
         })}

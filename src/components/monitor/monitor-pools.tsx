@@ -1,14 +1,21 @@
-import { useShow } from '@/hooks/use-show'
-import { Button, Dialog, OutlinedInput, Switch } from '@mui/material'
-import { IoSettingsOutline } from 'react-icons/io5'
-import { DialogHeader } from '../dialog-header'
-import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FaChevronLeft, FaCheck } from 'react-icons/fa6'
+import { Button, Dialog, OutlinedInput } from '@mui/material'
+import clsx from 'clsx'
+
+import { useShow } from '@/hooks/use-show'
+import { DialogHeader } from '../dialog-header'
 import { useResponsive } from '@/hooks/use-responsive'
 import { MonitorLabelSwitch } from './monitor-label-switch'
 
-export const MonitorPools = () => {
+import type { MonitorConfigData } from '@/api/monitor/type'
+
+interface Props {
+  data?: MonitorConfigData
+}
+
+export const MonitorPools = ({ data }: Props) => {
   const { t } = useTranslation()
   const [chain, setChain] = useState()
   const { show, open, hidden } = useShow(true)
@@ -98,14 +105,18 @@ export const MonitorPools = () => {
   }
 
   return (
-    <div className="px-10 pb-6 max-sm:px-6 grid grid-cols-2 gap-y-2 gap-x-4 max-sm:grid-cols-1">
+    <div
+      className={clsx(
+        'px-10 pb-6 grid grid-cols-2 gap-y-2 gap-x-4',
+        'max-sm:grid-cols-1 max-sm:px-6'
+      )}
+    >
       {chains.map((chain) => {
         return (
           <MonitorLabelSwitch
             key={chain.name}
             data={chain}
             onSwitch={openSetting}
-            isShowSetting
           ></MonitorLabelSwitch>
         )
       })}
@@ -113,9 +124,10 @@ export const MonitorPools = () => {
         <DialogHeader
           text={
             <div
-              className={`flex justify-center items-center max-sm:min-w-[80vw] ${
+              className={clsx(
+                'flex justify-center items-center max-sm:min-w-[80vw]',
                 isMobile ? 'relative left-[-18px]' : ''
-              }`}
+              )}
             >
               <img
                 src={'/images/monitor/monitor.png'}

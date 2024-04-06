@@ -1,49 +1,44 @@
-import { useTranslation } from 'react-i18next'
 import { MonitorLabelSwitch } from './monitor-label-switch'
+import { MonitorConfig } from '@/config/monitor'
+import { useMonitorStore } from '@/stores/use-monitor-store'
 
-export const MonitorEXInfo = () => {
-  const { t } = useTranslation()
+import type { AnnouncementList, MonitorConfigData } from '@/api/monitor/type'
 
-  const exList = [
-    {
-      name: 'Binance',
-      logo: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Binance',
-      logo: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Binance',
-      logo: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Binance',
-      logo: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Binance',
-      logo: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Binance',
-      logo: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Binance',
-      logo: '/images/monitor/monitor.png',
-    },
-    {
-      name: 'Binance',
-      logo: '/images/monitor/monitor.png',
-    },
-  ]
+interface Props {
+  data?: MonitorConfigData
+}
+
+export const MonitorEXInfo = ({ data }: Props) => {
+  const { setConfig } = useMonitorStore()
+
+  const exList = data?.announcement.content
+
+  const onSwitch = async (item: AnnouncementList, checked: boolean) => {
+    item.subscribed = checked
+
+    const content = exList!
+      .filter((item) => item.subscribed)
+      .map((item) => item.id)
+
+    const data = {
+      message_type: MonitorConfig.announcement,
+      content: content,
+    }
+
+    await setConfig(data, exList)
+  }
 
   return (
     <div className="px-10 pb-7">
       <div className="grid grid-cols-2 gap-x-5 gap-y-4 max-sm:grid-cols-1">
-        {exList.map((item, i) => {
-          return <MonitorLabelSwitch key={i} data={item}></MonitorLabelSwitch>
+        {exList?.map((item, i) => {
+          return (
+            <MonitorLabelSwitch
+              key={i}
+              data={item}
+              onSwitch={(checked) => onSwitch(item, checked)}
+            ></MonitorLabelSwitch>
+          )
         })}
       </div>
     </div>

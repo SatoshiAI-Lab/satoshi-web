@@ -2,7 +2,13 @@ import { Button, OutlinedInput } from '@mui/material'
 import { IoEyeOutline } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 
-export const MonitorWallet = () => {
+import type { MonitorConfigData } from '@/api/monitor/type'
+
+interface Props {
+  data?: MonitorConfigData
+}
+
+export const MonitorWallet = ({ data }: Props) => {
   const { t } = useTranslation()
 
   return (

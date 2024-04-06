@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { Dialog } from '@mui/material'
 
 import { useShow } from '@/hooks/use-show'
-import { Dialog } from '@mui/material'
 import { DialogHeader } from '../dialog-header'
 import { MonitorMenu } from './monitor-menu'
 import { MonitorWallet } from './monitor-wallet'
@@ -10,6 +10,9 @@ import { MonitorPools } from './monitor-pools'
 import { MonitorNews } from './monitor-news'
 import { MonitorEXInfo } from './monitor-ex-info'
 import { useTranslation } from 'react-i18next'
+import { monitorApi } from '@/api/monitor'
+import { useQuery } from '@tanstack/react-query'
+import { useMonitorStore } from '@/stores/use-monitor-store'
 
 interface Props {
   show: boolean
@@ -36,25 +39,27 @@ export const MonitorEntryPointer = (props: Props) => {
   const { show: showSub, open: openShub, hidden: hiddenSub } = useShow(false)
   const [config, setConfig] = useState<Config>()
 
+  const { configData: data } = useMonitorStore()
+
   const menuConfig = {
     [MonitorMenuType.wallet]: {
-      comp: <MonitorWallet />,
+      comp: <MonitorWallet data={data} />,
       title: t('monitor.wallet.title'),
     },
     [MonitorMenuType.twitter]: {
-      comp: <MonitorTwitter />,
+      comp: <MonitorTwitter data={data} />,
       title: t('monitor.twitter.title'),
     },
     [MonitorMenuType.pools]: {
-      comp: <MonitorPools />,
+      comp: <MonitorPools data={data} />,
       title: t('monitor.pools.title'),
     },
     [MonitorMenuType.news]: {
-      comp: <MonitorNews />,
+      comp: <MonitorNews data={data} />,
       title: t('monitor.news.title'),
     },
     [MonitorMenuType.exInfo]: {
-      comp: <MonitorEXInfo />,
+      comp: <MonitorEXInfo data={data} />,
       title: t('monitor.exinfo.title'),
     },
   }
@@ -69,7 +74,6 @@ export const MonitorEntryPointer = (props: Props) => {
 
   const closeAll = () => {
     hiddenSub()
-    hidden()
   }
 
   return (
@@ -89,7 +93,7 @@ export const MonitorEntryPointer = (props: Props) => {
       <Dialog
         open={showSub}
         scroll="body"
-        classes={{ paper: '!mx-0 w-[98vw]' }}
+        classes={{ paper: '!mx-0 max-sm:w-[98vw] !max-w-[92vw]' }}
       >
         <DialogHeader
           text={
