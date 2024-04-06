@@ -13,10 +13,13 @@ import clsx from 'clsx'
 import { IoSearch, IoCloseOutline, IoAddOutline } from 'react-icons/io5'
 
 import { DialogHeader } from './dialog-header'
+import { useRouter } from 'next/router'
+import { Routes } from '@/routes'
 
 export const Favorites: React.FC<React.ComponentProps<'div'>> = (props) => {
   const { className } = props
   const { t } = useTranslation()
+  const router = useRouter()
 
   const coins = [
     {
@@ -35,7 +38,12 @@ export const Favorites: React.FC<React.ComponentProps<'div'>> = (props) => {
 
   const onMenuClick = () => {}
 
-  const onTokenClick = () => {}
+  const onTokenClick = () => {
+    router.push({
+      pathname: Routes.kline,
+      query: { symbol: 'BTC', interval: '1d' },
+    })
+  }
 
   return (
     <div

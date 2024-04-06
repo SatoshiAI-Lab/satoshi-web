@@ -1,8 +1,10 @@
-/** Management project URLs. */
+/**
+ * Management project URLs.
+ */
 export const URL_CONFIG = {
-  satoshiApi: '',
+  satoshiApi: process.env.NEXT_PUBLIC_SATOSHI_API!, // TODO: Add API URL
 
-  satoshiChatApi: '',
+  satoshiChatApi: 'https://ai.mysatoshi.ai',
 
   cdn: 'https://img.mysatoshi.ai',
 } as const

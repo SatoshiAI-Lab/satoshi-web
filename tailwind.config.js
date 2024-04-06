@@ -17,7 +17,9 @@ const baseSizes = {
   header: '60px',
   body: 'calc(100vh - 60px)',
   logo: '200px',
+  chat: '1140px',
   favorites: '300px',
+  bubble: '365px',
 
   'header-m': '60px',
   'logo-m': '160px',
@@ -29,6 +31,7 @@ module.exports = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/views/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
