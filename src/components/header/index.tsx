@@ -63,7 +63,7 @@ function Header() {
   }
 
   const { getLang, setLang } = useStorage()
-  const { userInfo, logout, fetchUserInfo } = useUserStore()
+  const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
   const { isDark } = useThemeStore()
 
   const onLangChange = (item: CustomDropdownItem) => {
@@ -129,7 +129,7 @@ function Header() {
             />
           </CustomDropdown>
           {/* Login button */}
-          {userInfo ? (
+          {isLogined ? (
             <div className="mx-10" onClick={(e) => handleLogoutClick(e)}>
               <Button
                 variant="contained"
@@ -138,7 +138,7 @@ function Header() {
                 }}
               >
                 <span className="truncate max-w-[120px] ">
-                  {utilFmt.email(userInfo.email)}
+                  {utilFmt.email(userInfo?.email)}
                 </span>
               </Button>
             </div>

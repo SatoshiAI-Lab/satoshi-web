@@ -2,7 +2,7 @@ import {
   ChatResponseAnswerMeta,
   ChatResponseWalletList,
 } from '@/api/chat/types'
-import MessageBubble from '../bubbles/message-bubble'
+import MessageBubble from '../../bubbles/message-bubble'
 import { useTranslation } from 'react-i18next'
 import { WalletList } from './wallet-list'
 import { useChat } from '@/hooks/use-chat'

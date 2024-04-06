@@ -1,5 +1,5 @@
 import { fetchSatoshi } from '..'
-import { MonitorParam, MonitorConfigData, MonitorListData } from './type'
+import { MonitorParam, MonitorConfigData } from './type'
 
 export const monitorApi = {
   update(data: MonitorParam) {
@@ -7,8 +7,5 @@ export const monitorApi = {
   },
   getConfig() {
     return fetchSatoshi.get<MonitorConfigData>('/api/v1/subscription/list/')
-  },
-  getSubscriptionList() {
-    return fetchSatoshi.get<MonitorListData>('/api/v1/subscription/list/')
   },
 }

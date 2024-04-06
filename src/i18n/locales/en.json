@@ -95,5 +95,20 @@
   "off": "Off",
   "no-token": "No token yet.",
   "no-login": "Please Signin / Signup before",
-  "walletbubble.title": "Wallet transaction occurred"
+  "walletbubble.title": "Wallet transaction occurred",
+  "tx.token.text1": "How much SOL do you want?",
+  "tx.token.text2": "Which wallet would you like to use?\t",
+  "custom": "Custom",
+  "slippage": "Slippage",
+  "tx.token.tips.error1": "Please enter the correct buy cost.",
+  "tx.token.tips.error2": "Insufficient wallet balance.",
+  "tx.token.tips.error3": "Please enter the correct slippage.",
+  "confirm": "Confirm transaction",
+  "tx.form.error1": "Please enter the correct buy cost.",
+  "tx.form.error2": "Insufficient wallet balance.",
+  "tx.form.error3": "Please enter the correct slippage.",
+  "slippage.warning": "A slippage of less than 0.05% May result in a failed trade",
+  "tx.finally": "Trade completed",
+  "tx.loading": "Trading in progress",
+  "tx.token.wallet.balance": "Wallet balance"
 }

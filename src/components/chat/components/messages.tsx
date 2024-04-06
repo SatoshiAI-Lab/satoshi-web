@@ -80,7 +80,7 @@ const Messages = memo((props: MessagesProps) => {
     if (msg.isInteractive) {
       return <InteractiveMessage key={i} msgs={msg.msgs!} />
     }
-
+    
     if (msg.isIntention) {
       return <IntentMessage key={i} msg={msg!}></IntentMessage>
     }

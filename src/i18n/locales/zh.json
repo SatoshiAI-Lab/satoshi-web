@@ -95,5 +95,20 @@
   "off": "关闭",
   "no-token": "还没有自选。",
   "no-login": "请先登录/注册",
-  "walletbubble.title": "发生钱包交易"
+  "walletbubble.title": "发生钱包交易",
+  "tx.token.text1": "你要多少SOL ?",
+  "tx.token.text2": "你想用哪个钱包?",
+  "custom": "自定义",
+  "slippage": "滑点",
+  "tx.token.tips.error1": "请输入正确的购买成本。",
+  "tx.token.tips.error2": "钱包余额不足。",
+  "tx.token.tips.error3": "请输入正确的滑点。",
+  "confirm": "确认交易",
+  "tx.form.error1": "请输入正确的购买费用",
+  "tx.form.error2": "钱包余额不足",
+  "tx.form.error3": "请输入正确的滑点",
+  "slippage.warning": "小于0.05%的滑点可能导致交易失败",
+  "tx.finally": "交易已完成",
+  "tx.loading": "交易中...",
+  "tx.token.wallet.balance": "钱包余额"
 }
