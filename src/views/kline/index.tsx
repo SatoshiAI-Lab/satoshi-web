@@ -34,7 +34,7 @@ const KLine = () => {
     chartIns?.applyOverrides(TV_CHART_OVERRIDES)
   }
 
-  // On mounted, create chart.
+  // Create chart on mounted.
   useEffect(() => {
     // Handle refresh browser, in first render, browser can't get `router.query`,
     // bacause it hasn't been hydration yet, on `router.isReady`, it's ok.

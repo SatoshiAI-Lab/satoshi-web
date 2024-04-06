@@ -1,9 +1,8 @@
 import { Study, StudiesName, KLINE_STUDIES } from '@/config/kline'
-import { useKLineStore } from '@/stores/use-kline-store'
+import { useKLine } from '@/views/kline/hooks/use-kline'
 import { useAnnotations } from '../use-annotation'
 
 import type { GetLastFn, UseAnnotationStudies } from './types'
-import { useKLine } from '@/views/kline/hooks/use-kline'
 
 /**
  * Create study with annotation.
