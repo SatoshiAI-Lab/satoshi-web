@@ -7,6 +7,9 @@ import { useKey } from 'react-use'
 import clsx from 'clsx'
 
 import InputMenu from './input-menu'
+import { useChatStore } from '@/stores/use-chat-store'
+import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
+import { utilDom } from '@/utils/dom'
 import { useInputHistory } from '@/hooks/use-input-history'
 
 interface MessageInputProps {
@@ -15,12 +18,12 @@ interface MessageInputProps {
 }
 
 function MessageInput(props: MessageInputProps) {
-  const [question, setQuestion] = useState('')
   const { autofocus = true, onSend } = props
   const { t } = useTranslation()
   const [isFocus, setIsFocus] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
-  const isLoading = false
+  const keyboardIsShow = useMobileKeyboard()
+  const { question, chatEl, isLoading, setQuestion } = useChatStore()
 
   const handleEnterSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.shiftKey && e.key === 'Enter') return
@@ -28,6 +31,7 @@ function MessageInput(props: MessageInputProps) {
 
     e.preventDefault()
 
+    if (isLoading) return
     // Although is deprecated, but very useful.
     if (e.keyCode === 13) {
       onSend()
@@ -51,6 +55,13 @@ function MessageInput(props: MessageInputProps) {
       inputRef?.current?.focus()
     }
   }, [])
+
+  // mobile virtual keyboard adapation.
+  useEffect(() => {
+    if (!chatEl || !keyboardIsShow) return
+
+    utilDom.scrollToBottom(chatEl)
+  }, [keyboardIsShow, chatEl])
 
   return (
     <div className="sticky bottom-4 z-20 max-sm:mx-5 mr-10 max-sm:bottom-0 transition-all">

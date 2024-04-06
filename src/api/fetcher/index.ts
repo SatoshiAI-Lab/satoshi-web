@@ -4,7 +4,29 @@ import { useStorage } from '@/hooks/use-storage'
 import type { AnyObject } from '@/types/types'
 import type { FetcherResponse, FetcherOptions } from './types'
 
-const excludesAuthPath = ['/api/v1/register/']
+const excludesAuthPath = [
+  '/api/v1/register/',
+  '/api/v1/mine/',
+  '/token/list',
+  '/chat',
+]
+
+/**
+ * The API may appear to return data directly, so wrap a layer
+ * @param result JSON Result
+ * @param response
+ * @returns
+ */
+const warpResData = (result: any, response: Response) => {
+  if (!result.hasOwnProperty('data')) {
+    return {
+      status: response.status,
+      data: result,
+    } as any
+  }
+
+  return result
+}
 
 /**
  * Wrapper for native fetch.
@@ -28,15 +50,14 @@ export async function fetcher<T = ReadableStream<Uint8Array>>(
   const stringQuery = method === 'GET' ? utilParse.obj2Qs(query ?? {}) : ''
   const url = baseURL + path + stringQuery
   // We can use this hook, because it's not relying React hooks.
-  const { getLoginToken } = useStorage()
-  const authToken = `Bearer ${getLoginToken()}`
+  const token = useStorage().getLoginToken()
 
   try {
     const response = await fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: needAuth ? authToken : '',
+        Authorization: needAuth || token ? `Bearer ${token}` : '',
         ...headers,
       },
       body: method !== 'GET' ? JSON.stringify(body) : null,
@@ -56,23 +77,17 @@ export async function fetcher<T = ReadableStream<Uint8Array>>(
 
       if (!isJson) return response.body! as T
 
-      const result = await response.json()
-
       // if (!result.hasOwnProperty('status') || result.status !== 200) {
       //   console.error(`[Response Error]: ${result?.message}`)
       //   return Promise.reject(result)
       // }
 
-      if (!result.hasOwnProperty('data')) {
-        return {
-          data: result,
-        } as any
-      }
+      const result = await response.json()
 
-      return result
+      return warpResData(result, response)
     }
 
-    return Promise.reject(await response.json())
+    return Promise.reject(warpResData(await response.json(), response))
   } catch (e) {
     console.error(`[Request Error]: ${e}`)
     return Promise.reject(e)

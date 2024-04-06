@@ -21,6 +21,11 @@ export const CHAT_CONFIG = {
       'tech_analyze_stream',
       'create_wallet_stream',
       'import_wallet_stream',
+      'update_wallet_name_stream',
+      'export_private_key_stream',
+      'intent_history',
+      'subscript_news',
+      'subscript_wallet_address',
     ],
 
     /** it's not need `useStream` */
@@ -39,8 +44,9 @@ export const CHAT_CONFIG = {
     /** answer ended */
     end: 'end',
 
-    intentStream: 'intent_stream',
+    intentStream: 'intent_',
     walletList: 'wallet_list_stream',
+    walletChangeName: 'change_name_wallet_list',
   },
   /** `hyper_text` parse RegExp */
   hyperTextRule:
@@ -49,5 +55,11 @@ export const CHAT_CONFIG = {
     refNumber: /\[(\d+)\]/g,
     refElement: /<reference .*? \/>/g,
     tokenProp: 'dataTokenTag',
+  },
+  metadataType: {
+    intentHistory: 'intent_history',
+    walletList: 'wallet_list',
+    walletBalance: 'contract_wallet_balance',
+    changeNameWalletList: 'change_name_wallet_list',
   },
 }

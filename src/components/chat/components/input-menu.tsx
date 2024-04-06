@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { AiOutlineSetting } from 'react-icons/ai'
 import { BiSolidChess, BiSolidWalletAlt } from 'react-icons/bi'
 import { BsVolumeUp, BsVolumeMute } from 'react-icons/bs'
-import clsx from 'clsx'
 import { motion } from 'framer-motion'
+import clsx from 'clsx'
 
 import { useBackground } from '@/hooks/use-background'
 import { useShow } from '@/hooks/use-show'
@@ -14,6 +14,8 @@ import { useDebounce } from '@/hooks/use-debounce'
 import { useLive2DStore } from '@/stores/use-live2d-store'
 import { useStorage } from '@/hooks/use-storage'
 import { useWalletStore } from '@/stores/use-wallet-store'
+import { useUserStore } from '@/stores/use-user-store'
+import { useNeedLoginStore } from '@/stores/use-need-login-store'
 
 enum AnimateType {
   None,
@@ -33,24 +35,36 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
   const [walletOpen, setWalletOpen] = useState(false)
   const changeScene = useDebounce(changeBackground)
   const { isMute, setIsMute } = useLive2DStore()
-  const { setIsMuted } = useStorage()
+  const { getIsMuted, setIsMuted } = useStorage()
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
+  const { setShow } = useNeedLoginStore()
 
   const { getWallets } = useWalletStore()
+  const { isLogined } = useUserStore()
 
   const items = [
     {
       label: t('monitor'),
       icon: <AiOutlineSetting size={18} />,
       animate: AnimateType.Rotate,
-      onClick: open,
+      onClick: () => {
+        if (!isLogined) {
+          setShow(true)
+          return
+        }
+        open()
+      },
     },
     {
       label: t('wallet'),
       icon: <BiSolidWalletAlt size={18} />,
       animate: AnimateType.Shake,
       transition: shakeTransition,
-      onClick: () => {
+      onClick: async () => {
+        if (!isLogined) {
+          setShow(true)
+          return
+        }
         setWalletOpen(true)
         getWallets()
       },

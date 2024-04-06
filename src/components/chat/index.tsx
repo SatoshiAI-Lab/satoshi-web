@@ -1,27 +1,45 @@
 import React, { useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
 
-import MessageBubble from './components/message-bubble'
+import MessageBubble from './components/bubbles/message-bubble'
 import MessageInput from './components/message-input'
-import Live2DModel from '@/components/live2d-model'
+import Messages from './components/messages'
+import Live2DModel from '../live2d-model'
+import { useTranslation } from 'react-i18next'
 import { utilDom } from '@/utils/dom'
+import { useChat } from '@/hooks/use-chat'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props
   const chatRef = useRef<HTMLDivElement | null>(null)
   const { t } = useTranslation()
+  const {
+    question,
+    messages,
+    isLoading,
+    addMessageAndLoading,
+    setChatEl,
+    sendMsg,
+  } = useChat()
 
   // Handle send.
   const onSend = async () => {
-    toast('Sending...')
+    if (!question?.trim()) {
+      toast.error(t('input-null'))
+      return
+    }
+    if (isLoading) return
+
+    addMessageAndLoading({ msg: question, position: 'right' })
+    await sendMsg()
   }
 
   // setChatEl and scroll to latest message
   useEffect(() => {
     if (!chatRef.current) return
 
+    setChatEl(chatRef.current)
     utilDom.scrollToBottom(chatRef.current)
   }, [])
 
@@ -55,6 +73,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
           ref={chatRef}
         >
           <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
+          <Messages messages={messages} />
         </div>
         <MessageInput onSend={onSend} />
       </div>
