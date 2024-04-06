@@ -1,4 +1,8 @@
 export enum Routes {
-  // hoempage
   index = '/',
+
+  signin = '/signin',
+  signup = '/signup',
+
+  kline = '/kline',
 }

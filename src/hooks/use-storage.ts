@@ -35,6 +35,25 @@ export const useStorage = (useSessionStorage = false) => {
     useSessionStorage ? sessionStorage.clear() : localStorage.clear()
   }
 
+  const getLoginTokenRefresh = () => {
+    const token = get('user-token-refresh') ?? '{}'
+
+    return JSON.parse(token) as {
+      token: string
+      time: number
+    }
+  }
+
+  const setLoginTokenRefresh = (val: string) => {
+    set(
+      'user-token-refresh',
+      JSON.stringify({
+        token: val,
+        time: Date.now(),
+      })
+    )
+  }
+
   return {
     // General API.
     get,
@@ -49,5 +68,17 @@ export const useStorage = (useSessionStorage = false) => {
     // Live2D model related.
     getIsMuted: () => get('model_is_muted'),
     setIsMuted: (val: string) => set('model_is_muted', val),
+
+    // Login related.
+    getLoginToken: () => get('user-token'),
+    setLoginToken: (val: string) => set('user-token', val),
+
+    // Refresh token
+    getLoginTokenRefresh,
+    setLoginTokenRefresh,
+
+    // KLine related.
+    getKLineInterval: () => get('kline_interval'),
+    setKLineInterval: (val: string) => set('kline_interval', val),
   }
 }
