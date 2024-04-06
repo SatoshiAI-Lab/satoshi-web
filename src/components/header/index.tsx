@@ -96,7 +96,7 @@ function Header() {
     <div className={`sticky top-0 z-50`}>
       <div
         className={clsx(
-          'h-[70px] bg-header dark:bg-header-dark',
+          'h-header bg-header dark:bg-header-dark',
           'flex justify-between items-center z-10 relative',
           'max-md:h-header-m'
         )}

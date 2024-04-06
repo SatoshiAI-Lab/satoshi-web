@@ -14,8 +14,8 @@ const baseColors = {
 }
 
 const baseSizes = {
-  header: '60px',
-  body: 'calc(100vh - 60px)',
+  header: '65px',
+  body: 'calc(100vh - 65px)',
   logo: '200px',
   chat: '1140px',
   favorites: '300px',
