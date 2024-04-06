@@ -6,18 +6,41 @@ interface UseClipboardReturn {
 }
 
 /**
- * Clipboard hook.
+ * Clipboard hook. supported lower version browser.
  */
 export const useClipboard: () => UseClipboardReturn = () => {
-  // TODO: adaption low version browser,
-  // low version browser will not support navigator.clipboard
-  async function copy(content: string) {
+  const deprecatedCopy = (content: string) => {
     try {
+      const textarea = document.createElement('textarea')
+
+      textarea.value = content
+      textarea.style.position = 'fixed'
+
+      document.body.appendChild(textarea)
+      textarea.focus()
+      textarea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textarea)
+
+      toast.success(t('copy-success'))
+      return Promise.resolve(true)
+    } catch (error) {
+      toast.error(t('copy-failed') + error)
+      return Promise.reject(false)
+    }
+  }
+
+  const copy = async (content: string) => {
+    try {
+      // if users browser version is so low,
+      // use `document.execCommand` to copy.
+      if (!navigator.clipboard) return deprecatedCopy(content)
+
       await navigator.clipboard.writeText(content)
       toast.success(t('copy-success'))
       return true
     } catch (error) {
-      toast.error(t('copy-failed'))
+      toast.error(t('copy-failed') + error)
       return false
     }
   }
