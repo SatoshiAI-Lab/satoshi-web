@@ -5,6 +5,7 @@ import type { AnyObject } from '@/types/types'
 import type { FetcherResponse, FetcherOptions } from './types'
 
 const excludesAuthPath = [
+  '/api/v1/coin/list/',
   '/api/v1/register/',
   '/api/v1/mine/',
   '/token/list',
