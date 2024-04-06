@@ -8,17 +8,16 @@ import {
   SwipeableDrawer,
 } from '@mui/material'
 
-import type { HeaderItem } from '../types'
+import { HeaderItem } from '../types'
 
 export interface MobileHeaderProps {
-  items: string[]
+  items: HeaderItem[]
+  onItemClick?: (item: HeaderItem) => void
 }
 
 function MobileHeader(props: MobileHeaderProps) {
-  const { items } = props
+  const { items, onItemClick } = props
   const [open, setOpen] = useState(false)
-
-  const onItemClick = () => {}
 
   return (
     <>
@@ -48,9 +47,9 @@ function MobileHeader(props: MobileHeaderProps) {
               <Divider className="!border-gray-300" />
               <ListItemButton
                 className="!my-1 !rounded !text-black"
-                onClick={onItemClick}
+                onClick={() => onItemClick?.(item)}
               >
-                {item}
+                {item.label}
               </ListItemButton>
             </React.Fragment>
           ))}
