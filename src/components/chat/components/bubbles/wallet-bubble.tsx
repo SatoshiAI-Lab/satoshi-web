@@ -6,15 +6,22 @@ import toast from 'react-hot-toast'
 
 import MessageBubble from './message-bubble'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { ChatResponseMetaWallet } from '@/api/chat/types'
+import dayjs from 'dayjs'
 
-interface WalletBubbleProps extends React.ComponentProps<'div'> {}
-
-const WalletBubble = (props: WalletBubbleProps) => {
-  const { className } = props
+const WalletBubble = ({
+  type,
+  created_at,
+  name,
+  sender,
+  currency_symbol,
+  side_amount,
+  side_symbol,
+}: ChatResponseMetaWallet) => {
   const { t } = useTranslation()
 
   return (
-    <MessageBubble className={clsx('min-w-bubble py-4', className)}>
+    <MessageBubble className={clsx('min-w-bubble py-4')}>
       {/* Avatar, chain */}
       <div className="flex items-stretch">
         <img
@@ -23,28 +30,31 @@ const WalletBubble = (props: WalletBubbleProps) => {
           className="w-12 h-12 rounded mr-2"
         />
         <div className="flex flex-col justify-between ">
-          <span className="font-bold">name</span>
-          <span className="text-gray-400">time</span>
+          <span className="font-bold">{t('walletbubble.title')}</span>
+          <span className="text-gray-400">
+            {dayjs(created_at).format('H:mm M/D')}
+          </span>
         </div>
       </div>
       {/* Event description */}
       <div className="mt-2">
         <a href="#" target="_blank" className="underline text-primary">
-          Anatoly
-        </a>{' '}
-        sol{' '}
-        <a href="#" target="_blank" className="text-primary">
-          CAT
+          {name}
         </a>
-        (123,456) for SOL
+        {type}
+        <a href="#" target="_blank" className="text-primary">
+          {currency_symbol}
+        </a>
+        for {side_amount} {side_symbol}
       </div>
       {/* contract address */}
       <div className="flex items-center my-1">
         <div className="mr-2">
-          <span className="font-bold">CAT CA</span>: Lyex..w3hn
+          <span className="font-bold">{side_symbol} CA</span>:
+          {sender.substring(0, 4) + '...' + sender.substring(sender.length - 4)}
         </div>
         <CopyToClipboard
-          text="Lyex..w3hn"
+          text={sender}
           onCopy={() => {
             toast.success(t('copy-success'))
           }}

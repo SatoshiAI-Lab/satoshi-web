@@ -92,5 +92,6 @@
   "wallet.list.tips": "只展示前10个钱包",
   "no.balance": "这个钱包什么代币都没有",
   "on": "开启",
-  "off": "关闭"
+  "off": "关闭",
+  "walletbubble.title": "发生钱包交易"
 }

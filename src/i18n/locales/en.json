@@ -92,5 +92,6 @@
   "wallet.list.tips": "Only the first 10 wallets are shown",
   "no.balance": "This wallet doesn't have any tokens",
   "on": "On",
-  "off": "Off"
+  "off": "Off",
+  "walletbubble.title": "Wallet transaction occurred"
 }

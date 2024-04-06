@@ -192,3 +192,18 @@ export interface ChatResponseMetaTwitter {
   twitter_logo: string
   data_type: string
 }
+
+export interface ChatResponseMetaWallet {
+  id: number
+  sender: string
+  currency_symbol: string
+  currency_amount: number
+  side_symbol: string
+  side_amount: number
+  type: string
+  created_at: string
+  name: string
+  remark: string
+  content: string
+  data_type: string
+}

@@ -12,6 +12,7 @@ import {
   ChatResponseMetaAnnounceMent,
   ChatResponseMetaNewsInfo,
   ChatResponseMetaTwitter,
+  ChatResponseMetaWallet,
 } from '@/api/chat/types'
 import NewsBubble from './bubbles/news-bubble'
 import ExchangeAnnouncementBubble from './bubbles/exchange-announcement-bubble'
@@ -62,7 +63,9 @@ const Messages = memo((props: MessagesProps) => {
     }
 
     if (msg.data_type === DataType.TradeInfo) {
-      return <WalletBubble key={i} />
+      return (
+        <WalletBubble key={i} {...(msg as unknown as ChatResponseMetaWallet)} />
+      )
     }
 
     if (msg.data_type === DataType.TwitterInfo) {
