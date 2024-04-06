@@ -1,9 +1,9 @@
-import { fetchSatoshi } from './../index'
+import { fetchSatoshiChain } from './../index'
 
 import type { TokenListParams, TokenResponse } from './types'
 
 export const tokenApi = {
   tokenList(params: TokenListParams) {
-    return fetchSatoshi.post<TokenResponse>('/token/list', params)
+    return fetchSatoshiChain.post<TokenResponse>('/token/list', params)
   },
 }
