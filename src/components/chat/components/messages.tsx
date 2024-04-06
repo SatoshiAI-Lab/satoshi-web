@@ -8,7 +8,10 @@ import { useTranslation } from 'react-i18next'
 
 import { DataType, type Message } from '@/stores/use-chat-store/types'
 import { IntentMessage } from './intention-message'
-import { ChatResponseMetaNewsInfo } from '@/api/chat/types'
+import {
+  ChatResponseMetaAnnounceMent,
+  ChatResponseMetaNewsInfo,
+} from '@/api/chat/types'
 import NewsBubble from './bubbles/news-bubble'
 import ExchangeAnnouncementBubble from './bubbles/exchange-announcement-bubble'
 import WalletBubble from './bubbles/wallet-bubble'
@@ -42,7 +45,19 @@ const Messages = memo((props: MessagesProps) => {
     }
 
     if (msg.data_type === DataType.AnnouncementInfo) {
-      return <ExchangeAnnouncementBubble key={i} />
+      return (
+        <ExchangeAnnouncementBubble
+          key={i}
+          {...(msg as unknown as ChatResponseMetaAnnounceMent)}
+        >
+          <div
+            dangerouslySetInnerHTML={{
+              __html: (msg as unknown as ChatResponseMetaAnnounceMent).content
+                .en,
+            }}
+          ></div>
+        </ExchangeAnnouncementBubble>
+      )
     }
 
     if (msg.data_type === DataType.TradeInfo) {

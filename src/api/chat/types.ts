@@ -160,3 +160,21 @@ export interface ChatResponseMetaNewsInfo {
   logo: string
   title: string
 }
+
+export interface I18 {
+  en: string
+  zh: string
+}
+
+export interface ChatResponseMetaAnnounceMent {
+  content: I18
+  created_at: string
+  data_type: string
+  id: number
+  seo: I18
+  source_logo: string
+  source_id: number
+  source_name: string
+  title: I18
+  url: I18
+}
