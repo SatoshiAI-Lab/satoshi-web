@@ -5,6 +5,7 @@ import type {
   UseLipSyncOptions,
   UseLipSyncOverrideOptions,
 } from '@/hooks/use-lip-sync'
+import type { ChatResponseAnswerMeta } from '@/api/chat/types'
 import type { EnumToObject } from '@/types/types'
 
 export const {
@@ -32,15 +33,6 @@ export enum ModelExpressions {
   'white-sunglasses' = 'white-sunglasses',
   'black-sunglasses' = 'black-sunglasses',
 }
-
-type Emotion =
-  | 'natural'
-  | 'happy'
-  | 'sad'
-  | 'awkward'
-  | 'denial'
-  | 'angry'
-  | 'encouragement'
 
 export interface States {
   model: Live2DModel | null
@@ -78,7 +70,7 @@ export interface Actions {
     }
   ): void
   randomSpeakWisdom(): void
-  handleEmotion(emotion?: Emotion): void
+  handleEmotion(emotion?: ChatResponseAnswerMeta['emotion']): void
   speakAndMotion(
     motion?: keyof typeof Sounds.motions,
     shouldReset?: boolean
