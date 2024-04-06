@@ -1,4 +1,4 @@
-import i18n from 'i18next'
+import i18n, { type Resource } from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
 import ZH from './locales/zh.json'
@@ -13,7 +13,7 @@ export const resources = {
     name: 'English',
     translation: EN,
   },
-}
+} as Resource
 
 i18n.use(initReactI18next).init({
   resources,
