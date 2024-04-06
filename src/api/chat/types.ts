@@ -151,3 +151,12 @@ export interface ChatMointorRoomRes {
   created_at: Date
   messages: any[]
 }
+
+export interface ChatResponseMetaNewsInfo {
+  content: string
+  created_at: string
+  data_type: string
+  id: number
+  logo: string
+  title: string
+}

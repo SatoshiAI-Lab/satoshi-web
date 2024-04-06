@@ -6,8 +6,13 @@ import InteractiveMessage from './interactive-message'
 import MarkdownParser from '@/components/markdown-parser'
 import { useTranslation } from 'react-i18next'
 
-import type { Message } from '@/stores/use-chat-store/types'
+import { DataType, type Message } from '@/stores/use-chat-store/types'
 import { IntentMessage } from './intention-message'
+import { ChatResponseMetaNewsInfo } from '@/api/chat/types'
+import NewsBubble from './bubbles/news-bubble'
+import ExchangeAnnouncementBubble from './bubbles/exchange-announcement-bubble'
+import WalletBubble from './bubbles/wallet-bubble'
+import TwitterBubble from './bubbles/twitter-bubble'
 
 interface MessagesProps {
   messages: Message[]
@@ -28,6 +33,24 @@ const Messages = memo((props: MessagesProps) => {
           <AiOutlineLoading className="animate-spin fill-blue-600 ml-2" />
         </MessageBubble>
       )
+    }
+
+    if (msg.data_type === DataType.NewsInfo) {
+      return (
+        <NewsBubble key={i} {...(msg as unknown as ChatResponseMetaNewsInfo)} />
+      )
+    }
+
+    if (msg.data_type === DataType.AnnouncementInfo) {
+      return <ExchangeAnnouncementBubble key={i} />
+    }
+
+    if (msg.data_type === DataType.TradeInfo) {
+      return <WalletBubble key={i} />
+    }
+
+    if (msg.data_type === DataType.TwitterInfo) {
+      return <TwitterBubble key={i} />
     }
 
     if (msg.isInteractive) {

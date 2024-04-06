@@ -4,10 +4,12 @@ import { useUserStore } from '@/stores/use-user-store'
 import { useEffect } from 'react'
 import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
+import { useChatStore } from '@/stores/use-chat-store'
 
 export const useChatMonitorMsg = () => {
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
+  const { messages, setMessage } = useChatStore()
   const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
 
   const { connect, on } = useWebSocket({
@@ -23,8 +25,10 @@ export const useChatMonitorMsg = () => {
 
     connect(wssUrl)
 
-    on('message', () => {
-      
+    on('message', () => {})
+
+    on('event', ({ data }) => {
+      setMessage(messages.concat(data))
     })
   }
 

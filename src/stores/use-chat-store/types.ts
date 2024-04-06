@@ -5,6 +5,13 @@ import type {
 } from './../../api/chat/types'
 import type { ChatResponseAnswer } from '@/api/chat/types'
 
+export enum DataType {
+  NewsInfo = 'news_info',
+  AnnouncementInfo = 'announcement_info',
+  TwitterInfo = 'twitter_info',
+  TradeInfo = 'trade_info',
+}
+
 export interface Message {
   msg: string
   msgs?: ChatResponseAnswerMeta
@@ -16,6 +23,7 @@ export interface Message {
   rawData?: ChatResponseAnswer
   msgId?: string
   type?: string
+  data_type?: DataType
 }
 
 export interface InteractiveMessageOptions {
