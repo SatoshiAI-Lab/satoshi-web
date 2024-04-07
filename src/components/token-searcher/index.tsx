@@ -18,15 +18,9 @@ import CustomSuspense from '../custom-suspense'
 import { DialogHeader } from '../dialog-header'
 import { useTokenSearcher } from './hooks/use-token-searcher'
 import { useUserStore } from '@/stores/use-user-store'
-
-import {
-  TokenStatus,
-  type ListToken,
-  type TokenSearchCoin,
-  TokenType,
-} from '@/api/token/types'
 import { useFavtokenStore } from '@/stores/use-favorites-store'
-import { utilArr } from '@/utils/array'
+
+import { TokenStatus, type TokenSearchCoin, TokenType } from '@/api/token/types'
 
 interface TokenSearcherProps extends React.ComponentProps<'div'> {
   open: boolean
@@ -48,7 +42,6 @@ const TokenSearcher = (props: TokenSearcherProps) => {
     search,
     clearSearch,
     selectToken,
-    setCoins,
   } = useTokenSearcher()
   const { isLogined } = useUserStore()
   const [loadingId, setLoadingId] = useState(-1)
@@ -106,22 +99,12 @@ const TokenSearcher = (props: TokenSearcherProps) => {
   useDebounce(debouncer, 300, [value])
 
   useEffect(() => {
-    if (utilArr.isEmpty(coins)) {
-      setCoins(tokenList)
-    }
-  }, [tokenList])
-
-  useEffect(() => {
     if (open) {
       autofocus && searchRef.current?.focus()
     } else {
       onClear()
     }
   }, [open])
-
-  useEffect(() => {
-    console.log('is refetching', isRefetchingToken)
-  }, [isRefetchingToken])
 
   return (
     <Dialog
@@ -148,6 +131,7 @@ const TokenSearcher = (props: TokenSearcherProps) => {
               </IconButton>
             ),
           }}
+          autoComplete="off"
           classes={{ root: 'w-full' }}
           placeholder={t('search.input.placeholder')}
           size="small"
@@ -196,7 +180,7 @@ const TokenSearcher = (props: TokenSearcherProps) => {
                 <div className="flex items-center">
                   <CustomSuspense
                     isPendding={
-                      loadingId === c.id && isSelecting && isRefetchingToken
+                      loadingId === c.id && (isSelecting || isRefetchingToken)
                     }
                     fallback={
                       <IconButton disableRipple disabled>
@@ -209,7 +193,7 @@ const TokenSearcher = (props: TokenSearcherProps) => {
                         className="cursor-pointer"
                         onClick={() => onSelectToken(c, TokenStatus.Cancel)}
                       >
-                        <IoCloseOutline size={20} className={'text-black'} />
+                        <IoCloseOutline size={20} className="text-black" />
                       </IconButton>
                     ) : (
                       <IconButton
