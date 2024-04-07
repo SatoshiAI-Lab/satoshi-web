@@ -47,7 +47,9 @@ export const useChat = () => {
     utilDom.scrollToBottom(chatEl!)
   }
 
-  const addMonitorMessage = () => {}
+  const addMonitorMessage = (msg: Message | Message[]) => {
+    addMessage(msg)
+  }
 
   /**
    * Add general Q&A information
@@ -187,8 +189,11 @@ export const useChat = () => {
       end,
       intentStream,
     } = CHAT_CONFIG.answerType
-    const { changeNameWalletList, walletList: metaWalletList, walletBalance } =
-      CHAT_CONFIG.metadataType
+    const {
+      changeNameWalletList,
+      walletList: metaWalletList,
+      walletBalance,
+    } = CHAT_CONFIG.metadataType
 
     console.log('Chat Data: ', data)
 

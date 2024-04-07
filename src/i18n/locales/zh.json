@@ -94,5 +94,6 @@
   "on": "开启",
   "off": "关闭",
   "no-token": "还没有自选。",
-  "no-login": "请先登录/注册"
+  "no-login": "请先登录/注册",
+  "walletbubble.title": "发生钱包交易"
 }

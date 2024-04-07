@@ -33,7 +33,7 @@ const walletApi = {
   },
   exportPrivateKey(params: UserExportPrivateKey) {
     return fetchSatoshi.get<UserExportPrivateKeyResp>(
-      `/api/v1/export-key/${params.wallet_id}`
+      `/api/v1/export-key/${params.wallet_id}/`
     )
   },
   renameWallet(params: UserRenameWalletReq) {
