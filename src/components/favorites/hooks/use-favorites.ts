@@ -1,8 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { tokenApi } from '@/api/token'
 import { useFavtokenStore } from '@/stores/use-favorites-store'
-import { useEffect } from 'react'
+import { SelectParams } from '@/api/token/types'
 
 const defaultTokens = {
   ids: [
@@ -15,7 +16,13 @@ const defaultTokens = {
   ],
 }
 
-export const useFavorites = (intervalFetch = true) => {
+interface Options {
+  intervalFetch?: boolean
+  enabled?: boolean
+}
+
+export const useFavorites = (opts?: Options) => {
+  const { intervalFetch = true, enabled = true } = opts ?? {}
   const { tokenList, setTokenList } = useFavtokenStore()
   const {
     data: tokenData,
@@ -24,10 +31,21 @@ export const useFavorites = (intervalFetch = true) => {
     isRefetching: isRefetchingToken,
     refetch: refetchTokens,
   } = useQuery({
+    enabled,
     refetchInterval: intervalFetch && 30_000, // Each 30 seconds refresh token list.
     queryKey: [tokenApi.tokenList.name],
     queryFn: () => tokenApi.tokenList(defaultTokens),
   })
+
+  const { isPending: isSelecting, mutateAsync: mutateToken } = useMutation({
+    mutationKey: [tokenApi.select.name],
+    mutationFn: (params: SelectParams) => tokenApi.select(params),
+  })
+
+  const selectToken = async (params: SelectParams) => {
+    await mutateToken(params)
+    await refetchTokens()
+  }
 
   useEffect(() => {
     setTokenList(tokenData?.data.list ?? [])
@@ -38,6 +56,8 @@ export const useFavorites = (intervalFetch = true) => {
     isFirstLoadingToken,
     isFetchingToken,
     isRefetchingToken,
+    isSelecting,
     refetchTokens,
+    selectToken,
   }
 }
