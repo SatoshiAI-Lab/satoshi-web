@@ -28,7 +28,7 @@ export const PercentTag: React.FC<PercentTgaProps> = (props) => {
   } = props
 
   const abs = Math.abs(percent)
-  const p = round ? abs.toFixed(fixed) : utilParse.toFixedNotRound(abs, fixed!)
+  const p = round ? abs.toFixed(fixed) : utilParse.noRoundFixed(abs, fixed!)
   const blockClass = ` !text-white rounded px-1 ${
     percent >= 0 ? 'bg-rise' : 'bg-fall'
   } `

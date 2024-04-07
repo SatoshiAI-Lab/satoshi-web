@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { RiListSettingsLine, RiAddFill } from 'react-icons/ri'
+import { RiAddFill } from 'react-icons/ri'
 import {
   Avatar,
   CircularProgress,
@@ -22,6 +22,7 @@ import { useFavorites } from './hooks/use-favorites'
 import { ListToken, TokenId, TokenStatus, TokenType } from '@/api/token/types'
 import { useShow } from '@/hooks/use-show'
 import { Routes } from '@/routes'
+import { utilFmt } from '@/utils/format'
 
 export const Favorites = memo((props: React.ComponentProps<'div'>) => {
   const { className } = props
@@ -30,10 +31,6 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
     useFavorites()
   const router = useRouter()
   const { show, open, hidden } = useShow()
-
-  const onAddClick = () => {
-    open()
-  }
 
   const onTokenClick = (token: ListToken) => {
     router.push({
@@ -74,7 +71,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
                 'text-lg cursor-pointer text-black dark:text-white',
                 'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
               )}
-              onClick={onAddClick}
+              onClick={open}
             />
           </motion.div>
         </div>
@@ -94,24 +91,27 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
               <Divider />
               <ListItemButton
                 onClick={() => onTokenClick(t)}
-                className={'dark:!text-white relative group'}
+                className={'dark:!text-white relative group !justify-between'}
               >
-                <div className="flex items-center gap-2 grow">
-                  <Avatar
-                    alt="token"
-                    src={t.logo}
-                    sx={{ width: 24, height: 24 }}
-                  />
-                  <span className="overflow-hidden mr-2 text-ellipsis ">
-                    {t.symbol}
+                <div className="flex justify-between flex-1">
+                  <div className="flex items-center gap-2 grow">
+                    <Avatar
+                      alt="token"
+                      src={t.logo}
+                      sx={{ width: 24, height: 24 }}
+                    />
+                    <span className="overflow-hidden mr-2 text-ellipsis ">
+                      {utilFmt.ellipsis(t.symbol)}
+                    </span>
+                  </div>
+                  <span className="text-end basis-20 mr-1">
+                    {utilFmt.token(t.price)}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-end basis-20 ">
-                    {t.price?.toFixed(5)}
-                  </span>
-                  <PercentTag percent={t.percent_change_24_h} />
-                </div>
+                <PercentTag
+                  percent={t.percent_change_24_h}
+                  className="w-16 justify-end mb-1"
+                />
                 <IconButton
                   size="small"
                   disabled={isSelecting}
