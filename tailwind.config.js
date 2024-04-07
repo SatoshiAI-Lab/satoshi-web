@@ -14,10 +14,12 @@ const baseColors = {
 }
 
 const baseSizes = {
-  header: '80px',
-  body: 'calc(100vh - 60px)',
+  header: '65px',
+  body: 'calc(100vh - 65px)',
   logo: '200px',
+  chat: '1140px',
   favorites: '300px',
+  bubble: '365px',
 
   'header-m': '60px',
   'logo-m': '160px',
@@ -29,9 +31,13 @@ module.exports = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/views/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
+      boxShadow: {
+        bubble: '2px 2px 2px 1px rgb(0,0,0,0.3)',
+      },
       height: {
         ...baseSizes,
       },

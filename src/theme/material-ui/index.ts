@@ -2,6 +2,10 @@ import type { ThemeOptions } from '@mui/material'
 
 import { themeDark } from './dark'
 import { themeLight } from './light'
+import { MuiList } from './components/list'
+import { MuiListItemButton } from './components/list-item-button'
+import { MuiSkeleton } from './components/skeleton'
+import { MuiDivider } from './components/divider'
 
 /**
  * Material-ui theming options config
@@ -17,6 +21,18 @@ export const themeOptions = (isDark: boolean) => {
       secondary: { main: vars.secondary },
       error: { main: vars.error },
     },
-    components: {},
+    components: {
+      MuiList: MuiList(vars),
+      MuiListItemButton: MuiListItemButton(vars),
+      MuiSkeleton: MuiSkeleton(vars),
+      MuiDivider: MuiDivider(vars),
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+          },
+        },
+      },
+    },
   } as ThemeOptions
 }
