@@ -31,7 +31,6 @@ interface TokenSearcherProps extends React.ComponentProps<'div'> {
 const TokenSearcher = (props: TokenSearcherProps) => {
   const { className = '', open, autofocus = true, onClose } = props
   const { tokenList } = useFavtokenStore()
-  const searchRef = useRef<HTMLInputElement>(null)
   const { t } = useTranslation()
   const [value, setValue] = useState('')
   const {
@@ -99,11 +98,8 @@ const TokenSearcher = (props: TokenSearcherProps) => {
   useDebounce(debouncer, 300, [value])
 
   useEffect(() => {
-    if (open) {
-      autofocus && searchRef.current?.focus()
-    } else {
-      onClear()
-    }
+    if (open) return
+    onClear() // clear search when closed
   }, [open])
 
   return (
@@ -131,11 +127,11 @@ const TokenSearcher = (props: TokenSearcherProps) => {
               </IconButton>
             ),
           }}
+          autoFocus={autofocus}
           autoComplete="off"
           classes={{ root: 'w-full' }}
           placeholder={t('search.input.placeholder')}
           size="small"
-          inputRef={searchRef}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={onKeyDown}
