@@ -1,9 +1,21 @@
-import { fetchSatoshiChain } from './../index'
+import { fetchSatoshi } from './../index'
 
-import type { TokenListParams, TokenResponse } from './types'
+import type {
+  TokenListParams,
+  TokenSearchRes,
+  TokenList,
+  SelectParams,
+  TokenId,
+} from './types'
 
 export const tokenApi = {
   tokenList(params: TokenListParams) {
-    return fetchSatoshiChain.post<TokenResponse>('/token/list', params)
+    return fetchSatoshi.post<TokenList>('/api/v1/coin/list/', params)
+  },
+  search(kw: string) {
+    return fetchSatoshi.get<TokenSearchRes>('/api/v1/coin/search/', { kw })
+  },
+  select(params: SelectParams) {
+    return fetchSatoshi.post<TokenId[]>('/api/v1/coin/select/', params)
   },
 }

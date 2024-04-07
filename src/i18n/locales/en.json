@@ -93,5 +93,7 @@
   "no.balance": "This wallet doesn't have any tokens",
   "on": "On",
   "off": "Off",
+  "no-token": "No token yet.",
+  "no-login": "Please Signin / Signup before",
   "walletbubble.title": "Wallet transaction occurred"
 }

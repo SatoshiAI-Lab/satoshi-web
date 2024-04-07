@@ -37,7 +37,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     onOverBoughtSoldClick: onShapeClick,
     onDivergenceClick: onShapeClick,
   })
-  // A update may so many data, but update once is enough,
+  // An update may so many data, but update once is enough,
   // So use debounce to update last data.
   // But, make sure this debounce will not be called when component mount.
   const onChartUpdate = useDebounce(() => {
