@@ -41,9 +41,9 @@ export const useChatMonitorMsg = () => {
         useChatStore.getState().readAnswer ||
         useChatStore.getState().waitAnswer
       ) {
-        setUnreadMessage(data)
+        setUnreadMessage(data.reverse())
       } else {
-        addMonitorMessage(data)
+        addMonitorMessage(data.reverse())
       }
     })
   }
