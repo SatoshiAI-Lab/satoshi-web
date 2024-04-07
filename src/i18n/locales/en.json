@@ -127,5 +127,22 @@
   "score": "Score",
   "bad": "Bad",
   "mint-auth-still": "Mint Authority still enabled",
-  "single-holder": "Single holder ownership {}"
+  "single-holder": "Single holder ownership {}",
+  "create-token.title": "I am willing to serve you. Please tell me the information about the token you want to issue. Let's accomplish something great!",
+  "token-fullname": "Token full name",
+  "token-logo": "Token Logo",
+  "token-total-supply": "Token total supply",
+  "same-wif": "Same as WIF",
+  "same-bome": "Same as BOME",
+  "token-nickname": "Token abbreviation",
+  "token-intro": "Token introduction",
+  "token-intro.placeholder": "Tell the world what your representation is about, and you can also leave information such as Twitter, Telegram, website, etc.",
+  "use-below-wallet": "Use the following wallet to create and receive tokens.",
+  "view-wallet-details": "View wallet details",
+  "wallet-balance-confirm": "Please make sure the wallet has {}",
+  "addr": "Address",
+  "token-nickname-validate": "Please enter the token abbreviation",
+  "token-fullname-validate": "Please enter the token full name",
+  "token-total-validate": "Please enter the token total supply",
+  "create": "Create"
 }

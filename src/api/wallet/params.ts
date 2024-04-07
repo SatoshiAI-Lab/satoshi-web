@@ -2,7 +2,12 @@ interface UserCreateWalletReq {
   /**
    * Wallet platform: SOL or EVM, default: SOL
    */
-  platform?: string
+  platform?: WalletPlatform
+}
+
+export enum WalletPlatform {
+  SOL = 'SOL',
+  EVM = 'EVM',
 }
 
 interface WalletToken {

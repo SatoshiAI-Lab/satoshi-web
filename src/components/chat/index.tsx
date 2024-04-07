@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
 import NewPoolBubble from './components/bubbles/new-pool-bubble'
+import CreateTokenBubble from './components/bubbles/create-token-bubble'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props
@@ -75,6 +76,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
         >
           <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
           <Messages messages={messages} />
+          <CreateTokenBubble />
         </div>
         <MessageInput onSend={onSend} />
       </div>
