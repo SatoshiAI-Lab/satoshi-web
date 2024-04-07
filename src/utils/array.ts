@@ -16,7 +16,7 @@ type CategoryArrayReturn<R> = [
 
 /** Utilities functions for array */
 export const utilArr = {
-  isEmpty: <T>(arr: T[]) => arr.length == 0,
+  isEmpty: <T>(arr: T[]) => arr.length === 0,
 
   isNotEmpty: <T>(arr: T[]) => !utilArr.isEmpty(arr),
 
