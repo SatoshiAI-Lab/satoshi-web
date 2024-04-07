@@ -9,14 +9,11 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   wallets: [],
   loading: true,
   createWallet: async (walletId: string) => {
+    set({ loading: true })
     if (walletId === 'solana') {
-      walletApi
-        .createWallet({
-          platform: 'SOL',
-        })
-        .then((res) => {
-          console.log(res.data.address)
-        })
+      await walletApi.createWallet({
+        platform: 'SOL',
+      })
     }
   },
   importWallet: async (privateKey: string) => {
