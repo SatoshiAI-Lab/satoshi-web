@@ -7,3 +7,8 @@ export interface AnyObject<T = any> {
 }
 
 export type Pair<T = string, V = string> = [T, V]
+
+export enum SortType {
+  Asc,
+  Desc,
+}
