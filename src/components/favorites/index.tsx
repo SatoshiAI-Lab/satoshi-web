@@ -4,6 +4,7 @@ import { RiListSettingsLine, RiAddFill } from 'react-icons/ri'
 import { Avatar, Divider, List, ListItemButton, Skeleton } from '@mui/material'
 import clsx from 'clsx'
 import { useRouter } from 'next/router'
+import { motion } from 'framer-motion'
 
 import PercentTag from '../percent-tag'
 import TokenSearcher from '../token-searcher'
@@ -47,28 +48,40 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
           {t('favorites')}
         </span>
         <div className="flex gap-4 items-center">
-          <RiAddFill
-            size={22}
-            className={clsx(
-              'text-lg cursor-pointer text-black dark:text-white',
-              'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
-            )}
-            onClick={onAddClick}
-          />
-          <RiListSettingsLine
-            className={clsx(
-              'text-lg cursor-pointer text-black dark:text-white',
-              'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
-            )}
-            onClick={onMenuClick}
-          />
+          <motion.div whileHover={{ rotate: 180 }}>
+            <RiAddFill
+              size={22}
+              className={clsx(
+                'text-lg cursor-pointer text-black dark:text-white',
+                'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
+              )}
+              onClick={onAddClick}
+            />
+          </motion.div>
+          <motion.div
+            whileHover={{ x: [0, -2, 0, 2, 0] }}
+            transition={{ duration: 0.3 }}
+          >
+            <RiListSettingsLine
+              className={clsx(
+                'text-lg cursor-pointer text-black dark:text-white',
+                'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
+              )}
+              onClick={onMenuClick}
+            />
+          </motion.div>
         </div>
       </div>
-      <CustomSuspense
-        isPendding={isFirstLoadingToken}
-        fallback={<FavoritesSkeleton />}
-      >
-        <List className="!bg-transparent">
+      <List className="!bg-transparent">
+        <CustomSuspense
+          isPendding={isFirstLoadingToken}
+          fallback={<FavoritesSkeleton />}
+          nullback={
+            <p className="text-center text-slate-600 dark:text-gray-300 mt-10">
+              {t('no-token')}
+            </p>
+          }
+        >
           {tokenList.map((t, i) => (
             <React.Fragment key={i}>
               <Divider />
@@ -95,8 +108,8 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
               </ListItemButton>
             </React.Fragment>
           ))}
-        </List>
-      </CustomSuspense>
+        </CustomSuspense>
+      </List>
       <TokenSearcher open={show} onClose={hidden} />
     </div>
   )

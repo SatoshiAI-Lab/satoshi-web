@@ -40,7 +40,7 @@
   "monitor.wallet.text2": "Currently, only Solana addresses are supported.",
   "monitor.wallet.text3": "More chain address tracking is coming soon.",
   "track": "Track",
-  "monitor.wallet.text": "Enter the wallet address you want to monitor.",
+  "monitor.wallet.text": "Enter the wallet address you want to monitor",
   "monitor.wallet.title": "Track Wallet",
   "monitor.twitter.title": "Track X/Twitter",
   "monitor.pools.title": "Track New pools",
@@ -111,5 +111,17 @@
   "no-token": "No token yet.",
   "no-login": "Please Signin / Signup before",
   "monitor.address.list": "Monitor address list",
-  "address.invaild": "Invalid address"
+  "address.invaild": "Please input correct address",
+  "walletbubble.title": "Wallet transaction occurred",
+  "monitor.wallet.bubble.text1": "Successfully tracked this wallet.",
+  "monitor.wallet.bubble.text2": "You will be notified if any on-chain transactions are made.",
+  "monitor.wallet.bubble.text3": "You can manage the wallets you are tracking through",
+  "monitor.wallet.bubble.text4": "Monitor-Track Wallet.",
+  "monitor.twitter.list.tips1": "Please select the X(Twitter) you want to monitor in the list.",
+  "monitor.wallet.name": "Name the wallet address",
+  "monitor.wallet.placeholder": "Input address",
+  "monitor.wallet.name.placeholder": "Input name",
+  "name.invaild": "Names cannot be longer than 16 characters",
+  "monitor.successful": "Tracking successful!",
+  "address.invaild1": "The tracking address already exists"
 }

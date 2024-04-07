@@ -118,5 +118,5 @@ export enum TokenType {
   Token = 1,
   Label,
   Event,
-  indicator,
+  Indicator,
 }

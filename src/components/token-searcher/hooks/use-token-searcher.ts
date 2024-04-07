@@ -4,6 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { tokenApi } from '@/api/token'
 import { SelectParams, TokenSearchCoin } from '@/api/token/types'
 import { useFavorites } from '@/components/favorites/hooks/use-favorites'
+import { utilArr } from '@/utils/array'
 
 export const useTokenSearcher = () => {
   const [keyword, search] = useState('')
@@ -43,6 +44,12 @@ export const useTokenSearcher = () => {
   useEffect(() => {
     refetchTokens()
   }, [isSuccess, isError, refetchTokens])
+
+  useEffect(() => {
+    if (utilArr.isEmpty(coins)) {
+      setCoins(tokenList)
+    }
+  }, [tokenList])
 
   return {
     coins,

@@ -47,7 +47,9 @@ export const useChat = () => {
     utilDom.scrollToBottom(chatEl!)
   }
 
-  const addMonitorMessage = () => {}
+  const addMonitorMessage = (msg: Message | Message[]) => {
+    addMessage(msg)
+  }
 
   /**
    * Add general Q&A information
@@ -178,6 +180,7 @@ export const useChat = () => {
    * @returns
    */
   const messageHandler = (data: ChatResponseAnswer) => {
+    const { hiddenIntentText } = CHAT_CONFIG
     const {
       hide,
       streams,
@@ -189,7 +192,6 @@ export const useChat = () => {
       intention,
     } = CHAT_CONFIG.answerType
     const {
-      changeNameWalletList,
       walletList: metaWalletList,
       walletBalance,
     } = CHAT_CONFIG.metadataType
@@ -218,7 +220,7 @@ export const useChat = () => {
     }
 
     if (intention.includes(answerType) || isIntention) {
-      if (data.text) {
+      if (data.text && !hiddenIntentText.includes(data?.meta.type!)) {
         addStreamMessage(data.text)
       }
 
@@ -234,7 +236,7 @@ export const useChat = () => {
     }
 
     // streaming answer
-    if (streams.includes(answerType) ) {
+    if (streams.includes(answerType)) {
       if (!data.text)
         // Don't use trim
         return

@@ -6,8 +6,18 @@ import InteractiveMessage from './interactive-message'
 import MarkdownParser from '@/components/markdown-parser'
 import { useTranslation } from 'react-i18next'
 
-import type { Message } from '@/stores/use-chat-store/types'
-import { IntentMessage } from './intention-message'
+import { DataType, type Message } from '@/stores/use-chat-store/types'
+import { IntentMessage } from './intention-message/intention-message'
+import {
+  ChatResponseMetaAnnounceMent,
+  ChatResponseMetaNewsInfo,
+  ChatResponseMetaTwitter,
+  ChatResponseMetaWallet,
+} from '@/api/chat/types'
+import NewsBubble from './bubbles/news-bubble'
+import ExchangeAnnouncementBubble from './bubbles/exchange-announcement-bubble'
+import WalletBubble from './bubbles/wallet-bubble'
+import TwitterBubble from './bubbles/twitter-bubble'
 
 interface MessagesProps {
   messages: Message[]
@@ -27,6 +37,43 @@ const Messages = memo((props: MessagesProps) => {
           {t('thinking')}
           <AiOutlineLoading className="animate-spin fill-blue-600 ml-2" />
         </MessageBubble>
+      )
+    }
+
+    if (msg.data_type === DataType.NewsInfo) {
+      return (
+        <NewsBubble key={i} {...(msg as unknown as ChatResponseMetaNewsInfo)} />
+      )
+    }
+
+    if (msg.data_type === DataType.AnnouncementInfo) {
+      return (
+        <ExchangeAnnouncementBubble
+          key={i}
+          {...(msg as unknown as ChatResponseMetaAnnounceMent)}
+        >
+          <div
+            dangerouslySetInnerHTML={{
+              __html: (msg as unknown as ChatResponseMetaAnnounceMent).content
+                .en,
+            }}
+          ></div>
+        </ExchangeAnnouncementBubble>
+      )
+    }
+
+    if (msg.data_type === DataType.TradeInfo) {
+      return (
+        <WalletBubble key={i} {...(msg as unknown as ChatResponseMetaWallet)} />
+      )
+    }
+
+    if (msg.data_type === DataType.TwitterInfo) {
+      return (
+        <TwitterBubble
+          key={i}
+          {...(msg as unknown as ChatResponseMetaTwitter)}
+        />
       )
     }
 

@@ -175,3 +175,60 @@ export interface ChatMointorRoomRes {
   created_at: Date
   messages: any[]
 }
+
+export interface ChatResponseMetaNewsInfo {
+  content: string
+  created_at: string
+  data_type: string
+  id: number
+  logo: string
+  title: string
+}
+
+export interface I18 {
+  en: string
+  zh: string
+}
+
+export interface ChatResponseMetaAnnounceMent {
+  content: I18
+  created_at: string
+  data_type: string
+  id: number
+  seo: I18
+  source_logo: string
+  source_id: number
+  source_name: string
+  title: I18
+  url: I18
+}
+
+export interface ChatResponseMetaTwitter {
+  id: number
+  content: I18
+  created_at: string
+  twitter_id: string
+  name: string
+  tweets_id: string
+  twitter: string
+  url: []
+  photo: []
+  twitter_logo: string
+  data_type: string
+}
+
+export interface ChatResponseMetaWallet {
+  id: number
+  sender: string
+  currency_symbol: string
+  currency_amount: number
+  side_symbol: string
+  side_amount: number
+  type: string
+  created_at: string
+  name: string
+  remark: string
+  content: string
+  data_type: string
+  hash: string
+}

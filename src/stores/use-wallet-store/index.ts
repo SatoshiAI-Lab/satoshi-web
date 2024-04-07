@@ -9,14 +9,11 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   wallets: [],
   loading: true,
   createWallet: async (walletId: string) => {
+    set({ loading: true })
     if (walletId === 'solana') {
-      walletApi
-        .createWallet({
-          platform: 'SOL',
-        })
-        .then((res) => {
-          console.log(res.data.address)
-        })
+      await walletApi.createWallet({
+        platform: 'SOL',
+      })
     }
   },
   importWallet: async (privateKey: string) => {
@@ -55,17 +52,15 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   getWallets: async (): Promise<boolean> => {
     set({ wallets: [], loading: true })
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        walletApi
-          .getWallets()
-          .then((res) => {
-            set({ wallets: res.data.reverse(), loading: false })
-          })
-          .then(() => resolve(true))
-          .catch((err) => {
-            reject(false)
-          })
-      }, 3000)
+      walletApi
+        .getWallets()
+        .then((res) => {
+          set({ wallets: res.data.reverse(), loading: false })
+        })
+        .then(() => resolve(true))
+        .catch((err) => {
+          reject(false)
+        })
     })
   },
   deleteWallet: async (wallet_id: string) => {
