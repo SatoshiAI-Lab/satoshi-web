@@ -1,4 +1,5 @@
 import { DialogTitle, IconButton } from '@mui/material'
+import clsx from 'clsx'
 import { IoCloseOutline, IoChevronBack } from 'react-icons/io5'
 
 interface Props extends React.ComponentProps<'div'> {
@@ -9,6 +10,7 @@ interface Props extends React.ComponentProps<'div'> {
   showBackBtn?: boolean
   onClose: any
   onBack?: any
+  closeBtnClass?: string
 }
 
 export const DialogHeader = (props: Props) => {
@@ -20,6 +22,7 @@ export const DialogHeader = (props: Props) => {
     onClose,
     onBack,
     showBackBtn = false,
+    closeBtnClass = '',
   } = props
   return (
     <DialogTitle textAlign={textAlign} className="relative min-w-72">
@@ -33,7 +36,12 @@ export const DialogHeader = (props: Props) => {
       {text && <span>{text}</span>}
       {children && children}
       {showCloseBtn && (
-        <div className="absolute top-[50%] right-[10px] translate-y-[-50%] z-10">
+        <div
+          className={clsx(
+            'absolute top-[50%] right-[10px] translate-y-[-50%] z-10',
+            closeBtnClass
+          )}
+        >
           <IconButton onClick={onClose}>
             <IoCloseOutline size={26} color="black"></IoCloseOutline>
           </IconButton>

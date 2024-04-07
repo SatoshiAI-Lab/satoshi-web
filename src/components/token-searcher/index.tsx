@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Avatar,
   CircularProgress,
   Dialog,
   DialogContent,
   IconButton,
+  InputBase,
   ListItem,
-  TextField,
 } from '@mui/material'
 import { IoAddOutline, IoCloseOutline, IoSearch } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
@@ -109,27 +109,24 @@ const TokenSearcher = (props: TokenSearcherProps) => {
       onClose={onClose}
       classes={{ paper: '!h-[60vh] w-[60vw] !overflow-hidden' }}
     >
-      <DialogHeader onClose={onClose} showCloseBtn>
+      <DialogHeader onClose={onClose} showCloseBtn closeBtnClass="!right-3.5">
         <span>{t('search')}</span>
       </DialogHeader>
-      <div className="flex items-center border-y border-gray-200 px-5 py-2 ">
-        <TextField
-          InputProps={{
-            classes: { root: '!px-0' },
-            startAdornment: (
-              <IconButton onClick={onSearch}>
-                <IoSearch className="text-gray-400" size={22} />
-              </IconButton>
-            ),
-            endAdornment: (
-              <IconButton onClick={onClear}>
-                <IoCloseOutline className="text-gray-400" size={22} />
-              </IconButton>
-            ),
-          }}
+      <div className="flex items-center border-y border-gray-200">
+        <InputBase
+          startAdornment={
+            <IconButton onClick={onSearch} classes={{ root: '!ml-2.5' }}>
+              <IoSearch className="text-gray-400" size={22} />
+            </IconButton>
+          }
+          endAdornment={
+            <IconButton onClick={onClear} classes={{ root: '!mr-4' }}>
+              <IoCloseOutline className="text-gray-400" size={22} />
+            </IconButton>
+          }
           autoFocus={autofocus}
           autoComplete="off"
-          classes={{ root: 'w-full' }}
+          classes={{ root: 'w-full !py-1', input: '!pb-0' }}
           placeholder={t('search.input.placeholder')}
           size="small"
           value={value}
@@ -158,11 +155,11 @@ const TokenSearcher = (props: TokenSearcherProps) => {
                 classes={{
                   root: clsx(
                     '!w-full !flex !justify-between !items-center',
-                    'hover:!bg-gray-100 cursor-pointer '
+                    'hover:!bg-gray-100 cursor-pointer'
                   ),
                 }}
               >
-                <div className="flex items-center">
+                <div className="flex items-center py-1">
                   <Avatar
                     src={c.logo}
                     alt="Logo"
