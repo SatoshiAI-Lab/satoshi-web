@@ -31,6 +31,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const onSend = async () => {
     // Do no show monitor message within 10 seconds
     setWaitAnswer(true)
+    console.log('user start waiting answer now!!!')
     if (!question?.trim()) {
       toast.error(t('input-null'))
       return
@@ -41,6 +42,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     await sendMsg()
     let timerId = setTimeout(function () {
       setWaitAnswer(false)
+      console.log('user stop waiting answer now!!!')
     }, 10000)
     clearTimeout(timerId)
   }

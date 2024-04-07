@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
 
 import MessageBubble from './message-bubble'
@@ -13,8 +13,19 @@ const TwitterBubble = ({
   twitter_logo,
   photo,
 }: ChatResponseMetaTwitter) => {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [relax, setRelax] = useState(false)
+  const [tooLong, setTooLong] = useState(false)
+  useEffect(() => {
+    if (content.en.length > 100) {
+      const contentElement = contentRef.current
+      const isOverflown = contentElement!.offsetHeight > 70
+      setRelax(isOverflown)
+      setTooLong(true)
+    }
+  }, [])
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4')}>
+    <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
       {/* Avatar, name */}
       <div className="flex items-stretch">
         <img
@@ -30,7 +41,17 @@ const TwitterBubble = ({
         </div>
       </div>
       {/* Text content */}
-      <div className="my-2">{content.en}</div>
+      <div ref={contentRef} className={clsx('my-2', relax && 'line-clamp-3')}>
+        {content.en}
+      </div>
+      {(tooLong && (
+        <button
+          className=" text-primary self-end"
+          onClick={() => setRelax(!relax)}
+        >
+          {(relax && 'show more') || 'hide'}
+        </button>
+      )) || <></>}
       {/* TODO: click img to enlarge show. */}
       {photo.map((item) => (
         <img

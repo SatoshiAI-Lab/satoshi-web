@@ -36,7 +36,11 @@ export const useChatMonitorMsg = () => {
       // 2. Within 20 seconds after the latest question answer
       // 3. Within 10 seconds after the user clicks Ask
       // should no be godown
-      if (inputFocus || readAnswer || waitAnswer) {
+      if (
+        useChatStore.getState().inputFocus ||
+        useChatStore.getState().readAnswer ||
+        useChatStore.getState().waitAnswer
+      ) {
         setUnreadMessage(data)
       } else {
         addMonitorMessage(data)

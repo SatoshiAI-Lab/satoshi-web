@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
 
 import MessageBubble from './message-bubble'
@@ -12,13 +12,34 @@ const NewsBubble = ({
   logo,
   source,
 }: ChatResponseMetaNewsInfo) => {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [relax, setRelax] = useState(false)
+  const [tooLong, setTooLong] = useState(false)
+  useEffect(() => {
+    if (content.length > 100) {
+      const contentElement = contentRef.current
+      const isOverflown = contentElement!.offsetHeight > 80
+      setRelax(isOverflown)
+      setTooLong(true)
+    }
+  }, [])
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4')}>
+    <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
       <div className="font-bold text-lg">{title}</div>
       <div className="my-2 text-gray-400">
         {dayjs(created_at).format('H:mm M/D')}
       </div>
-      <div>{content}</div>
+      <div ref={contentRef} className={clsx('my-2', relax && 'line-clamp-3')}>
+        {content}
+      </div>
+      {(tooLong && (
+        <button
+          className=" text-primary self-end"
+          onClick={() => setRelax(!relax)}
+        >
+          {(relax && 'show more') || 'hide'}
+        </button>
+      )) || <></>}
       <a
         href={source}
         target="_blank"

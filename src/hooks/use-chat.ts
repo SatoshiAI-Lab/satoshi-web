@@ -47,8 +47,10 @@ export const useChat = () => {
 
     // Do no show monitor message within 20 seconds
     setWaitAnswer(true)
+    console.log('user start reading answer now')
     let timerId = setTimeout(function () {
       setWaitAnswer(false)
+      console.log('user stop reading answer now')
     }, 20000)
     clearTimeout(timerId)
     utilDom.scrollToBottom(chatEl!)
@@ -95,8 +97,10 @@ export const useChat = () => {
     setMessage([...messages.slice(0, messages.length - 1), newMsg])
     // Do no show monitor message within 20 seconds
     setWaitAnswer(true)
+    console.log('user start reading answer now')
     let timerId = setTimeout(function () {
       setWaitAnswer(false)
+      console.log('user stop reading answer now')
     }, 20000)
     clearTimeout(timerId)
 
