@@ -6,6 +6,6 @@ export interface States {
 
 export interface Actions {
   update: () => Promise<void>
-  setConfig: (data: MonitorParam, rawData: any) => Promise<void>
+  setConfig: (data: MonitorParam) => Promise<void>
   timerByUpdate: (data?: MonitorConfigData) => void
 }

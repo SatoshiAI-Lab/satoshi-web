@@ -36,6 +36,7 @@ export const CHAT_CONFIG = {
       'wrong_contract',
       'transaction_confirm',
       'transaction_confirm_stream',
+      'subscript_news',
     ],
 
     /** it's not need `useStream` */
@@ -68,10 +69,18 @@ export const CHAT_CONFIG = {
   },
   metadataType: {
     intentHistory: 'intent_history',
+    moniotrWallet: 'subscript_wallet_address_success',
     walletList: 'wallet_list',
     walletBalance: 'contract_wallet_balance',
-    changeNameWalletList: 'change_name_wallet_list',
-    twitterList: 'subscript_twitter',
+    twitterList: 'subscript_twitter_list',
     transactionConfirm: 'transaction_confirm',
+    monitorWalletFail: 'subscript_wallet_address_fail',
   },
+
+  intentSelectWalletType: ['change_name_wallet_list', 'export_wallet_list'],
+
+  hiddenIntentText: [
+    'subscript_twitter_list',
+    'subscript_wallet_address_success',
+  ],
 }

@@ -7,7 +7,7 @@ import MarkdownParser from '@/components/markdown-parser'
 import { useTranslation } from 'react-i18next'
 
 import { DataType, type Message } from '@/stores/use-chat-store/types'
-import { IntentMessage } from './intention-message'
+import { IntentMessage } from './intention-message/intention-message'
 import {
   ChatResponseMetaAnnounceMent,
   ChatResponseMetaNewsInfo,

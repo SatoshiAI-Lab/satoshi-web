@@ -24,7 +24,7 @@ export const MonitorTwitterList = ({ list, className }: Props) => {
       content,
     }
 
-    setConfig(data, list)
+    setConfig(data)
   }
 
   return (

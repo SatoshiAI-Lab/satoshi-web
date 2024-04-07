@@ -197,6 +197,7 @@ export const useChat = () => {
    * @returns
    */
   const messageHandler = (data: ChatResponseAnswer) => {
+    const { hiddenIntentText } = CHAT_CONFIG
     const {
       hide,
       streams,
@@ -208,7 +209,6 @@ export const useChat = () => {
       intention,
     } = CHAT_CONFIG.answerType
     const {
-      changeNameWalletList,
       walletList: metaWalletList,
       walletBalance,
     } = CHAT_CONFIG.metadataType
@@ -237,7 +237,7 @@ export const useChat = () => {
     }
 
     if (intention.includes(answerType) || isIntention) {
-      if (data.text) {
+      if (data.text && !hiddenIntentText.includes(data?.meta.type!)) {
         addStreamMessage(data.text)
       }
 
