@@ -41,7 +41,7 @@ export default function Home() {
         {/* Chat main component, cointains Live2D model */}
         <Chat className="flex-1" />
         {/* User Favorites panel */}
-        <Favorites className="" />
+        <Favorites />
       </div>
       <NeedLoginDialog
         show={show}

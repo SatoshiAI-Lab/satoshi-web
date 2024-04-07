@@ -107,5 +107,9 @@
   "slippage.warning": "小于0.05%的滑点可能导致交易失败",
   "tx.finally": "交易已完成",
   "tx.loading": "交易中...",
-  "tx.token.wallet.balance": "钱包余额"
+  "tx.token.wallet.balance": "钱包余额",
+  "no-token": "还没有自选。",
+  "no-login": "请先登录/注册",
+  "monitor.address.list": "监控地址列表",
+  "address.invaild": "无效的地址"
 }

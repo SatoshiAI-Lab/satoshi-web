@@ -25,7 +25,7 @@ export const MonitorEXInfo = ({ data }: Props) => {
       content: content,
     }
 
-    await setConfig(data, exList)
+    await setConfig(data)
   }
 
   return (

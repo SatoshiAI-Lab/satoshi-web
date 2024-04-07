@@ -1,12 +1,11 @@
 export interface TokenListParams {
-  ids: TokenListId[]
+  ids: TokenId[]
   /** default USD */
   currency?: string
 }
 
-export interface TokenListId {
+export interface TokenId {
   id: number
-  /** 1: token 2：label 3：event 4：indicator */
   type: number
 }
 
@@ -88,4 +87,36 @@ export interface Operate {
   id: number
   title: string
   news_type: RouteMapCategory
+}
+
+export interface TokenSearchCoin {
+  id: number
+  name: string
+  symbol: string
+  logo: string
+}
+
+export interface TokenSearchRes {
+  coin: TokenSearchCoin[]
+}
+
+export interface TokenList {
+  list: ListToken[]
+}
+
+export interface SelectParams extends Pick<TokenListParams, 'ids'> {
+  status: TokenStatus
+}
+
+export enum TokenStatus {
+  Add = 1,
+  Cancel,
+  Top,
+}
+
+export enum TokenType {
+  Token = 1,
+  Label,
+  Event,
+  indicator,
 }

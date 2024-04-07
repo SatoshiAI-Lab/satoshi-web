@@ -18,15 +18,14 @@ export const Intervals = (props: IntervalProps) => {
   const { setKLineInterval } = useStorage()
 
   const onIntervalClick = (item: (typeof KLINE_RESOLUTIONS)[number]) => {
-    console.log('get resetcachemap', getResetCacheMap())
     const { interval: newInterval } = item
+    if (newInterval === interval) return
+
     const tvChart = chart?.activeChart()
     const targetResetId = Array.from(getResetCacheMap().keys()).find((id) =>
       id.endsWith(interval)
     )
     const resetChartCache = getResetCacheMap().get(targetResetId ?? '')
-
-    if (newInterval === interval) return
     if (resetChartCache) {
       resetChartCache()
       tvChart?.resetData()
@@ -36,7 +35,7 @@ export const Intervals = (props: IntervalProps) => {
       return
     }
 
-    toast.error('Switch Eror')
+    toast.error(`[Switch Eror]: Not have reset cache.`)
   }
 
   return (

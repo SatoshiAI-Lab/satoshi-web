@@ -24,7 +24,7 @@ export interface MonitorConfigData {
   news: News
   twitter: Twitter
   announcement: Announcement
-  trade: Announcement
+  trade: Trade
   pool: Pool
 }
 
@@ -38,6 +38,10 @@ export interface AnnouncementList {
   slug: string
   name: string
   subscribed: boolean
+}
+
+export interface Trade {
+  content: string[]
 }
 
 export interface News {

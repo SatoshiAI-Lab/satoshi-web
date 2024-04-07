@@ -11,33 +11,36 @@ export const useMonitorStore = create<States & Actions>((set, get) => ({
     const { data } = await monitorApi.getConfig()
     set({ configData: data })
   },
-  setConfig: async (data, rawData) => {
+  setConfig: async (data) => {
     const { message_type: type, content: newData } = data
-    if (type != null) {
-      const configData = {
-        ...get().configData!,
-      }
 
-      if (type == MonitorConfig.news) {
-        configData.news = newData
-      }
+    console.log(newData)
 
-      if (type == MonitorConfig.pool) {
-        configData.pool = newData
-      }
-
-      if (type == MonitorConfig.trade) {
-        configData.trade = newData
-      }
-
-      if (type == MonitorConfig.announcement) {
-        configData.announcement = newData
-      }
-
-      set({
-        configData,
-      })
+    // if (type != null) {
+    const configData = {
+      ...get().configData!,
     }
+
+    //   if (type == MonitorConfig.news) {
+    //     configData.news = newData
+    //   }
+
+    //   if (type == MonitorConfig.pool) {
+    //     configData.pool = newData
+    //   }
+
+    //   // if (type == MonitorConfig.trade) {
+    //   //   configData.trade.content = newData
+    //   // }
+
+    //   if (type == MonitorConfig.announcement) {
+    //     configData.announcement = newData
+    //   }
+
+    set({
+      configData,
+    })
+    // }
     await monitorApi.update(data)
     await get().update()
   },

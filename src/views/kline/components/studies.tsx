@@ -133,31 +133,6 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     setActives([KLINE_STUDIES.vol.name])
   }
 
-  function createStudy() {
-    chart?.onChartReady(async () => {
-      await createMA()
-
-      const activeChart = chart?.activeChart()
-      const data = await activeChart.exportData()
-      data.data
-        .filter((d) => !Number.isNaN(d[7]))
-        .forEach((d) => {
-          activeChart.createShape(
-            {
-              time: d[0],
-              price: d[7],
-            },
-            {
-              shape: 'arrow_down',
-              text: 'Crosses',
-            }
-          )
-        })
-
-      console.log('data', data)
-    })
-  }
-
   useEffect(() => {
     if (!chart) return
 

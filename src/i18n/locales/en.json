@@ -107,5 +107,9 @@
   "slippage.warning": "A slippage of less than 0.05% May result in a failed trade",
   "tx.finally": "Trade completed",
   "tx.loading": "Trading in progress",
-  "tx.token.wallet.balance": "Wallet balance"
+  "tx.token.wallet.balance": "Wallet balance",
+  "no-token": "No token yet.",
+  "no-login": "Please Signin / Signup before",
+  "monitor.address.list": "Monitor address list",
+  "address.invaild": "Invalid address"
 }
