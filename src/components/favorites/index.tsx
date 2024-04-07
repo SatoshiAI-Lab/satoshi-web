@@ -64,7 +64,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
         className={clsx(
           'flex justify-between items-center pl-4 pr-2 ',
           'w-[300px] max-xl:max-w-[280px] pb-2',
-          'border-b border-gray-600'
+          'border-b border-gray-300 dark:border-gray-600'
         )}
       >
         <span className="font-semibold text-base mr-1 dark:text-white">
