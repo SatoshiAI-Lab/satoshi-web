@@ -22,8 +22,8 @@ export const WalletListBubbles = ({ msg }: Props) => {
   return (
     <>
       <MessageBubble>
-        <WalletList data={msg.data}></WalletList>
-        <div className='mt-2 text-center text-gray-500 text-sm'>{t('wallet.list.tips')}</div>
+        {/* <WalletList data={msg.data}></WalletList> */}
+        {/* <div className='mt-2 text-center text-gray-500 text-sm'>{t('wallet.list.tips')}</div> */}
       </MessageBubble>
     </>
   )

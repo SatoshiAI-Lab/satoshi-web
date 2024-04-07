@@ -96,6 +96,7 @@ export interface ChatResponseWalletListToken {
   priceUsd: string
   valueUsd: string
   logoUrl: string
+  decimals: number
 }
 
 export interface ChatResponseMetaLabel {

@@ -133,11 +133,18 @@
   "monitor.wallet.bubble.text1": "成功监控到该钱包",
   "monitor.wallet.bubble.text2": "该钱包进行的任何链上交易，你将收到通知",
   "monitor.wallet.bubble.text4": "「监控-监控钱包」",
-  "monitor.twitter.list.tips1": "请在列表选择你想要监控的X(推特)",
+  "monitor.twitter.list.tips1": "请在列表选择你要监控或取消监控的X(推特)",
   "monitor.wallet.name": "监控地址的名字",
   "monitor.wallet.placeholder": "输入地址",
   "monitor.wallet.name.placeholder": "输入名字",
   "name.invaild": "名称不能超过16个字符",
   "monitor.successful": "监控成功！",
-  "address.invaild1": "监控的地址已存在"
+  "address.invaild1": "监控的地址已存在",
+  "tx.hash": "交易哈希： https://solscan.io/tx/",
+  "delete.wallet.intent.text": "删除$1钱包",
+  "balance": "总余额",
+  "operation": "操作",
+  "wallet.list.empty": "钱包列表是空的",
+  "export.wallet.intent.text": "导出$1钱包",
+  "changename.walllet": "修改$1的钱包名字"
 }

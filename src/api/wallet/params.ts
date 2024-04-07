@@ -13,6 +13,7 @@ interface WalletToken {
   priceUsd: string
   valueUsd: string
   logoUrl: string
+  decimals: number
 }
 
 interface UserCreateWalletResp {

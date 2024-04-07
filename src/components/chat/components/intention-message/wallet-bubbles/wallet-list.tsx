@@ -1,64 +1,112 @@
-import { ChatResponseWalletList } from '@/api/chat/types'
+import {
+  ChatResponseWalletList,
+  ChatResponseWalletListToken,
+} from '@/api/chat/types'
+import { walletApi } from '@/api/wallet'
+import { UserCreateWalletResp } from '@/api/wallet/params'
+import { CHAT_CONFIG } from '@/config/chat'
+import { useChat } from '@/hooks/use-chat'
 import { utilFmt } from '@/utils/format'
-import { Radio } from '@mui/material'
+import { IconButton, Radio } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
-import { useState } from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import toast from 'react-hot-toast'
+import numeral from 'numeral'
 import { useTranslation } from 'react-i18next'
-import { IoCopyOutline } from 'react-icons/io5'
+import { RiDeleteBin5Line } from 'react-icons/ri'
 
 interface Props {
   data: ChatResponseWalletList[]
-  isSelect?: boolean
-  onClickItem?: (wallet: ChatResponseWalletList) => void
+  type: string
 }
 
-export const WalletList = ({ data, isSelect, onClickItem }: Props) => {
+export const WalletList = (props: Props) => {
+  const { type } = props
   const { t } = useTranslation()
-  const [active, setActive] = useState(false)
+  const { addMessageAndLoading, sendMsg } = useChat()
 
-  const getCols = () => {
-    if (isSelect) {
-      return 'grid-cols-[50px_175px_120px]'
+  const { data: result, refetch } = useQuery({
+    queryKey: [],
+    queryFn: () => walletApi.getWallets({ platform: 'SOL' }),
+    refetchInterval: 15_000,
+  })
+
+  // const [active, setActive] = useState(false)
+  const walletList = result?.data.sort(
+    (a, b) => new Date(b.added_at).getTime() - new Date(a.added_at).getTime()
+  )
+
+  const { changeNameWalletList, deleteNameWalletList, exportWalletList } =
+    CHAT_CONFIG.metadataType
+  const isChange = type == changeNameWalletList
+  const isDelete = type == deleteNameWalletList
+  const isExport = type == exportWalletList
+  const handleSelect = (wallet: ChatResponseWalletList) => {
+    let question = ''
+
+    if (isChange) {
+      question = t('changename.walllet')
     }
-    return 'grid-cols-[25px_175px_120px] py-2'
+
+    if (isDelete) {
+      question = t('delete.wallet.intent.text')
+    }
+
+    if (isExport) {
+      question = t('export.wallet.intent.text')
+    }
+
+    question = question.replace('$1', wallet.name)
+    addMessageAndLoading({ msg: question, position: 'right' })
+
+    sendMsg({
+      question,
+    })
+    // onClickIcon?.(wallet)
+    setTimeout(() => {
+      refetch()
+    }, 2000)
   }
 
-  const handleSelect = () => {
-    if (!active) {
-      setActive(true)
-    }
+  const getTokenBalance = (tokens?: ChatResponseWalletListToken[]) => {
+    const balance = tokens?.reduce((cur, next) => {
+      return cur + Number(next.valueUsd)
+    }, 0)
+    return numeral(balance).format('$0.00')
   }
 
-  return (
-    <div className="max-h-[260px] overflow-y-scroll">
-      <div className={clsx(`grid ${getCols()}`, 'min-w-[320px] pb-2')}>
-        {/* <div className="grid grid-cols-[15px_30px_auto_120px] min-w-[350px] pb-2"> */}
-        <div className=""></div>
-        {/* <div></div> */}
-        <div className="ml-1">{t('wallet.name')}</div>
-        <div className="text-right ml-2">{t('address')}</div>
-      </div>
-      {data?.map((item, i) => {
-        return (
-          <div
-            key={item.id}
-            className={clsx(
-              `grid ${getCols()}`,
-              'min-w-[320px] text-black text-sm',
-              'border-t border-gray-200'
-            )}
-            onClick={() => onClickItem?.(item)}
-          >
-            <div className="text-nowrap text-center">
-              {isSelect ? (
-                <Radio onClick={handleSelect} disabled={active} size='small' />
-              ) : (
-                i + 1
+  const getIcon = (item: UserCreateWalletResp) => {
+    if (isDelete) {
+      return (
+        <IconButton
+          onClick={() => handleSelect(item)}
+          size="small"
+          className="!p-2"
+        >
+          <RiDeleteBin5Line></RiDeleteBin5Line>
+        </IconButton>
+      )
+    }
+
+    return <Radio onClick={() => handleSelect(item)} size="small" />
+  }
+
+  const getWalllet = () => {
+    if (walletList?.length == 0) {
+      return <div>{t('wallet.list.empty')}</div>
+    }
+    return (
+      <div className="max-h-[260px] overflow-y-scroll">
+        {walletList?.map((item, i) => {
+          return (
+            <div
+              key={item.id}
+              className={clsx(
+                `grid grid-cols-[175px_120px_120px_50px]`,
+                'min-w-[320px] text-black text-sm',
+                'border-t border-gray-200'
               )}
-            </div>
-            {/*<div className="">
+            >
+              {/*<div className="">
                    <img
                     src={
                       item.platform == 'SOL'
@@ -72,31 +120,49 @@ export const WalletList = ({ data, isSelect, onClickItem }: Props) => {
                   /> 
                 </div>*/}
 
-            <CopyToClipboard
-              text={item.name}
-              onCopy={() => toast.success(t('wallet.copy-name.success'))}
-            >
-              <div className="flex items-center cursor-pointer justify-start">
+              <div className={clsx('flex items-center justify-start')}>
                 <div className="ml-1 truncate">
                   {item.platform}_{item?.name}
                 </div>
-                <IoCopyOutline className="mx-1 text-gray-500 hover:text-gray-600"></IoCopyOutline>
               </div>
-            </CopyToClipboard>
-            <CopyToClipboard
-              text={item.address}
-              onCopy={() => toast.success(t('wallet.copy-address.success'))}
-            >
-              <div className="flex items-center cursor-pointer text-gray-500 hover:text-gray-600 justify-end">
+              <div
+                className={clsx(
+                  'flex items-center text-gray-500 hover:text-gray-600 justify-start'
+                )}
+              >
                 <span className="text-nowrap">
                   {utilFmt.addr(item.address)}
                 </span>
-                <IoCopyOutline className="ml-1"></IoCopyOutline>
               </div>
-            </CopyToClipboard>
-          </div>
-        )
-      })}
-    </div>
+              <div className="flex items-center text-gray-500 hover:text-gray-600 ml-5">
+                <span className="text-nowrap">
+                  {getTokenBalance(item.tokens)}
+                </span>
+              </div>
+              <div className="text-nowrap text-center">{getIcon(item)}</div>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div
+        className={clsx(
+          `grid grid-cols-[175px_120px_120px_50px]`,
+          'min-w-[320px] pb-2'
+        )}
+      >
+        {/* <div className="grid grid-cols-[15px_30px_auto_120px] min-w-[350px] pb-2"> */}
+        {/* <div></div> */}
+        <div className="ml-1">{t('wallet.name')}</div>
+        <div className="">{t('address')}</div>
+        <div className="ml-5">{t('balance')}</div>
+        <div className="text-center">{t('operation')}</div>
+      </div>
+      {getWalllet()}
+    </>
   )
 }
