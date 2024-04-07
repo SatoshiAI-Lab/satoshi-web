@@ -156,5 +156,11 @@
   "token-nickname-validate": "请输入代币简称",
   "token-fullname-validate": "请输入代币全称",
   "token-total-validate": "请输入代币总量",
-  "create": "创建"
+  "create": "创建",
+  "asset": "资产",
+  "value": "值",
+  "balance": "余额",
+  "details": "详情",
+  "buy": "买",
+  "sell": "卖"
 }

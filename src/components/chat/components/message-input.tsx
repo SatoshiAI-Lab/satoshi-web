@@ -11,7 +11,7 @@ import { useChatStore } from '@/stores/use-chat-store'
 import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
 import { utilDom } from '@/utils/dom'
 import { useInputHistory } from '@/hooks/use-input-history'
-import MicRecord from './micro-record'
+// import MicRecord from './micro-record'
 
 interface MessageInputProps {
   autofocus?: boolean
@@ -101,7 +101,7 @@ function MessageInput(props: MessageInputProps) {
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
         />
-        <MicRecord startRecording={() => {}} stopRecording={() => {}} />
+        {/* <MicRecord startRecording={() => {}} stopRecording={() => {}} /> */}
         <Button
           variant="contained"
           size="large"

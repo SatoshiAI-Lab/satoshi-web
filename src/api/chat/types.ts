@@ -91,7 +91,7 @@ export interface ChatResponseWalletList {
 export interface ChatResponseWalletListToken {
   symbol: string
   name: string
-  mintAddress: string
+  address: string
   amount: string
   priceUsd: string
   valueUsd: string
