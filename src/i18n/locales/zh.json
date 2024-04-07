@@ -139,5 +139,22 @@
   "monitor.wallet.name.placeholder": "输入名字",
   "name.invaild": "名称不能超过16个字符",
   "monitor.successful": "监控成功！",
-  "address.invaild1": "监控的地址已存在"
+  "address.invaild1": "监控的地址已存在",
+  "create-token.title": "乐意为您效劳，请告诉我你要发行的token信息 干一番大事业吧！",
+  "token-fullname": "代币全称",
+  "token-logo": "代币Logo",
+  "token-total-supply": "代币总量",
+  "same-wif": "和WIF一样",
+  "same-bome": "和BOME一样",
+  "token-nickname": "代币简称",
+  "token-intro": "代币介绍",
+  "token-intro.placeholder": "告诉世界你的代表是什么主题，还可以留下推特、电报、网站等信息。",
+  "use-below-wallet": "使用以下钱包创建和接收代币",
+  "view-wallet-details": "查看钱包详情",
+  "wallet-balance-confirm": "请确保钱包内拥有{}",
+  "addr": "地址",
+  "token-nickname-validate": "请输入代币简称",
+  "token-fullname-validate": "请输入代币全称",
+  "token-total-validate": "请输入代币总量",
+  "create": "创建"
 }

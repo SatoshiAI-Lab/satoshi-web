@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 import { walletApi } from '@/api/wallet'
+import { WalletPlatform } from '@/api/wallet/params'
 
 import type { Actions, States } from './types'
 
@@ -12,7 +13,7 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
     set({ loading: true })
     if (walletId === 'solana') {
       await walletApi.createWallet({
-        platform: 'SOL',
+        platform: WalletPlatform.SOL,
       })
     }
   },
@@ -47,7 +48,10 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
       })
   },
   setCurrentWallet: (address) => {
-    set({ currentWallet: get().wallets.find((w) => w.address === address) })
+    const target = get().wallets.find((w) => w.address === address)
+    // Please do not set it to `undefined`,
+    // At the very least make sure it's `{}`
+    set({ currentWallet: target ?? {} })
   },
   getWallets: async (): Promise<boolean> => {
     set({ wallets: [], loading: true })

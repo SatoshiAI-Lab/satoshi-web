@@ -4,6 +4,7 @@
 export const themeDark = {
   primary: '#0057ff',
   secondary: '#2971ff',
+  thirdly: '#3874f7',
   error: '#f1504a',
   textColor: '#ffffff',
   dividerColor: '#4e515e',

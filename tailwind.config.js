@@ -70,6 +70,9 @@ module.exports = {
       backgroundColor: {
         ...baseColors,
       },
+      colors: {
+        ...baseColors,
+      },
     },
   },
   corePlugins: {},
