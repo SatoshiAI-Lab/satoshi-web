@@ -23,7 +23,8 @@ function MessageInput(props: MessageInputProps) {
   const [isFocus, setIsFocus] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const keyboardIsShow = useMobileKeyboard()
-  const { question, chatEl, isLoading, setQuestion } = useChatStore()
+  const { question, chatEl, isLoading, setQuestion, setInputFocus } =
+    useChatStore()
 
   const handleEnterSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.shiftKey && e.key === 'Enter') return
@@ -62,7 +63,14 @@ function MessageInput(props: MessageInputProps) {
 
     utilDom.scrollToBottom(chatEl)
   }, [keyboardIsShow, chatEl])
-
+  const handleInputFocus = () => {
+    setInputFocus(true)
+    setIsFocus(true)
+  }
+  const handleInputBlur = () => {
+    setInputFocus(false)
+    setIsFocus(false)
+  }
   return (
     <div className="sticky bottom-4 z-20 max-sm:mx-5 mr-10 max-sm:bottom-0 transition-all">
       <InputMenu />
@@ -87,8 +95,8 @@ function MessageInput(props: MessageInputProps) {
           inputRef={inputRef}
           onKeyDown={handleEnterSend}
           onChange={(e) => setQuestion(e.target.value)}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
         />
         <Button
           variant="contained"

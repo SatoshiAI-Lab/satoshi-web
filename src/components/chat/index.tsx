@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
 import NewPoolBubble from './components/bubbles/new-pool-bubble'
+import { MessageAlert } from './components/bubbles/message-alert'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props
@@ -22,10 +23,14 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     addMessageAndLoading,
     setChatEl,
     sendMsg,
+    unreadMessages,
+    setWaitAnswer,
   } = useChat()
 
   // Handle send.
   const onSend = async () => {
+    // Do no show monitor message within 10 seconds
+    setWaitAnswer(true)
     if (!question?.trim()) {
       toast.error(t('input-null'))
       return
@@ -34,6 +39,10 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
 
     addMessageAndLoading({ msg: question, position: 'right' })
     await sendMsg()
+    let timerId = setTimeout(function () {
+      setWaitAnswer(false)
+    }, 10000)
+    clearTimeout(timerId)
   }
 
   // setChatEl and scroll to latest message
@@ -59,6 +68,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
         )}
       ></div>
       {/* Chat main element */}
+      {(unreadMessages.length && <MessageAlert />) || <></>}
       <div
         className={clsx(
           'grow-[8] overflow-auto pb-0 pr-0',
