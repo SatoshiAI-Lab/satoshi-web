@@ -110,5 +110,22 @@
   "slippage.warning": "A slippage of less than 0.05% May result in a failed trade",
   "tx.finally": "Trade completed",
   "tx.loading": "Trading in progress",
-  "tx.token.wallet.balance": "Wallet balance"
+  "tx.token.wallet.balance": "Wallet balance",
+  "new-pool": "New pool on {}",
+  "ca": "CA",
+  "liquidity": "Liquidity",
+  "started": "Started",
+  "price": "Price",
+  "ca-secutiry": "Secutiry",
+  "mutable-metadata": "Mutable Metadata",
+  "yes": "Yes",
+  "no": "No",
+  "mint-auth": "Mint Authority",
+  "lp-burned": "LP Burned",
+  "freeze-auth": "Freeze Authority",
+  "top-holders": "Top Holders",
+  "score": "Score",
+  "bad": "Bad",
+  "mint-auth-still": "Mint Authority still enabled",
+  "single-holder": "Single holder ownership {}"
 }

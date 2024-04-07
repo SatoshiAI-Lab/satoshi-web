@@ -56,10 +56,17 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
     <div
       className={clsx(
         'bg-favorite dark:bg-favorite-dark py-2 text-sm max-lg:hidden',
+        'h-favorite flex flex-col',
         className
       )}
     >
-      <div className="flex justify-between items-center pl-4 pr-2 w-[300px] max-xl:max-w-[280px]">
+      <div
+        className={clsx(
+          'flex justify-between items-center pl-4 pr-2 ',
+          'w-[300px] max-xl:max-w-[280px] pb-2',
+          'border-b border-gray-300 dark:border-gray-600'
+        )}
+      >
         <span className="font-semibold text-base mr-1 dark:text-white">
           {t('favorites')}
         </span>
@@ -76,7 +83,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
           </motion.div>
         </div>
       </div>
-      <List className="!bg-transparent">
+      <List className="!bg-transparent !h-full !overflow-auto !py-0 !flex-1">
         <CustomSuspense
           isPendding={isFirstLoadingToken}
           fallback={<FavoritesSkeleton />}
@@ -88,7 +95,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
         >
           {tokenList.map((t, i) => (
             <React.Fragment key={i}>
-              <Divider />
+              {i !== 0 && <Divider />}
               <ListItemButton
                 onClick={() => onTokenClick(t)}
                 className={'dark:!text-white relative group !justify-between'}

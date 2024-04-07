@@ -13,16 +13,18 @@ const baseColors = {
   fall: '#fa541c',
 }
 
-const baseSizes = {
-  header: '65px',
-  body: 'calc(100vh - 65px)',
+const baseWidths = {
   logo: '200px',
   chat: '1140px',
-  favorites: '300px',
   bubble: '365px',
-
-  'header-m': '60px',
   'logo-m': '160px',
+}
+
+const baseHeights = {
+  header: '65px',
+  body: 'calc(100vh - 65px)',
+  favorite: 'calc(100vh - 65px)',
+  'header-m': '60px',
 }
 
 module.exports = {
@@ -38,24 +40,27 @@ module.exports = {
       boxShadow: {
         bubble: '2px 2px 2px 1px rgb(0,0,0,0.3)',
       },
-      height: {
-        ...baseSizes,
-      },
-      minHeight: {
-        ...baseSizes,
-      },
-      maxHeight: {
-        ...baseSizes,
-      },
+
       width: {
-        ...baseSizes,
+        ...baseWidths,
       },
       minWidth: {
-        ...baseSizes,
+        ...baseWidths,
       },
       maxWidth: {
-        ...baseSizes,
+        ...baseWidths,
       },
+
+      height: {
+        ...baseHeights,
+      },
+      minHeight: {
+        ...baseHeights,
+      },
+      maxHeight: {
+        ...baseHeights,
+      },
+
       textColor: {
         ...baseColors,
       },
