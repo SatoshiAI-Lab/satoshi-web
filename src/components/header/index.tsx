@@ -141,7 +141,7 @@ function Header() {
               <button
                 key={index}
                 onClick={item.onclick}
-                className="mx-2 cursor-pointer text-white"
+                className="mx-2 cursor-pointer text-black dark:text-white"
               >
                 {item.icon}
               </button>
