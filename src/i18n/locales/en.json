@@ -170,5 +170,6 @@
   "operation": "Operation",
   "wallet.list.empty": "The list of wallets is empty",
   "export.wallet.intent.text": "Export $1 wallet",
-  "changename.walllet": "Change the name of the $1 wallet"
+  "changename.walllet": "Change the name of the $1 wallet",
+  "bubble.nolink": "Origin link not ready, please try again later"
 }

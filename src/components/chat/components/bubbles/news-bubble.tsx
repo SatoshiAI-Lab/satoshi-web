@@ -4,6 +4,8 @@ import clsx from 'clsx'
 import MessageBubble from './message-bubble'
 import { ChatResponseMetaNewsInfo } from '@/api/chat/types'
 import dayjs from 'dayjs'
+import toast from 'react-hot-toast'
+import { t } from 'i18next'
 
 const NewsBubble = ({
   content,
@@ -40,13 +42,23 @@ const NewsBubble = ({
           {(relax && 'show more') || 'hide'}
         </button>
       )) || <></>}
-      <a
-        href={source}
-        target="_blank"
-        className="text-primary inline-block mt-3"
-      >
-        Origin Link
-      </a>
+      {source &&
+        ((
+          <a
+            href={source}
+            target="_blank"
+            className="text-primary inline-block mt-3"
+          >
+            Origin Link
+          </a>
+        ) || (
+          <button
+            onClick={() => toast(t('bubble.nolink'))}
+            className="text-primary inline-block mt-3"
+          >
+            Origin Link
+          </button>
+        ))}
     </MessageBubble>
   )
 }

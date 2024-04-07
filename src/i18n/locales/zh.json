@@ -169,5 +169,6 @@
   "operation": "操作",
   "wallet.list.empty": "钱包列表是空的",
   "export.wallet.intent.text": "导出$1钱包",
-  "changename.walllet": "修改$1的钱包名字"
+  "changename.walllet": "修改$1的钱包名字",
+  "bubble.nolink": "源链接还未准备好，请稍后重试。"
 }

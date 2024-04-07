@@ -5,6 +5,8 @@ import MessageBubble from './message-bubble'
 import { ChatResponseMetaAnnounceMent } from '@/api/chat/types'
 import dayjs from 'dayjs'
 import { Avatar } from '@mui/material'
+import toast from 'react-hot-toast'
+import { t } from 'i18next'
 
 const ExchangeAnnouncementBubble = ({
   title,
@@ -35,13 +37,23 @@ const ExchangeAnnouncementBubble = ({
       </div>
       {/* Event description */}
       <div className="mt-2 font-bold">{title.en}</div>
-      <a
-        href={url.en}
-        target="_blank"
-        className="text-primary inline-block mt-2"
-      >
-        Origin Link
-      </a>
+      {url.en &&
+        ((
+          <a
+            href={url.en}
+            target="_blank"
+            className="text-primary inline-block mt-3"
+          >
+            Origin Link
+          </a>
+        ) || (
+          <button
+            onClick={() => toast(t('bubble.nolink'))}
+            className="text-primary inline-block mt-3"
+          >
+            Origin Link
+          </button>
+        ))}
     </MessageBubble>
   )
 }
