@@ -1,5 +1,5 @@
 import { CHAT_CONFIG } from '@/config/chat'
-import { WalletChangeNameBubble } from './wallet-bubbles/wallet-change-name-bubbles'
+import { WalletChoiceBubble } from './wallet-bubbles/wallet-choice-bubbles'
 import { WalletListBubbles } from './wallet-bubbles/wallet-list-bubble'
 import { Message } from '@/stores/use-chat-store/types'
 import { WalletBalance } from './wallet-bubbles/wallet-balance'
@@ -15,8 +15,13 @@ interface Props {
 export const IntentMessage = ({ msg }: Props) => {
   const { intentSelectWalletType } = CHAT_CONFIG
   const { walletList } = CHAT_CONFIG.answerType
-  const { walletBalance, twitterList, transactionConfirm, moniotrWallet } =
-    CHAT_CONFIG.metadataType
+  const {
+    walletBalance,
+    twitterList,
+    transactionConfirm,
+    moniotrWallet,
+    monitorWalletFail,
+  } = CHAT_CONFIG.metadataType
 
   const metaType = msg?.msgs?.type!
 
@@ -27,7 +32,7 @@ export const IntentMessage = ({ msg }: Props) => {
 
   // Change name wallet list
   if (intentSelectWalletType.includes(metaType)) {
-    return <WalletChangeNameBubble msg={msg.msgs!}></WalletChangeNameBubble>
+    return <WalletChoiceBubble msg={msg.msgs!}></WalletChoiceBubble>
   }
 
   // Wallet token balance

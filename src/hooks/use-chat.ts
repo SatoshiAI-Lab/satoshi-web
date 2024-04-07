@@ -27,10 +27,9 @@ export const useChat = () => {
   const thinkTimer = useRef<NodeJS.Timeout>()
   const hasSmooth = useRef(false)
 
-  const [intention, setIntention] = useState<string>()
-
   const chatStore = useChatStore()
-  const { setQuestion, setIsLoading, setMessage, setWaitAnswer } = chatStore
+  const { setQuestion, setIsLoading, setMessage, setWaitAnswer, setIntention } =
+    chatStore
 
   /**
    * Adds a new message to the message data
@@ -208,8 +207,6 @@ export const useChat = () => {
       intentStream,
       intention,
     } = CHAT_CONFIG.answerType
-    const { walletList: metaWalletList, walletBalance } =
-      CHAT_CONFIG.metadataType
 
     console.log('Chat Data: ', data)
 
@@ -331,7 +328,7 @@ export const useChat = () => {
     const params = getParams(opts)
     const timer = setInterval(() => model?.motion('Thinking', 0, 2))
 
-    params.intent_stream = intention
+    params.intent_stream = useChatStore.getState().intention
 
     clearInterval(thinkTimer.current)
     setIsLoading(true)
