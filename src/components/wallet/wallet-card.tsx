@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { TfiClose } from 'react-icons/tfi'
 import { BiTrash } from 'react-icons/bi'
 import { IoTrash } from 'react-icons/io5'
+import { t } from 'i18next'
 
 const WalletCard: FC<WalletCardProps> = ({
   name,
@@ -19,15 +20,15 @@ const WalletCard: FC<WalletCardProps> = ({
 }) => {
   const handleWallet = [
     {
-      title: 'Export private key',
+      title: t('wallet.title.export-privatekey'),
       onClick: exportKey,
     },
     {
-      title: 'Rename wallet',
+      title: t('wallet.title.rename-wallet'),
       onClick: renameWallet,
     },
     {
-      title: 'Copy address',
+      title: t('wallet.title.copy-address'),
       onClick: copyAddress,
     },
   ]

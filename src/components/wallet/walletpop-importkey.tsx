@@ -47,11 +47,7 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
           </IconButton>
         </div>
         <div className="flex flex-col justify-center items-center m-auto py-7 gap-4 w-[358px]">
-          <div>
-            Import your private key to create a wallet for lightning-fast
-            transactions. Satoshi AI ensures data security with years of
-            experience and robust measures.
-          </div>
+          <div>{t('wallet.import-wallet.private-key')}</div>
           <TextField
             fullWidth
             multiline
@@ -61,7 +57,7 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
             onChange={(e) => setPrivateKey(e.target.value)}
           />
           <Button variant="contained" onClick={() => importWallet(privateKey)}>
-            Confirm
+            {t('wallet.import-wallet.confirm')}
           </Button>
         </div>
       </div>

@@ -77,21 +77,21 @@ const Wallet: FC<WalletDialogProps> = ({
   }
 
   const ImportWalletPrivateKey = () => {
-    setCurrentPopTitle('Import Private Key')
+    setCurrentPopTitle(t('wallet.import-wallet.title'))
     setCurrentPop(2)
     setPopOpen(true)
   }
 
   const exportWalletPrivateKey = (address: string) => {
     setCurrentWallet(address)
-    setCurrentPopTitle('Export Private Key')
+    setCurrentPopTitle(t('wallet.title.export-privatekey'))
     setCurrentPop(0)
     setPopOpen(true)
   }
 
   const renameWallet = (address: string) => {
     setCurrentWallet(address)
-    setCurrentPopTitle('Rename Wallet')
+    setCurrentPopTitle(t('wallet.title.rename-wallet'))
     setCurrentPop(1)
     setPopOpen(true)
   }
@@ -103,7 +103,7 @@ const Wallet: FC<WalletDialogProps> = ({
 
   const deleteWallet = (address: string) => {
     setCurrentWallet(address)
-    setCurrentPopTitle('Delete Wallet')
+    setCurrentPopTitle(t('wallet.title.delete-wallet'))
     setCurrentPop(3)
     setPopOpen(true)
   }
@@ -136,7 +136,7 @@ const Wallet: FC<WalletDialogProps> = ({
         <div className="my-8 mx-10">
           <div className="flex gap-[102px]">
             <div>
-              <p className="text-[30px]">My Quick Wallet</p>
+              <p className="text-[30px]">{t('wallet.quickwallettitle')}</p>
               {showButtons && (
                 <div className="flex gap-3 mt-[22px] mb-[13px]">
                   {/* Create Wallet Menu */}
@@ -155,7 +155,7 @@ const Wallet: FC<WalletDialogProps> = ({
                         root: '!bg-black !text-white !rounded-full !w-[182px]',
                       }}
                     >
-                      Create Wallet
+                      {t('wallet.createnewwallet')}
                     </Button>
                     <Menu
                       id="basic-menu"
@@ -192,18 +192,12 @@ const Wallet: FC<WalletDialogProps> = ({
                     variant="outlined"
                     onClick={ImportWalletPrivateKey}
                   >
-                    Import Wallet
+                    {t('wallet.importwallet')}
                   </Button>
                 </div>
               )}
-              <p className="text-[16px]">
-                Quick wallet simplifies DEX trading for Lightning-fast
-                transactions.
-              </p>
-              <p className="text-[16px]">
-                Satoshi AI ensures data security with years of experience and
-                robust measures.
-              </p>
+              <p className="text-[16px]">{t('wallet.quickwallettip1')}</p>
+              <p className="text-[16px]">{t('wallet.quickwallettip2')}</p>
             </div>
             <div>
               <AiOutlineSafety size={162} color="#D4D4D4" />
@@ -226,7 +220,7 @@ const Wallet: FC<WalletDialogProps> = ({
               ))) || (
               <div className="h-full flex items-center justify-center">
                 {(loading && <CircularProgress />) || (
-                  <p>No Wallets, Please Create Wallet first.</p>
+                  <p>{t('wallet.nowallet')}</p>
                 )}
               </div>
             )}
