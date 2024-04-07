@@ -34,6 +34,7 @@ const TwitterBubble = ({
       {/* TODO: click img to enlarge show. */}
       {photo.map((item) => (
         <img
+          key={item}
           src={item}
           alt="img"
           className="rounded-md max-h-[300px] max-w-[300px]"
