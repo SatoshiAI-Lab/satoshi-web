@@ -183,13 +183,13 @@ export interface ChatResponseMetaNewsInfo {
   id: number
   logo: string
   title: string
+  source: string
 }
 
 export interface I18 {
   en: string
   zh: string
 }
-
 export interface ChatResponseMetaAnnounceMent {
   content: I18
   created_at: string

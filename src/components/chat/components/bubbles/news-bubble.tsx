@@ -10,6 +10,7 @@ const NewsBubble = ({
   created_at,
   title,
   logo,
+  source,
 }: ChatResponseMetaNewsInfo) => {
   return (
     <MessageBubble className={clsx('min-w-bubble pt-4')}>
@@ -18,13 +19,11 @@ const NewsBubble = ({
         {dayjs(created_at).format('H:mm M/D')}
       </div>
       <div>{content}</div>
-      {/* TODO: click img to enlarge show. */}
-      <img
-        src={logo}
-        alt="image"
-        className="max-w-[300px] max-h-[300px] rounded mt-2"
-      />
-      <a href="#" target="_blank" className="text-primary inline-block mt-3">
+      <a
+        href={source}
+        target="_blank"
+        className="text-primary inline-block mt-3"
+      >
         Origin Link
       </a>
     </MessageBubble>
