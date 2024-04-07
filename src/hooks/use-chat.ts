@@ -30,7 +30,7 @@ export const useChat = () => {
   const [intention, setIntention] = useState<string>()
 
   const chatStore = useChatStore()
-  const { setQuestion, setIsLoading, setMessage } = chatStore
+  const { setQuestion, setIsLoading, setMessage, setWaitAnswer } = chatStore
 
   /**
    * Adds a new message to the message data
@@ -44,6 +44,15 @@ export const useChat = () => {
     const { chatEl, messages } = useChatStore.getState()
 
     setMessage([...messages, ...(msgs as Message[])])
+
+    // Do no show monitor message within 20 seconds
+    setWaitAnswer(true)
+    console.log('user start reading answer now')
+    let timerId = setTimeout(function () {
+      setWaitAnswer(false)
+      console.log('user stop reading answer now')
+    }, 20000)
+    clearTimeout(timerId)
     utilDom.scrollToBottom(chatEl!)
   }
 
@@ -86,6 +95,14 @@ export const useChat = () => {
     if (!lastMessage) return { messages: [...messages] }
 
     setMessage([...messages.slice(0, messages.length - 1), newMsg])
+    // Do no show monitor message within 20 seconds
+    setWaitAnswer(true)
+    console.log('user start reading answer now')
+    let timerId = setTimeout(function () {
+      setWaitAnswer(false)
+      console.log('user stop reading answer now')
+    }, 20000)
+    clearTimeout(timerId)
 
     const { chatEl } = useChatStore.getState()
 
@@ -236,7 +253,7 @@ export const useChat = () => {
     }
 
     // streaming answer
-    if (streams.includes(answerType) ) {
+    if (streams.includes(answerType)) {
       if (!data.text)
         // Don't use trim
         return

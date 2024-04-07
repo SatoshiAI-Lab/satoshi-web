@@ -11,7 +11,8 @@ import { useChat } from './use-chat'
 export const useChatMonitorMsg = () => {
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
-  const { messages, setMessage } = useChatStore()
+  const { setUnreadMessage, inputFocus, readAnswer, waitAnswer } =
+    useChatStore()
   const { addMonitorMessage } = useChat()
   const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
 
@@ -31,7 +32,19 @@ export const useChatMonitorMsg = () => {
     on('message', () => {})
 
     on('event', ({ data }) => {
-      addMonitorMessage(data)
+      // 1. If the question input is in the state of Focus
+      // 2. Within 20 seconds after the latest question answer
+      // 3. Within 10 seconds after the user clicks Ask
+      // should no be godown
+      if (
+        useChatStore.getState().inputFocus ||
+        useChatStore.getState().readAnswer ||
+        useChatStore.getState().waitAnswer
+      ) {
+        setUnreadMessage(data)
+      } else {
+        addMonitorMessage(data)
+      }
     })
   }
 
