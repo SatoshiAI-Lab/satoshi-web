@@ -87,7 +87,6 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
         >
           <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
           <Messages messages={messages} />
-          <CreateTokenBubble />
         </div>
         <MessageInput onSend={onSend} />
       </div>

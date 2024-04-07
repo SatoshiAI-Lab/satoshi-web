@@ -208,10 +208,8 @@ export const useChat = () => {
       intentStream,
       intention,
     } = CHAT_CONFIG.answerType
-    const {
-      walletList: metaWalletList,
-      walletBalance,
-    } = CHAT_CONFIG.metadataType
+    const { walletList: metaWalletList, walletBalance } =
+      CHAT_CONFIG.metadataType
 
     console.log('Chat Data: ', data)
 

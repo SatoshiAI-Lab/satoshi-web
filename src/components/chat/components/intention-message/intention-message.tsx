@@ -6,6 +6,7 @@ import { WalletBalance } from './wallet-bubbles/wallet-balance'
 import { TwitterListBubble } from './twitter-list-bubble'
 import { TxTokenBubbles } from './tx-token-bubbles/tx-token-bubbles'
 import { MonitorAddressBubble } from './monitor-address-bubble'
+import MyWalletsBubble from '../bubbles/my-wallets-bubble'
 
 interface Props {
   msg: Message
@@ -21,7 +22,7 @@ export const IntentMessage = ({ msg }: Props) => {
 
   // Wallet list
   if (msg.type == walletList || metaType == walletList) {
-    return <WalletListBubbles msg={msg.msgs!}></WalletListBubbles>
+    return <MyWalletsBubble meta={msg.msgs} />
   }
 
   // Change name wallet list

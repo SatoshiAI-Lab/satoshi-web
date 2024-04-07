@@ -157,5 +157,11 @@
   "token-nickname-validate": "Please enter the token abbreviation",
   "token-fullname-validate": "Please enter the token full name",
   "token-total-validate": "Please enter the token total supply",
-  "create": "Create"
+  "create": "Create",
+  "asset": "ASSET",
+  "value": "VALUE",
+  "balance": "BALANCE",
+  "details": "Details",
+  "buy": "Buy",
+  "sell": "Sell"
 }
