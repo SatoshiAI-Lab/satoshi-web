@@ -138,7 +138,7 @@ const TokenSearcher = (props: TokenSearcherProps) => {
           inputRef={searchRef}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onKeyUp={onKeyDown}
+          onKeyDown={onKeyDown}
         />
       </div>
       <DialogContent classes={{ root: '!p-0' }}>
