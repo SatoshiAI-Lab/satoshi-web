@@ -9,6 +9,7 @@ import Live2DModel from '../live2d-model'
 import { useTranslation } from 'react-i18next'
 import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
+import NewPoolBubble from './components/bubbles/new-pool-bubble'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props

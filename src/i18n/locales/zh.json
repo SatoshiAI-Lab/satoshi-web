@@ -110,5 +110,22 @@
   "slippage.warning": "小于0.05%的滑点可能导致交易失败",
   "tx.finally": "交易已完成",
   "tx.loading": "交易中...",
-  "tx.token.wallet.balance": "钱包余额"
+  "tx.token.wallet.balance": "钱包余额",
+  "new-pool": "{}上了新池子",
+  "ca": "合约地址",
+  "liquidity": "流动性",
+  "started": "初始池子",
+  "price": "价格",
+  "ca-secutiry": "合约安全",
+  "mutable-metadata": "可变元数据",
+  "yes": "是",
+  "no": "否",
+  "mint-auth": "铸造权限",
+  "lp-burned": "LP燃烧",
+  "freeze-auth": "冻结权限",
+  "top-holders": "持币排行榜",
+  "score": "评分",
+  "bad": "差",
+  "mint-auth-still": "铸造权限仍然开启",
+  "single-holder": "单个持有人所有权 {}"
 }

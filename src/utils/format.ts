@@ -48,4 +48,10 @@ export const utilFmt = {
       return value.toString()
     }
   },
+  percent(value?: number, fixed = 2) {
+    if (!value) return 0
+    const result = utilParse.noRoundFixed(value, fixed)
+
+    return `${result}%`
+  },
 }
