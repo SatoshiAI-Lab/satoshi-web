@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { tokenApi } from '@/api/token'
 import { useFavtokenStore } from '@/stores/use-favorites-store'
+import { SelectParams } from '@/api/token/types'
 
 const defaultTokens = {
   ids: [
@@ -36,6 +37,16 @@ export const useFavorites = (opts?: Options) => {
     queryFn: () => tokenApi.tokenList(defaultTokens),
   })
 
+  const { isPending: isSelecting, mutateAsync: mutateToken } = useMutation({
+    mutationKey: [tokenApi.select.name],
+    mutationFn: (params: SelectParams) => tokenApi.select(params),
+  })
+
+  const selectToken = async (params: SelectParams) => {
+    await mutateToken(params)
+    await refetchTokens()
+  }
+
   useEffect(() => {
     setTokenList(tokenData?.data.list ?? [])
   }, [tokenData])
@@ -45,6 +56,8 @@ export const useFavorites = (opts?: Options) => {
     isFirstLoadingToken,
     isFetchingToken,
     isRefetchingToken,
+    isSelecting,
     refetchTokens,
+    selectToken,
   }
 }

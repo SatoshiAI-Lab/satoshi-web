@@ -1,31 +1,39 @@
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiListSettingsLine, RiAddFill } from 'react-icons/ri'
-import { Avatar, Divider, List, ListItemButton, Skeleton } from '@mui/material'
+import {
+  Avatar,
+  CircularProgress,
+  Divider,
+  IconButton,
+  List,
+  ListItemButton,
+  Skeleton,
+} from '@mui/material'
 import clsx from 'clsx'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
+import { IoCloseOutline } from 'react-icons/io5'
 
 import PercentTag from '../percent-tag'
 import TokenSearcher from '../token-searcher'
 import CustomSuspense from '../custom-suspense'
 import { useFavorites } from './hooks/use-favorites'
-import { ListToken } from '@/api/token/types'
+import { ListToken, TokenId, TokenStatus, TokenType } from '@/api/token/types'
 import { useShow } from '@/hooks/use-show'
 import { Routes } from '@/routes'
 
 export const Favorites = memo((props: React.ComponentProps<'div'>) => {
   const { className } = props
   const { t } = useTranslation()
-  const { tokenList, isFirstLoadingToken } = useFavorites()
+  const { tokenList, isFirstLoadingToken, isSelecting, selectToken } =
+    useFavorites()
   const router = useRouter()
   const { show, open, hidden } = useShow()
 
   const onAddClick = () => {
     open()
   }
-
-  const onMenuClick = () => {}
 
   const onTokenClick = (token: ListToken) => {
     router.push({
@@ -36,6 +44,17 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
     })
   }
 
+  const onRemoveToken = (token: ListToken) => {
+    const id: TokenId = {
+      id: token.id,
+      type: TokenType.Token,
+    }
+    selectToken({
+      ids: [id],
+      status: TokenStatus.Cancel,
+    })
+  }
+
   return (
     <div
       className={clsx(
@@ -43,7 +62,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
         className
       )}
     >
-      <div className="flex justify-between items-center px-4 w-[300px] max-xl:max-w-[280px]">
+      <div className="flex justify-between items-center pl-4 pr-2 w-[300px] max-xl:max-w-[280px]">
         <span className="font-semibold text-base mr-1 dark:text-white">
           {t('favorites')}
         </span>
@@ -56,18 +75,6 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
                 'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
               )}
               onClick={onAddClick}
-            />
-          </motion.div>
-          <motion.div
-            whileHover={{ x: [0, -2, 0, 2, 0] }}
-            transition={{ duration: 0.3 }}
-          >
-            <RiListSettingsLine
-              className={clsx(
-                'text-lg cursor-pointer text-black dark:text-white',
-                'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
-              )}
-              onClick={onMenuClick}
             />
           </motion.div>
         </div>
@@ -87,7 +94,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
               <Divider />
               <ListItemButton
                 onClick={() => onTokenClick(t)}
-                className={'dark:!text-white'}
+                className={'dark:!text-white relative group'}
               >
                 <div className="flex items-center gap-2 grow">
                   <Avatar
@@ -105,6 +112,27 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
                   </span>
                   <PercentTag percent={t.percent_change_24_h} />
                 </div>
+                <IconButton
+                  size="small"
+                  disabled={isSelecting}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    onRemoveToken(t)
+                  }}
+                  classes={{
+                    root: clsx(
+                      '!hidden !absolute right-2 top-1/2 -translate-y-1/2',
+                      'group-hover:!flex !bg-gray-200 dark:!bg-slate-800 dark:!text-white'
+                    ),
+                  }}
+                >
+                  {isSelecting ? (
+                    <CircularProgress size={18} />
+                  ) : (
+                    <IoCloseOutline />
+                  )}
+                </IconButton>
               </ListItemButton>
             </React.Fragment>
           ))}
