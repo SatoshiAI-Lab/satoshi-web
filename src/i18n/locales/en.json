@@ -134,7 +134,7 @@
   "monitor.wallet.bubble.text2": "You will be notified if any on-chain transactions are made.",
   "monitor.wallet.bubble.text3": "You can manage the wallets you are tracking through",
   "monitor.wallet.bubble.text4": "Monitor-Track Wallet.",
-  "monitor.twitter.list.tips1": "Please select the X(Twitter) you want to monitor in the list.",
+  "monitor.twitter.list.tips1": "Please select the X(Twitter) in the list that you want to monitor or unmonitor",
   "monitor.wallet.name": "Name the wallet address",
   "monitor.wallet.placeholder": "Input address",
   "monitor.wallet.name.placeholder": "Input name",
@@ -163,5 +163,12 @@
   "balance": "BALANCE",
   "details": "Details",
   "buy": "Buy",
-  "sell": "Sell"
+  "sell": "Sell",
+  "tx.hash": "TX Hash:  https://solscan.io/tx/",
+  "delete.wallet.intent.text": "Delete $1 wallet",
+  "total.balance": "Total balance",
+  "operation": "Operation",
+  "wallet.list.empty": "The list of wallets is empty",
+  "export.wallet.intent.text": "Export $1 wallet",
+  "changename.walllet": "Change the name of the $1 wallet"
 }

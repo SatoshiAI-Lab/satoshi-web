@@ -16,7 +16,6 @@ export const CHAT_CONFIG = {
       'tech_analyze_stream',
       'tech_analyze_stream',
       '',
-      'transaction_stream',
       'tech_analyze_stream',
     ],
 
@@ -25,6 +24,7 @@ export const CHAT_CONFIG = {
       'wallet_list_stream',
       'contract_wallet_balance',
       'change_name_wallet_list',
+      'delete_wallet_stream',
       'create_wallet_stream',
       'import_wallet_stream',
       'update_wallet_name_stream',
@@ -37,6 +37,7 @@ export const CHAT_CONFIG = {
       'transaction_confirm',
       'transaction_confirm_stream',
       'subscript_news',
+      'transaction_stream',
     ],
 
     /** it's not need `useStream` */
@@ -75,12 +76,20 @@ export const CHAT_CONFIG = {
     twitterList: 'subscript_twitter_list',
     transactionConfirm: 'transaction_confirm',
     monitorWalletFail: 'subscript_wallet_address_fail',
+    changeNameWalletList: 'change_name_wallet_list',
+    exportWalletList: 'export_wallet_list',
+    deleteNameWalletList: 'delete_name_wallet_list',
   },
 
-  intentSelectWalletType: ['change_name_wallet_list', 'export_wallet_list'],
+  intentSelectWalletType: [
+    'change_name_wallet_list',
+    'export_wallet_list',
+    'delete_name_wallet_list',
+  ],
 
   hiddenIntentText: [
     'subscript_twitter_list',
+    'delete_name_wallet_list',
     'subscript_wallet_address_success',
   ],
 }

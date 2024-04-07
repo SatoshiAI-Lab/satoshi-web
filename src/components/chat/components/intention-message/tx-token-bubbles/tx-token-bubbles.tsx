@@ -1,12 +1,16 @@
 import { useTranslation } from 'react-i18next'
 import MessageBubble from '../../message-bubble'
 import { Button, CircularProgress, OutlinedInput } from '@mui/material'
-import { IoFlash } from 'react-icons/io5'
+import { IoCopy, IoCopyOutline, IoFlash } from 'react-icons/io5'
 import clsx from 'clsx'
 import { useState } from 'react'
 import { ChatResponseAnswerMeta, ChatResponseTxConfrim } from '@/api/chat/types'
 import { trandApi } from '@/api/trand'
 import { useShow } from '@/hooks/use-show'
+import { formatUnits } from 'viem'
+import numeral from 'numeral'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import toast from 'react-hot-toast'
 
 interface Props {
   msg: ChatResponseAnswerMeta
@@ -14,16 +18,15 @@ interface Props {
 
 export const TxTokenBubbles = (props: Props) => {
   const data = props.msg.data as unknown as ChatResponseTxConfrim
-  const rawWalletList = data.match_wallets
-    .sort((a, b) => {
-      return new Date(a.added_at).getTime() - new Date(b.added_at).getTime()
-    })
-    .slice(0, 1)
+  const rawWalletList = data?.match_wallets?.sort((a, b) => {
+    return new Date(b.added_at).getTime() - new Date(a.added_at).getTime()
+  })
 
   const defaultWalletId = rawWalletList[0].id
 
   const { t } = useTranslation()
   const [disbaled, setDisabled] = useState(false)
+  const [txHash, setTxHash] = useState('')
   const { show: loading, open: showLoading, hidden: closeLoading } = useShow()
   const [buyValue, setBuyValue] = useState(0)
   const [slippage, setSlippage] = useState(5)
@@ -80,6 +83,7 @@ export const TxTokenBubbles = (props: Props) => {
         })
         .then(({ data }) => {
           setDisabled(true)
+          setTxHash(data.hash_tx)
         })
         .finally(() => {
           closeLoading()
@@ -127,7 +131,7 @@ export const TxTokenBubbles = (props: Props) => {
               <div
                 key={i}
                 className={clsx(
-                  'inline-grid',
+                  'grid',
                   i !== 0 ? 'border-t' : '',
                   getCols(wallets.length)
                 )}
@@ -145,7 +149,12 @@ export const TxTokenBubbles = (props: Props) => {
                     >
                       <div className="truncate">{wallet.name}</div>
                       <div className="text-sm text-gray-500">
-                        {wallet.tokens[0].amount}
+                        {numeral(
+                          formatUnits(
+                            BigInt(wallet.tokens[0].amount),
+                            wallet.tokens[0].decimals
+                          )
+                        ).format('0.00')}
                         {wallet.platform}
                       </div>
                     </div>
@@ -161,9 +170,7 @@ export const TxTokenBubbles = (props: Props) => {
   }
 
   return (
-    <MessageBubble
-      className={`min-w-[250px] ${disbaled ? 'pointer-events-none select-none' : ''}`}
-    >
+    <MessageBubble className={`min-w-[250px]`}>
       <div className="font-bold mt-1 mb-1">{t('tx.token.text1')}</div>
       <OutlinedInput
         className="!rounded-xl w-[130px]"
@@ -180,6 +187,7 @@ export const TxTokenBubbles = (props: Props) => {
           </div>
         }
         value={buyValue}
+        disabled={disbaled}
         onChange={({ target }) => setBuyValue(Number(target.value))}
       ></OutlinedInput>
       {getWalllet()}
@@ -193,6 +201,7 @@ export const TxTokenBubbles = (props: Props) => {
               input: '!py-0 !leading-none !block',
               root: '!pr-4',
             }}
+            disabled={disbaled}
             type="number"
             size="small"
             placeholder={t('custom')}
@@ -236,6 +245,21 @@ export const TxTokenBubbles = (props: Props) => {
             : t('confirm')}
         </span>
       </Button>
+
+      {txHash ? (
+        <CopyToClipboard
+          text={`https://solscan.io/tx/${txHash}`}
+          onCopy={() => toast.success(t('copy-success'))}
+        >
+          <div className="mt-2 flex items-center cursor-pointer text-gray-700">
+            <div className="max-w-[300px] truncate">
+              {t('tx.hash')}
+              {txHash}
+            </div>
+            <IoCopyOutline size={16}></IoCopyOutline>
+          </div>
+        </CopyToClipboard>
+      ) : null}
     </MessageBubble>
   )
 }
