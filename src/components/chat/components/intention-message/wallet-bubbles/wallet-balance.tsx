@@ -27,7 +27,7 @@ export const WalletBalance = (props: Props) => {
   }
 
   tokens = tokens.filter((token) => {
-    if (token.name == null) return false;
+    // if (token.name == null) return false;
     return (token.valueUsd ?? 0) >= 1
   })
 
@@ -47,7 +47,7 @@ export const WalletBalance = (props: Props) => {
         {t('wallet')}
         <CopyToClipboard
           text={msgData.address}
-          onCopy={() => toast.success(t('copy'))}
+          onCopy={() => toast.success(t('copy-success'))}
         >
           <span className="ml-2 cursor-pointer">
             {utilFmt.addr(msgData.address)}
@@ -57,7 +57,7 @@ export const WalletBalance = (props: Props) => {
       </div>
       <div className="">
         {tokens?.map((token, i) => {
-          if (!token.name) return <></>
+          // if (!token.name) return <></>
           return (
             <div
               key={i}
@@ -68,7 +68,7 @@ export const WalletBalance = (props: Props) => {
                 }`
               )}
             >
-              <div className="text-primary truncate">{token.symbol}</div>
+              <div className="text-primary truncate">{token.symbol || 'null'}</div>
               <div>${numeral(token.valueUsd).format('0,0.0')}</div>
               <div className="ml-2">
                 {numeral(

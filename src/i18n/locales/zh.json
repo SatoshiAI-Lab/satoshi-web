@@ -128,7 +128,7 @@
   "ca": "合约地址",
   "liquidity": "流动性",
   "started": "初始池子",
-  "price": "价格",
+  "price": "币价",
   "ca-secutiry": "合约安全",
   "mutable-metadata": "可变元数据",
   "yes": "是",
@@ -174,7 +174,7 @@
   "token-total-validate": "请输入代币总量",
   "create": "创建",
   "asset": "资产",
-  "value": "值",
+  "value": "价值",
   "balance": "余额",
   "details": "详情",
   "buy": "买",
@@ -188,5 +188,6 @@
   "changename.walllet": "修改$1的钱包名字",
   "bubble.nolink": "源链接还未准备好，请稍后重试。",
   "cancel": "取消",
-  "save": "确定"
+  "save": "确定",
+  "intent.buy": "帮我购买$1，合约地址是：$2"
 }

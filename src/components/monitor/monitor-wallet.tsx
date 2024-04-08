@@ -74,7 +74,7 @@ export const MonitorWallet = ({ data }: Props) => {
   }
 
   return (
-    <div className="max-w-[500px] px-10 pt-2 pb-10 max-sm:px-6 max-sm:pt-2 max-sm:pb-6 mx-auto">
+    <div className="max-w-[500px] px-10 pt-2 pb-4 max-sm:px-6 max-sm:pt-2 max-sm:pb-6 mx-auto">
       <div className="">{t('monitor.wallet.text')}*</div>
       <div className="mt-2 mb-4 flex flex-col items-start">
         <OutlinedInput

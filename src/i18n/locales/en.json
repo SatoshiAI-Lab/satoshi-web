@@ -189,5 +189,6 @@
   "changename.walllet": "Change the name of the $1 wallet",
   "bubble.nolink": "Origin link not ready, please try again later",
   "cancel": "Cancel",
-  "save": "Save"
+  "save": "Save",
+  "intent.buy": "Help me buy $1, the contract address is: $2"
 }

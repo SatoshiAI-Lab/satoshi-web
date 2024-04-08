@@ -38,15 +38,7 @@ export interface ChatResponseMetaDynamic {
 export interface ChatResponseMetaBalance {
   address: string
   token: number
-  tokens: {
-    symbol: string
-    name: string
-    mintAddress: string
-    amount: string
-    priceUsd: string
-    valueUsd: string
-    logoUrl: string
-  }
+  tokens: ChatResponseWalletListToken
 }
 
 export interface ChatResponseTxConfrim {
@@ -65,16 +57,7 @@ export interface ChatResponseWalletListRaw {
 
 export interface ChatResponseWalletBalance {
   address: string
-  tokens: {
-    symbol?: string
-    name?: string
-    decimals?: number
-    amount?: number
-    address?: string
-    priceUsd?: number
-    valueUsd?: number
-    logoUrl?: string
-  }[]
+  tokens: ChatResponseWalletListToken[]
 }
 
 export interface ChatResponseWalletList {
@@ -92,10 +75,12 @@ export interface ChatResponseWalletListToken {
   symbol: string
   name: string
   address: string
-  amount: string
-  priceUsd: string
-  valueUsd: string
+  amount: number
+  priceUsd: number
+  valueUsd: number
   logoUrl: string
+  chain_logo: string
+  chain_name: string
   decimals: number
 }
 
