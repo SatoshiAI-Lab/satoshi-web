@@ -24,6 +24,10 @@ export const utilArr = {
 
   last: <T>(arr: T[]) => arr[arr.length - 1],
 
+  remove: <T>(arr: T[], el: T) => arr.filter((e) => e !== el),
+
+  onlyOne: <T>(arr: T[]) => arr.length === 1,
+
   /**
    * Categorize an array to Object and Map based on specified key.
    * @param arr origin array

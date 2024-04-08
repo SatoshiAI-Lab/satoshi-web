@@ -95,7 +95,7 @@ const NewPoolBubble = (props: NewPoolBubbleProps) => {
             {t('freeze-auth')}: {t('yes')} ✅
           </div>
           <div className="mt-2">
-            {t('lp-burned')}: {t('no')} ⚠️
+            {t('lp-burned')}: {t('no')} ⚠
           </div>
         </div>
         <div className="ml-4">
