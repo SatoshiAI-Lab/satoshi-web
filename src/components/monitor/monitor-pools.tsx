@@ -18,82 +18,30 @@ interface Props {
 export const MonitorPools = ({ data }: Props) => {
   const { t } = useTranslation()
   const [chain, setChain] = useState()
-  const { show, open, hidden } = useShow(true)
+  const { show, open, hidden } = useShow(false)
   const { isMobile } = useResponsive()
   const chains = [
     {
       logo: '/images/monitor/monitor.png',
       name: 'Solana',
-      setting: true,
+      slug: true,
       open: false,
     },
     {
       logo: '/images/monitor/monitor.png',
       name: 'Avanche',
-      setting: false,
+      slug: false,
       open: false,
     },
     {
       logo: '/images/monitor/monitor.png',
       name: 'Ethereum',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
+      slug: false,
       open: false,
     },
   ]
+
+  const onSwitch = () => {}
 
   const openSetting = (chain: any) => {
     open()
@@ -111,12 +59,13 @@ export const MonitorPools = ({ data }: Props) => {
         'max-sm:grid-cols-1 max-sm:px-6'
       )}
     >
-      {chains.map((chain) => {
+      {chains.map((chain, i) => {
         return (
           <MonitorLabelSwitch
-            key={chain.name}
+            key={i}
             data={chain}
-            onSwitch={openSetting}
+            onSwitch={onSwitch}
+            onSetting={chain.slug ? openSetting : null}
           ></MonitorLabelSwitch>
         )
       })}
@@ -142,7 +91,6 @@ export const MonitorPools = ({ data }: Props) => {
           }
           onBack={hidden}
           onClose={hidden}
-          showCloseBtn={!isMobile}
         ></DialogHeader>
         <div className="min-w-[400px] max-sm:min-w-[100px] max-sm:px-6">
           <div className="text-center mb-6 font-bold">
