@@ -14,8 +14,7 @@ const ExchangeAnnouncementBubble = ({
   source_logo,
   source_name,
   url,
-  children,
-}: ChatResponseMetaAnnounceMent & { children: React.ReactNode }) => {
+}: ChatResponseMetaAnnounceMent) => {
   return (
     <MessageBubble className={clsx('min-w-bubble py-4')}>
       {/* Avatar, chain */}

@@ -51,14 +51,7 @@ const Messages = memo((props: MessagesProps) => {
         <ExchangeAnnouncementBubble
           key={i}
           {...(msg as unknown as ChatResponseMetaAnnounceMent)}
-        >
-          <div
-            dangerouslySetInnerHTML={{
-              __html: (msg as unknown as ChatResponseMetaAnnounceMent).content
-                .en,
-            }}
-          ></div>
-        </ExchangeAnnouncementBubble>
+        />
       )
     }
 
