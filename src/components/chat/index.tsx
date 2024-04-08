@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 import MessageBubble from './components/bubbles/message-bubble'
 import MessageInput from './components/message-input'
 import Messages from './components/messages'
 import Live2DModel from '../live2d-model'
-import { useTranslation } from 'react-i18next'
 import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
 import { MessageAlert } from './components/bubbles/message-alert'

@@ -17,12 +17,6 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^5.28.12
     version: 5.28.14(react@18.2.0)
-  '@types/numeral':
-    specifier: ^2.0.5
-    version: 2.0.5
-  '@types/react-show-more-text':
-    specifier: ^1.4.5
-    version: 1.4.5
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
@@ -109,6 +103,9 @@ devDependencies:
   '@types/node':
     specifier: ^20
     version: 20.12.2
+  '@types/numeral':
+    specifier: ^2.0.5
+    version: 2.0.5
   '@types/react':
     specifier: ^18
     version: 18.2.73
@@ -118,6 +115,9 @@ devDependencies:
   '@types/react-dom':
     specifier: ^18
     version: 18.2.23
+  '@types/react-show-more-text':
+    specifier: ^1.4.5
+    version: 1.4.5
   autoprefixer:
     specifier: ^10.0.1
     version: 10.4.19(postcss@8.4.38)
@@ -1113,7 +1113,7 @@ packages:
 
   /@types/numeral@2.0.5:
     resolution: {integrity: sha512-kH8I7OSSwQu9DS9JYdFWbuvhVzvFRoCPCkGxNwoGgaPeDfEPJlcxNvEOypZhQ3XXHsGbfIuYcxcJxKUfJHnRfw==}
-    dev: false
+    dev: true
 
   /@types/offscreencanvas@2019.7.3:
     resolution: {integrity: sha512-ieXiYmgSRXUDeOntE1InxjWyvEelZGP63M+cGuquuRLuIKKT1osnkXjxev9B7d1nXSug5vpunx+gNlbVxMlC9A==}
@@ -1142,7 +1142,7 @@ packages:
     resolution: {integrity: sha512-tpo+we9AwkSBvQoeZfEGUJt6ZwkLov3vak/ZTNXLlW5K1q2drKDqlQ7K1Yo+0CuYF7aK5j9gjxJkbesgr0tP4A==}
     dependencies:
       '@types/react': 18.2.73
-    dev: false
+    dev: true
 
   /@types/react-transition-group@4.4.10:
     resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
