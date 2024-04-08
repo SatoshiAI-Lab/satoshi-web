@@ -18,7 +18,10 @@ const NewsBubble = ({
   const [relax, setRelax] = useState(false)
   const [tooLong, setTooLong] = useState(false)
   useEffect(() => {
-    if (content.en.length > 100) {
+    if (
+      (content.en && content.en.length > 100) ||
+      (content.zh && content.zh.length > 100)
+    ) {
       const contentElement = contentRef.current
       const isOverflown = contentElement!.offsetHeight > 80
       setRelax(isOverflown)
@@ -27,12 +30,12 @@ const NewsBubble = ({
   }, [])
   return (
     <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
-      <div className="font-bold text-lg">{title.en}</div>
+      <div className="font-bold text-lg">{title.en ? title.en : title.zh}</div>
       <div className="my-2 text-gray-400">
         {dayjs(created_at).format('H:mm M/D')}
       </div>
       <div ref={contentRef} className={clsx('my-2', relax && 'line-clamp-3')}>
-        {content.en}
+        {content.en ? content.en : content.zh}
       </div>
       {(tooLong && (
         <button
