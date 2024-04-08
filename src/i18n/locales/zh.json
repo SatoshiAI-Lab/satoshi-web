@@ -216,5 +216,7 @@
   "intent.detail": "帮我查询$1代币地址",
   "lp": "流动性：",
   "holder": "持币人：",
-  "mkt-cap": "市值："
+  "mkt-cap": "市值：",
+  "ex.monitor.handle": "请选择要监控或取消监控的交易所",
+  "pool.moniotr.handle": "请选择你要监控或取消监控新加池子的链"
 }

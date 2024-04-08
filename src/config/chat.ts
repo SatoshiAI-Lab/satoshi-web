@@ -41,6 +41,7 @@ export const CHAT_CONFIG = {
       'subscript_pool',
       'do_not_support_buy_token',
       'do_not_support_sell_token',
+      'subscript_announcement',
     ],
 
     /** it's not need `useStream` */
@@ -83,6 +84,8 @@ export const CHAT_CONFIG = {
     exportWalletList: 'export_wallet_list',
     deleteNameWalletList: 'delete_name_wallet_list',
     transactionConfirmBuy: 'transaction_confirm_buy',
+    monitorExList: 'subscript_announcement_list',
+    monitorPoolList: 'subscript_pool_list',
   },
 
   intentTxToken: ['transaction_confirm_buy', 'transaction_confirm_sell'],
@@ -97,5 +100,7 @@ export const CHAT_CONFIG = {
     'subscript_twitter_list',
     'delete_name_wallet_list',
     'subscript_wallet_address_success',
+    'subscript_announcement_list',
+    'subscript_pool_list',
   ],
 }
