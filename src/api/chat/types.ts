@@ -245,3 +245,9 @@ export interface ChatResponseMetaNewPool {
   created_at: string
   data_type: string
 }
+
+export interface SpeechResponse {
+  data: { text: string }
+  message: string
+  status: number
+}

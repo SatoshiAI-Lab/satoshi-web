@@ -14,7 +14,9 @@ import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
 import { utilDom } from '@/utils/dom'
 import { useInputHistory } from '@/hooks/use-input-history'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
-
+import { chatApi } from '@/api/chat'
+import { useAudioRecorder } from 'react-audio-voice-recorder'
+import { MdMic } from 'react-icons/md'
 interface MessageInputProps {
   autofocus?: boolean
   onSend: () => void
@@ -91,7 +93,31 @@ function MessageInput(props: MessageInputProps) {
   const onCancelAnswer = () => {}
 
   const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
-
+  const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
+  const [recording, setRecording] = useState(false)
+  const record = () => {
+    if (recording) {
+      stopRecording()
+      setRecording(false)
+    } else {
+      startRecording()
+      setRecording(true)
+    }
+  }
+  useEffect(() => {
+    if (!recordingBlob) return
+    const reader = new FileReader()
+    reader.readAsDataURL(recordingBlob)
+    reader.onloadend = async () => {
+      const base64data = reader.result as string
+      const base64WithoutPrefix = base64data.split(',')[1]
+      const {
+        data: { text },
+      } = await chatApi.getSpeechText(base64WithoutPrefix)
+      setQuestion(text)
+    }
+    // recordingBlob will be present at this point after 'stopRecording' has been called
+  }, [recordingBlob])
   return (
     <div
       className={clsx(
@@ -137,7 +163,17 @@ function MessageInput(props: MessageInputProps) {
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
-        {/* <MicRecord startRecording={() => {}} stopRecording={() => {}} /> */}
+        <button
+          className={clsx(
+            recording
+              ? 'animate-bounce animate-ease-linear animate-infinite'
+              : '',
+            'rounded-full p-1'
+          )}
+          onClick={record}
+        >
+          <MdMic size={22} />
+        </button>
         <Button
           variant="contained"
           size="large"
