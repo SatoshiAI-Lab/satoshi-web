@@ -11,6 +11,7 @@ const baseColors = {
   'favorite-dark': 'rgba(0, 0, 0, 0.8)',
   rise: '#6cc825',
   fall: '#fa541c',
+  sky: '#b6fafe',
 }
 
 const baseWidths = {

@@ -163,5 +163,18 @@
   "balance": "BALANCE",
   "details": "Details",
   "buy": "Buy",
-  "sell": "Sell"
+  "sell": "Sell",
+  "create-token.no-wallet": "I have detected that you don't have a {} wallet, so I have created one for you.",
+  "create-token.no-wallet-balance": "Please deposit at least {} into your wallet to ensure successful token creation",
+  "create-token.loading": "Creating the token...",
+  "create-token.loading-desc": "Perhaps this is the beginning of your great achievement",
+  "create-token.success": "Congratulations! I have successfully created the token for you",
+  "token-addr": "Token CA",
+  "create-token.success-all": "All tokens have been deposited into your wallet",
+  "confirm-crop": "Confirm crop",
+  "cancel-crop": "Cancel crop",
+  "crop.title": "Crop image",
+  "crop.error": "Image error",
+  "crop.error-message": "Your image size is incorrect. Please try again.$The min required size: {}.",
+  "crop-size-error": "Image size incorrect"
 }

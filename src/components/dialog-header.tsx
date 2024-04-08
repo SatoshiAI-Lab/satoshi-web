@@ -1,9 +1,8 @@
 import { DialogTitle, IconButton } from '@mui/material'
-import clsx from 'clsx'
 import { IoCloseOutline, IoChevronBack } from 'react-icons/io5'
 
 interface Props extends React.ComponentProps<'div'> {
-  text?: JSX.Element
+  text?: React.ReactNode
   textAlign?: 'left' | 'center' | 'right'
   textStyle?: string
   onClose: any
@@ -12,13 +11,8 @@ interface Props extends React.ComponentProps<'div'> {
 }
 
 export const DialogHeader = (props: Props) => {
-  const {
-    text,
-    children,
-    textAlign = 'center',
-    onClose,
-    onBack,
-  } = props
+  const { text, children, textAlign = 'center', onClose, onBack } = props
+
   return (
     <DialogTitle textAlign={textAlign} className="relative min-w-72">
       {onBack && (
