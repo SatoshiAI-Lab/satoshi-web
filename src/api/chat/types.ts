@@ -219,3 +219,29 @@ export interface ChatResponseMetaWallet {
   data_type: string
   hash: string
 }
+
+export interface ChatResponseMetaNewPool {
+  id: string
+  chain: string
+  address: string
+  name: string
+  symbol: string
+  liquidity: number
+  price: number
+  started: string
+  twitter: string
+  telegram: string
+  website: string
+  security: {
+    [key: string]: string
+  }
+  top_holders: {
+    [key: string]: string
+  }
+  score: {
+    score: string
+    detail: []
+  }
+  created_at: string
+  data_type: string
+}

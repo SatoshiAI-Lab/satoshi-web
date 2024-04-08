@@ -10,6 +10,7 @@ export enum DataType {
   AnnouncementInfo = 'announcement_info',
   TwitterInfo = 'twitter_info',
   TradeInfo = 'trade_info',
+  PoolInfo = 'pool_info',
 }
 
 export interface Message {

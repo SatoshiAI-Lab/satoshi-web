@@ -10,16 +10,15 @@ import MessageBubble from './message-bubble'
 import { IconButton } from '@mui/material'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
+import { ChatResponseMetaNewPool } from '@/api/chat/types'
+import dayjs from 'dayjs'
 
-interface NewPoolBubbleProps extends React.ComponentProps<'div'> {}
-
-const NewPoolBubble = (props: NewPoolBubbleProps) => {
-  const { className } = props
+const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
   const { t } = useTranslation()
   const { copy } = useClipboard()
 
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4 w-[500px]', className)}>
+    <MessageBubble className={clsx('min-w-bubble pt-4 w-[500px]')}>
       {/* Avatar, name */}
       <div className="flex justify-between">
         <div className="flex items-stretch">
@@ -32,7 +31,9 @@ const NewPoolBubble = (props: NewPoolBubbleProps) => {
             <span className="font-bold leading-none">
               {t('new-pool').replace('{}', 'Solana')}
             </span>
-            <span className="text-gray-400 text-sm">1:23 4/2</span>
+            <span className="text-gray-400 text-sm">
+              {dayjs(props.created_at).format('H:mm M/D')}
+            </span>
           </div>
         </div>
         <img
@@ -42,19 +43,30 @@ const NewPoolBubble = (props: NewPoolBubbleProps) => {
         />
       </div>
       <div className="font-bold mt-3 mb-1 flex justify-between items-center">
-        <span>LILCAT(LONG LILCAT)</span>
+        <span>
+          {props.symbol}({props.name})
+        </span>
         <div className="flex items-center">
           {true && (
-            <IconButton onClick={() => {}} title="Twitter">
+            <IconButton
+              onClick={() => window.open(props.twitter)}
+              title="Twitter"
+            >
               <FaTwitter className="text-secondary" size={20} />
             </IconButton>
           )}
           {true && (
-            <IconButton onClick={() => {}} title="Telegram">
+            <IconButton
+              onClick={() => window.open(props.telegram)}
+              title="Telegram"
+            >
               <FaTelegramPlane className="text-secondary" size={22} />
             </IconButton>
           )}
-          <IconButton onClick={() => {}} title="Website">
+          <IconButton
+            onClick={() => window.open(props.website)}
+            title="Website"
+          >
             <GrLanguage className="text-secondary" size={20} />
           </IconButton>
         </div>
@@ -62,70 +74,53 @@ const NewPoolBubble = (props: NewPoolBubbleProps) => {
       <div className="flex items-center mb-2">
         <span className="font-bold">{t('ca')}:</span>{' '}
         <a href={'#'} target="_blank" className="text-primary ml-1 underline">
-          {utilFmt.addr('AX23..YUIP')}
+          {utilFmt.addr(props.address)}
         </a>
         <MdOutlineContentCopy
           className="ml-3 cursor-pointer"
-          onClick={() => copy('AX23..YUIP')}
+          onClick={() => copy(props.address)}
         />
       </div>
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('liquidity')}:</span>
-        <span>$23235</span>
+        <span>$${props.liquidity}</span>
       </div>
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('started')}:</span>{' '}
-        <span>12.0 SOL + 90%</span>
+        <span>${props.started}</span>
       </div>
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('price')}:</span>
-        <span>$0.000000323</span>
+        <span>${props.price}</span>
       </div>
 
       <div className="grid grid-cols-2">
         <div>
           <div className="font-bold mt-2">⚙️ {t('ca-secutiry')}</div>
-          <div className="mt-2">
-            {t('mutable-metadata')}: {t('yes')} ⚠️
-          </div>
-          <div className="mt-2">
-            {t('mint-auth')}: {t('yes')} ⚠️
-          </div>
-          <div className="mt-2">
-            {t('freeze-auth')}: {t('yes')} ✅
-          </div>
-          <div className="mt-2">
-            {t('lp-burned')}: {t('no')} ⚠️
-          </div>
+          {Object.keys(props.security).map((key) => (
+            <div className="mt-2" key={key}>
+              {key}: {props.security[key]}
+            </div>
+          ))}
         </div>
         <div className="ml-4">
           <div className="font-bold mt-2">🏦 {t('top-holders')}</div>
-          <div className="mt-2">
-            🐳 {utilFmt.addr('Asdjaoiwdjaas')} | {utilFmt.percent(30.5)}
-          </div>
-          <div className="mt-2">
-            🐳 {utilFmt.addr('Asdjaoiwdjaas')} | {utilFmt.percent(27.5)}
-          </div>
-          <div className="mt-2">
-            🦐 {utilFmt.addr('Asdjaoiwdjaas')} | {utilFmt.percent(20.5)}
-          </div>
-          <div className="mt-2">
-            🦐 {utilFmt.addr('Asdjaoiwdjaas')} | {utilFmt.percent(5.5)}
-          </div>
-          <div className="mt-2">
-            🦐 {utilFmt.addr('Asdjaoiwdjaas')} | {utilFmt.percent(1.5)}
-          </div>
+          {Object.keys(props.top_holders).map((key) => (
+            <div className="mt-2" key={key}>
+              {key}: {props.top_holders[key]}
+            </div>
+          ))}
           <div></div>
         </div>
         <div className="my-2">
           <div className="font-bold mt-2">
-            🧠 {t('score')}: {t('bad')}
+            🧠 {t('score')}: {t(props.score.score)}
           </div>
-          <div className="mt-2">🟥 {t('mint-auth-still')}</div>
-          <div className="mt-2">
-            🟥 {t('single-holder').replace('{}', '30%')}
-          </div>
-          <div className="mt-2">🟧 {t('mutable-metadata')}</div>
+          {props.score.detail.map((item) => (
+            <div className="mt-2" key={item}>
+              {item}
+            </div>
+          ))}
         </div>
       </div>
     </MessageBubble>

@@ -10,6 +10,7 @@ import { DataType, type Message } from '@/stores/use-chat-store/types'
 import { IntentMessage } from './intention-message/intention-message'
 import {
   ChatResponseMetaAnnounceMent,
+  ChatResponseMetaNewPool,
   ChatResponseMetaNewsInfo,
   ChatResponseMetaTwitter,
   ChatResponseMetaWallet,
@@ -18,6 +19,7 @@ import NewsBubble from './bubbles/news-bubble'
 import ExchangeAnnouncementBubble from './bubbles/exchange-announcement-bubble'
 import WalletBubble from './bubbles/wallet-bubble'
 import TwitterBubble from './bubbles/twitter-bubble'
+import NewPoolBubble from './bubbles/new-pool-bubble'
 
 interface MessagesProps {
   messages: Message[]
@@ -66,6 +68,15 @@ const Messages = memo((props: MessagesProps) => {
         <TwitterBubble
           key={i}
           {...(msg as unknown as ChatResponseMetaTwitter)}
+        />
+      )
+    }
+
+    if (msg.data_type === DataType.PoolInfo) {
+      return (
+        <NewPoolBubble
+          key={i}
+          {...{ ...(msg as unknown as ChatResponseMetaNewPool) }}
         />
       )
     }
