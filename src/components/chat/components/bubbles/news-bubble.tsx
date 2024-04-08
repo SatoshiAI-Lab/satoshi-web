@@ -15,52 +15,36 @@ const NewsBubble = ({
   logo,
   source,
 }: ChatResponseMetaNewsInfo) => {
-  const contentRef = useRef<HTMLDivElement>(null)
-  const [relax, setRelax] = useState(false)
-  const [tooLong, setTooLong] = useState(false)
   const { language } = i18n
-  useEffect(() => {
-    if (content[language] && content[language].length > 100) {
-      const contentElement = contentRef.current
-      const isOverflown = contentElement!.offsetHeight > 80
-      setRelax(isOverflown)
-      setTooLong(true)
+  const currentContent =
+    content[language] || Object.values(content).find((v) => v) || ''
+  const currentTitle =
+    title[language] || Object.values(title).find((v) => v) || ''
+  const originLinkButton = () => {
+    if (source) {
+      return (
+        <a href={source} target="_blank" className="text-primary w-fit mt-3">
+          {t('bubble.originlink')}
+        </a>
+      )
     }
-  }, [])
+    return (
+      <button
+        onClick={() => toast(t('bubble.nolink'))}
+        className="text-gray-400 w-fit mt-3"
+      >
+        {t('bubble.originlink')}
+      </button>
+    )
+  }
   return (
     <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
-      <div className="font-bold text-lg">{title[language] || ''}</div>
+      <div className="font-bold text-lg">{currentTitle}</div>
       <div className="my-2 text-gray-400">
         {dayjs(created_at).format('H:mm M/D')}
       </div>
-      <div ref={contentRef} className={clsx('my-2', relax && 'line-clamp-3')}>
-        {content[language] || ''}
-      </div>
-      {(tooLong && (
-        <button
-          className=" text-primary self-end"
-          onClick={() => setRelax(!relax)}
-        >
-          {(relax && 'show more') || 'hide'}
-        </button>
-      )) || <></>}
-      {source &&
-        ((
-          <a
-            href={source}
-            target="_blank"
-            className="text-primary inline-block mt-3"
-          >
-            Origin Link
-          </a>
-        ) || (
-          <button
-            onClick={() => toast(t('bubble.nolink'))}
-            className="text-primary inline-block mt-3"
-          >
-            Origin Link
-          </button>
-        ))}
+      <div className={clsx('my-2')}>{currentContent}</div>
+      {originLinkButton()}
     </MessageBubble>
   )
 }

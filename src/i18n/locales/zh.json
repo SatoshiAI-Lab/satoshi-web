@@ -190,5 +190,6 @@
   "cancel": "取消",
   "save": "确定",
   "bubble.new-tweet": "发送了新的推文",
-  "bubble.new-anno": "发送了新的公告"
+  "bubble.new-anno": "发送了新的公告",
+  "bubble.originlink": "源链接"
 }

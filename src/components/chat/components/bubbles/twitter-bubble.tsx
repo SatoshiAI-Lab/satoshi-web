@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import clsx from 'clsx'
 
 import MessageBubble from './message-bubble'
@@ -15,18 +15,9 @@ const TwitterBubble = ({
   twitter_logo,
   photo,
 }: ChatResponseMetaTwitter) => {
-  const contentRef = useRef<HTMLDivElement>(null)
-  const [relax, setRelax] = useState(false)
-  const [tooLong, setTooLong] = useState(false)
   const { language } = i18n
-  useEffect(() => {
-    if (content[language] && content[language].length > 100) {
-      const contentElement = contentRef.current
-      const isOverflown = contentElement!.offsetHeight > 70
-      setRelax(isOverflown)
-      setTooLong(true)
-    }
-  }, [])
+  const currentContent =
+    content[language] || Object.values(content).find((v) => v) || ''
   return (
     <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
       {/* Avatar, name */}
@@ -46,17 +37,7 @@ const TwitterBubble = ({
         </div>
       </div>
       {/* Text content */}
-      <div ref={contentRef} className={clsx('my-2', relax && 'line-clamp-3')}>
-        {content[language] || ''}
-      </div>
-      {(tooLong && (
-        <button
-          className=" text-primary self-end"
-          onClick={() => setRelax(!relax)}
-        >
-          {(relax && 'show more') || 'hide'}
-        </button>
-      )) || <></>}
+      <div className={clsx('my-2')}>{currentContent}</div>
       {/* TODO: click img to enlarge show. */}
       {photo.map((item) => (
         <img
@@ -71,7 +52,7 @@ const TwitterBubble = ({
         target="_blank"
         className="text-primary inline-block mt-3"
       >
-        Origin Link
+        {t('bubble.originlink')}
       </a>
     </MessageBubble>
   )

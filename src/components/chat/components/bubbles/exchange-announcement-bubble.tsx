@@ -17,6 +17,27 @@ const ExchangeAnnouncementBubble = ({
   url,
 }: ChatResponseMetaAnnounceMent) => {
   const { language } = i18n
+  const currentTitle =
+    title[language] || Object.values(title).find((v) => v) || ''
+
+  const originLinkButton = () => {
+    const link = url[language] || Object.values(url).find((v) => v)
+    if (link) {
+      return (
+        <a href={link} target="_blank" className="text-primary w-fit mt-3">
+          {t('bubble.originlink')}
+        </a>
+      )
+    }
+    return (
+      <button
+        onClick={() => toast(t('bubble.nolink'))}
+        className="text-gray-400 w-fit mt-3"
+      >
+        {t('bubble.originlink')}
+      </button>
+    )
+  }
   return (
     <MessageBubble className={clsx('min-w-bubble py-4')}>
       {/* Avatar, chain */}
@@ -39,24 +60,8 @@ const ExchangeAnnouncementBubble = ({
         </div>
       </div>
       {/* Event description */}
-      <div className="mt-2 font-bold">{title[language] || ''}</div>
-      {url[language] &&
-        ((
-          <a
-            href={url[language]}
-            target="_blank"
-            className="text-primary inline-block mt-3"
-          >
-            Origin Link
-          </a>
-        ) || (
-          <button
-            onClick={() => toast(t('bubble.nolink'))}
-            className="text-primary inline-block mt-3"
-          >
-            Origin Link
-          </button>
-        ))}
+      <div className="mt-2 font-bold">{currentTitle}</div>
+      {originLinkButton()}
     </MessageBubble>
   )
 }
