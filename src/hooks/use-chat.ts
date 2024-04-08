@@ -28,8 +28,14 @@ export const useChat = () => {
   const controller = useRef<AbortController>()
 
   const chatStore = useChatStore()
-  const { setQuestion, setIsLoading, setMessage, setWaitAnswer, setIntention } =
-    chatStore
+  const {
+    setQuestion,
+    setIsLoading,
+    setMessage,
+    setWaitAnswer,
+    setReadAnswer,
+    setIntention,
+  } = chatStore
 
   /**
    * Adds a new message to the message data
@@ -44,13 +50,6 @@ export const useChat = () => {
 
     setMessage([...messages, ...(msgs as Message[])])
 
-    // Do no show monitor message within 20 seconds
-    setWaitAnswer(true)
-    console.log('user start reading answer now')
-    setTimeout(function () {
-      setWaitAnswer(false)
-      console.log('user stop reading answer now')
-    }, 20000)
     utilDom.scrollToBottom(chatEl!)
   }
 
@@ -93,13 +92,6 @@ export const useChat = () => {
     if (!lastMessage) return { messages: [...messages] }
 
     setMessage([...messages.slice(0, messages.length - 1), newMsg])
-    // Do no show monitor message within 20 seconds
-    setWaitAnswer(true)
-    console.log('user start waiting answer now')
-    setTimeout(function () {
-      setWaitAnswer(false)
-      console.log('user stop waiting answer now')
-    }, 20000)
     const { chatEl } = useChatStore.getState()
 
     utilDom.scrollToBottom(chatEl!)
@@ -207,6 +199,15 @@ export const useChat = () => {
     } = CHAT_CONFIG.answerType
 
     console.log('Chat Data: ', data)
+
+    if (data.answer_type === 'end') {
+      setReadAnswer(true)
+      console.log('user start reading answer now!!!')
+      setTimeout(function () {
+        setReadAnswer(false)
+        console.log('user stop reading answer now!!!')
+      }, 10000)
+    }
 
     const messages = chatStore.messages
     const answerType = data.answer_type
