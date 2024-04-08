@@ -1,7 +1,6 @@
 import { useEmitter, type EmitEvents, type OnEvents } from '@/hooks/use-emitter'
 
 import type { UseWebSocketOptions } from './types'
-import { useUserStore } from '@/stores/use-user-store'
 
 /**
  * A WebSocket hook, it's not dependent on React.
@@ -71,10 +70,14 @@ export const useWebSocket = <O extends OnEvents, E extends EmitEvents>(
   }
 
   const onMessage = (event: MessageEvent) => {
-    if (!useUserStore.getState().isLogined) {
-      disconnect()
-      return
-    }
+    /**
+     * Do not disconnect here. because this is a pure hook.
+     * Should be not handle business logic.
+     */
+    // if (!useUserStore.getState().isLogined) {
+    //   disconnect()
+    //   return
+    // }
     const message = JSON.parse(event.data || 'null')
 
     options?.onMessage?.(event)
