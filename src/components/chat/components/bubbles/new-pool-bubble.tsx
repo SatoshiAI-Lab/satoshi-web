@@ -5,13 +5,13 @@ import { FaTwitter } from 'react-icons/fa'
 import { FaTelegramPlane } from 'react-icons/fa'
 import { GrLanguage } from 'react-icons/gr'
 import { useTranslation } from 'react-i18next'
+import dayjs from 'dayjs'
 
 import MessageBubble from './message-bubble'
 import { IconButton } from '@mui/material'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { ChatResponseMetaNewPool } from '@/api/chat/types'
-import dayjs from 'dayjs'
 
 const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
   const { t } = useTranslation()
