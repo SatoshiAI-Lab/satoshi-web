@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useState } from 'react'
 import clsx from 'clsx'
 
 import MessageBubble from './message-bubble'
@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import i18n from '@/i18n'
 import { t } from 'i18next'
 import ShowMoreText from 'react-show-more-text'
+import { Dialog } from '@mui/material'
 
 const TwitterBubble = ({
   content,
@@ -19,6 +20,13 @@ const TwitterBubble = ({
   const { language } = i18n
   const currentContent =
     content[language] || Object.values(content).find((v) => v) || ''
+
+  const [open, setOpen] = useState(false)
+  const [image, setImage] = useState<string>()
+  const showImage = (item: string) => {
+    setImage(item)
+    setOpen(true)
+  }
   return (
     <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
       {/* Avatar, name */}
@@ -52,6 +60,7 @@ const TwitterBubble = ({
         <img
           key={item}
           src={item}
+          onClick={() => showImage(item)}
           alt="img"
           className="rounded-md max-h-[300px] max-w-[300px]"
         />
@@ -63,6 +72,10 @@ const TwitterBubble = ({
       >
         {t('bubble.originlink')}
       </a>
+
+      <Dialog open={open} keepMounted onClose={() => setOpen(false)}>
+        <img src={image} alt="img" className="max-h-[600px] max-w-[600px]" />
+      </Dialog>
     </MessageBubble>
   )
 }
