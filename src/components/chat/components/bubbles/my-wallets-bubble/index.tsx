@@ -48,9 +48,16 @@ const MyWalletsBubble = (props: Props) => {
 
   const { t } = useTranslation()
 
+  const sendQ = (question: string) => {
+    addMessageAndLoading({ msg: question, position: 'right' })
+    sendMsg({
+      question: question,
+    })
+  }
+
   const onDetails = (token: ChatResponseWalletListToken) => {
-    console.log('onDetails click', token)
-    toast('Coming soon...')
+    const question = t('intent.detail').replace('$1', token.address)
+    sendQ(question)
   }
 
   const onBuy = (token: ChatResponseWalletListToken) => {
@@ -58,15 +65,18 @@ const MyWalletsBubble = (props: Props) => {
       .replace('$1', token.name)
       .replace('$2', token.address)
 
+    sendQ(question)
+  }
+
+  const onSell = (token: ChatResponseWalletListToken) => {
+    const question = t('intent.sell')
+      .replace('$1', token.name)
+      .replace('$2', token.address)
+
     addMessageAndLoading({ msg: question, position: 'right' })
     sendMsg({
       question: question,
     })
-  }
-
-  const onSell = (token: ChatResponseWalletListToken) => {
-    console.log('onSell click', token)
-    toast('Coming soon...')
   }
 
   const onFold = (wallet: (typeof wallets)[number]) => {

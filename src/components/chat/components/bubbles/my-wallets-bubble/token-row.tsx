@@ -96,7 +96,7 @@ export const TokenRow = (props: TokensProps) => {
                 <div className="text-base">{token.name ?? 'Null'}</div>
               </Avatar>
               <div className="flex flex-col justify-between ml-2">
-                <span className="text-primary">{token.name ?? 'null'}</span>
+                <span className="text-primary">{token.symbol}</span>
                 <div className="flex items-center">
                   {/* TODO: should be chain logo & name */}
                   <Avatar

@@ -7,21 +7,17 @@ import { TwitterListBubble } from './twitter-list-bubble'
 import { TxTokenBubbles } from './tx-token-bubbles/tx-token-bubbles'
 import { MonitorAddressBubble } from './monitor-address-bubble'
 import MyWalletsBubble from '../bubbles/my-wallets-bubble'
+import { TokenDetailBubble } from './token-detail-bubble'
 
 interface Props {
   msg: Message
 }
 
 export const IntentMessage = ({ msg }: Props) => {
-  const { intentSelectWalletType } = CHAT_CONFIG
+  const { intentSelectWalletType, intentTxToken } = CHAT_CONFIG
   const { walletList } = CHAT_CONFIG.answerType
-  const {
-    walletBalance,
-    twitterList,
-    transactionConfirm,
-    moniotrWallet,
-    monitorWalletFail,
-  } = CHAT_CONFIG.metadataType
+  const { walletBalance, twitterList, moniotrWallet, tokenDetail } =
+    CHAT_CONFIG.metadataType
 
   const metaType = msg?.msgs?.type!
 
@@ -46,12 +42,17 @@ export const IntentMessage = ({ msg }: Props) => {
   }
 
   // Tx Token
-  if (metaType == transactionConfirm) {
+  if (intentTxToken.includes(metaType)) {
     return <TxTokenBubbles msg={msg.msgs!}></TxTokenBubbles>
   }
 
   // Monitor wallet
   if (metaType == moniotrWallet) {
     return <MonitorAddressBubble msg={msg.msgs!}></MonitorAddressBubble>
+  }
+
+  // token detail
+  if (metaType == tokenDetail) {
+    return <TokenDetailBubble msg={msg.msgs!}></TokenDetailBubble>
   }
 }

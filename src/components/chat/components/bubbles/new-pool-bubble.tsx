@@ -12,21 +12,25 @@ import { IconButton } from '@mui/material'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { ChatResponseMetaNewPool } from '@/api/chat/types'
+import { link } from '@/config/link'
 
 const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
   const { t } = useTranslation()
   const { copy } = useClipboard()
+
+  console.log(props);
+  
 
   return (
     <MessageBubble className={clsx('min-w-bubble pt-4 w-[500px]')}>
       {/* Avatar, name */}
       <div className="flex justify-between">
         <div className="flex items-stretch gap-[8px]">
-          <img
+          {/* <img
             src="/images/i1.png"
             alt="avatar"
             className="w-[40px] h-[40px] rounded-full"
-          />
+          /> */}
           <div className="flex flex-col">
             <span className="font-bold h-[20px] leading-none">
               {t('new-pool').replace('{}', 'Solana')}
@@ -36,45 +40,48 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
             </span>
           </div>
         </div>
-        <img
+        {/* <img
           src="/images/i2.png"
           alt="img"
           className="rounded-md w-[44px] h-[44px] border border-gray-300"
-        />
-      </div>
-      <div className="font-bold mb-1 flex justify-between items-center">
-        <span>
-          {props.symbol}({props.name})
-        </span>
-        <div className="flex items-center">
-          {true && (
+        /> */}
+        <div className="font-bold -mt-4 mb-1 flex justify-between items-center">
+          <div className="flex items-center">
             <IconButton
               onClick={() => window.open(props.twitter)}
               title="Twitter"
+              color="primary"
+              disabled={!props.twitter}
             >
-              <FaTwitter className="text-secondary" size={20} />
+              <FaTwitter size={20} />
             </IconButton>
-          )}
-          {true && (
             <IconButton
               onClick={() => window.open(props.telegram)}
+              color="primary"
               title="Telegram"
+              disabled={!props.telegram}
             >
-              <FaTelegramPlane className="text-secondary" size={22} />
+              <FaTelegramPlane size={22} />
             </IconButton>
-          )}
-          <IconButton
-            onClick={() => window.open(props.website)}
-            title="Website"
-          >
-            <GrLanguage className="text-secondary" size={20} />
-          </IconButton>
+            <IconButton
+              color="primary"
+              onClick={() => window.open(props.website)}
+              title="Website"
+              disabled={!props.website}
+            >
+              <GrLanguage size={20} />
+            </IconButton>
+          </div>
         </div>
       </div>
+      <div className="my-2 font-bold">
+        {props.symbol}({props.name})
+      </div>
+
       <div className="flex items-center mb-2">
         <span className="font-bold">{t('ca')}:</span>{' '}
         <a
-          href={`https://solscan.io/account/${props.address}`}
+          href={`${link.solscan}${props.address}`}
           target="_blank"
           className="text-primary ml-1 underline"
         >

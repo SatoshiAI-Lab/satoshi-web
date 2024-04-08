@@ -21,6 +21,11 @@ interface UserCreateWalletResp {
   user: string
   value: string
   tokens: ChatResponseWalletListToken[]
+  chain: {
+    id: number
+    logo: string
+    name: string
+  }
 }
 
 interface UserExportPrivateKeyResp {
@@ -62,7 +67,6 @@ export type {
   UserImportPrivateKeyReq,
   UserExportPrivateKey,
   UserExportPrivateKeyResp,
-  WalletToken,
   UserImportPrivateKeyResp,
   UserRenameWalletReq,
   UserRenameWalletResp,

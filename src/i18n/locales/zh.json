@@ -109,7 +109,7 @@
   "no.balance": "这个钱包什么代币都没有",
   "on": "开启",
   "off": "关闭",
-  "tx.token.text1": "你要多少SOL ?",
+  "tx.token.text1": "你要多少$1?",
   "tx.token.text2": "你想用哪个钱包?",
   "custom": "自定义",
   "slippage": "滑点",
@@ -207,5 +207,14 @@
   "crop.error-message": "您的图像尺寸有误，\n请重试。$所需的最小尺寸：{}。",
   "crop-size-error": "图像尺寸错误",
   "intent.buy": "帮我购买$1，合约地址是：$2",
-  "cancel-answer": "您取消了此次回答"
+  "cancel-answer": "您取消了此次回答",
+  "insufficient.balance.terms": "你钱包里没有足够的$1",
+  "total": "总量: ",
+  "successful.transaction": "交易哈希：",
+  "tx.token2": "你想要卖出多少$1？",
+  "intent.sell": "帮我卖出$1，地址是: $2",
+  "intent.detail": "帮我查询$1代币地址",
+  "lp": "流动性：",
+  "holder": "持币人：",
+  "mkt-cap": "市值："
 }

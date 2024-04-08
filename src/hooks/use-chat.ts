@@ -366,6 +366,7 @@ export const useChat = () => {
     sendMsg,
     cancelAnswer,
     findPrevInteractive,
+    addMessage,
     addMessageAndLoading,
     addMonitorMessage,
   }
