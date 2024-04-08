@@ -8,6 +8,8 @@ import { TxTokenBubbles } from './tx-token-bubbles/tx-token-bubbles'
 import { MonitorAddressBubble } from './monitor-address-bubble'
 import MyWalletsBubble from '../bubbles/my-wallets-bubble'
 import { TokenDetailBubble } from './token-detail-bubble'
+import { ExMonitorBubble } from './ex-monitor-bubble'
+import { PoolMonitorBubble } from './pool-monitor-bubble'
 
 interface Props {
   msg: Message
@@ -16,8 +18,14 @@ interface Props {
 export const IntentMessage = ({ msg }: Props) => {
   const { intentSelectWalletType, intentTxToken } = CHAT_CONFIG
   const { walletList } = CHAT_CONFIG.answerType
-  const { walletBalance, twitterList, moniotrWallet, tokenDetail } =
-    CHAT_CONFIG.metadataType
+  const {
+    walletBalance,
+    twitterList,
+    moniotrWallet,
+    tokenDetail,
+    monitorExList,
+    monitorPoolList
+  } = CHAT_CONFIG.metadataType
 
   const metaType = msg?.msgs?.type!
 
@@ -54,5 +62,15 @@ export const IntentMessage = ({ msg }: Props) => {
   // token detail
   if (metaType == tokenDetail) {
     return <TokenDetailBubble msg={msg.msgs!}></TokenDetailBubble>
+  }
+
+  // token detail
+  if (metaType == monitorExList) {
+    return <ExMonitorBubble></ExMonitorBubble>
+  }
+
+  // token detail
+  if (metaType == monitorPoolList) {
+    return <PoolMonitorBubble></PoolMonitorBubble>
   }
 }

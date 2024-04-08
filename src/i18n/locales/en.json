@@ -218,5 +218,7 @@
   "intent.detail": "Help me find the $1 token address",
   "lp": "LIQUIDITY: ",
   "holder": "Holder: ",
-  "mkt-cap": "MKT CAP: "
+  "mkt-cap": "MKT CAP: ",
+  "ex.monitor.handle": "Select the exchanges you want to monitor or unmonitor",
+  "pool.moniotr.handle": "Please select the newly added pool chain you want to monitor or unmonitor"
 }

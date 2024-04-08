@@ -1,10 +1,17 @@
-import { Button, Dialog, IconButton, TextField } from '@mui/material'
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  IconButton,
+  TextField,
+} from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import { WalletDialogProps } from './types'
 import { TfiClose } from 'react-icons/tfi'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
+import { useShow } from '@/hooks/use-show'
 
 const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
   const {
@@ -13,8 +20,10 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
     getWallets,
   } = useWalletStore()
   const [walletName, setWalletName] = useState('')
+  const { open: openLoading, show, hidden: hiddenLoading } = useShow()
 
   const renameWallet = (walletName: string) => {
+    openLoading()
     renameWithDefaultName(walletName)
       .then(async (res) => {
         toast.success(t('wallet.rename-wallet.success'))
@@ -23,6 +32,9 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
       })
       .catch(() => {
         toast.error(t('wallet.error'))
+      })
+      .finally(() => {
+        hiddenLoading()
       })
   }
 
@@ -81,8 +93,10 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               variant="contained"
               className="!h-[50px] !text-[18px] !rounded-xl"
               fullWidth
+              disabled={show || !walletName}
               onClick={() => renameWallet(walletName)}
             >
+              {show ? <CircularProgress size={16} className='mr-2'></CircularProgress> : <></>}
               {t('save')}
             </Button>
           </div>

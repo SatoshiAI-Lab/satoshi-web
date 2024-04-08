@@ -57,7 +57,7 @@ function SingleMessage(props: SingleMessageProps) {
 
     const { targetEl } = utilDom.eventProxy(e.target as HTMLElement, 'div')
     const tokenName = targetEl.firstChild?.textContent ?? ''
-    const prevMsg = findPrevInteractive(id) ?? { msg: '' }
+    const prevMsg = findPrevInteractive(id) ?? { msg: msg.name }
     const interactiveOps = {
       id: msg.id,
       type: msg.type,
@@ -73,6 +73,9 @@ function SingleMessage(props: SingleMessageProps) {
   }
 
   if (!msgs.length) return <></>
+
+  console.log('msgs', msgs)
+  
 
   return (
     <>
