@@ -33,6 +33,12 @@ const walletMenu = [
     content: 'Support ETH/BSC/Blast/ARB',
     disable: true,
   },
+  {
+    id: 'icp',
+    title: 'ICP Wallet',
+    content: '',
+    disable: true,
+  },
 ]
 
 const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
