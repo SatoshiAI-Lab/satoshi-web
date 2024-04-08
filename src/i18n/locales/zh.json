@@ -193,5 +193,17 @@
   "bubble.new-anno": "发送了新的公告",
   "bubble.originlink": "源链接",
   "bubble.show.more": "展开",
-  "bubble.show.hide": "收起"
+  "bubble.show.hide": "收起",
+  "create-token.no-wallet": "我检测到你还没有{}钱包，就先为你创建了一个",
+  "create-token.no-wallet-balance": "请往钱包内充值至少{}以确保代币创建成功",
+  "create-token.loading": "创建代币中...",
+  "create-token.loading-desc": "这或许就是你成就大业的开端",
+  "token-addr": "代币合约地址",
+  "create-token.success-all": "已全部打入到了你的钱包",
+  "confirm-crop": "确认裁剪",
+  "cancel-crop": "取消裁剪",
+  "crop.title": "裁剪图像",
+  "crop.error": "图片错误",
+  "crop.error-message": "您的图像尺寸有误，\n请重试。$所需的最小尺寸：{}。",
+  "crop-size-error": "图像尺寸错误"
 }

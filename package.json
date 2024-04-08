@@ -29,6 +29,7 @@
     "react-hot-toast": "^2.4.1",
     "react-i18next": "13.0.2",
     "react-icons": "^5.0.1",
+    "react-image-crop": "^11.0.5",
     "react-markdown": "^8.0.7",
     "react-show-more-text": "^1.7.1",
     "react-syntax-highlighter": "^15.5.0",

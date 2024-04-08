@@ -1,25 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import {
-  Button,
-  InputBase,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
-} from '@mui/material'
-import { AiOutlineCopy } from 'react-icons/ai'
+import React, { useState } from 'react'
+import { Button, InputBase, TextField } from '@mui/material'
 import { BsFillLightningFill } from 'react-icons/bs'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import numeral from 'numeral'
+import toast from 'react-hot-toast'
 
 import MessageBubble from '../message-bubble'
-import FileUploader from '@/components/file-uploader'
-import { utilArr } from '@/utils/array'
-import { useClipboard } from '@/hooks/use-clipboard'
-import { useWalletStore } from '@/stores/use-wallet-store'
-import { utilFmt } from '@/utils/format'
-import { Wallet } from '@/components/wallet'
+import ImageUploader from '@/components/image-uploader'
+import CreateTokenWallets from './wallets'
+import CreateTokenLoading from './loading'
+import CreateTokenSuccess from './success'
 
 enum HotToken {
   WIF = 100_000_000,
@@ -30,64 +21,33 @@ interface CreateTokenBubbleProps extends React.ComponentProps<'div'> {}
 
 const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   const {} = props
-  const { currentWallet, wallets, getWallets, setCurrentWallet } =
-    useWalletStore()
+  const { t } = useTranslation()
   const [tokenName, setTokenName] = useState('')
   const [tokenNickname, setTokenNickname] = useState('')
   const [tokenTotal, setTokenTotal] = useState(0)
   const [tokenIntro, setTokenIntro] = useState('')
-  const { copy } = useClipboard()
-  const { t } = useTranslation()
-  const [walletOpen, setWalletOpen] = useState(false)
-  const [selectedWallet, setSelectedWallet] = useState<
-    typeof currentWallet | undefined
-  >(undefined)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const nicknameIsValid = !!tokenNickname.trim()
   const nameIsValid = !!tokenName.trim()
   const totalIsValid = tokenTotal > 0
 
-  const onViewDetails = () => {
-    console.log('view wallet details')
-    setWalletOpen(true)
-  }
-
   const onCreate = () => {
+    toast('Coming soon')
     console.log('create token')
   }
 
-  const onSelect = ({ target }: SelectChangeEvent<string>) => {
-    const targetWallet = wallets.find(
-      (w) => utilFmt.addr(w.address) === target.value
-    )
-
-    setCurrentWallet(targetWallet?.address ?? '')
+  if (isLoading) {
+    return <CreateTokenLoading />
   }
 
-  useEffect(() => {
-    if (utilArr.isEmpty(wallets)) return
-
-    setCurrentWallet(utilArr.first(wallets).address ?? '')
-  }, [wallets])
-
-  useEffect(() => {
-    if (currentWallet.address) {
-      setSelectedWallet(currentWallet)
-    }
-  }, [currentWallet])
-
-  useEffect(() => {
-    getWallets()
-  }, [])
+  if (isSuccess) {
+    return <CreateTokenSuccess />
+  }
 
   return (
     <MessageBubble className="pb-4 w-[550px]">
-      <Wallet
-        open={walletOpen}
-        onClose={() => setWalletOpen(false)}
-        showButtons={false}
-        onlyWalletAddr={currentWallet.address}
-      />
       <div className="font-bold">{t('create-token.title')}</div>
       <div className="flex justify-between mt-4">
         <div className="flex flex-col justify-between">
@@ -112,7 +72,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
         </div>
         <div className="flex flex-col mr-4">
           <div className="mb-1">{t('token-logo')}</div>
-          <FileUploader />
+          <ImageUploader />
         </div>
       </div>
       <div className="mt-4 w-[360px]">
@@ -166,46 +126,8 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
           onChange={({ target }) => setTokenIntro(target.value)}
         />
       </div>
-      <div className="mt-4">
-        <div className="mb-1">{t('use-below-wallet')}</div>
-        <div className="flex items-stretch">
-          <Select
-            size="small"
-            value={utilFmt.addr(selectedWallet?.address)}
-            onChange={onSelect}
-          >
-            {wallets.map((w) => (
-              <MenuItem key={w.id} value={utilFmt.addr(w?.address)}>
-                {w.name}
-              </MenuItem>
-            ))}
-          </Select>
-          <div className="flex flex-col justify-between text-sm ml-2">
-            <span
-              className="text-primary cursor-pointer"
-              onClick={onViewDetails}
-            >
-              {t('view-wallet-details')}
-            </span>
-            <span className="text-gray-500">
-              {t('wallet-balance-confirm').replace('{}', '0.1 SOL')}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="mt-4">
-        <div>
-          {currentWallet.name} {t('addr')}:
-        </div>
-        <div className="flex items-center">
-          <span>{currentWallet.address}</span>
-          <AiOutlineCopy
-            className="ml-2 cursor-pointer"
-            size={18}
-            onClick={() => copy(currentWallet.address ?? '')}
-          />
-        </div>
-      </div>
+      {/* Wallet list select */}
+      <CreateTokenWallets />
       <div className="my-4">
         {!nicknameIsValid && (
           <div className="text-rise text-sm">
