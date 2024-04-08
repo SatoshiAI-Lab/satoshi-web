@@ -143,7 +143,8 @@ export const TxTokenBubbles = (props: Props) => {
                       className={clsx(
                         'p-3 transition-all hover:text-gray-500 cursor-pointer',
                         walletId == wallet.id ? '!text-primary' : '',
-                        i === 1 ? 'border-x' : ''
+                        i === 1 ? 'border-x' : '',
+                        i === wallets.length - 1 ? '!border-r-0' : ''
                       )}
                       onClick={() => setWalletId(wallet.id)}
                     >
