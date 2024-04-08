@@ -21,17 +21,17 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
     <MessageBubble className={clsx('min-w-bubble pt-4 w-[500px]')}>
       {/* Avatar, name */}
       <div className="flex justify-between">
-        <div className="flex items-stretch">
+        <div className="flex items-stretch gap-[8px]">
           <img
             src="/images/i1.png"
             alt="avatar"
-            className="w-12 h-12 rounded-full mr-2"
+            className="w-[40px] h-[40px] rounded-full"
           />
-          <div className="flex flex-col justify-between">
-            <span className="font-bold leading-none">
+          <div className="flex flex-col">
+            <span className="font-bold h-[20px] leading-none">
               {t('new-pool').replace('{}', 'Solana')}
             </span>
-            <span className="text-gray-400 text-sm">
+            <span className="text-gray-400 h-[20px] text-sm">
               {dayjs(props.created_at).format('H:mm M/D')}
             </span>
           </div>
@@ -39,10 +39,10 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
         <img
           src="/images/i2.png"
           alt="img"
-          className="rounded-md w-[48px] h-[48px] border border-gray-300"
+          className="rounded-md w-[44px] h-[44px] border border-gray-300"
         />
       </div>
-      <div className="font-bold mt-3 mb-1 flex justify-between items-center">
+      <div className="font-bold mb-1 flex justify-between items-center">
         <span>
           {props.symbol}({props.name})
         </span>
@@ -73,7 +73,11 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
       </div>
       <div className="flex items-center mb-2">
         <span className="font-bold">{t('ca')}:</span>{' '}
-        <a href={'#'} target="_blank" className="text-primary ml-1 underline">
+        <a
+          href={`https://solscan.io/account/${props.address}`}
+          target="_blank"
+          className="text-primary ml-1 underline"
+        >
           {utilFmt.addr(props.address)}
         </a>
         <MdOutlineContentCopy
@@ -83,7 +87,7 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
       </div>
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('liquidity')}:</span>
-        <span>$${props.liquidity}</span>
+        <span>${props.liquidity}</span>
       </div>
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('started')}:</span>{' '}
@@ -112,16 +116,18 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
           ))}
           <div></div>
         </div>
-        <div className="my-2">
-          <div className="font-bold mt-2">
-            🧠 {t('score')}: {t(props.score.score)}
-          </div>
-          {props.score.detail.map((item) => (
-            <div className="mt-2" key={item}>
-              {item}
+        {props.score.score && (
+          <div className="my-2">
+            <div className="font-bold mt-2">
+              🧠 {t('score')}: {t(props.score.score)}
             </div>
-          ))}
-        </div>
+            {props.score.detail.map((item) => (
+              <div className="mt-2" key={item}>
+                {item}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </MessageBubble>
   )
