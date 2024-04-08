@@ -12,14 +12,8 @@ import {
   UserDeleteWalletResp,
 } from './params'
 
-const walletApi = {
-  getWallets(
-    params: {
-      platform?: string
-    } = {
-      platform: 'SOL',
-    }
-  ) {
+export const walletApi = {
+  getWallets(params?: UserCreateWalletReq) {
     return fetchSatoshi.get<UserCreateWalletResp[]>('/api/v1/wallet/', params)
   },
   createWallet(params: UserCreateWalletReq) {
@@ -50,5 +44,3 @@ const walletApi = {
     )
   },
 }
-
-export { walletApi }

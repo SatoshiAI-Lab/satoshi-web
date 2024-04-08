@@ -2,16 +2,17 @@ import { MonitorLabelSwitch } from './monitor-label-switch'
 import { MonitorConfig } from '@/config/monitor'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 
-import type { AnnouncementList, MonitorConfigData } from '@/api/monitor/type'
+import type { AnnouncementList } from '@/api/monitor/type'
+import clsx from 'clsx'
 
 interface Props {
-  data?: MonitorConfigData
+  className?: string
 }
 
-export const MonitorEXInfo = ({ data }: Props) => {
-  const { setConfig } = useMonitorStore()
+export const MonitorEXInfo = ({ className }: Props) => {
+  const { configData, setConfig } = useMonitorStore()
 
-  const exList = data?.announcement.content
+  const exList = configData?.announcement.content
 
   const onSwitch = async (item: AnnouncementList, checked: boolean) => {
     item.subscribed = checked
@@ -25,17 +26,18 @@ export const MonitorEXInfo = ({ data }: Props) => {
       content: content,
     }
 
-    await setConfig(data, exList)
+    await setConfig(data)
   }
 
   return (
-    <div className="px-10 pb-7">
+    <div className={clsx('px-10 pb-7', className)}>
       <div className="grid grid-cols-2 gap-x-5 gap-y-4 max-sm:grid-cols-1">
         {exList?.map((item, i) => {
           return (
             <MonitorLabelSwitch
               key={i}
               data={item}
+              logo={`https://img.mysatoshi.ai/exchange/logo/${item.name}.png`}
               onSwitch={(checked) => onSwitch(item, checked)}
             ></MonitorLabelSwitch>
           )

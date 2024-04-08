@@ -6,7 +6,7 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material'
-import { FC, createElement, useState } from 'react'
+import { FC, createElement, useEffect, useState } from 'react'
 import { WalletDialogProps } from './types'
 import { AiOutlineSafety, AiOutlineWallet } from 'react-icons/ai'
 import { WalletCard } from './wallet-card'
@@ -33,6 +33,12 @@ const walletMenu = [
     content: 'Support ETH/BSC/Blast/ARB',
     disable: true,
   },
+  {
+    id: 'icp',
+    title: 'ICP Wallet',
+    content: '',
+    disable: true,
+  },
 ]
 
 const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
@@ -42,7 +48,14 @@ const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
   3: WalletDeletePop,
 }
 
-const Wallet: FC<WalletDialogProps> = ({ finish, open, onClose }) => {
+const Wallet: FC<WalletDialogProps> = ({
+  finish,
+  showButtons = true,
+  // Used for show a wallet details.
+  onlyWalletAddr,
+  open,
+  onClose,
+}) => {
   const { wallets, loading, setCurrentWallet, createWallet, getWallets } =
     useWalletStore()
   // Copy from MUI menu
@@ -70,21 +83,21 @@ const Wallet: FC<WalletDialogProps> = ({ finish, open, onClose }) => {
   }
 
   const ImportWalletPrivateKey = () => {
-    setCurrentPopTitle('Import Private Key')
+    setCurrentPopTitle(t('wallet.import-wallet.title'))
     setCurrentPop(2)
     setPopOpen(true)
   }
 
   const exportWalletPrivateKey = (address: string) => {
     setCurrentWallet(address)
-    setCurrentPopTitle('Export Private Key')
+    setCurrentPopTitle(t('wallet.title.export-privatekey'))
     setCurrentPop(0)
     setPopOpen(true)
   }
 
   const renameWallet = (address: string) => {
     setCurrentWallet(address)
-    setCurrentPopTitle('Rename Wallet')
+    setCurrentPopTitle(t('wallet.title.rename-wallet'))
     setCurrentPop(1)
     setPopOpen(true)
   }
@@ -96,10 +109,20 @@ const Wallet: FC<WalletDialogProps> = ({ finish, open, onClose }) => {
 
   const deleteWallet = (address: string) => {
     setCurrentWallet(address)
-    setCurrentPopTitle('Delete Wallet')
+    setCurrentPopTitle(t('wallet.title.delete-wallet'))
     setCurrentPop(3)
     setPopOpen(true)
   }
+
+  const [onlyWallet, setOnlyWallet] = useState<
+    (typeof wallets)[number] | undefined
+  >(undefined)
+
+  useEffect(() => {
+    const target = wallets.find((w) => w.address === onlyWalletAddr)
+    setOnlyWallet(target)
+  }, [onlyWalletAddr])
+
   return (
     <>
       <Dialog
@@ -119,68 +142,68 @@ const Wallet: FC<WalletDialogProps> = ({ finish, open, onClose }) => {
         <div className="my-8 mx-10">
           <div className="flex gap-[102px]">
             <div>
-              <p className="text-[30px]">My Quick Wallet</p>
-              <div className="flex gap-3 mt-[22px] mb-[13px]">
-                {/* Create Wallet Menu */}
-                <div>
+              <p className="text-[30px]">{t('wallet.quickwallettitle')}</p>
+              {showButtons && (
+                <div className="flex gap-3 mt-[22px] mb-[13px]">
+                  {/* Create Wallet Menu */}
+
+                  <div>
+                    <Button
+                      id="basic-button"
+                      aria-controls={
+                        openCreateWallet ? 'basic-menu' : undefined
+                      }
+                      aria-haspopup="true"
+                      aria-expanded={openCreateWallet ? 'true' : undefined}
+                      onClick={handleCreateClick}
+                      startIcon={<AiOutlineWallet />}
+                      classes={{
+                        root: '!bg-black !text-white !rounded-full !w-[182px]',
+                      }}
+                    >
+                      {t('wallet.createnewwallet')}
+                    </Button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={openCreateWallet}
+                      onClose={handleCreatClose}
+                      MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                      }}
+                      classes={{
+                        list: '!p-[0px]',
+                      }}
+                    >
+                      {walletMenu.map((item) => (
+                        <MenuItem
+                          disabled={item.disable}
+                          key={item.id}
+                          className="w-[295px] h-[65px] flex flex-col !items-start !justify-center"
+                          onClick={() => createWalletFunc(item.id)}
+                        >
+                          <div className="text-[16px]">{item.title}</div>
+                          <div className="text-[14px]">{item.content}</div>
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </div>
+
+                  {/* Import Waller Menu */}
                   <Button
-                    id="basic-button"
-                    aria-controls={openCreateWallet ? 'basic-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={openCreateWallet ? 'true' : undefined}
-                    onClick={handleCreateClick}
-                    startIcon={<AiOutlineWallet />}
                     classes={{
-                      root: '!bg-black !text-white !rounded-full !w-[182px]',
+                      root: '!text-black !rounded-full !w-[138px]',
                     }}
+                    className="!border-gray-400 hover:!bg-gray-100"
+                    variant="outlined"
+                    onClick={ImportWalletPrivateKey}
                   >
-                    Create Wallet
+                    {t('wallet.importwallet')}
                   </Button>
-                  <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl}
-                    open={openCreateWallet}
-                    onClose={handleCreatClose}
-                    MenuListProps={{
-                      'aria-labelledby': 'basic-button',
-                    }}
-                    classes={{
-                      list: '!p-[0px]',
-                    }}
-                  >
-                    {walletMenu.map((item) => (
-                      <MenuItem
-                        disabled={item.disable}
-                        key={item.id}
-                        className="w-[295px] h-[65px] flex flex-col !items-start !justify-center"
-                        onClick={() => createWalletFunc(item.id)}
-                      >
-                        <div className="text-[16px]">{item.title}</div>
-                        <div className="text-[14px]">{item.content}</div>
-                      </MenuItem>
-                    ))}
-                  </Menu>
                 </div>
-                {/* Import Waller Menu */}
-                <Button
-                  classes={{
-                    root: '!text-black !rounded-full !w-[138px]',
-                  }}
-                  className="!border-gray-400 hover:!bg-gray-100"
-                  variant="outlined"
-                  onClick={ImportWalletPrivateKey}
-                >
-                  Import Wallet
-                </Button>
-              </div>
-              <p className="text-[16px]">
-                Quick wallet simplifies DEX trading for Lightning-fast
-                transactions.
-              </p>
-              <p className="text-[16px]">
-                Satoshi AI ensures data security with years of experience and
-                robust measures.
-              </p>
+              )}
+              <p className="text-[16px]">{t('wallet.quickwallettip1')}</p>
+              <p className="text-[16px]">{t('wallet.quickwallettip2')}</p>
             </div>
             <div>
               <AiOutlineSafety size={162} color="#D4D4D4" />
@@ -189,7 +212,7 @@ const Wallet: FC<WalletDialogProps> = ({ finish, open, onClose }) => {
           {/* Wallets list */}
           <div className="flex flex-col h-[440px] max-h-[440px] overflow-scroll gap-[25px] mt-[20px]">
             {(wallets?.length &&
-              wallets.map((item) => (
+              (onlyWallet ? [onlyWallet] : wallets).map((item) => (
                 <WalletCard
                   {...item}
                   platform={item.platform!}
@@ -203,7 +226,7 @@ const Wallet: FC<WalletDialogProps> = ({ finish, open, onClose }) => {
               ))) || (
               <div className="h-full flex items-center justify-center">
                 {(loading && <CircularProgress />) || (
-                  <p>No Wallets, Please Create Wallet first.</p>
+                  <p>{t('wallet.nowallet')}</p>
                 )}
               </div>
             )}

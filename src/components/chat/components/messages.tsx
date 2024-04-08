@@ -7,9 +7,10 @@ import MarkdownParser from '@/components/markdown-parser'
 import { useTranslation } from 'react-i18next'
 
 import { DataType, type Message } from '@/stores/use-chat-store/types'
-import { IntentMessage } from './intention-message'
+import { IntentMessage } from './intention-message/intention-message'
 import {
   ChatResponseMetaAnnounceMent,
+  ChatResponseMetaNewPool,
   ChatResponseMetaNewsInfo,
   ChatResponseMetaTwitter,
   ChatResponseMetaWallet,
@@ -18,6 +19,7 @@ import NewsBubble from './bubbles/news-bubble'
 import ExchangeAnnouncementBubble from './bubbles/exchange-announcement-bubble'
 import WalletBubble from './bubbles/wallet-bubble'
 import TwitterBubble from './bubbles/twitter-bubble'
+import NewPoolBubble from './bubbles/new-pool-bubble'
 
 interface MessagesProps {
   messages: Message[]
@@ -51,14 +53,7 @@ const Messages = memo((props: MessagesProps) => {
         <ExchangeAnnouncementBubble
           key={i}
           {...(msg as unknown as ChatResponseMetaAnnounceMent)}
-        >
-          <div
-            dangerouslySetInnerHTML={{
-              __html: (msg as unknown as ChatResponseMetaAnnounceMent).content
-                .en,
-            }}
-          ></div>
-        </ExchangeAnnouncementBubble>
+        />
       )
     }
 
@@ -77,10 +72,19 @@ const Messages = memo((props: MessagesProps) => {
       )
     }
 
+    if (msg.data_type === DataType.PoolInfo) {
+      return (
+        <NewPoolBubble
+          key={i}
+          {...{ ...(msg as unknown as ChatResponseMetaNewPool) }}
+        />
+      )
+    }
+
     if (msg.isInteractive) {
       return <InteractiveMessage key={i} msgs={msg.msgs!} />
     }
-    
+
     if (msg.isIntention) {
       return <IntentMessage key={i} msg={msg!}></IntentMessage>
     }

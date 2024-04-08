@@ -1,18 +1,15 @@
+import { ChatResponseWalletListToken } from "../chat/types"
+
 interface UserCreateWalletReq {
   /**
    * Wallet platform: SOL or EVM, default: SOL
    */
-  platform?: string
+  platform?: WalletPlatform
 }
 
-interface WalletToken {
-  symbol: string
-  name: string
-  mintAddress: string
-  amount: string
-  priceUsd: string
-  valueUsd: string
-  logoUrl: string
+export enum WalletPlatform {
+  SOL = 'SOL',
+  EVM = 'EVM',
 }
 
 interface UserCreateWalletResp {
@@ -23,7 +20,12 @@ interface UserCreateWalletResp {
   added_at: string
   user: string
   value: string
-  tokens: WalletToken[]
+  tokens: ChatResponseWalletListToken[]
+  chain: {
+    id: number
+    logo: string
+    name: string
+  }
 }
 
 interface UserExportPrivateKeyResp {
@@ -65,7 +67,6 @@ export type {
   UserImportPrivateKeyReq,
   UserExportPrivateKey,
   UserExportPrivateKeyResp,
-  WalletToken,
   UserImportPrivateKeyResp,
   UserRenameWalletReq,
   UserRenameWalletResp,

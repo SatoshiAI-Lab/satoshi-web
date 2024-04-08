@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaChevronLeft, FaCheck } from 'react-icons/fa6'
 import { Button, Dialog, OutlinedInput } from '@mui/material'
@@ -9,95 +9,51 @@ import { DialogHeader } from '../dialog-header'
 import { useResponsive } from '@/hooks/use-responsive'
 import { MonitorLabelSwitch } from './monitor-label-switch'
 
-import type { MonitorConfigData } from '@/api/monitor/type'
+import type { MonitorConfigData, PoolData } from '@/api/monitor/type'
+import { useMonitorStore } from '@/stores/use-monitor-store'
+import { MonitorConfig } from '@/config/monitor'
 
 interface Props {
   data?: MonitorConfigData
+  className?: string
 }
 
-export const MonitorPools = ({ data }: Props) => {
-  const { t } = useTranslation()
-  const [chain, setChain] = useState()
-  const { show, open, hidden } = useShow(true)
-  const { isMobile } = useResponsive()
-  const chains = [
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Solana',
-      setting: true,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Avanche',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Ethereum',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Blast',
-      setting: false,
-      open: false,
-    },
-  ]
+const defaultMin = 100
+const defaultMax = 1000000
 
-  const openSetting = (chain: any) => {
+export const MonitorPools = ({ data, className }: Props) => {
+  const { t } = useTranslation()
+  const [chain, setChain] = useState<PoolData>()
+  const [min, setMin] = useState(defaultMin)
+  const [max, setMax] = useState(defaultMax)
+  const { show, open, hidden } = useShow(false)
+  const { isMobile } = useResponsive()
+  const { configData, setConfig } = useMonitorStore()
+
+  const chains = configData?.pool.content || []
+
+  const onSwitch = (checked: boolean, data: PoolData) => {
+    data.subscribed = checked
+    const content =
+      configData?.pool.content
+        .filter((item) => item.subscribed)
+        .map((item) => ({
+          min: chain?.min ?? defaultMin,
+          max: chain?.max ?? defaultMax,
+          chain: item.chain,
+        })) || []
+
+    setConfig({
+      message_type: MonitorConfig.pool,
+      content: [...content],
+    })
+  }
+
+  const openSetting = (chain: PoolData) => {
     open()
     setChain(chain)
+    setMin(chain.min || defaultMin)
+    setMax(chain.max || defaultMax)
   }
 
   const onApply = () => {
@@ -107,16 +63,20 @@ export const MonitorPools = ({ data }: Props) => {
   return (
     <div
       className={clsx(
-        'px-10 pb-6 grid grid-cols-2 gap-y-2 gap-x-4',
-        'max-sm:grid-cols-1 max-sm:px-6'
+        'px-10 pb-6 grid grid-cols-2 gap-y-3 gap-x-4',
+        'max-sm:grid-cols-1 max-sm:px-6',
+        className
       )}
     >
-      {chains.map((chain) => {
+      {chains.map((chain, i) => {
         return (
           <MonitorLabelSwitch
-            key={chain.name}
+            key={i}
             data={chain}
-            onSwitch={openSetting}
+            onSwitch={onSwitch}
+            disabled={chain.chain !== 'Solana'}
+            onSetting={chain.slug ? openSetting : null}
+            logo={`https://img.mysatoshi.ai/chains/logo/${chain.chain}.png`}
           ></MonitorLabelSwitch>
         )
       })}
@@ -142,7 +102,6 @@ export const MonitorPools = ({ data }: Props) => {
           }
           onBack={hidden}
           onClose={hidden}
-          showCloseBtn={!isMobile}
         ></DialogHeader>
         <div className="min-w-[400px] max-sm:min-w-[100px] max-sm:px-6">
           <div className="text-center mb-6 font-bold">

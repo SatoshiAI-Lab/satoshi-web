@@ -24,7 +24,7 @@ export const MonitorTwitterList = ({ list, className }: Props) => {
       content,
     }
 
-    setConfig(data, list)
+    setConfig(data)
   }
 
   return (
@@ -37,6 +37,7 @@ export const MonitorTwitterList = ({ list, className }: Props) => {
       {list?.map((item, i) => {
         return (
           <div
+            key={i}
             className={`flex justify-between pl-3 pr-2 border border-black rounded-lg ${
               i !== list.length ? '!mb-3' : ''
             }`}

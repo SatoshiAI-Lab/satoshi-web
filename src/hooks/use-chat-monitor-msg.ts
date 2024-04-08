@@ -11,7 +11,7 @@ import { useChat } from './use-chat'
 export const useChatMonitorMsg = () => {
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
-  const { messages, setMessage } = useChatStore()
+  const { setUnreadMessage } = useChatStore()
   const { addMonitorMessage } = useChat()
   const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
 
@@ -31,7 +31,27 @@ export const useChatMonitorMsg = () => {
     on('message', () => {})
 
     on('event', ({ data }) => {
-      addMonitorMessage(data)
+      console.log(`Keyup: ${useChatStore.getState().inputKeyup}`)
+      console.log(`readAnswer: ${useChatStore.getState().readAnswer}`)
+      console.log(`waitAnswer: ${useChatStore.getState().waitAnswer}`)
+
+      // 1. Within 20 seconds after the input is in the state of Keyup
+      // 2. Within 20 seconds after the latest question answer
+      // 3. Within 10 seconds after the user clicks Ask
+      // should no be boxing
+      if (
+        useChatStore.getState().unreadMessages.length ||
+        useChatStore.getState().inputKeyup ||
+        useChatStore.getState().readAnswer ||
+        useChatStore.getState().waitAnswer
+      ) {
+        setUnreadMessage([
+          useChatStore.getState().unreadMessages,
+          ...data.reverse(),
+        ])
+      } else {
+        addMonitorMessage(data.reverse())
+      }
     })
   }
 

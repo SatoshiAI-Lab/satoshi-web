@@ -16,7 +16,6 @@ export const CHAT_CONFIG = {
       'tech_analyze_stream',
       'tech_analyze_stream',
       '',
-      'transaction_stream',
       'tech_analyze_stream',
     ],
 
@@ -25,17 +24,24 @@ export const CHAT_CONFIG = {
       'wallet_list_stream',
       'contract_wallet_balance',
       'change_name_wallet_list',
+      'delete_wallet_stream',
       'create_wallet_stream',
       'import_wallet_stream',
       'update_wallet_name_stream',
       'export_private_key_stream',
-      'intent_history', // wallet balance
+      'intent_history',
       'subscript_news',
       'subscript_wallet_address',
       'subscript_twitter',
       'wrong_contract',
-      'transaction_confirm',
+      'transaction_confirm_buy',
       'transaction_confirm_stream',
+      'subscript_news',
+      'transaction_stream',
+      'subscript_pool',
+      'do_not_support_buy_token',
+      'do_not_support_sell_token',
+      'subscript_announcement',
     ],
 
     /** it's not need `useStream` */
@@ -68,10 +74,33 @@ export const CHAT_CONFIG = {
   },
   metadataType: {
     intentHistory: 'intent_history',
+    tokenDetail: 'contract_token_detail',
+    moniotrWallet: 'subscript_wallet_address_success',
     walletList: 'wallet_list',
     walletBalance: 'contract_wallet_balance',
+    twitterList: 'subscript_twitter_list',
+    monitorWalletFail: 'subscript_wallet_address_fail',
     changeNameWalletList: 'change_name_wallet_list',
-    twitterList: 'subscript_twitter',
-    transactionConfirm: 'transaction_confirm',
+    exportWalletList: 'export_wallet_list',
+    deleteNameWalletList: 'delete_name_wallet_list',
+    transactionConfirmBuy: 'transaction_confirm_buy',
+    monitorExList: 'subscript_announcement_list',
+    monitorPoolList: 'subscript_pool_list',
   },
+
+  intentTxToken: ['transaction_confirm_buy', 'transaction_confirm_sell'],
+
+  intentSelectWalletType: [
+    'change_name_wallet_list',
+    'export_wallet_list',
+    'delete_name_wallet_list',
+  ],
+
+  hiddenIntentText: [
+    'subscript_twitter_list',
+    'delete_name_wallet_list',
+    'subscript_wallet_address_success',
+    'subscript_announcement_list',
+    'subscript_pool_list',
+  ],
 }

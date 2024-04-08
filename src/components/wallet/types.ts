@@ -4,6 +4,9 @@ export interface WalletDialogProps {
   title?: string
   address?: string
   finish?: boolean
+  showButtons?: boolean
+  // If not null & find same wallet, only show this wallet
+  onlyWalletAddr?: string
 }
 
 export interface WalletCardProps {

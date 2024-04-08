@@ -10,17 +10,35 @@ import { useChatMonitorMsg } from '@/hooks/use-chat-monitor-msg'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { useQuery } from '@tanstack/react-query'
 import { monitorApi } from '@/api/monitor'
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { useUserStore } from '@/stores/use-user-store'
 
 export default function Home() {
   const { src, blurStyle } = useBackground(true)
   const { show, setShow } = useNeedLoginStore()
+  const { isLogined } = useUserStore()
   const { timerByUpdate } = useMonitorStore()
+  const { getWallets } = useWalletStore()
 
   useChatMonitorMsg()
 
   useQuery({
-    queryKey: [monitorApi.getConfig.name],
+    queryKey: [getWallets.name, isLogined],
+    queryFn: () => {
+      if (!isLogined) {
+        return Promise.resolve({})
+      }
+      return getWallets(false)
+    },
+    refetchInterval: 15_000,
+  })
+
+  useQuery({
+    queryKey: [monitorApi.getConfig.name, isLogined],
     queryFn: async () => {
+      if (!isLogined) {
+        return Promise.resolve()
+      }
       const { data } = await monitorApi.getConfig()
       timerByUpdate(data)
       return data

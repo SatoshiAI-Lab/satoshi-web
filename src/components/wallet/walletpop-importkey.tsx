@@ -1,10 +1,11 @@
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { Button, Dialog, IconButton, TextField } from '@mui/material'
+import { Button, CircularProgress, Dialog, IconButton, TextField } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import { WalletDialogProps } from './types'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
+import { useShow } from '@/hooks/use-show'
 
 const WalletImportKeyPop: FC<WalletDialogProps> = ({
   open,
@@ -13,7 +14,9 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
 }) => {
   const [privateKey, setPrivateKey] = useState('')
   const { importWallet: importPrivateKey, getWallets } = useWalletStore()
+  const {hidden: hiddenLoading, open: openLoading, show} = useShow()
   const importWallet = (privateKey: string) => {
+    openLoading()
     importPrivateKey(privateKey)
       .then(() => {
         toast.success(t('wallet.import-wallet.success'))
@@ -22,6 +25,8 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
       })
       .catch(() => {
         toast.error(t('wallet.error'))
+      }).finally(() => {
+        hiddenLoading()
       })
   }
   useEffect(() => {
@@ -47,11 +52,7 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
           </IconButton>
         </div>
         <div className="flex flex-col justify-center items-center m-auto py-7 gap-4 w-[358px]">
-          <div>
-            Import your private key to create a wallet for lightning-fast
-            transactions. Satoshi AI ensures data security with years of
-            experience and robust measures.
-          </div>
+          <div>{t('wallet.import-wallet.private-key')}</div>
           <TextField
             fullWidth
             multiline
@@ -60,8 +61,9 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
             value={privateKey}
             onChange={(e) => setPrivateKey(e.target.value)}
           />
-          <Button variant="contained" onClick={() => importWallet(privateKey)}>
-            Confirm
+          <Button variant="contained" disabled={show || privateKey.length == 0} onClick={() => importWallet(privateKey)}>
+            {show && <CircularProgress size={16}></CircularProgress>}
+            {t('wallet.import-wallet.confirm')}
           </Button>
         </div>
       </div>

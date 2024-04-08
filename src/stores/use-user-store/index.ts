@@ -7,6 +7,7 @@ import { useTokenRefresh } from '@/hooks/use-token-refresh'
 
 import type { States, Actions } from './types'
 import { walletApi } from '@/api/wallet'
+import { WalletPlatform } from '@/api/wallet/params'
 
 export const useUserStore = create<States & Actions>((set, get) => ({
   isLogined: false,
@@ -35,7 +36,7 @@ export const useUserStore = create<States & Actions>((set, get) => ({
     
     const data = await self.login(email, password, false)
     
-    await walletApi.createWallet({ platform: 'SOL' })
+    await walletApi.createWallet({ platform: WalletPlatform.SOL })
 
     return data
   },

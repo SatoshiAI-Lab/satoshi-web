@@ -17,7 +17,7 @@ const WalletExportKeyPop: FC<WalletDialogProps> = ({
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     setLoading(true)
-    exportWalletPrivateKey(currentWallet.id!)
+    exportWalletPrivateKey(currentWallet?.id!)
       .then((res) => {
         if (res) {
           setPrivateKey(res.private_key)
@@ -25,7 +25,7 @@ const WalletExportKeyPop: FC<WalletDialogProps> = ({
         }
       })
       .catch((err) => {})
-  }, [currentWallet.address])
+  }, [currentWallet?.address])
   return (
     <Dialog
       maxWidth="lg"
@@ -47,12 +47,9 @@ const WalletExportKeyPop: FC<WalletDialogProps> = ({
         </div>
         <div className="flex flex-col justify-center items-center m-auto py-7 gap-4 w-[358px]">
           <div className="text-[#0F40F5] text-[18px] font-bold">
-            {currentWallet.name}
+            {currentWallet?.name}
           </div>
-          <div>
-            Please keep your private key safe and secure. Do not store it in an
-            unsafe location.
-          </div>
+          <div>{t('wallet.export-privatekey')}</div>
           <div className="w-[358px] break-words px-[22px] py-[16px] bg-[#0f40f519] rounded-[10px] text-blue-700">
             {(loading && <CircularProgress />) || privateKey}
           </div>
@@ -64,7 +61,7 @@ const WalletExportKeyPop: FC<WalletDialogProps> = ({
               toast.success(t('wallet.copy-privatekey.success'))
             }}
           >
-            Copy
+            {t('wallet.copy-privatekey')}
           </Button>
         </div>
       </div>

@@ -1,10 +1,17 @@
-import { Button, Dialog, IconButton, TextField } from '@mui/material'
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  IconButton,
+  TextField,
+} from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import { WalletDialogProps } from './types'
 import { TfiClose } from 'react-icons/tfi'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
+import { useShow } from '@/hooks/use-show'
 
 const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
   const {
@@ -13,8 +20,10 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
     getWallets,
   } = useWalletStore()
   const [walletName, setWalletName] = useState('')
+  const { open: openLoading, show, hidden: hiddenLoading } = useShow()
 
   const renameWallet = (walletName: string) => {
+    openLoading()
     renameWithDefaultName(walletName)
       .then(async (res) => {
         toast.success(t('wallet.rename-wallet.success'))
@@ -24,10 +33,13 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
       .catch(() => {
         toast.error(t('wallet.error'))
       })
+      .finally(() => {
+        hiddenLoading()
+      })
   }
 
   useEffect(() => {
-    setWalletName(currentWallet.name!)
+    setWalletName(currentWallet?.name!)
   }, [open])
   return (
     <Dialog
@@ -51,7 +63,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
         <div>
           <div className="flex flex-col justify-center items-center m-auto py-16 gap-1 px-10">
             <TextField
-              label="Wallet name"
+              label={t('wallet.rename-wallet.name')}
               multiline
               rows={2}
               className="w-full"
@@ -64,7 +76,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               onChange={(e) => setWalletName(e.target.value)}
             />
             <div className="text-[#101010b2] text-sm w-full">
-              {currentWallet.address}
+              {currentWallet?.address}
             </div>
           </div>
           <div className="h-[80px] px-14 gap-5 border-t-2 flex justify-center items-center w-full">
@@ -75,15 +87,17 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               classes={{ root: '!text-black' }}
               onClick={onClose}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               variant="contained"
               className="!h-[50px] !text-[18px] !rounded-xl"
               fullWidth
+              disabled={show || !walletName}
               onClick={() => renameWallet(walletName)}
             >
-              Save
+              {show ? <CircularProgress size={16} className='mr-2'></CircularProgress> : <></>}
+              {t('save')}
             </Button>
           </div>
         </div>

@@ -8,7 +8,7 @@ import { CHAT_CONFIG } from '@/config/chat'
 import { ChatParams, ChatResponseAnswer } from '@/api/chat/types'
 import { useTranslation } from 'react-i18next'
 import { useNeedLoginStore } from '@/stores/use-need-login-store'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useHyperTextParser } from './use-hyper-text-parser'
 import { utilDom } from '@/utils/dom'
 import i18n from '@/i18n'
@@ -23,14 +23,19 @@ export const useChat = () => {
   const { setShow } = useNeedLoginStore()
 
   const isReceiving = useRef(false)
-  const controller = useRef<AbortController>()
   const thinkTimer = useRef<NodeJS.Timeout>()
   const hasSmooth = useRef(false)
-
-  const [intention, setIntention] = useState<string>()
+  const controller = useRef<AbortController>()
 
   const chatStore = useChatStore()
-  const { setQuestion, setIsLoading, setMessage } = chatStore
+  const {
+    setQuestion,
+    setIsLoading,
+    setMessage,
+    setWaitAnswer,
+    setReadAnswer,
+    setIntention,
+  } = chatStore
 
   /**
    * Adds a new message to the message data
@@ -44,6 +49,7 @@ export const useChat = () => {
     const { chatEl, messages } = useChatStore.getState()
 
     setMessage([...messages, ...(msgs as Message[])])
+
     utilDom.scrollToBottom(chatEl!)
   }
 
@@ -86,7 +92,6 @@ export const useChat = () => {
     if (!lastMessage) return { messages: [...messages] }
 
     setMessage([...messages.slice(0, messages.length - 1), newMsg])
-
     const { chatEl } = useChatStore.getState()
 
     utilDom.scrollToBottom(chatEl!)
@@ -107,10 +112,11 @@ export const useChat = () => {
     setMessage(nonLoading)
   }
 
-  const cancelAnswer = (text: string) => {
+  const cancelAnswer = () => {
     resetSomeState()
     hasSmooth.current = true
-    toast(text)
+    controller.current?.abort()
+    toast(t('cancel-answer'))
   }
 
   const findPrevInteractive = (id?: string) => {
@@ -180,6 +186,7 @@ export const useChat = () => {
    * @returns
    */
   const messageHandler = (data: ChatResponseAnswer) => {
+    const { hiddenIntentText } = CHAT_CONFIG
     const {
       hide,
       streams,
@@ -190,13 +197,17 @@ export const useChat = () => {
       intentStream,
       intention,
     } = CHAT_CONFIG.answerType
-    const {
-      changeNameWalletList,
-      walletList: metaWalletList,
-      walletBalance,
-    } = CHAT_CONFIG.metadataType
 
     console.log('Chat Data: ', data)
+
+    if (data.answer_type === 'end') {
+      setReadAnswer(true)
+      console.log('user start reading answer now!!!')
+      setTimeout(function () {
+        setReadAnswer(false)
+        console.log('user stop reading answer now!!!')
+      }, 10000)
+    }
 
     const messages = chatStore.messages
     const answerType = data.answer_type
@@ -220,7 +231,7 @@ export const useChat = () => {
     }
 
     if (intention.includes(answerType) || isIntention) {
-      if (data.text) {
+      if (data.text && !hiddenIntentText.includes(data?.meta.type!)) {
         addStreamMessage(data.text)
       }
 
@@ -236,7 +247,7 @@ export const useChat = () => {
     }
 
     // streaming answer
-    if (streams.includes(answerType) ) {
+    if (streams.includes(answerType)) {
       if (!data.text)
         // Don't use trim
         return
@@ -316,7 +327,7 @@ export const useChat = () => {
     const params = getParams(opts)
     const timer = setInterval(() => model?.motion('Thinking', 0, 2))
 
-    params.intent_stream = intention
+    params.intent_stream = useChatStore.getState().intention
 
     clearInterval(thinkTimer.current)
     setIsLoading(true)
@@ -327,9 +338,8 @@ export const useChat = () => {
     thinkTimer.current = timer
 
     try {
-      const abortController = new AbortController()
-      const response = await chatApi.chat(params, abortController.signal)
-      controller.current = abortController
+      controller.current = new AbortController()
+      const response = await chatApi.chat(params, controller.current.signal)
       return messageParser(response)
     } catch (e: any) {
       console.error('[CHAT ERROR]: ', e)
@@ -338,6 +348,8 @@ export const useChat = () => {
       if (e?.status == 401) {
         setShow(true)
         toast.error(t('need.login'))
+      } else if (String(e).includes('AbortError')) {
+        // Don't shwo AbortError
       } else {
         toast.error(String(e))
       }
@@ -354,6 +366,7 @@ export const useChat = () => {
     sendMsg,
     cancelAnswer,
     findPrevInteractive,
+    addMessage,
     addMessageAndLoading,
     addMonitorMessage,
   }

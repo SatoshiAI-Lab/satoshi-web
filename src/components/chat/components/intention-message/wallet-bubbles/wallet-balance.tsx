@@ -26,10 +26,9 @@ export const WalletBalance = (props: Props) => {
     return <MessageBubble>{t('no.balance')}</MessageBubble>
   }
 
-  console.log(tokens)
-
   tokens = tokens.filter((token) => {
-    return (token.valueUsd ?? 0) > 0.5
+    // if (token.name == null) return false;
+    return (token.valueUsd ?? 0) >= 1
   })
 
   const msgData = msg.data as unknown as ChatResponseMetaBalance
@@ -48,15 +47,17 @@ export const WalletBalance = (props: Props) => {
         {t('wallet')}
         <CopyToClipboard
           text={msgData.address}
-          onCopy={() => toast.success(t('copy'))}
+          onCopy={() => toast.success(t('copy-success'))}
         >
-          <span className="ml-2 cursor-pointer">{utilFmt.addr(msgData.address)}</span>
+          <span className="ml-2 cursor-pointer">
+            {utilFmt.addr(msgData.address)}
+          </span>
         </CopyToClipboard>
         <span className="ml-2 text-black font-bold">{getTotalUValue()}$</span>
       </div>
       <div className="">
         {tokens?.map((token, i) => {
-          if (!token.name) return <></>
+          // if (!token.name) return <></>
           return (
             <div
               key={i}
@@ -67,12 +68,12 @@ export const WalletBalance = (props: Props) => {
                 }`
               )}
             >
-              <div className="text-primary truncate">{token.symbol}</div>
+              <div className="text-primary truncate">{token.symbol || 'null'}</div>
               <div>${numeral(token.valueUsd).format('0,0.0')}</div>
               <div className="ml-2">
                 {numeral(
                   formatUnits(BigInt(token.amount!), token.decimals!)
-                ).format('0a.0')}
+                ).format('0a.00')}
               </div>
             </div>
           )

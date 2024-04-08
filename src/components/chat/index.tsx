@@ -1,14 +1,17 @@
 import React, { useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 import MessageBubble from './components/bubbles/message-bubble'
 import MessageInput from './components/message-input'
 import Messages from './components/messages'
 import Live2DModel from '../live2d-model'
-import { useTranslation } from 'react-i18next'
 import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
+import { MessageAlert } from './components/bubbles/message-alert'
+import CreateTokenBubble from './components/bubbles/create-token-bubble'
+import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props
@@ -21,10 +24,24 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     addMessageAndLoading,
     setChatEl,
     sendMsg,
+    unreadMessages,
+    setWaitAnswer,
+    cancelAnswer,
   } = useChat()
+
+  const waitMonitor = useThrottledCallback(function () {
+    setWaitAnswer(true)
+    console.log('user start waiting answer now!!!')
+    setTimeout(function () {
+      setWaitAnswer(false)
+      console.log('user stop waiting answer now!!!')
+    }, 10000)
+  }, 10000)
 
   // Handle send.
   const onSend = async () => {
+    // Do no show monitor message within 10 seconds
+    waitMonitor()
     if (!question?.trim()) {
       toast.error(t('input-null'))
       return
@@ -47,6 +64,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     <div
       className={clsx(
         'flex relative max-sm:px-0 max-lg:pl-6 h-body',
+        '2xl:justify-center',
         className
       )}
     >
@@ -58,10 +76,12 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
         )}
       ></div>
       {/* Chat main element */}
+      {(unreadMessages.length && <MessageAlert />) || <></>}
       <div
         className={clsx(
           'grow-[8] overflow-auto pb-0 pr-0',
-          'flex flex-col gap-4 z-10 max-sm:pr-0'
+          'flex flex-col gap-4 z-10 max-sm:pr-0',
+          '2xl:max-w-chat 2xl:grow-unset'
         )}
       >
         <Live2DModel />
@@ -74,8 +94,9 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
         >
           <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
           <Messages messages={messages} />
+          {/* <CreateTokenBubble /> */}
         </div>
-        <MessageInput onSend={onSend} />
+        <MessageInput onSend={onSend} onCancel={cancelAnswer} />
       </div>
     </div>
   )

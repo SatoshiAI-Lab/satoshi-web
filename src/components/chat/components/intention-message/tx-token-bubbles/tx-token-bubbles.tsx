@@ -1,48 +1,91 @@
 import { useTranslation } from 'react-i18next'
 import MessageBubble from '../../message-bubble'
 import { Button, CircularProgress, OutlinedInput } from '@mui/material'
-import { IoFlash } from 'react-icons/io5'
+import { IoCopyOutline, IoFlash } from 'react-icons/io5'
 import clsx from 'clsx'
 import { useState } from 'react'
-import { ChatResponseAnswerMeta, ChatResponseTxConfrim } from '@/api/chat/types'
+import {
+  ChatResponseAnswerMeta,
+  ChatResponseTxConfrim,
+  ChatResponseWalletListToken,
+} from '@/api/chat/types'
 import { trandApi } from '@/api/trand'
 import { useShow } from '@/hooks/use-show'
+import { formatUnits } from 'viem'
+import numeral from 'numeral'
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { WalletCardProps } from '@/stores/use-wallet-store/types'
+import { CHAT_CONFIG } from '@/config/chat'
+import { BigNumber } from 'bignumber.js'
+import { useChat } from '@/hooks/use-chat'
+import { FaArrowRightLong } from 'react-icons/fa6'
+import { utilFmt } from '@/utils/format'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import toast from 'react-hot-toast'
 
 interface Props {
   msg: ChatResponseAnswerMeta
 }
 
+const rate = [20, 50, 100]
 export const TxTokenBubbles = (props: Props) => {
   const data = props.msg.data as unknown as ChatResponseTxConfrim
-  const rawWalletList = data.match_wallets
-    .sort((a, b) => {
-      return new Date(a.added_at).getTime() - new Date(b.added_at).getTime()
-    })
-    .slice(0, 1)
+  const isBuy = props.msg.type == CHAT_CONFIG.metadataType.transactionConfirmBuy
 
-  const defaultWalletId = rawWalletList[0].id
-
-  const { t } = useTranslation()
   const [disbaled, setDisabled] = useState(false)
-  const { show: loading, open: showLoading, hidden: closeLoading } = useShow()
+  const [curRate, setCurRate] = useState(-1)
   const [buyValue, setBuyValue] = useState(0)
   const [slippage, setSlippage] = useState(5)
-  const [walletId, setWalletId] = useState(defaultWalletId)
   const [validateErr, setValidateErr] = useState<string[]>([])
+
+  const { t } = useTranslation()
+  const { addMessage } = useChat()
+
+  const { wallets, currentWallet, setCurrentWallet } = useWalletStore()
+  const { show: loading, open: showLoading, hidden: closeLoading } = useShow()
+
+  const isToken = (token: ChatResponseWalletListToken) => {
+    return token.amount > 0 && data.address_filter.includes(token.address)
+  }
+
+  const rawWalletList = [...wallets]
+    .filter((wallet) => {
+      const x = wallet.platform == data.chain_filter.platform
+      const y = wallet.chain?.name == data.chain_filter.chain_name
+      const z = wallet.tokens?.some(isToken)
+
+      return x && y && z
+    })
+    ?.sort((a, b) => {
+      const x = new Date(b.added_at!).getTime()
+      const y = new Date(a.added_at!).getTime()
+      return x - y
+    })
+
+  if (!rawWalletList.length) {
+    return (
+      <MessageBubble>
+        {t('insufficient.balance.terms').replace('$1', data.from_token_name)}
+      </MessageBubble>
+    )
+  }
+
+  if (!currentWallet) {
+    setCurrentWallet(rawWalletList[0].address)
+  }
 
   let count = 0
 
-  const walletList = rawWalletList.reduce<(typeof rawWalletList)[]>(
-    (cur, next) => {
-      if (count % 3 == 0) {
-        cur.push([])
-      }
-      cur[cur.length - 1].push(next)
-      count++
-      return cur
-    },
-    []
-  )
+  const walletList = rawWalletList.reduce<WalletCardProps[][]>((cur, next) => {
+    if (count % 3 == 0) {
+      cur.push([])
+    }
+    cur[cur.length - 1].push(next)
+    count++
+    return cur
+  }, [])
+
+  console.log(wallets, currentWallet, rawWalletList, walletList)
 
   const checkForm = () => {
     let error: string[] = []
@@ -51,7 +94,9 @@ export const TxTokenBubbles = (props: Props) => {
       error.push(t('tx.form.error1'))
     }
 
-    const wallet = rawWalletList.find((wallet) => wallet.id == walletId)!
+    const wallet = rawWalletList.find(
+      (wallet) => wallet.id == currentWallet?.id
+    )!
     console.log(buyValue, wallet.value)
 
     if (buyValue > Number(wallet!.value)) {
@@ -71,7 +116,7 @@ export const TxTokenBubbles = (props: Props) => {
     if (checkForm()) {
       showLoading()
       trandApi
-        .buyToken(walletId, {
+        .buyToken(currentWallet!.id!, {
           amount: `${buyValue}`,
           input_token: data.from_token_contract,
           output_token: data.to_token_contract,
@@ -80,10 +125,40 @@ export const TxTokenBubbles = (props: Props) => {
         })
         .then(({ data }) => {
           setDisabled(true)
+          addMessage({
+            msg: `${t('successful.transaction')}https://solscan.io/tx/${
+              data.hash_tx
+            }`,
+          })
         })
         .finally(() => {
           closeLoading()
         })
+    }
+  }
+
+  const getTargetToken = (wallet: WalletCardProps) => {
+    return wallet?.tokens?.find(isToken)
+  }
+
+  const fromToken = getTargetToken(currentWallet ?? rawWalletList[0])
+
+  const handleRateClick = (rate: number) => {
+    if (rate != curRate) {
+      setCurRate(rate)
+
+      setBuyValue(
+        Number(
+          BigNumber(
+            formatUnits(BigInt(fromToken?.amount!), fromToken?.decimals!)
+          )
+            .multipliedBy(rate / 100)
+            .toFixed(3)
+        )
+      )
+    } else {
+      setBuyValue(0)
+      setCurRate(-1)
     }
   }
 
@@ -121,32 +196,48 @@ export const TxTokenBubbles = (props: Props) => {
             : t('tx.token.text2')}
         </div>
 
-        <div className="inline-block border rounded-2xl">
+        <div
+          className={clsx(
+            'inline-block border rounded-2xl',
+            disbaled && 'pointer-events-none'
+          )}
+        >
           {walletList.map((wallets, i) => {
             return (
               <div
                 key={i}
                 className={clsx(
-                  'inline-grid',
+                  'grid',
                   i !== 0 ? 'border-t' : '',
                   getCols(wallets.length)
                 )}
               >
                 {wallets.map((wallet, i) => {
+                  console.log(wallet)
+                  const platformToken = getTargetToken(wallet)
                   return (
                     <div
                       key={i}
                       className={clsx(
                         'p-3 transition-all hover:text-gray-500 cursor-pointer',
-                        walletId == wallet.id ? '!text-primary' : '',
-                        i === 1 ? 'border-x' : ''
+                        currentWallet?.id == wallet.id ? '!text-primary' : '',
+                        i === 1 ? 'border-x' : '',
+                        i === wallets.length - 1 ? '!border-r-0' : ''
                       )}
-                      onClick={() => setWalletId(wallet.id)}
+                      onClick={() => {
+                        debugger
+                        setCurrentWallet(wallet?.address!)
+                      }}
                     >
                       <div className="truncate">{wallet.name}</div>
                       <div className="text-sm text-gray-500">
-                        {wallet.tokens[0].amount}
-                        {wallet.platform}
+                        {numeral(
+                          formatUnits(
+                            BigInt(platformToken!.amount),
+                            platformToken!.decimals
+                          )
+                        ).format('0.00')}
+                        {platformToken?.symbol}
                       </div>
                     </div>
                   )
@@ -161,27 +252,100 @@ export const TxTokenBubbles = (props: Props) => {
   }
 
   return (
-    <MessageBubble
-      className={`min-w-[250px] ${disbaled ? 'pointer-events-none select-none' : ''}`}
-    >
-      <div className="font-bold mt-1 mb-1">{t('tx.token.text1')}</div>
-      <OutlinedInput
-        className="!rounded-xl w-[130px]"
-        classes={{
-          input: '!py-0 !leading-none !block',
-          root: '!pr-3',
-        }}
-        type="number"
-        size="small"
-        placeholder={t('custom')}
-        endAdornment={
-          <div className="h-full leading-none py-[14px] text-sm border-l-2 text-nowrap pl-3">
-            SOL
+    <MessageBubble className={`min-w-[350px]`}>
+      <div className="font-bold mt-1 mb-1">
+        {(isBuy ? t('tx.token.text1') : t('tx.token2')).replace(
+          '$1',
+          data.from_token_name
+        )}
+      </div>
+      <div className="flex items-center">
+        <div>
+          <OutlinedInput
+            className="!rounded-xl w-[130px]"
+            classes={{
+              input: '!py-0 !leading-none !block',
+              root: '!pr-3',
+            }}
+            type="number"
+            size="small"
+            placeholder={t('custom')}
+            endAdornment={
+              <div className="h-full leading-none py-[14px] text-sm border-l-2 text-nowrap pl-3">
+                {data.from_token_name.toUpperCase()}
+              </div>
+            }
+            value={buyValue}
+            disabled={disbaled}
+            onChange={({ target }) => setBuyValue(Number(target.value))}
+          ></OutlinedInput>
+        </div>
+        <FaArrowRightLong
+          size={26}
+          className="mx-5 text-gray-700"
+        ></FaArrowRightLong>
+        <div className="border rounded-xl py-[10px] px-6 text-sm">
+          {data.to_token_name.toUpperCase()}
+        </div>
+      </div>
+
+      {/* <div className="flex items-center text-sm">
+        <CopyToClipboard
+          text={data.from_token_contract}
+          onCopy={() => toast.success(t('copy-success'))}
+        >
+          <div className="flex items-center mt-1 text-sm cursor-pointer text-gray-500 hover:text-gray-700">
+            {utilFmt.addr(data.from_token_contract)}
+            <IoCopyOutline size={14} className="ml-1"></IoCopyOutline>
           </div>
-        }
-        value={buyValue}
-        onChange={({ target }) => setBuyValue(Number(target.value))}
-      ></OutlinedInput>
+        </CopyToClipboard>
+        <div className='mx-5'></div>
+        <CopyToClipboard
+          text={data.to_token_contract}
+          onCopy={() => toast.success(t('copy-success'))}
+        >
+          <div className="flex items-center cursor-pointer text-gray-500 hover:text-gray-700">
+            {utilFmt.addr(data.to_token_contract)}
+            <IoCopyOutline size={14} className="ml-1"></IoCopyOutline>
+          </div>
+        </CopyToClipboard>
+      </div> */}
+      <div
+        className={clsx(
+          'flex items-center mt-3 text-sm text-gray-500',
+          disbaled && 'pointer-events-none'
+        )}
+      >
+        <div className="inline-flex justify-start border rounded-xl overflow-hidden">
+          {rate.map((item, i) => {
+            return (
+              <div
+                className={clsx(
+                  'py-2 px-4 cursor-pointer transition-all hover:bg-slate-200',
+                  item == curRate ? 'bg-slate-200' : '',
+                  i == 1 ? 'border-x' : ''
+                )}
+                onClick={() => handleRateClick(item)}
+              >
+                {item}%
+              </div>
+            )
+          })}
+        </div>
+        <div className="ml-2">
+          {t('total')}
+          {Number(
+            numeral(
+              formatUnits(
+                BigInt(fromToken?.amount ?? 0),
+                fromToken?.decimals ?? 0
+              )
+            ).format('0.00')
+          )}
+          {fromToken?.symbol}
+        </div>
+      </div>
+
       {getWalllet()}
 
       <div className="mt-5 flex">
@@ -193,6 +357,7 @@ export const TxTokenBubbles = (props: Props) => {
               input: '!py-0 !leading-none !block',
               root: '!pr-4',
             }}
+            disabled={disbaled}
             type="number"
             size="small"
             placeholder={t('custom')}

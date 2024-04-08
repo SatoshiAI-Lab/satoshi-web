@@ -67,10 +67,21 @@ export const utilParse = {
    * @param len to fixed length.
    * @returns Return a number result.
    */
-  toFixedNotRound(n: number, len: number) {
+  noRoundFixed(n: number, len: number) {
     const str = n.toString()
     const idx = str.indexOf('.') + 1
 
     return Number(str.slice(0, idx + len))
+  },
+
+  bufferToBase64(buffer: ArrayBuffer) {
+    const u8Arr = new Uint8Array(buffer)
+    let str = ''
+
+    for (let i = 0; i < u8Arr.length; i++) {
+      str += String.fromCharCode(u8Arr[i])
+    }
+
+    return btoa(str)
   },
 }
