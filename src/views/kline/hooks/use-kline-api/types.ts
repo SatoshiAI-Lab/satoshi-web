@@ -7,7 +7,7 @@ export type WithPromiseExecutor<T> = (
   reject: (reason?: any) => void
 ) => void
 
-export type UpdateHandler = (received: KLineOnEvents['update']) => void
+export type Handler<T> = (data: T) => void
 
 export interface KLineEmitEvents {
   source: { token: string }

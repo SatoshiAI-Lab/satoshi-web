@@ -44,7 +44,7 @@ export const useKLine = () => {
           container,
           symbol,
           locale,
-          theme,
+          theme: 'light', // Fixed theme
           autosize: true,
           datafeed: datafeeder(),
           interval: interval as ResolutionString,

@@ -7,7 +7,7 @@ import { useKLineApi } from '../use-kline-api'
 import { useKLineFormat } from '../use-kline-format'
 import { useDatafeedCache } from '../use-datafeed-cache'
 import { utilArr } from '@/utils/array'
-import { useKLineStore } from '@/stores/use-kline-store'
+import { utilParse } from '@/utils/parse'
 
 import type {
   LibrarySymbolInfo,
@@ -15,7 +15,6 @@ import type {
   PeriodParams,
 } from '../../../../../public/tradingview/charting_library/charting_library'
 import type { SymbolStr } from '../use-kline-api/types'
-import { utilParse } from '@/utils/parse'
 
 /**
  * Datafeed APIs helper, handle KLine API for datafeed.
@@ -23,8 +22,13 @@ import { utilParse } from '@/utils/parse'
 export const useDatafeedHelper = (
   cachedApi: ReturnType<typeof useDatafeedCache>
 ) => {
-  const { getTokenSources, listenToken, getHistory, onUpdateBar } =
-    useKLineApi()
+  const {
+    getTokenSources,
+    listenToken,
+    getHistory,
+    onUpdateBar,
+    onErrorMessage,
+  } = useKLineApi()
   const { formatReceivedBars } = useKLineFormat()
 
   // Parsing query source.
@@ -58,6 +62,7 @@ export const useDatafeedHelper = (
   ) => {
     const { name: token } = symbolInfo
     const [source, quote] = await getSourceQuote(token, useCachedSource)
+    // console.log('fk', 'source, quote')
     const symbol = `${token}-${quote}`.toUpperCase() as SymbolStr
     const tvInterval =
       resolution.toLowerCase() as keyof typeof TV_RESOLUTION_MAP
@@ -137,5 +142,11 @@ export const useDatafeedHelper = (
     return bars
   }
 
-  return { getInitBars, handleInitBars, getHistoryBars, onUpdateBar }
+  return {
+    getInitBars,
+    handleInitBars,
+    getHistoryBars,
+    onUpdateBar,
+    onErrorMessage,
+  }
 }
