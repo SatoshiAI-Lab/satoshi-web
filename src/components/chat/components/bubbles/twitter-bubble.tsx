@@ -6,6 +6,7 @@ import { ChatResponseMetaTwitter } from '@/api/chat/types'
 import dayjs from 'dayjs'
 import i18n from '@/i18n'
 import { t } from 'i18next'
+import ShowMoreText from 'react-show-more-text'
 
 const TwitterBubble = ({
   content,
@@ -19,7 +20,9 @@ const TwitterBubble = ({
   const currentContent =
     content[language] || Object.values(content).find((v) => v) || ''
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
+    <MessageBubble
+      className={clsx('min-w-bubble lg:!max-w-[700px] pt-4 flex flex-col')}
+    >
       {/* Avatar, name */}
       <div className="flex items-stretch">
         <img
@@ -37,7 +40,15 @@ const TwitterBubble = ({
         </div>
       </div>
       {/* Text content */}
-      <div className={clsx('my-2')}>{currentContent}</div>
+      <ShowMoreText
+        anchorClass="text-primary cursor-pointer block text-right"
+        className="my-2"
+        lines={4}
+        more={'Show More'}
+        less={'Hide'}
+      >
+        {currentContent}
+      </ShowMoreText>
       {/* TODO: click img to enlarge show. */}
       {photo.map((item) => (
         <img

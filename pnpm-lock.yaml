@@ -20,6 +20,9 @@ dependencies:
   '@types/numeral':
     specifier: ^2.0.5
     version: 2.0.5
+  '@types/react-show-more-text':
+    specifier: ^1.4.5
+    version: 1.4.5
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
@@ -65,6 +68,9 @@ dependencies:
   react-markdown:
     specifier: ^8.0.7
     version: 8.0.7(@types/react@18.2.73)(react@18.2.0)
+  react-show-more-text:
+    specifier: ^1.7.1
+    version: 1.7.1(react@18.2.0)
   react-syntax-highlighter:
     specifier: ^15.5.0
     version: 15.5.0(react@18.2.0)
@@ -1128,6 +1134,12 @@ packages:
     dependencies:
       '@types/react': 18.2.73
     dev: true
+
+  /@types/react-show-more-text@1.4.5:
+    resolution: {integrity: sha512-tpo+we9AwkSBvQoeZfEGUJt6ZwkLov3vak/ZTNXLlW5K1q2drKDqlQ7K1Yo+0CuYF7aK5j9gjxJkbesgr0tP4A==}
+    dependencies:
+      '@types/react': 18.2.73
+    dev: false
 
   /@types/react-transition-group@4.4.10:
     resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
@@ -3174,6 +3186,15 @@ packages:
       vfile: 5.3.7
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /react-show-more-text@1.7.1(react@18.2.0):
+    resolution: {integrity: sha512-k+NyTogrBgPVpE84r6AdDLgf60k9cR4F0zlhp3w8Hoquq+UStKjAOatsVYDLwfWD8wqF6smRXohi2rvQZRpQDQ==}
+    peerDependencies:
+      react: 16 - 18.x
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.2.0
     dev: false
 
   /react-syntax-highlighter@15.5.0(react@18.2.0):

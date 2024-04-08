@@ -7,12 +7,12 @@ import dayjs from 'dayjs'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
 import i18n from '@/i18n'
+import ShowMoreText from 'react-show-more-text'
 
 const NewsBubble = ({
   content,
   created_at,
   title,
-  logo,
   source,
 }: ChatResponseMetaNewsInfo) => {
   const { language } = i18n
@@ -38,12 +38,22 @@ const NewsBubble = ({
     )
   }
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
+    <MessageBubble
+      className={clsx('min-w-bubble lg:!max-w-[700px] pt-4 flex flex-col')}
+    >
       <div className="font-bold text-lg">{currentTitle}</div>
       <div className="my-2 text-gray-400">
         {dayjs(created_at).format('H:mm M/D')}
       </div>
-      <div className={clsx('my-2')}>{currentContent}</div>
+      <ShowMoreText
+        anchorClass="text-primary cursor-pointer block text-right"
+        className="my-2"
+        lines={4}
+        more={'Show More'}
+        less={'Hide'}
+      >
+        {currentContent}
+      </ShowMoreText>
       {originLinkButton()}
     </MessageBubble>
   )
