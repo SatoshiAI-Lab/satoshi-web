@@ -29,7 +29,9 @@ const ExchangeAnnouncementBubble = ({
         )) || <Avatar className="w-12 h-12 rounded-full mr-2" />}
 
         <div className="flex flex-col justify-between ">
-          <span className="font-bold">{source_name}</span>
+          <span className="font-bold">
+            {source_name} just released a new ann.
+          </span>
           <span className="text-gray-400">
             {dayjs(created_at).format('H:mm M/D')}
           </span>
