@@ -20,9 +20,7 @@ const TwitterBubble = ({
   const currentContent =
     content[language] || Object.values(content).find((v) => v) || ''
   return (
-    <MessageBubble
-      className={clsx('min-w-bubble lg:!max-w-[700px] pt-4 flex flex-col')}
-    >
+    <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
       {/* Avatar, name */}
       <div className="flex items-stretch">
         <img
@@ -41,11 +39,11 @@ const TwitterBubble = ({
       </div>
       {/* Text content */}
       <ShowMoreText
-        anchorClass="text-primary cursor-pointer block text-right"
+        anchorClass="text-primary cursor-pointer block text-sm w-fit ml-auto"
         className="my-2"
         lines={4}
-        more={'Show More'}
-        less={'Hide'}
+        more={t('bubble.show.more')}
+        less={t('bubble.show.hide')}
       >
         {currentContent}
       </ShowMoreText>
@@ -61,7 +59,7 @@ const TwitterBubble = ({
       <a
         href={`https://twitter.com/${twitter}/status/${tweets_id}`}
         target="_blank"
-        className="text-primary inline-block mt-3"
+        className="text-primary inline-block mt-3 w-fit"
       >
         {t('bubble.originlink')}
       </a>

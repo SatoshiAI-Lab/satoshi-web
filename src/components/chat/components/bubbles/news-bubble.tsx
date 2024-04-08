@@ -38,19 +38,17 @@ const NewsBubble = ({
     )
   }
   return (
-    <MessageBubble
-      className={clsx('min-w-bubble lg:!max-w-[700px] pt-4 flex flex-col')}
-    >
+    <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
       <div className="font-bold text-lg">{currentTitle}</div>
       <div className="my-2 text-gray-400">
         {dayjs(created_at).format('H:mm M/D')}
       </div>
       <ShowMoreText
-        anchorClass="text-primary cursor-pointer block text-right"
+        anchorClass="text-primary cursor-pointer block text-sm w-fit ml-auto"
         className="my-2"
         lines={4}
-        more={'Show More'}
-        less={'Hide'}
+        more={t('bubble.show.more')}
+        less={t('bubble.show.hide')}
       >
         {currentContent}
       </ShowMoreText>

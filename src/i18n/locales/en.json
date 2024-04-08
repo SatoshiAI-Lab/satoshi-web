@@ -192,5 +192,7 @@
   "save": "Save",
   "bubble.new-tweet": "just tweeted",
   "bubble.new-anno": "just released a new ann.",
-  "bubble.originlink": "Origin Link"
+  "bubble.originlink": "Origin Link",
+  "bubble.show.more": "Show More",
+  "bubble.show.hide": "Hide"
 }
