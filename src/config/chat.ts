@@ -38,6 +38,7 @@ export const CHAT_CONFIG = {
       'transaction_confirm_stream',
       'subscript_news',
       'transaction_stream',
+      'subscript_pool',
     ],
 
     /** it's not need `useStream` */
