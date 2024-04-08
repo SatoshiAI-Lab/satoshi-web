@@ -40,7 +40,6 @@ export const useChatMonitorMsg = () => {
       // 3. Within 10 seconds after the user clicks Ask
       // should no be boxing
       if (
-        useChatStore.getState().unreadMessages.length ||
         useChatStore.getState().inputKeyup ||
         useChatStore.getState().readAnswer ||
         useChatStore.getState().waitAnswer
