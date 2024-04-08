@@ -31,16 +31,24 @@ export const useChatMonitorMsg = () => {
     on('message', () => {})
 
     on('event', ({ data }) => {
-      // 1. If the question input is in the state of Focus
+      console.log(`Keyup: ${useChatStore.getState().inputKeyup}`)
+      console.log(`readAnswer: ${useChatStore.getState().readAnswer}`)
+      console.log(`waitAnswer: ${useChatStore.getState().waitAnswer}`)
+
+      // 1. Within 20 seconds after the input is in the state of Keyup
       // 2. Within 20 seconds after the latest question answer
       // 3. Within 10 seconds after the user clicks Ask
-      // should no be godown
+      // should no be boxing
       if (
+        useChatStore.getState().unreadMessages.length ||
         useChatStore.getState().inputKeyup ||
         useChatStore.getState().readAnswer ||
         useChatStore.getState().waitAnswer
       ) {
-        setUnreadMessage(data.reverse())
+        setUnreadMessage([
+          useChatStore.getState().unreadMessages,
+          ...data.reverse(),
+        ])
       } else {
         addMonitorMessage(data.reverse())
       }
