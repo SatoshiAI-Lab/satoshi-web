@@ -30,7 +30,7 @@ const CreateTokenSuccess = (props: Props) => {
         open={open}
         onClose={() => setOpen(false)}
         showButtons={false}
-        onlyWalletAddr={currentWallet.address}
+        onlyWalletAddr={currentWallet?.address}
       />
       <div className="font-bold">
         {t('create-token.success')}: {tokenName}

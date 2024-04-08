@@ -183,22 +183,10 @@ export const KLINE_RESOLUTIONS = [
     name: '4h',
     interval: '240',
   },
-  // {
-  //   name: '8h',
-  //   interval: '8h',
-  // },
   {
     name: '1d',
     interval: '1D',
   },
-  // {
-  //   name: 'Week',
-  //   interval: '1w',
-  // },
-  // {
-  //   name: 'Month',
-  //   interval: '1M',
-  // },
 ] as const
 
 export type KLINE_SUPPORTED_INTERVALS =

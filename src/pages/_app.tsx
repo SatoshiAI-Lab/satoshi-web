@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { ThemeProvider, createTheme } from '@mui/material'
 import { I18nextProvider, useTranslation } from 'react-i18next'
 import { Toaster } from 'react-hot-toast'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 
 import '@/theme/global.scss'
 import i18nConfig from '@/i18n'
@@ -13,6 +13,7 @@ import { useThemeStore } from '@/stores/use-theme-store'
 import { useTokenRefresh } from '@/hooks/use-token-refresh'
 
 import type { AppProps } from 'next/app'
+import { useWalletStore } from '@/stores/use-wallet-store'
 
 const queryClient = new QueryClient()
 

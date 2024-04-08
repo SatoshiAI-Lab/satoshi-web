@@ -9,7 +9,7 @@ import { t } from 'i18next'
 const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
   const { deleteWallet, getWallets, currentWallet } = useWalletStore()
   const userDeleteWallet = async () => {
-    deleteWallet(currentWallet.id!)
+    deleteWallet(currentWallet?.id!)
       .then((res) => {
         if (res.msg === 'ok') {
           onClose?.()

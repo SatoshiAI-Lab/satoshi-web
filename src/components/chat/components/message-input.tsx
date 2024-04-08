@@ -2,29 +2,32 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaPaperPlane } from 'react-icons/fa'
 import { AiOutlineLoading } from 'react-icons/ai'
-import { Button, InputBase } from '@mui/material'
+import { Button, IconButton, InputBase } from '@mui/material'
 import { useKey } from 'react-use'
 import clsx from 'clsx'
+import { FaRegCirclePause } from 'react-icons/fa6'
+import { motion } from 'framer-motion'
 
 import InputMenu from './input-menu'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
 import { utilDom } from '@/utils/dom'
 import { useInputHistory } from '@/hooks/use-input-history'
-// import MicRecord from './micro-record'
+import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 
 interface MessageInputProps {
   autofocus?: boolean
   onSend: () => void
+  onCancel?: () => void
 }
 
 function MessageInput(props: MessageInputProps) {
-  const { autofocus = true, onSend } = props
+  const { autofocus = true, onSend, onCancel } = props
   const { t } = useTranslation()
   const [isFocus, setIsFocus] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const keyboardIsShow = useMobileKeyboard()
-  const { question, chatEl, isLoading, setQuestion, setInputFocus } =
+  const { question, chatEl, isLoading, setQuestion, setInputKeyup } =
     useChatStore()
 
   const handleEnterSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -64,26 +67,58 @@ function MessageInput(props: MessageInputProps) {
 
     utilDom.scrollToBottom(chatEl)
   }, [keyboardIsShow, chatEl])
-  const handleInputFocus = () => {
-    setInputFocus(true)
-    setIsFocus(true)
-    console.log('user start input now!!!')
+
+  const handleInputKeyup = () => {
+    console.log('user start keyup now')
+    console.log(
+      `keyup: ${useChatStore.getState().inputKeyup}`,
+      `read answer: ${useChatStore.getState().readAnswer}`,
+      `wait answer: ${useChatStore.getState().waitAnswer}`
+    )
+
+    setInputKeyup(true)
+    setTimeout(() => {
+      console.log('user stop keyup now')
+      console.log(
+        `keyup: ${useChatStore.getState().inputKeyup}`,
+        `read answer: ${useChatStore.getState().readAnswer}`,
+        `wait answer: ${useChatStore.getState().waitAnswer}`
+      )
+      setInputKeyup(false)
+    }, 10000)
   }
-  const handleInputBlur = () => {
-    setInputFocus(false)
-    setIsFocus(false)
-    console.log('user stop input now!!!')
-  }
+
+  const onCancelAnswer = () => {}
+
+  const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
+
   return (
-    <div className="sticky bottom-4 z-20 max-sm:mx-5 mr-10 max-sm:bottom-0 transition-all">
+    <div
+      className={clsx(
+        'sticky bottom-4 z-20 max-sm:mx-5 mr-10 max-sm:bottom-0',
+        'transition-all '
+      )}
+    >
       <InputMenu />
       <div
         className={clsx(
           'flex rounded-md gap-2 border-2 border-solid items-center duration-500',
           'bg-slate-100 transition-all py-1 px-1 pl-2 hover:border-primary',
-          isFocus ? 'border-primary' : 'border-transparent'
+          isFocus ? 'border-primary' : 'border-transparent',
+          'relative'
         )}
       >
+        <motion.div
+          className={clsx('!absolute right-0 -top-14')}
+          animate={{
+            opacity: isLoading ? 1 : 0,
+            y: isLoading ? 0 : 56,
+          }}
+        >
+          <IconButton onClick={onCancel} className="!bg-slate-50">
+            <FaRegCirclePause size={28} className="text-red-500" />
+          </IconButton>
+        </motion.div>
         <InputBase
           classes={{
             root: '!pl-1 !text-lg !transition-all !text-black',
@@ -98,8 +133,9 @@ function MessageInput(props: MessageInputProps) {
           inputRef={inputRef}
           onKeyDown={handleEnterSend}
           onChange={(e) => setQuestion(e.target.value)}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
+          onKeyUp={throttledHandleInputKeyup}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
         />
         {/* <MicRecord startRecording={() => {}} stopRecording={() => {}} /> */}
         <Button

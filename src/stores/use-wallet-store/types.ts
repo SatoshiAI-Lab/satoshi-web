@@ -9,7 +9,7 @@ import {
 export interface WalletCardProps extends Partial<UserCreateWalletResp> {}
 
 export interface States {
-  currentWallet: WalletCardProps
+  currentWallet?: WalletCardProps
   wallets: WalletCardProps[]
   loading: boolean
 }
@@ -17,11 +17,11 @@ export interface Actions {
   createWallet(walletId: string): Promise<void>
   importWallet(privateKey: string): Promise<UserImportPrivateKeyResp>
   renameWallet(walletName: string): Promise<UserRenameWalletResp>
-  setCurrentWallet(address: string): void
+  setCurrentWallet(address?: string): void
   exportWalletPrivateKey(
     wallet_id: string
   ): Promise<void | UserExportPrivateKeyResp>
-  getWallets(): Promise<boolean>
+  getWallets(isLoading?: boolean): Promise<boolean>
   deleteWallet(wallet_id: string): Promise<UserDeleteWalletResp>
   setLoadingStatus(status: boolean): void
 }

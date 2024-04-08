@@ -5,6 +5,7 @@ import type { AnyObject } from '@/types/types'
 import type { FetcherResponse, FetcherOptions } from './types'
 
 const excludesAuthPath = [
+  '/api/v1/subscription/list/',
   '/api/v1/coin/list/',
   '/api/v1/register/',
   '/api/v1/mine/',
@@ -53,14 +54,19 @@ export async function fetcher<T = ReadableStream<Uint8Array>>(
   // We can use this hook, because it's not relying React hooks.
   const token = useStorage().getLoginToken()
 
+  const hds: any = {
+    'Content-Type': 'application/json',
+    ...headers,
+  }
+
+  if (needAuth || token) {
+    hds['Authorization'] = `Bearer ${token}`
+  }
+
   try {
     const response = await fetch(url, {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: needAuth || token ? `Bearer ${token}` : '',
-        ...headers,
-      },
+      headers: hds,
       body: method !== 'GET' ? JSON.stringify(body) : null,
       credentials: 'include',
       signal,

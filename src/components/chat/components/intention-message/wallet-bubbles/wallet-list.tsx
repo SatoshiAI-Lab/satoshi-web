@@ -91,6 +91,8 @@ export const WalletList = (props: Props) => {
     return <Radio onClick={() => handleSelect(item)} size="small" />
   }
 
+  const gridCls = 'grid grid-cols-[175px_130px_130px_100px]'
+
   const getWalllet = () => {
     if (walletList?.length == 0) {
       return <div>{t('wallet.list.empty')}</div>
@@ -102,7 +104,7 @@ export const WalletList = (props: Props) => {
             <div
               key={item.id}
               className={clsx(
-                `grid grid-cols-[175px_120px_120px_50px]`,
+                gridCls,
                 'min-w-[320px] text-black text-sm',
                 'border-t border-gray-200'
               )}
@@ -155,12 +157,7 @@ export const WalletList = (props: Props) => {
 
   return (
     <>
-      <div
-        className={clsx(
-          `grid grid-cols-[175px_120px_120px_50px]`,
-          'min-w-[320px] pb-2'
-        )}
-      >
+      <div className={clsx(gridCls, 'min-w-[320px] pb-2')}>
         {/* <div className="grid grid-cols-[15px_30px_auto_120px] min-w-[350px] pb-2"> */}
         {/* <div></div> */}
         <div className="ml-1">{t('wallet.name')}</div>

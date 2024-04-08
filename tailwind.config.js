@@ -17,7 +17,9 @@ const baseColors = {
 const baseWidths = {
   logo: '200px',
   chat: '1140px',
-  bubble: '365px',
+  'bubble-sm': '300px',
+  bubble: '580px',
+  'bubble-lg': '900px',
   'logo-m': '160px',
 }
 

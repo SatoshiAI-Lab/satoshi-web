@@ -27,7 +27,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
   }
 
   useEffect(() => {
-    setWalletName(currentWallet.name!)
+    setWalletName(currentWallet?.name!)
   }, [open])
   return (
     <Dialog
@@ -64,7 +64,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               onChange={(e) => setWalletName(e.target.value)}
             />
             <div className="text-[#101010b2] text-sm w-full">
-              {currentWallet.address}
+              {currentWallet?.address}
             </div>
           </div>
           <div className="h-[80px] px-14 gap-5 border-t-2 flex justify-center items-center w-full">

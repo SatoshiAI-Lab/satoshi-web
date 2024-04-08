@@ -6,7 +6,7 @@ import type {
   KLineEmitEvents,
   ListenTokenSend,
   HistorySend,
-  UpdateHandler,
+  Handler,
 } from './types'
 
 /**
@@ -99,8 +99,13 @@ export const useKLineApi = () => {
   }
 
   // Listen KLine bar update.
-  const onUpdateBar = (handler: UpdateHandler) => {
+  const onUpdateBar = (handler: Handler<KLineOnEvents['update']>) => {
     ws.on('update', handler)
+  }
+
+  // Listen WebSocket erorr message.
+  const onErrorMessage = (handler: Handler<KLineOnEvents['error']>) => {
+    ws.on('error', handler)
   }
 
   return {
@@ -110,5 +115,6 @@ export const useKLineApi = () => {
     unlistenAllToken,
     getHistory,
     onUpdateBar,
+    onErrorMessage,
   }
 }

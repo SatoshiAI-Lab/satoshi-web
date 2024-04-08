@@ -10,6 +10,7 @@ export enum DataType {
   AnnouncementInfo = 'announcement_info',
   TwitterInfo = 'twitter_info',
   TradeInfo = 'trade_info',
+  PoolInfo = 'pool_info',
 }
 
 export interface Message {
@@ -41,7 +42,7 @@ export interface States {
   chatEl: HTMLElement | null
   isLoading: boolean
   unreadMessages: Message[]
-  inputFocus: boolean
+  inputKeyup: boolean
   readAnswer: boolean
   waitAnswer: boolean
   // controller: AbortController | null
@@ -65,7 +66,7 @@ export interface Actions {
   // addStreamMessage(content: string, ops?: Omit<Message, 'msg'>): void
   // getParams(opts?: InteractiveMessageOptions): ChatParams
   setIsLoading(bool: boolean): void
-  setInputFocus(bool: boolean): void
+  setInputKeyup(bool: boolean): void
   setWaitAnswer(bool: boolean): void
   setReadAnswer(bool: boolean): void
   // resetSomeState(): void

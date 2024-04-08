@@ -109,7 +109,7 @@
   "no.balance": "This wallet doesn't have any tokens",
   "on": "On",
   "off": "Off",
-  "tx.token.text1": "How much SOL do you want?",
+  "tx.token.text1": "How much $1 do you want?",
   "tx.token.text2": "Which wallet would you like to use?\t",
   "custom": "Custom",
   "slippage": "Slippage",
@@ -208,5 +208,15 @@
   "crop.error": "Image error",
   "crop.error-message": "Your image size is incorrect. Please try again.$The min required size: {}.",
   "crop-size-error": "Image size incorrect",
-  "intent.buy": "Help me buy $1, the contract address is: $2"
+  "intent.buy": "Help me buy $1, the contract address is: $2",
+  "cancel-answer": "You have canceled this response.",
+  "insufficient.balance.terms": "There is not enough $1 in your wallet",
+  "total": "Total: ",
+  "successful.transaction": "TX: ",
+  "tx.token2": "How many $1 do you need to process?",
+  "intent.sell": "Help me sell $1, the address is: $2",
+  "intent.detail": "Help me find the $1 token address",
+  "lp": "LIQUIDITY: ",
+  "holder": "Holder: ",
+  "mkt-cap": "MKT CAP: "
 }

@@ -8,7 +8,7 @@ import { CHAT_CONFIG } from '@/config/chat'
 import { ChatParams, ChatResponseAnswer } from '@/api/chat/types'
 import { useTranslation } from 'react-i18next'
 import { useNeedLoginStore } from '@/stores/use-need-login-store'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useHyperTextParser } from './use-hyper-text-parser'
 import { utilDom } from '@/utils/dom'
 import i18n from '@/i18n'
@@ -23,9 +23,9 @@ export const useChat = () => {
   const { setShow } = useNeedLoginStore()
 
   const isReceiving = useRef(false)
-  const controller = useRef<AbortController>()
   const thinkTimer = useRef<NodeJS.Timeout>()
   const hasSmooth = useRef(false)
+  const controller = useRef<AbortController>()
 
   const chatStore = useChatStore()
   const { setQuestion, setIsLoading, setMessage, setWaitAnswer, setIntention } =
@@ -120,10 +120,11 @@ export const useChat = () => {
     setMessage(nonLoading)
   }
 
-  const cancelAnswer = (text: string) => {
+  const cancelAnswer = () => {
     resetSomeState()
     hasSmooth.current = true
-    toast(text)
+    controller.current?.abort()
+    toast(t('cancel-answer'))
   }
 
   const findPrevInteractive = (id?: string) => {
@@ -336,9 +337,8 @@ export const useChat = () => {
     thinkTimer.current = timer
 
     try {
-      const abortController = new AbortController()
-      const response = await chatApi.chat(params, abortController.signal)
-      controller.current = abortController
+      controller.current = new AbortController()
+      const response = await chatApi.chat(params, controller.current.signal)
       return messageParser(response)
     } catch (e: any) {
       console.error('[CHAT ERROR]: ', e)
@@ -347,6 +347,8 @@ export const useChat = () => {
       if (e?.status == 401) {
         setShow(true)
         toast.error(t('need.login'))
+      } else if (String(e).includes('AbortError')) {
+        // Don't shwo AbortError
       } else {
         toast.error(String(e))
       }
@@ -363,6 +365,7 @@ export const useChat = () => {
     sendMsg,
     cancelAnswer,
     findPrevInteractive,
+    addMessage,
     addMessageAndLoading,
     addMonitorMessage,
   }

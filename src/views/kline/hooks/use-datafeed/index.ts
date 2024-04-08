@@ -1,3 +1,5 @@
+import toast from 'react-hot-toast'
+
 import { TV_DATAFEED_CONFIG, TV_SYMBOL_INFO_CONFIG } from '@/config/tradingview'
 import { KLINE_SUPPORTED_INTERVALS } from '@/config/kline'
 import { useKLineFormat } from '@/views/kline/hooks/use-kline-format'
@@ -5,6 +7,7 @@ import { useKLineStore } from '@/stores/use-kline-store'
 import { utilKLine } from '@/utils/kline'
 import { useDatafeedCache } from '../use-datafeed-cache'
 import { useDatafeedHelper } from '../use-datafeed-helper'
+import { utilArr } from '@/utils/array'
 
 import type {
   IBasicDataFeed,
@@ -17,28 +20,34 @@ import type { Datafeeder, UseDatafeed } from './types'
 export const useDatafeed: UseDatafeed = () => {
   const datafeedCacheApi = useDatafeedCache()
   const { formatReceivedBars, priceToPricescale } = useKLineFormat()
-  const { getInitBars, handleInitBars, getHistoryBars, onUpdateBar } =
-    useDatafeedHelper(datafeedCacheApi)
+  const {
+    getInitBars,
+    handleInitBars,
+    getHistoryBars,
+    onUpdateBar,
+    onErrorMessage,
+  } = useDatafeedHelper(datafeedCacheApi)
 
   const datafeeder: Datafeeder = () => {
     // datafeed callback must be called in async function,
     // otherwise will be stack overflow.
     return {
       onReady(callback) {
+        onErrorMessage((e) => toast.error(e.msg ?? ''))
         setTimeout(() => callback(TV_DATAFEED_CONFIG), 0)
       },
       searchSymbols(userInput, exchange, symbolType, onResultReadyCallback) {},
       async resolveSymbol(symbolName, onSymbolResolved, onResolveError) {
+        const tradingPair = `${symbolName}-USDT`
+        // Initial `symbolInfo`, you can modify it in `getBars`
+        const symbolInfo: LibrarySymbolInfo = {
+          ...TV_SYMBOL_INFO_CONFIG,
+          name: symbolName,
+          full_name: tradingPair.toUpperCase(),
+          description: tradingPair.toUpperCase(),
+        }
+        const { interval } = useKLineStore.getState()
         try {
-          const tradingPair = `${symbolName}-USDT`
-          // Initial `symbolInfo`, you can modify it in `getBars`
-          const symbolInfo: LibrarySymbolInfo = {
-            ...TV_SYMBOL_INFO_CONFIG,
-            name: symbolName,
-            full_name: tradingPair.toUpperCase(),
-            description: tradingPair.toUpperCase(),
-          }
-          const { interval } = useKLineStore.getState()
           const { bars, lastBar } = await getInitBars(
             symbolInfo,
             interval as ResolutionString
@@ -50,6 +59,7 @@ export const useDatafeed: UseDatafeed = () => {
           datafeedCacheApi.setLastBar(lastBar)
           setTimeout(() => onSymbolResolved(symbolInfo), 0)
         } catch (error) {
+          console.log('error', error)
           onResolveError(`Cannot resolve this smybol: ${symbolName}`)
         }
       },
@@ -97,17 +107,7 @@ export const useDatafeed: UseDatafeed = () => {
             })
           }
 
-          const last = bars[bars.length - 1]
-          if (!last) return
-          onTick(last)
-          return
-
-          bars.forEach((bar) => {
-            const lastBarTime = datafeedCacheApi.getLastBar().time
-
-            if (bar.time < lastBarTime) return
-            setTimeout(() => onTick(bar))
-          })
+          onTick(utilArr.last(bars))
         })
       },
       unsubscribeBars(subscriberUID) {

@@ -29,7 +29,7 @@ export const CHAT_CONFIG = {
       'import_wallet_stream',
       'update_wallet_name_stream',
       'export_private_key_stream',
-      'intent_history', // wallet balance
+      'intent_history',
       'subscript_news',
       'subscript_wallet_address',
       'subscript_twitter',
@@ -38,6 +38,9 @@ export const CHAT_CONFIG = {
       'transaction_confirm_stream',
       'subscript_news',
       'transaction_stream',
+      'subscript_pool',
+      'do_not_support_buy_token',
+      'do_not_support_sell_token',
     ],
 
     /** it's not need `useStream` */
@@ -70,6 +73,7 @@ export const CHAT_CONFIG = {
   },
   metadataType: {
     intentHistory: 'intent_history',
+    tokenDetail: 'contract_token_detail',
     moniotrWallet: 'subscript_wallet_address_success',
     walletList: 'wallet_list',
     walletBalance: 'contract_wallet_balance',
@@ -78,6 +82,7 @@ export const CHAT_CONFIG = {
     changeNameWalletList: 'change_name_wallet_list',
     exportWalletList: 'export_wallet_list',
     deleteNameWalletList: 'delete_name_wallet_list',
+    transactionConfirmBuy: 'transaction_confirm_buy',
   },
 
   intentTxToken: ['transaction_confirm_buy', 'transaction_confirm_sell'],
