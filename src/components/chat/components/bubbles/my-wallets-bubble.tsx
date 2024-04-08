@@ -3,6 +3,7 @@ import { IoMdWallet } from 'react-icons/io'
 import {
   Avatar,
   Button,
+  CircularProgress,
   ClickAwayListener,
   Divider,
   Table,
@@ -23,14 +24,32 @@ import type {
   ChatResponseAnswerMeta,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
+import { formatUnits } from 'viem'
+import numeral from 'numeral'
+import { useQuery } from '@tanstack/react-query'
+import { walletApi } from '@/api/wallet'
+import { WalletPlatform } from '@/api/wallet/params'
+import { useChat } from '@/hooks/use-chat'
 
 interface Props extends React.ComponentProps<'div'> {
   meta?: ChatResponseAnswerMeta
 }
 
 const MyWalletsBubble = (props: Props) => {
-  const { meta } = props
-  const wallets = meta?.data ?? []
+  // const { meta } = props
+  // const wallets = meta?.data ?? []
+  const { sendMsg, addMessageAndLoading } = useChat()
+
+  const { data: result, isLoading } = useQuery({
+    queryKey: [walletApi.getWallets.name],
+    queryFn: () => walletApi.getWallets({ platform: WalletPlatform.SOL }),
+    refetchInterval: 15_000,
+  })
+
+  const wallets = result?.data || []
+
+  console.log(wallets)
+
   const { t } = useTranslation()
 
   const onDetails = (token: ChatResponseWalletListToken) => {
@@ -39,8 +58,14 @@ const MyWalletsBubble = (props: Props) => {
   }
 
   const onBuy = (token: ChatResponseWalletListToken) => {
-    console.log('onBuy click', token)
-    toast('Coming soon...')
+    const question = t('intent.buy')
+      .replace('$1', token.name)
+      .replace('$2', token.address)
+
+    addMessageAndLoading({ msg: question, position: 'right' })
+    sendMsg({
+      question: question,
+    })
   }
 
   const onSell = (token: ChatResponseWalletListToken) => {
@@ -48,12 +73,15 @@ const MyWalletsBubble = (props: Props) => {
     toast('Coming soon...')
   }
 
-  console.log(
-    'meta',
-    meta,
-    wallets,
-    wallets.map((w) => w.tokens)
-  )
+  if (isLoading) {
+    return (
+      <MessageBubble>
+        <div className="flex items-center">
+          <CircularProgress size={35}></CircularProgress>
+        </div>
+      </MessageBubble>
+    )
+  }
 
   return (
     <MessageBubble>
@@ -62,7 +90,7 @@ const MyWalletsBubble = (props: Props) => {
           <div className="flex items-center mb-2">
             <IoMdWallet size={28} className="text-primary" />
             <div className="ml-2 font-bold text-lg">
-              {w.name} · ${w.value}
+              {w.name} · ${numeral(w.value).format('0,0.00')}
             </div>
           </div>
           <Table size="small">
@@ -83,16 +111,18 @@ const MyWalletsBubble = (props: Props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {w.tokens.map((t, i) => (
-                <Tokens
-                  key={i}
-                  token={t}
-                  showBorder={i !== w.tokens.length - 1}
-                  onDetails={onDetails}
-                  onBuy={onBuy}
-                  onSell={onSell}
-                />
-              ))}
+              {w.tokens
+                .sort((a, b) => Number(b.valueUsd) - Number(a.valueUsd))
+                .map((t, i) => (
+                  <Tokens
+                    key={i}
+                    token={t}
+                    showBorder={i !== w.tokens.length - 1}
+                    onDetails={onDetails}
+                    onBuy={onBuy}
+                    onSell={onSell}
+                  />
+                ))}
             </TableBody>
           </Table>
           {wallets.length - 1 !== i && (
@@ -169,7 +199,7 @@ const Tokens = (props: TokensProps) => {
         <TableRow
           classes={{
             root: clsx(
-              '!cursor-pointer !h-[61px]',
+              '!cursor-pointer !min-h-[61px]',
               selectAddr === token.address && '!bg-gray-100'
             ),
           }}
@@ -177,21 +207,38 @@ const Tokens = (props: TokensProps) => {
         >
           <TableCell classes={{ root: cellCls('!pl-0') }}>
             <div className="flex items-stretch ">
-              <Avatar src={token.logoUrl} sx={{ width: 45, height: 45 }} />
+              <Avatar
+                src={token.logoUrl}
+                sx={{ width: 45, height: 45, bgcolor: 'black' }}
+              >
+                <div className="text-base">{token.name ?? 'Null'}</div>
+              </Avatar>
               <div className="flex flex-col justify-between ml-2">
-                <span className="text-primary">{token.name}</span>
+                <span className="text-primary">{token.name ?? 'null'}</span>
                 <div className="flex items-center">
                   {/* TODO: should be chain logo & name */}
-                  <Avatar src={token.logoUrl} sx={{ width: 20, height: 20 }} />
-                  <span className="text-gray-500 ml-1">{token.name}</span>
+                  <Avatar
+                    src={token.chain_logo}
+                    sx={{ width: 20, height: 20 }}
+                  />
+                  <span className="text-gray-500 ml-1">{token.chain_name}</span>
                 </div>
               </div>
             </div>
           </TableCell>
-          <TableCell classes={{ root: cellCls() }}>${token.valueUsd}</TableCell>
-          <TableCell classes={{ root: cellCls() }}>{token.amount}K</TableCell>
           <TableCell classes={{ root: cellCls() }}>
-            ${utilFmt.token(Number(token.priceUsd))}
+            ${Number(numeral(token.valueUsd).format('0.00'))}
+          </TableCell>
+          <TableCell classes={{ root: cellCls() }}>
+            {numeral(formatUnits(BigInt(token.amount), token.decimals)).format(
+              '0a.00'
+            )}
+          </TableCell>
+          <TableCell classes={{ root: cellCls() }}>
+            $
+            {Number(
+              numeral(utilFmt.token(Number(token.priceUsd))).format('0.00')
+            )}
           </TableCell>
         </TableRow>
       </Tooltip>

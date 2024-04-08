@@ -34,7 +34,7 @@ export const CHAT_CONFIG = {
       'subscript_wallet_address',
       'subscript_twitter',
       'wrong_contract',
-      'transaction_confirm',
+      'transaction_confirm_buy',
       'transaction_confirm_stream',
       'subscript_news',
       'transaction_stream',
@@ -74,12 +74,13 @@ export const CHAT_CONFIG = {
     walletList: 'wallet_list',
     walletBalance: 'contract_wallet_balance',
     twitterList: 'subscript_twitter_list',
-    transactionConfirm: 'transaction_confirm',
     monitorWalletFail: 'subscript_wallet_address_fail',
     changeNameWalletList: 'change_name_wallet_list',
     exportWalletList: 'export_wallet_list',
     deleteNameWalletList: 'delete_name_wallet_list',
   },
+
+  intentTxToken: ['transaction_confirm_buy', 'transaction_confirm_sell'],
 
   intentSelectWalletType: [
     'change_name_wallet_list',

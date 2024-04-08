@@ -25,7 +25,7 @@ export interface News {
 
 export interface Pool {
   message_type: number
-  content: PoolList[]
+  content: PoolData[]
 }
 
 export interface Twitter {
@@ -51,11 +51,14 @@ export interface AddressData {
   chain: string
 }
 
-export interface PoolList {
-  name: string
+export interface PoolData {
+  id: number
+  slug: string
+  chain: string
+  min: number | null
+  max: number | null
   subscribed: boolean
 }
-
 export interface TwitterList {
   twitter_id: string
   twitter: string

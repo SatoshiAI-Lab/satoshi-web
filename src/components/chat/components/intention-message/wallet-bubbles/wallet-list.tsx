@@ -3,7 +3,7 @@ import {
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
 import { walletApi } from '@/api/wallet'
-import { UserCreateWalletResp } from '@/api/wallet/params'
+import { UserCreateWalletResp, WalletPlatform } from '@/api/wallet/params'
 import { CHAT_CONFIG } from '@/config/chat'
 import { useChat } from '@/hooks/use-chat'
 import { utilFmt } from '@/utils/format'
@@ -11,11 +11,12 @@ import { IconButton, Radio } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import numeral from 'numeral'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 
 interface Props {
-  data: ChatResponseWalletList[]
   type: string
 }
 
@@ -25,8 +26,8 @@ export const WalletList = (props: Props) => {
   const { addMessageAndLoading, sendMsg } = useChat()
 
   const { data: result, refetch } = useQuery({
-    queryKey: [],
-    queryFn: () => walletApi.getWallets({ platform: 'SOL' }),
+    queryKey: [walletApi.getWallets.name],
+    queryFn: () => walletApi.getWallets({ platform: WalletPlatform.SOL }),
     refetchInterval: 15_000,
   })
 
@@ -130,9 +131,14 @@ export const WalletList = (props: Props) => {
                   'flex items-center text-gray-500 hover:text-gray-600 justify-start'
                 )}
               >
-                <span className="text-nowrap">
-                  {utilFmt.addr(item.address)}
-                </span>
+                <CopyToClipboard
+                  text={item.address}
+                  onCopy={() => toast.success(t('copy-success'))}
+                >
+                  <span className="text-nowrap cursor-pointer">
+                    {utilFmt.addr(item.address)}
+                  </span>
+                </CopyToClipboard>
               </div>
               <div className="flex items-center text-gray-500 hover:text-gray-600 ml-5">
                 <span className="text-nowrap">

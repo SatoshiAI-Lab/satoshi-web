@@ -12,10 +12,6 @@ export const WalletChoiceBubble = ({ msg }: Props) => {
   const { t } = useTranslation()
   const { sendMsg, addMessageAndLoading } = useChat()
 
-  if (!msg.data?.length) {
-    return
-  }
-
   // const onSelect = (wallet: ChatResponseWalletList) => {
   //   const question = t('delete.wallet.intent.text').replace('$1', wallet.name)
   //   addMessageAndLoading({ msg: question, position: 'right' })
@@ -26,7 +22,7 @@ export const WalletChoiceBubble = ({ msg }: Props) => {
 
   return (
     <MessageBubble>
-      <WalletList data={msg.data} type={msg.type ?? ''}></WalletList>
+      <WalletList type={msg.type ?? ''}></WalletList>
     </MessageBubble>
   )
 }
