@@ -32,7 +32,7 @@ interface Options {
   intervalFetch?: boolean
   enabled?: boolean
   sortBy?: FavoritesSort
-  sortType: SortType
+  sortType?: SortType
 }
 
 export const useFavorites = (opts?: Options) => {

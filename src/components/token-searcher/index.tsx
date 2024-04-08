@@ -109,7 +109,7 @@ const TokenSearcher = (props: TokenSearcherProps) => {
       onClose={onClose}
       classes={{ paper: '!h-[60vh] w-[60vw] !overflow-hidden' }}
     >
-      <DialogHeader onClose={onClose} showCloseBtn closeBtnClass="!right-3.5">
+      <DialogHeader onClose={onClose} closeBtnClass="!right-3.5">
         <span>{t('search')}</span>
       </DialogHeader>
       <div className="flex items-center border-y border-gray-200">

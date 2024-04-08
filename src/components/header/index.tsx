@@ -1,11 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { Router, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { Button, Menu, MenuItem } from '@mui/material'
 import { IoLanguageOutline } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 import { IoLogOutOutline } from 'react-icons/io5'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
+import { FaBloggerB, FaGithub } from 'react-icons/fa'
+import { FaXTwitter } from 'react-icons/fa6'
 
 import MobileHeader from './components/mobile'
 import DesktopHeader from './components/desktop'
@@ -22,20 +24,15 @@ import { utilFmt } from '@/utils/format'
 
 import type { CustomDropdownItem } from '../custom-dropdown/types'
 import type { HeaderItem } from './types'
-import { MdSocialDistance } from 'react-icons/md'
-import { GrGithub } from 'react-icons/gr'
-import { FaBlogger, FaBloggerB, FaGithub } from 'react-icons/fa'
-import { FaXTwitter } from 'react-icons/fa6'
 
 function Header() {
   const router = useRouter()
   const { isMobile, isDesktop } = useResponsive()
+  const { getLang, setLang } = useStorage()
   const { t, i18n } = useTranslation()
-
   const [isSignIn, setSignInStatus] = useState(true)
   const { show, open, hidden } = useShow()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
   const openLogoutWallet = Boolean(anchorEl)
 
   const langs = useMemo(() => {
@@ -44,17 +41,18 @@ function Header() {
       label: value.name as string,
     }))
   }, [])
+  const activeLang = useMemo(() => {
+    const cachedLang = getLang()
+    const defaultLang = langs.find((l) => l.key === i18n.language)?.key
+    const fallbackLang = utilArr.first(langs).key
 
-  const items: HeaderItem[] = [
-    // {
-    //   label: t('satoshi'),
-    //   route: Routes.index,
-    // },
-    // {
-    //   label: t('kline'),
-    //   route: Routes.kline,
-    // },
-  ]
+    return cachedLang ?? defaultLang ?? fallbackLang
+  }, [i18n, t])
+
+  const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
+  const { isDark } = useThemeStore()
+
+  const items: HeaderItem[] = []
 
   const socialLink = [
     {
@@ -81,10 +79,6 @@ function Header() {
     setAnchorEl(null)
   }
 
-  const { getLang, setLang } = useStorage()
-  const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
-  const { isDark } = useThemeStore()
-
   const onLangChange = (item: CustomDropdownItem) => {
     const lang = String(item.key)
 
@@ -108,6 +102,7 @@ function Header() {
   }
 
   useEffect(() => {
+    console.log('utilArr.first(langs).key', activeLang, i18n.language)
     fetchUserInfo()
   }, [])
 
@@ -150,7 +145,7 @@ function Header() {
           {/* Language dropdown */}
           <CustomDropdown
             items={langs}
-            active={getLang() ?? utilArr.first(langs).key}
+            active={activeLang}
             onItemClick={onLangChange}
           >
             <IoLanguageOutline
