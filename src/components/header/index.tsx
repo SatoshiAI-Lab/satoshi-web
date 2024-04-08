@@ -160,7 +160,7 @@ function Header() {
           </CustomDropdown>
           {/* Login button */}
           {isLogined ? (
-            <div className="mx-10" onClick={(e) => handleLogoutClick(e)}>
+            <div className="ml-4 mr-10" onClick={(e) => handleLogoutClick(e)}>
               <Button
                 variant="contained"
                 classes={{

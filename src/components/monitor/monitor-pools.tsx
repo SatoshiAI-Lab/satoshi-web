@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaChevronLeft, FaCheck } from 'react-icons/fa6'
 import { Button, Dialog, OutlinedInput } from '@mui/material'
@@ -9,43 +9,50 @@ import { DialogHeader } from '../dialog-header'
 import { useResponsive } from '@/hooks/use-responsive'
 import { MonitorLabelSwitch } from './monitor-label-switch'
 
-import type { MonitorConfigData } from '@/api/monitor/type'
+import type { MonitorConfigData, PoolData } from '@/api/monitor/type'
+import { useMonitorStore } from '@/stores/use-monitor-store'
+import { MonitorConfig } from '@/config/monitor'
 
 interface Props {
   data?: MonitorConfigData
 }
 
+const defaultMin = 100
+const defaultMax = 1000000
+
 export const MonitorPools = ({ data }: Props) => {
   const { t } = useTranslation()
-  const [chain, setChain] = useState()
+  const [chain, setChain] = useState<PoolData>()
+  const [min, setMin] = useState(defaultMin)
+  const [max, setMax] = useState(defaultMax)
   const { show, open, hidden } = useShow(false)
   const { isMobile } = useResponsive()
-  const chains = [
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Solana',
-      slug: true,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Avanche',
-      slug: false,
-      open: false,
-    },
-    {
-      logo: '/images/monitor/monitor.png',
-      name: 'Ethereum',
-      slug: false,
-      open: false,
-    },
-  ]
+  const { configData, setConfig } = useMonitorStore()
 
-  const onSwitch = () => {}
+  const chains = configData?.pool.content || []
 
-  const openSetting = (chain: any) => {
+  const onSwitch = (checked: boolean, data: PoolData) => {
+    data.subscribed = checked
+    const content =
+      configData?.pool.content
+        .filter((item) => item.subscribed)
+        .map((item) => ({
+          min: chain?.min ?? defaultMin,
+          max: chain?.max ?? defaultMax,
+          chain: item.chain,
+        })) || []
+
+    setConfig({
+      message_type: MonitorConfig.pool,
+      content: [...content],
+    })
+  }
+
+  const openSetting = (chain: PoolData) => {
     open()
     setChain(chain)
+    setMin(chain.min || defaultMin)
+    setMax(chain.max || defaultMax)
   }
 
   const onApply = () => {
@@ -55,7 +62,7 @@ export const MonitorPools = ({ data }: Props) => {
   return (
     <div
       className={clsx(
-        'px-10 pb-6 grid grid-cols-2 gap-y-2 gap-x-4',
+        'px-10 pb-6 grid grid-cols-2 gap-y-3 gap-x-4',
         'max-sm:grid-cols-1 max-sm:px-6'
       )}
     >
@@ -65,7 +72,9 @@ export const MonitorPools = ({ data }: Props) => {
             key={i}
             data={chain}
             onSwitch={onSwitch}
+            disabled={chain.chain !== 'Solana'}
             onSetting={chain.slug ? openSetting : null}
+            logo={`https://img.mysatoshi.ai/chains/logo/${chain.chain}.png`}
           ></MonitorLabelSwitch>
         )
       })}

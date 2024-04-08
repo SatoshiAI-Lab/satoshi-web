@@ -36,6 +36,7 @@ export const MonitorEXInfo = ({ data }: Props) => {
             <MonitorLabelSwitch
               key={i}
               data={item}
+              logo={`https://img.mysatoshi.ai/exchange/logo/${item.name}.png`}
               onSwitch={(checked) => onSwitch(item, checked)}
             ></MonitorLabelSwitch>
           )

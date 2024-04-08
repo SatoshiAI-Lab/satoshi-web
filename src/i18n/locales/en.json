@@ -207,5 +207,6 @@
   "crop.title": "Crop image",
   "crop.error": "Image error",
   "crop.error-message": "Your image size is incorrect. Please try again.$The min required size: {}.",
-  "crop-size-error": "Image size incorrect"
+  "crop-size-error": "Image size incorrect",
+  "intent.buy": "Help me buy $1, the contract address is: $2"
 }

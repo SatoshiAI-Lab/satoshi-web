@@ -128,7 +128,7 @@
   "ca": "合约地址",
   "liquidity": "流动性",
   "started": "初始池子",
-  "price": "价格",
+  "price": "币价",
   "ca-secutiry": "合约安全",
   "mutable-metadata": "可变元数据",
   "yes": "是",
@@ -174,7 +174,7 @@
   "token-total-validate": "请输入代币总量",
   "create": "创建",
   "asset": "资产",
-  "value": "值",
+  "value": "价值",
   "balance": "余额",
   "details": "详情",
   "buy": "买",
@@ -205,5 +205,6 @@
   "crop.title": "裁剪图像",
   "crop.error": "图片错误",
   "crop.error-message": "您的图像尺寸有误，\n请重试。$所需的最小尺寸：{}。",
-  "crop-size-error": "图像尺寸错误"
+  "crop-size-error": "图像尺寸错误",
+  "intent.buy": "帮我购买$1，合约地址是：$2"
 }

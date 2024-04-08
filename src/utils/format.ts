@@ -45,7 +45,7 @@ export const utilFmt = {
 
       return result
     } else {
-      return value.toString()
+      return numeral(value).format('0.00')
     }
   },
   percent(value?: number, fixed = 2) {
