@@ -48,6 +48,8 @@ export interface ChatResponseTxConfrim {
   to_token_name: string
   to_token_contract: string
   match_wallets: ChatResponseWalletList[]
+  address_filter: string
+  chain_filter: string
 }
 
 export interface ChatResponseWalletListRaw {
