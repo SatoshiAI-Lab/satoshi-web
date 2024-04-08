@@ -13,7 +13,7 @@ import { useChatStore } from '@/stores/use-chat-store'
 import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
 import { utilDom } from '@/utils/dom'
 import { useInputHistory } from '@/hooks/use-input-history'
-// import MicRecord from './micro-record'
+import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 
 interface MessageInputProps {
   autofocus?: boolean
@@ -27,7 +27,7 @@ function MessageInput(props: MessageInputProps) {
   const [isFocus, setIsFocus] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const keyboardIsShow = useMobileKeyboard()
-  const { question, chatEl, isLoading, setQuestion, setInputFocus } =
+  const { question, chatEl, isLoading, setQuestion, setInputKeyup } =
     useChatStore()
 
   const handleEnterSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -68,19 +68,29 @@ function MessageInput(props: MessageInputProps) {
     utilDom.scrollToBottom(chatEl)
   }, [keyboardIsShow, chatEl])
 
-  const handleInputFocus = () => {
-    setInputFocus(true)
-    setIsFocus(true)
-    console.log('user start input now!!!')
-  }
+  const handleInputKeyup = () => {
+    console.log('user start keyup now')
+    console.log(
+      `keyup: ${useChatStore.getState().inputKeyup}`,
+      `read answer: ${useChatStore.getState().readAnswer}`,
+      `wait answer: ${useChatStore.getState().waitAnswer}`
+    )
 
-  const handleInputBlur = () => {
-    setInputFocus(false)
-    setIsFocus(false)
-    console.log('user stop input now!!!')
+    setInputKeyup(true)
+    setTimeout(() => {
+      console.log('user stop keyup now')
+      console.log(
+        `keyup: ${useChatStore.getState().inputKeyup}`,
+        `read answer: ${useChatStore.getState().readAnswer}`,
+        `wait answer: ${useChatStore.getState().waitAnswer}`
+      )
+      setInputKeyup(false)
+    }, 10000)
   }
 
   const onCancelAnswer = () => {}
+
+  const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
 
   return (
     <div
@@ -123,8 +133,9 @@ function MessageInput(props: MessageInputProps) {
           inputRef={inputRef}
           onKeyDown={handleEnterSend}
           onChange={(e) => setQuestion(e.target.value)}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
+          onKeyUp={throttledHandleInputKeyup}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
         />
         {/* <MicRecord startRecording={() => {}} stopRecording={() => {}} /> */}
         <Button

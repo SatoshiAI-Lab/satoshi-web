@@ -8,7 +8,7 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   // 1. If the question input is in the state of Focus
   // 2. Within 20 seconds after the latest question answer, read the answer
   // 3. Within 10 seconds after the user clicks Ask, wait for the answer
-  inputFocus: false,
+  inputKeyup: false,
   readAnswer: false,
   waitAnswer: false,
   unreadMessages: [],
@@ -29,7 +29,7 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   // setIsReceiving: (value) => set({ isLoading: value }),
   setChatEl: (el) => set({ chatEl: el }),
   setIsLoading: (bool) => set({ isLoading: bool }),
-  setInputFocus: (bool) => set({ inputFocus: bool }),
+  setInputKeyup: (bool) => set({ inputKeyup: bool }),
   setReadAnswer: (bool) => set({ readAnswer: bool }),
   setWaitAnswer: (bool) => set({ waitAnswer: bool }),
   // removeAllMessage: () => set({ messages: [] }),
