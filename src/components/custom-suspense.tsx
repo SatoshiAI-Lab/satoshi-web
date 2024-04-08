@@ -31,8 +31,8 @@ const CustomSuspense = (props: CustomSuspenseProps) => {
     {
       style: {
         opacity: isStale ? 0.5 : 1,
-        ...containerProps,
       },
+      ...containerProps,
     },
     children
   )
