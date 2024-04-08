@@ -190,6 +190,7 @@ export interface ChatResponseMetaNewsInfo {
 export interface I18 {
   en: string
   zh: string
+  [key: string]: string
 }
 export interface ChatResponseMetaAnnounceMent {
   content: I18

@@ -4,6 +4,8 @@ import clsx from 'clsx'
 import MessageBubble from './message-bubble'
 import { ChatResponseMetaTwitter } from '@/api/chat/types'
 import dayjs from 'dayjs'
+import i18n from '@/i18n'
+import { t } from 'i18next'
 
 const TwitterBubble = ({
   content,
@@ -16,8 +18,9 @@ const TwitterBubble = ({
   const contentRef = useRef<HTMLDivElement>(null)
   const [relax, setRelax] = useState(false)
   const [tooLong, setTooLong] = useState(false)
+  const { language } = i18n
   useEffect(() => {
-    if (content.en.length > 100) {
+    if (content[language] && content[language].length > 100) {
       const contentElement = contentRef.current
       const isOverflown = contentElement!.offsetHeight > 70
       setRelax(isOverflown)
@@ -34,7 +37,9 @@ const TwitterBubble = ({
           className="w-12 h-12 rounded-full mr-2"
         />
         <div className="flex flex-col justify-between">
-          <span className="font-bold">{twitter} just tweeted</span>
+          <span className="font-bold">
+            {twitter} {t('bubble.new-tweet')}
+          </span>
           <span className="text-gray-400">
             {dayjs(created_at).format('H:mm M/D')}
           </span>
@@ -42,7 +47,7 @@ const TwitterBubble = ({
       </div>
       {/* Text content */}
       <div ref={contentRef} className={clsx('my-2', relax && 'line-clamp-3')}>
-        {content.en ? content.en : content.zh}
+        {content[language] || ''}
       </div>
       {(tooLong && (
         <button

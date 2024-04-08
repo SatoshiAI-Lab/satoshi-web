@@ -189,5 +189,7 @@
   "changename.walllet": "Change the name of the $1 wallet",
   "bubble.nolink": "Origin link not ready, please try again later",
   "cancel": "Cancel",
-  "save": "Save"
+  "save": "Save",
+  "bubble.new-tweet": "just tweeted",
+  "bubble.new-anno": "just released a new ann."
 }

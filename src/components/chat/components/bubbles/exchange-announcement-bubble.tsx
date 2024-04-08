@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import { Avatar } from '@mui/material'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
+import i18n from '@/i18n'
 
 const ExchangeAnnouncementBubble = ({
   title,
@@ -15,6 +16,7 @@ const ExchangeAnnouncementBubble = ({
   source_name,
   url,
 }: ChatResponseMetaAnnounceMent) => {
+  const { language } = i18n
   return (
     <MessageBubble className={clsx('min-w-bubble py-4')}>
       {/* Avatar, chain */}
@@ -29,7 +31,7 @@ const ExchangeAnnouncementBubble = ({
 
         <div className="flex flex-col justify-between ">
           <span className="font-bold">
-            {source_name} just released a new ann.
+            {source_name} {t('bubble.new-anno')}
           </span>
           <span className="text-gray-400">
             {dayjs(created_at).format('H:mm M/D')}
@@ -37,11 +39,11 @@ const ExchangeAnnouncementBubble = ({
         </div>
       </div>
       {/* Event description */}
-      <div className="mt-2 font-bold">{title.en}</div>
-      {url.en &&
+      <div className="mt-2 font-bold">{title[language] || ''}</div>
+      {url[language] &&
         ((
           <a
-            href={url.en}
+            href={url[language]}
             target="_blank"
             className="text-primary inline-block mt-3"
           >

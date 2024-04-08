@@ -188,5 +188,7 @@
   "changename.walllet": "修改$1的钱包名字",
   "bubble.nolink": "源链接还未准备好，请稍后重试。",
   "cancel": "取消",
-  "save": "确定"
+  "save": "确定",
+  "bubble.new-tweet": "发送了新的推文",
+  "bubble.new-anno": "发送了新的公告"
 }
