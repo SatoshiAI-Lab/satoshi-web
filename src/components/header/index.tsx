@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { Router, useRouter } from 'next/router'
 import { Button, Menu, MenuItem } from '@mui/material'
 import { IoLanguageOutline } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
@@ -22,6 +22,10 @@ import { utilFmt } from '@/utils/format'
 
 import type { CustomDropdownItem } from '../custom-dropdown/types'
 import type { HeaderItem } from './types'
+import { MdSocialDistance } from 'react-icons/md'
+import { GrGithub } from 'react-icons/gr'
+import { FaBlogger, FaBloggerB, FaGithub } from 'react-icons/fa'
+import { FaXTwitter } from 'react-icons/fa6'
 
 function Header() {
   const router = useRouter()
@@ -50,6 +54,21 @@ function Header() {
     //   label: t('kline'),
     //   route: Routes.kline,
     // },
+  ]
+
+  const socialLink = [
+    {
+      icon: <FaGithub size={22} />,
+      onclick: () => window.open('https://github.com/SatoshiAI-Lab', '_blank'),
+    },
+    {
+      icon: <FaBloggerB size={22} />,
+      onclick: () => window.open('https://blog.mysatoshi.ai/', '_blank'),
+    },
+    {
+      icon: <FaXTwitter size={22} />,
+      onclick: () => window.open('https://twitter.com/mysatoshiai', '_blank'),
+    },
   ]
 
   const handleLogoutClick = (
@@ -117,6 +136,17 @@ function Header() {
           )}
         </div>
         <div className="flex items-center">
+          <div className="flex mr-2">
+            {socialLink.map((item, index) => (
+              <button
+                key={index}
+                onClick={item.onclick}
+                className="mx-2 cursor-pointer text-black dark:text-white"
+              >
+                {item.icon}
+              </button>
+            ))}
+          </div>
           {/* Language dropdown */}
           <CustomDropdown
             items={langs}

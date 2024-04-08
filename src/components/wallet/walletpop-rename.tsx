@@ -51,7 +51,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
         <div>
           <div className="flex flex-col justify-center items-center m-auto py-16 gap-1 px-10">
             <TextField
-              label="Wallet name"
+              label={t('wallet.rename-wallet.name')}
               multiline
               rows={2}
               className="w-full"
@@ -75,7 +75,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               classes={{ root: '!text-black' }}
               onClick={onClose}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               variant="contained"
@@ -83,7 +83,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               fullWidth
               onClick={() => renameWallet(walletName)}
             >
-              Save
+              {t('save')}
             </Button>
           </div>
         </div>

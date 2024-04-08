@@ -52,7 +52,7 @@ const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               classes={{ root: '!text-black' }}
               onClick={onClose}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               variant="contained"
@@ -60,7 +60,7 @@ const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               fullWidth
               onClick={userDeleteWallet}
             >
-              Save
+              {t('save')}
             </Button>
           </div>
         </div>

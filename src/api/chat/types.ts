@@ -178,12 +178,12 @@ export interface ChatMointorRoomRes {
 }
 
 export interface ChatResponseMetaNewsInfo {
-  content: string
+  content: I18
   created_at: string
   data_type: string
   id: number
   logo: string
-  title: string
+  title: I18
   source: string
 }
 

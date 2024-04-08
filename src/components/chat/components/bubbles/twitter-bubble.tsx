@@ -42,7 +42,7 @@ const TwitterBubble = ({
       </div>
       {/* Text content */}
       <div ref={contentRef} className={clsx('my-2', relax && 'line-clamp-3')}>
-        {content.en}
+        {content.en ? content.en : content.zh}
       </div>
       {(tooLong && (
         <button
