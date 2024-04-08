@@ -32,7 +32,7 @@ export const utilParse = {
   /**
    * Convert a object to query string(qs).
    */
-  obj2Qs(obj: object, opts?: Partial<QueryPaserOptions>) {
+  objToQs(obj: object, opts?: Partial<QueryPaserOptions>) {
     const {
       splitSymbol = '&',
       eqSymbol = '=',
@@ -50,7 +50,7 @@ export const utilParse = {
   /**
    * Convert a query string(qs) to object.
    */
-  qs2Obj(query: string, opts?: Partial<QueryPaserOptions>) {
+  qsToObj(query: string, opts?: Partial<QueryPaserOptions>) {
     const { splitSymbol = '&', eqSymbol = '=' } = opts ?? {}
     const removeQuestionMark = query.startsWith('?') ? query.slice(1) : query
     const result = removeQuestionMark.split(splitSymbol).reduce((p, q) => {

@@ -40,7 +40,7 @@ function InteractiveMessage(props: InteractiveMessageProps) {
   }
 
   const formatTitle = (key: keyof ChatResponseMetaInteractive) => {
-    const typeMap = utilParse.qs2Obj(t('multi-message-map'), {
+    const typeMap = utilParse.qsToObj(t('multi-message-map'), {
       splitSymbol: '$',
     })
     const replaceMulti = t('multi-message').replace(/\${(.*?)}/, (_, text) => {

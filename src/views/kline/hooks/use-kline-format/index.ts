@@ -67,7 +67,7 @@ export const useKLineFormat: UseKLineFormat = () => {
 
     const formatBars = bars.map((bar) => ({
       ...bar,
-      time: Math.floor(bar._ts * 1000),
+      time: Math.floor(bar.timestamp * 1000),
     }))
 
     return formatBars

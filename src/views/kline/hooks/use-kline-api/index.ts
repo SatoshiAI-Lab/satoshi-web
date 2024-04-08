@@ -1,12 +1,14 @@
 import { useWebSocket } from '@/hooks/use-websocket'
+import { URL_CONFIG } from '@/config/url'
 
 import type {
   WithPromiseExecutor,
   KLineOnEvents,
   KLineEmitEvents,
-  ListenTokenSend,
+  ListenSend,
   HistorySend,
   Handler,
+  TagStr,
 } from './types'
 
 /**
@@ -15,7 +17,7 @@ import type {
  * When you call any method, it will automatically connect to WebSocket.
  */
 export const useKLineApi = () => {
-  const listenParams: ListenTokenSend[] = []
+  const listenTags: TagStr[] = []
   const ws = useWebSocket<KLineOnEvents, KLineEmitEvents>({
     heartbeat: JSON.stringify({ type: 'ping' }),
   })
@@ -25,7 +27,7 @@ export const useKLineApi = () => {
   const waitingForConnect = async () => {
     if (ws.getInstance()?.readyState === WebSocket.OPEN) return
 
-    await ws.connect(process.env.NEXT_PUBLIC_KLINE_API!)
+    await ws.connect(URL_CONFIG.kline)
   }
 
   // Unified wrap API, waiting for connect, convert to sync API, handle error.
@@ -38,41 +40,35 @@ export const useKLineApi = () => {
     })
   }
 
-  // Get a token supported exchagne source.
-  const getTokenSources = async (token: string) => {
-    return withPromise<KLineOnEvents['source']>((resolve) => {
-      ws.emit('source', { token })
-      ws.on('source', resolve)
-    })
-  }
-
   // If need to listen a new token,
   // it's necessary to clear last listen token.
-  const clearLastListen = async () => {
-    const isEmpty = listenParams.length === 0
+  const unlistenLastOne = async () => {
+    const isEmpty = listenTags.length === 0
     if (isEmpty) return
 
-    const params = listenParams.pop()
-    if (!params) return
+    const tag = listenTags.pop()
+    if (!tag) return
 
-    return unlistenToken(params)
+    return unlistenToken({ tag })
   }
 
   // Listen a toekn.
-  const listenToken = async (params: ListenTokenSend) => {
-    await clearLastListen()
+  const listenToken = async (params: ListenSend) => {
+    await unlistenLastOne()
     return withPromise<KLineOnEvents['init']>((resolve) => {
-      listenParams.push(params) // push to array, Convenient for unlisten.
       ws.emit('listen', params)
-      ws.on('init', resolve)
+      ws.on('init', (data) => {
+        listenTags.push(data.tag!) // push to array, Convenient for unlisten.
+        resolve(data)
+      })
     })
   }
 
   // Unlisten a token.
-  const unlistenToken = (params: ListenTokenSend) => {
-    return withPromise<KLineOnEvents['ok']>((resolve) => {
+  const unlistenToken = (params: ListenSend) => {
+    return withPromise<KLineOnEvents['notice']>((resolve) => {
       ws.emit('unlisten', params)
-      ws.on('ok', resolve)
+      ws.on('notice', resolve)
     })
   }
 
@@ -80,10 +76,10 @@ export const useKLineApi = () => {
   const unlistenAllToken = async () => {
     try {
       const unlistens = await Promise.all(
-        listenParams.map((listen) => unlistenToken(listen))
+        listenTags.map((tag) => unlistenToken({ tag }))
       )
       // Attention clear listens array.
-      listenParams.splice(0, listenParams.length)
+      listenTags.splice(0, listenTags.length)
       return unlistens
     } catch (error) {
       return error
@@ -109,7 +105,6 @@ export const useKLineApi = () => {
   }
 
   return {
-    getTokenSources,
     listenToken,
     unlistenToken,
     unlistenAllToken,
