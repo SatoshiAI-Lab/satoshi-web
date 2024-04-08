@@ -10,6 +10,7 @@ import Live2DModel from '../live2d-model'
 import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
 import { MessageAlert } from './components/bubbles/message-alert'
+import CreateTokenBubble from './components/bubbles/create-token-bubble'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props
@@ -59,6 +60,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     <div
       className={clsx(
         'flex relative max-sm:px-0 max-lg:pl-6 h-body',
+        '2xl:justify-center',
         className
       )}
     >
@@ -74,7 +76,8 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
       <div
         className={clsx(
           'grow-[8] overflow-auto pb-0 pr-0',
-          'flex flex-col gap-4 z-10 max-sm:pr-0'
+          'flex flex-col gap-4 z-10 max-sm:pr-0',
+          '2xl:max-w-chat 2xl:grow-unset'
         )}
       >
         <Live2DModel />
@@ -87,6 +90,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
         >
           <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
           <Messages messages={messages} />
+          {/* <CreateTokenBubble /> */}
         </div>
         <MessageInput onSend={onSend} onCancel={cancelAnswer} />
       </div>
