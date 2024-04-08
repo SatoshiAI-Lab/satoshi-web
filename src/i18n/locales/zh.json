@@ -205,5 +205,6 @@
   "crop.title": "裁剪图像",
   "crop.error": "图片错误",
   "crop.error-message": "您的图像尺寸有误，\n请重试。$所需的最小尺寸：{}。",
-  "crop-size-error": "图像尺寸错误"
+  "crop-size-error": "图像尺寸错误",
+  "cancel-answer": "您取消了此次回答"
 }

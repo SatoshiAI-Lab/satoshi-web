@@ -24,6 +24,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     sendMsg,
     unreadMessages,
     setWaitAnswer,
+    cancelAnswer,
   } = useChat()
 
   // Handle send.
@@ -87,7 +88,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
           <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
           <Messages messages={messages} />
         </div>
-        <MessageInput onSend={onSend} />
+        <MessageInput onSend={onSend} onCancel={cancelAnswer} />
       </div>
     </div>
   )
