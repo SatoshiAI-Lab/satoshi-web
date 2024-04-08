@@ -84,6 +84,12 @@ function Header() {
   const { getLang, setLang } = useStorage()
   const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
   const { isDark } = useThemeStore()
+  const activeLang = useMemo(() => {
+    const cachedLang = getLang()
+    const defaultLang = langs.find((l) => l.key === i18n.language)?.key
+
+    return cachedLang ?? defaultLang ?? utilArr.first(langs).key
+  }, [i18n, t])
 
   const onLangChange = (item: CustomDropdownItem) => {
     const lang = String(item.key)
@@ -108,6 +114,7 @@ function Header() {
   }
 
   useEffect(() => {
+    console.log('utilArr.first(langs).key', activeLang, i18n.language)
     fetchUserInfo()
   }, [])
 
@@ -150,7 +157,7 @@ function Header() {
           {/* Language dropdown */}
           <CustomDropdown
             items={langs}
-            active={getLang() ?? utilArr.first(langs).key}
+            active={activeLang}
             onItemClick={onLangChange}
           >
             <IoLanguageOutline
