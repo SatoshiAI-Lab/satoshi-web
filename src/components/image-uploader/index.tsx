@@ -1,10 +1,11 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import { IoAddSharp } from 'react-icons/io5'
 import ReactCrop from 'react-image-crop'
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material'
 import 'react-image-crop/dist/ReactCrop.css'
 import { t } from 'i18next'
+import { nanoid } from 'nanoid'
 
 import { DialogHeader } from '../dialog-header'
 import { fixedSize, useImageUploader } from './hooks/use-image-uploader'
@@ -12,6 +13,7 @@ import { fixedSize, useImageUploader } from './hooks/use-image-uploader'
 const ImageUploader = () => {
   const imgRef = useRef<HTMLImageElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const inputId = useRef('')
   const {
     src,
     open,
@@ -31,6 +33,12 @@ const ImageUploader = () => {
     // `onChange` event will not be called.
     inputRef.current.value = ''
   }
+
+  useEffect(() => {
+    // Use random id, otherwise if multiple creat token,
+    // only first one will be trigger.
+    inputId.current = nanoid()
+  }, [])
 
   return (
     <>
@@ -80,7 +88,7 @@ const ImageUploader = () => {
           'border border-gray-400 rounded relative',
           'flex justify-center items-center cursor-pointer'
         )}
-        htmlFor="upload"
+        htmlFor={inputId.current}
         onClick={onUpload}
       >
         <IoAddSharp className="h-3/4 w-3/4 text-gray-400 cursor-pointer" />
@@ -91,7 +99,7 @@ const ImageUploader = () => {
         <input
           ref={inputRef}
           type="file"
-          id="upload"
+          id={inputId.current}
           className="w-0 h-0"
           accept="image/*"
           multiple={false}
