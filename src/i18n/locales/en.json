@@ -208,5 +208,6 @@
   "crop.error": "Image error",
   "crop.error-message": "Your image size is incorrect. Please try again.$The min required size: {}.",
   "crop-size-error": "Image size incorrect",
-  "intent.buy": "Help me buy $1, the contract address is: $2"
+  "intent.buy": "Help me buy $1, the contract address is: $2",
+  "cancel-answer": "You have canceled this response."
 }
