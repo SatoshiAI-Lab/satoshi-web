@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { AiOutlineCopy } from 'react-icons/ai'
 
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { utilFmt } from '@/utils/format'
 import { Wallet } from '@/components/wallet'
 import { utilArr } from '@/utils/array'
 import { useClipboard } from '@/hooks/use-clipboard'
 
-const CreateTokenWallets = () => {
+const CreateTokenWallets = (props: { hasWallet: boolean }) => {
+  const { hasWallet } = props
   const { t } = useTranslation()
   const { currentWallet, wallets, getWallets, setCurrentWallet } =
     useWalletStore()
@@ -21,9 +21,7 @@ const CreateTokenWallets = () => {
   const [walletOpen, setWalletOpen] = useState(false)
 
   const onSelect = ({ target }: SelectChangeEvent<string>) => {
-    const targetWallet = wallets.find(
-      (w) => utilFmt.addr(w.address) === target.value
-    )
+    const targetWallet = wallets.find((w) => w.address === target.value)
 
     setCurrentWallet(targetWallet?.address ?? '')
   }
@@ -52,30 +50,32 @@ const CreateTokenWallets = () => {
         showButtons={false}
         onlyWalletAddr={currentWallet.address}
       />
-      <div
-        className={clsx(
-          'mt-4 border border-primary rounded-lg bg-sky',
-          'inline-flex items-center p-2'
-        )}
-      >
-        <img src="/images/logos/t.png" alt="Logo" className="w-10 h-10" />
-        <div className="flex flex-col text-primary text-sm ml-1">
-          <span>{t('create-token.no-wallet').replace('{}', 'Solana')}</span>
-          <span>
-            {t('create-token.no-wallet-balance').replace('{}', '0.1 SOL')}
-          </span>
+      {!hasWallet && (
+        <div
+          className={clsx(
+            'mt-4 border border-primary rounded-lg bg-sky',
+            'inline-flex items-center p-2'
+          )}
+        >
+          <img src="/images/logos/t.png" alt="Logo" className="w-10 h-10" />
+          <div className="flex flex-col text-primary text-sm ml-1">
+            <span>{t('create-token.no-wallet').replace('{}', 'Solana')}</span>
+            <span>
+              {t('create-token.no-wallet-balance').replace('{}', '0.1 SOL')}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
       <div className="mt-4">
         <div className="mb-1">{t('use-below-wallet')}</div>
         <div className="flex items-stretch">
           <Select
             size="small"
-            value={utilFmt.addr(selectedWallet?.address)}
+            value={selectedWallet?.address ?? ''}
             onChange={onSelect}
           >
             {wallets.map((w) => (
-              <MenuItem key={w.id} value={utilFmt.addr(w?.address)}>
+              <MenuItem key={w.id} value={w?.address ?? ''}>
                 {w.name}
               </MenuItem>
             ))}
@@ -88,7 +88,7 @@ const CreateTokenWallets = () => {
               {t('view-wallet-details')}
             </span>
             <span className="text-gray-500">
-              {t('wallet-balance-confirm').replace('{}', '0.1 SOL')}
+              {t('wallet-balance-confirm').replace('{}', '0.16 SOL')}
             </span>
           </div>
         </div>

@@ -13,7 +13,8 @@ import { useHyperTextParser } from './use-hyper-text-parser'
 import { utilDom } from '@/utils/dom'
 import i18n from '@/i18n'
 import { nanoid } from 'nanoid'
-import {
+
+import type {
   InteractiveMessageOptions,
   Message,
 } from '@/stores/use-chat-store/types'
@@ -206,11 +207,10 @@ export const useChat = () => {
       intention,
     } = CHAT_CONFIG.answerType
 
-    console.log('Chat Data: ', data)
-
     const messages = chatStore.messages
     const answerType = data.answer_type
     const isIntention = answerType.startsWith(intentStream)
+    const metaType = data.meta?.type
 
     if (isIntention) {
       setIntention(answerType!)
@@ -229,7 +229,11 @@ export const useChat = () => {
       return
     }
 
-    if (intention.includes(answerType) || isIntention) {
+    if (
+      intention.includes(answerType) ||
+      isIntention ||
+      intention.includes(metaType ?? '') // create token message
+    ) {
       if (data.text && !hiddenIntentText.includes(data?.meta.type!)) {
         addStreamMessage(data.text)
       }

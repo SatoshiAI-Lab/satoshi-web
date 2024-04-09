@@ -1,5 +1,11 @@
-import React, { useState } from 'react'
-import { Button, InputBase, TextField } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  InputBase,
+  TextField,
+} from '@mui/material'
 import { BsFillLightningFill } from 'react-icons/bs'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
@@ -11,53 +17,129 @@ import ImageUploader from '@/components/image-uploader'
 import CreateTokenWallets from './wallets'
 import CreateTokenLoading from './loading'
 import CreateTokenSuccess from './success'
+import { useCreateToken } from '@/hooks/use-create-token'
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { DialogHeader } from '@/components/dialog-header'
 
 enum HotToken {
   WIF = 100_000_000,
   BOME = 68_999_649_476,
 }
 
-interface CreateTokenBubbleProps extends React.ComponentProps<'div'> {}
+interface CreateTokenBubbleProps extends React.ComponentProps<'div'> {
+  hasWallet: boolean
+}
 
 const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
-  const {} = props
+  const { hasWallet } = props
   const { t } = useTranslation()
-  const [tokenName, setTokenName] = useState('')
-  const [tokenNickname, setTokenNickname] = useState('')
-  const [tokenTotal, setTokenTotal] = useState(0)
-  const [tokenIntro, setTokenIntro] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
+  const [symbol, setSymbol] = useState('')
+  const [name, setName] = useState('')
+  const [total, setTokenTotal] = useState(0)
+  const [intro, setTokenIntro] = useState('')
+  const {
+    hash,
+    address,
+    isLoading,
+    isMinting,
+    isCreateSuccess,
+    isMintSuccess,
+    isMintError,
+    isLongTime,
+    createToken,
+    mintToken,
+    cancel,
+  } = useCreateToken()
+  const { currentWallet } = useWalletStore()
 
-  const nicknameIsValid = !!tokenNickname.trim()
-  const nameIsValid = !!tokenName.trim()
-  const totalIsValid = tokenTotal > 0
+  const nicknameIsValid = !!name.trim()
+  const nameIsValid = !!symbol.trim()
+  const totalIsValid = total > 0
 
   const onCreate = () => {
-    toast('Coming soon')
-    console.log('create token')
+    if (!currentWallet.id) {
+      toast.error(t('no-wallet'))
+      return
+    }
+    const minBalance = 0.16
+    if (Number(currentWallet?.value || 0) < minBalance) {
+      toast.error(t('balance-less-than').replace('{}', String(minBalance)))
+      return
+    }
+
+    createToken({
+      id: currentWallet.id,
+      name: name.trim(),
+      symbol: symbol.trim(),
+      desc: intro.trim(),
+      decimals: 9, // TODO: the decimals should be dynamic.
+      total,
+    })
   }
+
+  const [mintOpen, setMintOpen] = useState(false)
+
+  useEffect(() => {
+    if (isMintError) {
+      setMintOpen(true)
+    }
+  }, [isMintError])
 
   if (isLoading) {
-    return <CreateTokenLoading />
+    return (
+      <CreateTokenLoading
+        isMinting={isMinting}
+        isLongTime={isLongTime}
+        onCancel={cancel}
+      />
+    )
   }
 
-  if (isSuccess) {
-    return <CreateTokenSuccess />
+  if (isCreateSuccess && isMintSuccess) {
+    return (
+      <CreateTokenSuccess
+        tokenName={name}
+        tokenAddr={address}
+        walletName={currentWallet.name}
+      />
+    )
   }
 
   return (
     <MessageBubble className="pb-4 w-[550px]">
-      <div className="font-bold">{t('create-token.title')}</div>
+      <Dialog open={mintOpen}>
+        <DialogHeader onClose={() => setMintOpen(false)}>
+          Your token has been created.
+          <br />
+          address: {address}
+          <br />
+          hash: {hash}
+          <br />
+          but, it's mint error, you can:
+        </DialogHeader>
+        <DialogActions>
+          <Button variant="contained" onClick={mintToken}>
+            Continue
+          </Button>
+          <Button variant="outlined" onClick={() => setMintOpen(false)}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <div className="font-bold">
+        {t('create-token.title').split('$')[0]}
+        <br />
+        {t('create-token.title').split('$')[1]}
+      </div>
       <div className="flex justify-between mt-4">
         <div className="flex flex-col justify-between">
           <div className="flex flex-col">
-            <div className="mb-1">{t('token-nickname')}*</div>
+            <div className="mb-1">{t('token-symbol')}*</div>
             <TextField
               size="small"
               autoComplete="off"
-              value={tokenNickname}
-              onChange={({ target }) => setTokenNickname(target.value)}
+              value={symbol}
+              onChange={({ target }) => setSymbol(target.value)}
             />
           </div>
           <div className="flex flex-col">
@@ -65,8 +147,8 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
             <TextField
               size="small"
               autoComplete="off"
-              value={tokenName}
-              onChange={({ target }) => setTokenName(target.value)}
+              value={name}
+              onChange={({ target }) => setName(target.value)}
             />
           </div>
         </div>
@@ -97,7 +179,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
           size="small"
           autoComplete="off"
           classes={{ root: 'w-full' }}
-          value={numeral(tokenTotal).format(',')}
+          value={numeral(total).format(',')}
           onChange={({ target }) => {
             const num = numeral(target.value).value()
 
@@ -122,12 +204,12 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
           rows={3}
           autoComplete="off"
           placeholder={t('token-intro.placeholder')}
-          value={tokenIntro}
+          value={intro}
           onChange={({ target }) => setTokenIntro(target.value)}
         />
       </div>
       {/* Wallet list select */}
-      <CreateTokenWallets />
+      <CreateTokenWallets hasWallet={hasWallet} />
       <div className="my-4">
         {!nicknameIsValid && (
           <div className="text-rise text-sm">
