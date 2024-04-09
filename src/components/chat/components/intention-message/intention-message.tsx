@@ -7,6 +7,7 @@ import { TwitterListBubble } from './twitter-list-bubble'
 import { TxTokenBubbles } from './tx-token-bubbles'
 import { MonitorAddressBubble } from './monitor-address-bubble'
 import MyWalletsBubble from '../bubbles/my-wallets-bubble'
+import CreateTokenBubble from '../bubbles/create-token-bubble'
 import { TokenDetailBubble } from './token-detail-bubble'
 import { ExMonitorBubble } from './ex-monitor-bubble'
 import { PoolMonitorBubble } from './pool-monitor-bubble'
@@ -22,9 +23,12 @@ export const IntentMessage = ({ msg }: Props) => {
     walletBalance,
     twitterList,
     moniotrWallet,
+    monitorWalletFail,
+    createTokenNoWallet,
+    createTokenHaveWallet,
     tokenDetail,
     monitorExList,
-    monitorPoolList
+    monitorPoolList,
   } = CHAT_CONFIG.metadataType
 
   const metaType = msg?.msgs?.type!
@@ -59,6 +63,11 @@ export const IntentMessage = ({ msg }: Props) => {
     return <MonitorAddressBubble msg={msg.msgs!}></MonitorAddressBubble>
   }
 
+  // Create token
+  if (metaType === createTokenNoWallet || metaType == createTokenHaveWallet) {
+    return <CreateTokenBubble hasWallet={metaType === createTokenHaveWallet} />
+  }
+
   // token detail
   if (metaType == tokenDetail) {
     return <TokenDetailBubble msg={msg.msgs!}></TokenDetailBubble>
@@ -73,4 +82,6 @@ export const IntentMessage = ({ msg }: Props) => {
   if (metaType == monitorPoolList) {
     return <PoolMonitorBubble></PoolMonitorBubble>
   }
+
+  return <></>
 }
