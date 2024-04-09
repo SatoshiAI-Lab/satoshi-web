@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { Button } from '@mui/material'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 import Intervals from './components/intervals'
 import Studies from './components/studies'
@@ -22,6 +23,7 @@ const KLine = () => {
   const { createChart } = useKLine()
   const { redBlackSoldiers, detectPinBars, detectSpiralCandles } =
     useStudiesAnalysis()
+  const { t } = useTranslation()
 
   // Create and initial chart style.
   const createKLineChart = async () => {
@@ -48,7 +50,7 @@ const KLine = () => {
     <div className="h-screen flex flex-col p-3">
       <div className="flex items-center mb-2">
         <Button variant="contained" size="small" onClick={router.back}>
-          Back
+          {t('back')}
         </Button>
         <Intervals className="ml-3" showFullscreen={false} />
       </div>

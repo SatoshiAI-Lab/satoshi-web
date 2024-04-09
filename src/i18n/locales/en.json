@@ -227,5 +227,6 @@
   "volume": "VOLUME: ",
   "hash": "Hash",
   "mint-error": "However, there was an error during the minting process, you can:",
-  "continue": "Continue mint"
+  "continue": "Continue mint",
+  "back": "Back"
 }
