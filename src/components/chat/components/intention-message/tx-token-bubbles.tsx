@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import MessageBubble from '../../message-bubble'
+import MessageBubble from '../message-bubble'
 import { Button, CircularProgress, OutlinedInput } from '@mui/material'
 import { IoCopyOutline, IoFlash } from 'react-icons/io5'
 import clsx from 'clsx'
@@ -34,7 +34,7 @@ export const TxTokenBubbles = (props: Props) => {
 
   const [disbaled, setDisabled] = useState(false)
   const [curRate, setCurRate] = useState(-1)
-  const [buyValue, setBuyValue] = useState(0)
+  const [buyValue, setBuyValue] = useState(data.amount)
   const [slippage, setSlippage] = useState(5)
   const [validateErr, setValidateErr] = useState<string[]>([])
 
@@ -85,8 +85,6 @@ export const TxTokenBubbles = (props: Props) => {
     return cur
   }, [])
 
-  console.log(wallets, currentWallet, rawWalletList, walletList)
-
   const checkForm = () => {
     let error: string[] = []
 
@@ -97,9 +95,8 @@ export const TxTokenBubbles = (props: Props) => {
     const wallet = rawWalletList.find(
       (wallet) => wallet.id == currentWallet?.id
     )!
-    console.log(buyValue, wallet.value)
 
-    if (buyValue > Number(wallet!.value)) {
+    if (buyValue > getTargetToken(wallet)!.amount) {
       error.push(t('tx.form.error2'))
     }
 
@@ -153,7 +150,7 @@ export const TxTokenBubbles = (props: Props) => {
             formatUnits(BigInt(fromToken?.amount!), fromToken?.decimals!)
           )
             .multipliedBy(rate / 100)
-            .toFixed(3)
+            .toFixed(5)
         )
       )
     } else {
@@ -213,7 +210,6 @@ export const TxTokenBubbles = (props: Props) => {
                 )}
               >
                 {wallets.map((wallet, i) => {
-                  console.log(wallet)
                   const platformToken = getTargetToken(wallet)
                   return (
                     <div
@@ -225,7 +221,6 @@ export const TxTokenBubbles = (props: Props) => {
                         i === wallets.length - 1 ? '!border-r-0' : ''
                       )}
                       onClick={() => {
-                        debugger
                         setCurrentWallet(wallet?.address!)
                       }}
                     >
@@ -236,7 +231,7 @@ export const TxTokenBubbles = (props: Props) => {
                             BigInt(platformToken!.amount),
                             platformToken!.decimals
                           )
-                        ).format('0.00')}
+                        ).format('0,0.00')}
                         {platformToken?.symbol}
                       </div>
                     </div>
@@ -262,7 +257,7 @@ export const TxTokenBubbles = (props: Props) => {
       <div className="flex items-center">
         <div>
           <OutlinedInput
-            className="!rounded-xl w-[130px]"
+            className="!rounded-xl max-w-[150px]"
             classes={{
               input: '!py-0 !leading-none !block',
               root: '!pr-3',
@@ -321,8 +316,8 @@ export const TxTokenBubbles = (props: Props) => {
             return (
               <div
                 className={clsx(
-                  'py-2 px-4 cursor-pointer transition-all hover:bg-slate-200',
-                  item == curRate ? 'bg-slate-200' : '',
+                  'py-2 px-4 cursor-pointer transition-all hover:bg-slate-100',
+                  item == curRate ? '!bg-slate-200' : '',
                   i == 1 ? 'border-x' : ''
                 )}
                 onClick={() => handleRateClick(item)}
@@ -334,14 +329,12 @@ export const TxTokenBubbles = (props: Props) => {
         </div>
         <div className="ml-2">
           {t('total')}
-          {Number(
-            numeral(
-              formatUnits(
-                BigInt(fromToken?.amount ?? 0),
-                fromToken?.decimals ?? 0
-              )
-            ).format('0.00')
-          )}
+          {numeral(
+            formatUnits(
+              BigInt(fromToken?.amount ?? 0),
+              fromToken?.decimals ?? 0
+            )
+          ).format('0,0.00')}
           {fromToken?.symbol}
         </div>
       </div>

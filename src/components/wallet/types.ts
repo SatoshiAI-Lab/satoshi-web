@@ -10,6 +10,7 @@ export interface WalletDialogProps {
 }
 
 export interface WalletCardProps {
+  id?: string
   name?: string
   address?: string
   value?: string

@@ -36,6 +36,7 @@ export interface ChatResponseMetaDynamic {
 }
 
 export interface ChatResponseMetaBalance {
+  value: string
   address: string
   token: number
   tokens: ChatResponseWalletListToken
@@ -94,6 +95,19 @@ export interface ChatResponseWalletList {
 }
 
 export interface ChatResponseWalletListToken {
+  address: string
+  amount: number
+  chain_id: number
+  chain_logo: string
+  chain_name: string
+  decimals: number
+  logoUrl: string
+  name: string
+  priceUsd: number
+  symbol: string
+  valueUsd: number
+}
+export interface ChatResponseTokenDetail {
   address: string
   description: string
   holders: number
