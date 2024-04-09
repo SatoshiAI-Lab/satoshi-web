@@ -35,6 +35,7 @@ function Header() {
   const { show, open, hidden } = useShow()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openLogoutWallet = Boolean(anchorEl)
+  const { setMessage } = useChatStore()
 
   const langs = useMemo(() => {
     return Object.entries(i18n.options.resources ?? {}).map(([key, value]) => ({
@@ -96,6 +97,7 @@ function Header() {
     socket?.close(1000)
     if (socket?.CLOSED == 3) {
       logout()
+      setMessage([])
       handleCreatClose()
       toast.success(t('logout.success'))
     }
