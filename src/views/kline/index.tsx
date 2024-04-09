@@ -20,7 +20,7 @@ const KLine = () => {
   const { getKLineInterval } = useStorage()
   const chartRef = useRef<HTMLDivElement>(null)
   const { chart } = useKLineStore()
-  const { createChart } = useKLine()
+  const { createChart, clearChart } = useKLine()
   const { redBlackSoldiers, detectPinBars, detectSpiralCandles } =
     useStudiesAnalysis()
   const { t } = useTranslation()
@@ -43,7 +43,7 @@ const KLine = () => {
     if (!router.isReady) return
 
     createKLineChart()
-    return () => chart?.remove()
+    return clearChart
   }, [router.isReady])
 
   return (

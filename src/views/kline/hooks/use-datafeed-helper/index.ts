@@ -18,7 +18,8 @@ import type { CexTag, SymbolStr } from '../use-kline-api/types'
 export const useDatafeedHelper = (
   cachedApi: ReturnType<typeof useDatafeedCache>
 ) => {
-  const { listenToken, getHistory, onUpdateBar, onErrorMessage } = useKLineApi()
+  const { listenToken, getHistory, onUpdateBar, onErrorMessage, disconnect } =
+    useKLineApi()
   const { formatReceivedBars } = useKLineFormat()
   const { toCexTag, toDexTag, parseCexTag, parseDexTag } = useKLineApiFormat()
 
@@ -114,5 +115,6 @@ export const useDatafeedHelper = (
     getHistoryBars,
     onUpdateBar,
     onErrorMessage,
+    disconnect,
   }
 }

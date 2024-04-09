@@ -21,7 +21,7 @@ import type { CreateChartOptions } from './types'
 export const useKLine = () => {
   const { chart, setChart, setChartEl, setInterval, setResetCacheMap } =
     useKLineStore()
-  const { datafeeder, getResetCacheMap } = useDatafeed()
+  const { datafeeder, getResetCacheMap, disconnect } = useDatafeed()
   const { getLang } = useStorage()
   const { isDark } = useThemeStore()
   const { i18n } = useTranslation()
@@ -94,10 +94,16 @@ export const useKLine = () => {
     return activeChart.getAllStudies().find((s) => s.name === studyName)
   }
 
+  const clearChart = () => {
+    chart?.remove()
+    disconnect()
+  }
+
   return {
     chart,
     createChart,
     getChartData,
     findStudy,
+    clearChart,
   }
 }

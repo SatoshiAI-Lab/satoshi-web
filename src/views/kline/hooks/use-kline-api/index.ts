@@ -104,6 +104,10 @@ export const useKLineApi = () => {
     ws.on('error', handler)
   }
 
+  const disconnect = () => {
+    return ws.disconnect()
+  }
+
   return {
     listenToken,
     unlistenToken,
@@ -111,5 +115,6 @@ export const useKLineApi = () => {
     getHistory,
     onUpdateBar,
     onErrorMessage,
+    disconnect,
   }
 }
