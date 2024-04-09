@@ -46,7 +46,7 @@ export const useChatMonitorMsg = () => {
         useChatStore.getState().waitAnswer
       ) {
         setUnreadMessage([
-          useChatStore.getState().unreadMessages,
+          ...useChatStore.getState().unreadMessages,
           ...data.reverse(),
         ])
       } else {
