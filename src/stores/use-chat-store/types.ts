@@ -45,6 +45,7 @@ export interface States {
   inputKeyup: boolean
   readAnswer: boolean
   waitAnswer: boolean
+  socket: WebSocket | undefined
   // controller: AbortController | null
   // isReceiving: boolean
   // thinkTimer: NodeJS.Timeout | undefined
@@ -69,6 +70,7 @@ export interface Actions {
   setInputKeyup(bool: boolean): void
   setWaitAnswer(bool: boolean): void
   setReadAnswer(bool: boolean): void
+  setSocket(socket: WebSocket): void
   // resetSomeState(): void
   // handleNormalMessage(data: ChatResponseAnswer): void
   // cancelAnswer(text: string): void

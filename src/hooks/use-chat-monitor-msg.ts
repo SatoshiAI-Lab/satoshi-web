@@ -13,6 +13,7 @@ export const useChatMonitorMsg = () => {
   const { userInfo, isLogined } = useUserStore()
   const { setUnreadMessage } = useChatStore()
   const { addMonitorMessage } = useChat()
+  const { setSocket } = useChatStore()
   const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
 
   const { connect, on } = useWebSocket({
@@ -26,7 +27,7 @@ export const useChatMonitorMsg = () => {
     const token = getLoginToken()
     const wssUrl = `${baseURL}${data.id}/?access_token=${token}`
 
-    connect(wssUrl)
+    setSocket(await connect(wssUrl))
 
     on('message', () => {})
 

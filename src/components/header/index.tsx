@@ -24,6 +24,7 @@ import { utilFmt } from '@/utils/format'
 
 import type { CustomDropdownItem } from '../custom-dropdown/types'
 import type { HeaderItem } from './types'
+import { useChatStore } from '@/stores/use-chat-store'
 
 function Header() {
   const router = useRouter()
@@ -51,6 +52,7 @@ function Header() {
 
   const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
   const { isDark } = useThemeStore()
+  const { socket } = useChatStore()
 
   const items: HeaderItem[] = []
 
@@ -91,9 +93,12 @@ function Header() {
   }
 
   const onLogout = () => {
-    logout()
-    handleCreatClose()
-    toast.success(t('logout.success'))
+    socket?.close(1000)
+    if (socket?.CLOSED == 3) {
+      logout()
+      handleCreatClose()
+      toast.success(t('logout.success'))
+    }
   }
 
   const changeStatus = (status: boolean) => {
