@@ -34,6 +34,8 @@ export const useDatafeedHelper = (
     // Convert a interval to TradingView format interval.
     const interval = TV_RESOLUTION_MAP[tvInterval] ?? tvInterval
 
+    console.log('interval', interval)
+
     const received = await listenToken({
       // TODO: judgement Cex or Dex
       tag: toCexTag({

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
@@ -39,6 +39,10 @@ export const Intervals = (props: IntervalProps) => {
     toast.error(`[Switch Error]: Not have reset cache.`)
   }
 
+  useEffect(() => {
+    console.log('interval', interval)
+  }, [])
+
   return (
     <div className={clsx('flex justify-between px-1', className)}>
       <div className="flex items-center gap-4 px-1">
@@ -47,9 +51,7 @@ export const Intervals = (props: IntervalProps) => {
             key={i}
             className={clsx(
               'cursor-pointer transition-all hover:text-gray-600',
-              interval.toUpperCase() === item.interval
-                ? 'text-black'
-                : 'text-gray-400'
+              interval === item.name ? 'text-black' : 'text-gray-400'
             )}
             onClick={() => onIntervalClick(item)}
           >
