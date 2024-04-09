@@ -225,5 +225,6 @@
   "volume": "成交量：",
   "hash": "哈希",
   "mint-error": "但是在铸造过程中出现了错误，您可以：",
-  "continue": "继续铸造"
+  "continue": "继续铸造",
+  "back": "返回"
 }

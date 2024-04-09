@@ -72,13 +72,12 @@ export const useDatafeed: UseDatafeed = () => {
           const bars = await handleInitBars(symbolInfo, resolution)
 
           datafeedCacheApi.setLastResolution(resolution)
-          onHistory(bars, { noData: !bars.length })
+          onHistory(bars, { noData: utilArr.isEmpty(bars) })
           return
         }
 
         const bars = await getHistoryBars(periodParams)
-
-        onHistory(bars.reverse(), { noData: !bars.length })
+        onHistory(bars, { noData: utilArr.isEmpty(bars) })
       },
       subscribeBars(
         symbolInfo,
