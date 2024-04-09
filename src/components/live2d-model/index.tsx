@@ -53,7 +53,6 @@ const Live2DModel = (props: Live2dModelProps) => {
         setModel(model)
         setModelEl(modelRef.current!)
         setConfig()
-        showWelcome && speakAndMotion('Welcome')
         setShowWelcome(false)
         PixiApp.stage.addChild(model)
 
@@ -73,6 +72,7 @@ const Live2DModel = (props: Live2dModelProps) => {
 
   useEffect(() => {
     createModel(createPixiApp())
+    setIsMute(getIsMuted() == 'true')
 
     return () => model?.destroy()
   }, [])
@@ -87,11 +87,6 @@ const Live2DModel = (props: Live2dModelProps) => {
     const { mobile, mobileKeyboarShow } = LIVE2D_CONFIG
     Object.assign(model, isShowKeyboard ? mobileKeyboarShow : mobile.config)
   }, [isShowKeyboard])
-
-  // Get cached model mute status.
-  useEffect(() => {
-    setIsMute(getIsMuted() == 'true')
-  }, [])
 
   return (
     <>
