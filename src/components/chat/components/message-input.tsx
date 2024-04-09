@@ -150,7 +150,7 @@ function MessageInput(props: MessageInputProps) {
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
-        <button
+        {/* <button
           className={clsx(
             recording
               ? 'animate-bounce animate-ease-linear animate-infinite'
@@ -160,7 +160,7 @@ function MessageInput(props: MessageInputProps) {
           onClick={record}
         >
           <MdMic size={22} />
-        </button>
+        </button> */}
         <Button
           variant="contained"
           size="large"

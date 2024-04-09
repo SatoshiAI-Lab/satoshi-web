@@ -47,6 +47,7 @@ export const useCreateToken = () => {
     isLoading: isCreatingStatus,
     isSuccess: isCreateSuccess,
     isError: isCreateError,
+    clear: clearCreate,
   } = useWaitingStatus({
     hash: createdHash,
     onSuccess: async (data) => {
@@ -78,7 +79,7 @@ export const useCreateToken = () => {
     isLoading: isMintingStatus,
     isSuccess: isMintSuccess,
     isError: isMintError,
-    clear,
+    clear: clearMint,
   } = useWaitingStatus({
     hash: mintHash,
     onSuccess(data) {
@@ -128,7 +129,8 @@ export const useCreateToken = () => {
     setMintHash('')
     setTotal(-1)
     setWalletId('')
-    clear()
+    clearCreate()
+    clearMint()
   }
 
   const timerRef = useRef<number>()
