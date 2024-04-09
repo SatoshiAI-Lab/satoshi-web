@@ -24,7 +24,7 @@ const ExchangeAnnouncementBubble = ({
     const link = url[language] || Object.values(url).find((v) => v)
     if (link) {
       return (
-        <a href={link} target="_blank" className="text-primary w-fit mt-3">
+        <a href={link} target="_blank" className="text-primary w-fit">
           {t('bubble.originlink')}
         </a>
       )
@@ -32,35 +32,39 @@ const ExchangeAnnouncementBubble = ({
     return (
       <button
         onClick={() => toast(t('bubble.nolink'))}
-        className="text-gray-400 w-fit mt-3"
+        className="text-gray-400 w-fit"
       >
         {t('bubble.originlink')}
       </button>
     )
   }
   return (
-    <MessageBubble className={clsx('min-w-bubble py-4')}>
+    <MessageBubble
+      className={clsx(
+        '!min-w-[450px] !max-w-[550px] pt-[12px] pr-[14px] pb-[15px] pl-[18px]'
+      )}
+    >
       {/* Avatar, chain */}
       <div className="flex items-stretch">
         {(source_logo && (
           <img
             src={source_logo}
             alt="avatar"
-            className="w-12 h-12 rounded-full mr-2"
+            className="w-[40px] h-[40px] rounded-full mr-2"
           />
-        )) || <Avatar className="w-12 h-12 rounded-full mr-2" />}
+        )) || <Avatar className="w-[40px] h-[40px] rounded-full mr-2" />}
 
         <div className="flex flex-col justify-between ">
-          <span className="font-bold">
+          <span className="font-bold text-[14px]">
             {source_name} {t('bubble.new-anno')}
           </span>
-          <span className="text-gray-400">
+          <span className="text-[#10101040] text-[14px]">
             {dayjs(created_at).format('H:mm M/D')}
           </span>
         </div>
       </div>
       {/* Event description */}
-      <div className="mt-2 font-bold">{currentTitle}</div>
+      <div className="mt-[11px] mb-[15px] font-bold">{currentTitle}</div>
       {originLinkButton()}
     </MessageBubble>
   )
