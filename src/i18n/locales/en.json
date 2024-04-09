@@ -224,5 +224,8 @@
   "mkt-cap": "MKT CAP: ",
   "ex.monitor.handle": "Select the exchanges you want to monitor or unmonitor",
   "pool.moniotr.handle": "Please select the newly added pool chain you want to monitor or unmonitor",
-  "volume": "VOLUME: "
+  "volume": "VOLUME: ",
+  "hash": "Hash",
+  "mint-error": "However, there was an error during the minting process, you can:",
+  "continue": "Continue mint"
 }
