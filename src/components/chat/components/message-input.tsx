@@ -17,6 +17,7 @@ import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { chatApi } from '@/api/chat'
 import { useAudioRecorder } from 'react-audio-voice-recorder'
 import { MdMic } from 'react-icons/md'
+import { useChat } from '@/hooks/use-chat'
 interface MessageInputProps {
   autofocus?: boolean
   onSend: () => void
@@ -100,7 +101,7 @@ function MessageInput(props: MessageInputProps) {
       const base64WithoutPrefix = base64data.split(',')[1]
       const {
         data: { text },
-      } = await chatApi.getSpeechText(base64WithoutPrefix)
+      } = await chatApi.getVoidText(base64WithoutPrefix)
       setQuestion(text)
     }
     // recordingBlob will be present at this point after 'stopRecording' has been called
@@ -150,7 +151,7 @@ function MessageInput(props: MessageInputProps) {
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
-        {/* <button
+        <button
           className={clsx(
             recording
               ? 'animate-bounce animate-ease-linear animate-infinite'
@@ -160,7 +161,7 @@ function MessageInput(props: MessageInputProps) {
           onClick={record}
         >
           <MdMic size={22} />
-        </button> */}
+        </button>
         <Button
           variant="contained"
           size="large"
