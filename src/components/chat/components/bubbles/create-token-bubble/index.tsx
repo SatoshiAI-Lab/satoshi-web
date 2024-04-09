@@ -3,6 +3,7 @@ import {
   Button,
   Dialog,
   DialogActions,
+  DialogContent,
   InputBase,
   TextField,
 } from '@mui/material'
@@ -57,7 +58,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   const totalIsValid = total > 0
 
   const onCreate = () => {
-    if (!currentWallet.id) {
+    if (!currentWallet?.id) {
       toast.error(t('no-wallet'))
       return
     }
@@ -100,7 +101,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
       <CreateTokenSuccess
         tokenName={name}
         tokenAddr={address}
-        walletName={currentWallet.name}
+        walletName={currentWallet?.name}
       />
     )
   }
@@ -109,20 +110,29 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
     <MessageBubble className="pb-4 w-[550px]">
       <Dialog open={mintOpen}>
         <DialogHeader onClose={() => setMintOpen(false)}>
-          Your token has been created.
-          <br />
-          address: {address}
-          <br />
-          hash: {hash}
-          <br />
-          but, it's mint error, you can:
+          <div className="mr-10">Your token has been created.</div>
         </DialogHeader>
+        <DialogContent>
+          <div className="text-lg">
+            <span className="font-bold">{t('addr')}</span>:{address}
+          </div>
+          <div className="text-lg">
+            <span className="font-bold">{t('hash')}</span>:{hash}
+          </div>
+          <div className="text-lg mt-4">{t('mint-error')}</div>
+        </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={mintToken}>
-            Continue
+          <Button
+            variant="contained"
+            onClick={() => {
+              setMintOpen(false)
+              mintToken()
+            }}
+          >
+            {t('continue')}
           </Button>
           <Button variant="outlined" onClick={() => setMintOpen(false)}>
-            Cancel
+            {t('cancel')}
           </Button>
         </DialogActions>
       </Dialog>
