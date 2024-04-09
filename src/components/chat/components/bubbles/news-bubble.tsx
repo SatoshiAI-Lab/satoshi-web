@@ -23,7 +23,7 @@ const NewsBubble = ({
   const originLinkButton = () => {
     if (source) {
       return (
-        <a href={source} target="_blank" className="text-primary w-fit mt-3">
+        <a href={source} target="_blank" className="text-primary w-fit">
           {t('bubble.originlink')}
         </a>
       )
@@ -31,21 +31,25 @@ const NewsBubble = ({
     return (
       <button
         onClick={() => toast(t('bubble.nolink'))}
-        className="text-gray-400 w-fit mt-3"
+        className="text-gray-400 w-fit"
       >
         {t('bubble.originlink')}
       </button>
     )
   }
   return (
-    <MessageBubble className={clsx('w-[450px] pt-4 flex flex-col')}>
-      <div className="font-bold text-lg">{currentTitle}</div>
-      <div className="my-2 text-gray-400">
+    <MessageBubble
+      className={clsx(
+        '!min-w-[450px] !max-w-[550px] pt-[12px] pr-[14px] pb-[15px] pl-[18px] flex flex-col'
+      )}
+    >
+      <div className="font-bold text-[18px]">{currentTitle}</div>
+      <div className="text-[#10101040] text-[14px] mt-[5px]">
         {dayjs(created_at).format('H:mm M/D')}
       </div>
       <ShowMoreText
         anchorClass="text-primary cursor-pointer block text-sm w-fit ml-auto"
-        className="my-2"
+        className="mt-[11px] mb-[15px]"
         lines={4}
         more={t('bubble.show.more')}
         less={t('bubble.show.hide')}

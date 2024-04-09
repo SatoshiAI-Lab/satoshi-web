@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaPaperPlane } from 'react-icons/fa'
 import { AiOutlineLoading } from 'react-icons/ai'
-import { Button, IconButton, InputBase } from '@mui/material'
+import { Button, IconButton, InputBase, TextareaAutosize } from '@mui/material'
 import { useKey } from 'react-use'
 import clsx from 'clsx'
 import { FaRegCirclePause } from 'react-icons/fa6'
@@ -17,6 +17,7 @@ import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { chatApi } from '@/api/chat'
 import { useAudioRecorder } from 'react-audio-voice-recorder'
 import { MdMic } from 'react-icons/md'
+import { useChat } from '@/hooks/use-chat'
 interface MessageInputProps {
   autofocus?: boolean
   onSend: () => void
@@ -100,7 +101,7 @@ function MessageInput(props: MessageInputProps) {
       const base64WithoutPrefix = base64data.split(',')[1]
       const {
         data: { text },
-      } = await chatApi.getSpeechText(base64WithoutPrefix)
+      } = await chatApi.getVoidText(base64WithoutPrefix)
       setQuestion(text)
     }
     // recordingBlob will be present at this point after 'stopRecording' has been called
@@ -132,25 +133,20 @@ function MessageInput(props: MessageInputProps) {
             <FaRegCirclePause size={28} className="text-red-500" />
           </IconButton>
         </motion.div>
-        <InputBase
-          classes={{
-            root: '!pl-1 !text-lg !transition-all !text-black',
-            input: '!transition-all !truncate ',
-          }}
+        <TextareaAutosize
+          className="bg-transparent pl-1 text-lg transition-all text-black w-full outline-none"
           value={question}
           placeholder={t('chat.placeholder')}
-          multiline
-          maxRows={5}
+          maxRows={3}
           minRows={1}
-          fullWidth
-          inputRef={inputRef}
+          ref={inputRef}
           onKeyDown={handleEnterSend}
           onChange={(e) => setQuestion(e.target.value)}
           onKeyUp={throttledHandleInputKeyup}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
-        {/* <button
+        <button
           className={clsx(
             recording
               ? 'animate-bounce animate-ease-linear animate-infinite'
@@ -160,7 +156,7 @@ function MessageInput(props: MessageInputProps) {
           onClick={record}
         >
           <MdMic size={22} />
-        </button> */}
+        </button>
         <Button
           variant="contained"
           size="large"

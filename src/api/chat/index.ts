@@ -25,10 +25,27 @@ export const chatApi = {
   },
 
   /** Get speech to text */
-  async getSpeechText(webmStr: string): Promise<SpeechResponse> {
+  /* async getSpeechText(webmStr: string): Promise<ReadableStream> {
     return fetchChat.post('/speech', {
       data: webmStr,
-      type: '.webm',
+      voice_type: '.webm',
+      user_info: {
+        username: '1475289190@qq.com',
+        is_vip: false,
+        preference: {
+          language: '1',
+        },
+      },
+      history: [],
+      question: '1',
+      stream: false,
+      intent_stream: '',
+    }) as unknown as ReadableStream
+  }, */
+  async getVoidText(webmStr: string): Promise<{ data: { text: string } }> {
+    return fetchChat.post('/voice', {
+      data: webmStr,
+      voice_type: '.webm',
     })
   },
 }

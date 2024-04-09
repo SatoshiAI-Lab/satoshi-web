@@ -28,19 +28,23 @@ const TwitterBubble = ({
     setOpen(true)
   }
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
+    <MessageBubble
+      className={clsx(
+        '!min-w-[450px] !max-w-[550px] pt-[12px] pr-[14px] pb-[15px] pl-[18px] flex flex-col'
+      )}
+    >
       {/* Avatar, name */}
-      <div className="flex items-stretch">
+      <div className="flex items-stretch max-h-[40px] overflow-hidden">
         <img
           src={twitter_logo}
           alt="avatar"
-          className="w-12 h-12 rounded-full mr-2"
+          className="w-[40px] h-[40px] rounded-full mr-[8px]"
         />
         <div className="flex flex-col justify-between">
-          <span className="font-bold">
+          <span className="font-bold text-[14px]">
             {twitter} {t('bubble.new-tweet')}
           </span>
-          <span className="text-gray-400">
+          <span className="text-[#10101040] text-[14px]">
             {dayjs(created_at).format('H:mm M/D')}
           </span>
         </div>
@@ -48,7 +52,7 @@ const TwitterBubble = ({
       {/* Text content */}
       <ShowMoreText
         anchorClass="text-primary cursor-pointer block text-sm w-fit ml-auto"
-        className="my-2"
+        className="mt-[11px] mb-[15px]"
         lines={4}
         more={t('bubble.show.more')}
         less={t('bubble.show.hide')}
@@ -62,13 +66,13 @@ const TwitterBubble = ({
           src={item}
           onClick={() => showImage(item)}
           alt="img"
-          className="rounded-md max-h-[300px] max-w-[300px]"
+          className="rounded-md max-h-[300px] max-w-[300px] mb-[15px]"
         />
       ))}
       <a
         href={`https://twitter.com/${twitter}/status/${tweets_id}`}
         target="_blank"
-        className="text-primary inline-block mt-3 w-fit"
+        className="text-primary inline-block w-fit"
       >
         {t('bubble.originlink')}
       </a>

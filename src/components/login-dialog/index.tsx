@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, KeyboardEvent, useRef } from 'react'
 import Image from 'next/image'
 import {
   Button,
@@ -40,6 +40,8 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
 
   const { t } = useTranslation()
   const { login, register, sendEmailVerify } = useUserStore()
+
+  const pswRef = useRef<HTMLInputElement>(null)
 
   // TODO: add forgot password
   const forgotPassword = () => {
@@ -100,6 +102,16 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
     setUserEmail('')
     setUserPassword('')
     onClose?.()
+  }
+
+  const accountKeyDown = (e: KeyboardEvent) => {
+    if (e.key !== 'Enter') return
+    pswRef.current?.focus()
+  }
+
+  const passwordKeyDown = (e: KeyboardEvent) => {
+    if (e.key !== 'Enter') return
+    goVerify()
   }
 
   useEffect(() => {
@@ -164,6 +176,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   classes={{
                     root: 'w-full h-[50px] !rounded-[10px]',
                   }}
+                  onKeyDown={accountKeyDown}
                   autoFocus={autoFocus}
                   defaultValue={userEmail}
                   onChange={({ target }) => setUserEmail(target.value)}
@@ -192,8 +205,10 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   classes={{
                     root: 'w-full h-[50px] !rounded-[10px]',
                   }}
+                  inputRef={pswRef}
                   type="password"
                   onChange={({ target }) => setUserPassword(target.value)}
+                  onKeyDown={passwordKeyDown}
                 />
               </div>
               <Button
