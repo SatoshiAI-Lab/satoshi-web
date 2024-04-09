@@ -36,6 +36,7 @@ export interface ChatResponseMetaDynamic {
 }
 
 export interface ChatResponseMetaBalance {
+  value: string
   address: string
   token: number
   tokens: ChatResponseWalletListToken
@@ -44,10 +45,32 @@ export interface ChatResponseMetaBalance {
 export interface ChatResponseTxConfrim {
   from_token_name: string
   from_token_contract: string
-  from_amount: number
+  amount: number
   to_token_name: string
   to_token_contract: string
   match_wallets: ChatResponseWalletList[]
+  address_filter: string[]
+  chain_filter: {
+    chain_name: string
+    platform: string
+  }
+}
+
+export interface ChatResponseTokneDetail {
+  address: string
+  logo: string
+  name: string
+  symbol: string
+  description: string
+  price: string
+  liquidity: string
+  market_cap: null
+  volume: string
+  twitter?: string
+  telegram?: string
+  websites: string[]
+  price_change: string
+  holders: number
 }
 
 export interface ChatResponseWalletListRaw {
@@ -72,16 +95,33 @@ export interface ChatResponseWalletList {
 }
 
 export interface ChatResponseWalletListToken {
-  symbol: string
-  name: string
   address: string
   amount: number
-  priceUsd: number
-  valueUsd: number
-  logoUrl: string
+  chain_id: number
   chain_logo: string
   chain_name: string
   decimals: number
+  logoUrl: string
+  name: string
+  priceUsd: number
+  symbol: string
+  valueUsd: number
+}
+export interface ChatResponseTokenDetail {
+  address: string
+  description: string
+  holders: number
+  liquidity: string
+  logo: string
+  market_cap: string
+  name: string
+  price: string
+  price_change: string
+  symbol: string
+  telegram: string
+  twitter: string
+  volume: string
+  websites: string[]
 }
 
 export interface ChatResponseMetaLabel {
@@ -244,4 +284,10 @@ export interface ChatResponseMetaNewPool {
   }
   created_at: string
   data_type: string
+}
+
+export interface SpeechResponse {
+  data: { text: string }
+  message: string
+  status: number
 }

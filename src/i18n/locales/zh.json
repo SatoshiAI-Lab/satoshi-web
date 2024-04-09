@@ -109,7 +109,7 @@
   "no.balance": "这个钱包什么代币都没有",
   "on": "开启",
   "off": "关闭",
-  "tx.token.text1": "你要多少SOL ?",
+  "tx.token.text1": "你要多少$1?",
   "tx.token.text2": "你想用哪个钱包?",
   "custom": "自定义",
   "slippage": "滑点",
@@ -210,5 +210,17 @@
   "token-symbol": "代币简称",
   "minting-token.loading": "铸造代币中...",
   "no-wallet": "您还没有钱包。",
-  "balance-less-than": "您的钱包余额少于 {}"
+  "balance-less-than": "您的钱包余额少于 {}",
+  "insufficient.balance.terms": "你钱包里没有足够的$1",
+  "total": "总量: ",
+  "successful.transaction": "交易哈希：",
+  "tx.token2": "你想要卖出多少$1？",
+  "intent.sell": "帮我卖出$1，地址是: $2",
+  "intent.detail": "帮我查询$1代币地址",
+  "lp": "流动性：",
+  "holder": "持币人：",
+  "mkt-cap": "市值：",
+  "ex.monitor.handle": "请选择要监控或取消监控的交易所",
+  "pool.moniotr.handle": "请选择你要监控或取消监控新加池子的链",
+  "volume": "成交量："
 }

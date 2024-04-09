@@ -1,15 +1,18 @@
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { Button, Dialog, IconButton, TextField } from '@mui/material'
+import { Button, CircularProgress, Dialog, IconButton, TextField } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import { WalletDialogProps } from './types'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
+import { useShow } from '@/hooks/use-show'
 
 const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
   const { deleteWallet, getWallets, currentWallet } = useWalletStore()
+  const {show, open: openLoading, hidden: hiddenLoading} = useShow()
   const userDeleteWallet = async () => {
-    deleteWallet(currentWallet.id!)
+    openLoading()
+    deleteWallet(currentWallet?.id!)
       .then((res) => {
         if (res.msg === 'ok') {
           onClose?.()
@@ -19,6 +22,8 @@ const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
       })
       .catch(() => {
         toast.error(t('wallet.error'))
+      }).finally(() => {
+        hiddenLoading()
       })
   }
   return (
@@ -59,7 +64,9 @@ const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               className="!h-[50px] !text-[18px] !rounded-xl"
               fullWidth
               onClick={userDeleteWallet}
+              disabled={show}
             >
+              {show && <CircularProgress size={16} className='mr-2'></CircularProgress>}
               {t('save')}
             </Button>
           </div>

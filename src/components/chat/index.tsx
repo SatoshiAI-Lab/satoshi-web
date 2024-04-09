@@ -11,6 +11,7 @@ import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
 import { MessageAlert } from './components/bubbles/message-alert'
 import CreateTokenBubble from './components/bubbles/create-token-bubble'
+import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props
@@ -28,11 +29,19 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     cancelAnswer,
   } = useChat()
 
+  const waitMonitor = useThrottledCallback(function () {
+    setWaitAnswer(true)
+    console.log('user start waiting answer now!!!')
+    setTimeout(function () {
+      setWaitAnswer(false)
+      console.log('user stop waiting answer now!!!')
+    }, 10000)
+  }, 10000)
+
   // Handle send.
   const onSend = async () => {
     // Do no show monitor message within 10 seconds
-    setWaitAnswer(true)
-    console.log('user start waiting answer now!!!')
+    waitMonitor()
     if (!question?.trim()) {
       toast.error(t('input-null'))
       return
@@ -41,11 +50,6 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
 
     addMessageAndLoading({ msg: question, position: 'right' })
     await sendMsg()
-    let timerId = setTimeout(function () {
-      setWaitAnswer(false)
-      console.log('user stop waiting answer now!!!')
-    }, 10000)
-    clearTimeout(timerId)
   }
 
   // setChatEl and scroll to latest message

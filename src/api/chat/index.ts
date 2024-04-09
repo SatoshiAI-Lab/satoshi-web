@@ -4,6 +4,7 @@ import type {
   ChatMointorRoomRes,
   ChatParams,
   ChatTransactionParams,
+  SpeechResponse,
 } from './types'
 
 export const chatApi = {
@@ -21,5 +22,13 @@ export const chatApi = {
   /** Go to the mointor room id */
   async getMonitorRoomId(userId: string) {
     return fetchSatoshi.get<ChatMointorRoomRes>(`/api/v1/chat/${userId}/`)
+  },
+
+  /** Get speech to text */
+  async getSpeechText(webmStr: string): Promise<SpeechResponse> {
+    return fetchChat.post('/speech', {
+      data: webmStr,
+      type: '.webm',
+    })
   },
 }

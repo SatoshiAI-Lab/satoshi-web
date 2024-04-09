@@ -15,12 +15,13 @@ import { MonitorConfig } from '@/config/monitor'
 
 interface Props {
   data?: MonitorConfigData
+  className?: string
 }
 
 const defaultMin = 100
 const defaultMax = 1000000
 
-export const MonitorPools = ({ data }: Props) => {
+export const MonitorPools = ({ data, className }: Props) => {
   const { t } = useTranslation()
   const [chain, setChain] = useState<PoolData>()
   const [min, setMin] = useState(defaultMin)
@@ -63,7 +64,8 @@ export const MonitorPools = ({ data }: Props) => {
     <div
       className={clsx(
         'px-10 pb-6 grid grid-cols-2 gap-y-3 gap-x-4',
-        'max-sm:grid-cols-1 max-sm:px-6'
+        'max-sm:grid-cols-1 max-sm:px-6',
+        className
       )}
     >
       {chains.map((chain, i) => {

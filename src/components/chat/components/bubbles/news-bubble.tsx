@@ -38,7 +38,7 @@ const NewsBubble = ({
     )
   }
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
+    <MessageBubble className={clsx('w-[450px] pt-4 flex flex-col')}>
       <div className="font-bold text-lg">{currentTitle}</div>
       <div className="my-2 text-gray-400">
         {dayjs(created_at).format('H:mm M/D')}

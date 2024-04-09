@@ -33,7 +33,7 @@ const CreateTokenWallets = (props: { hasWallet: boolean }) => {
   }, [wallets])
 
   useEffect(() => {
-    if (currentWallet.address) {
+    if (currentWallet?.address) {
       setSelectedWallet(currentWallet)
     }
   }, [currentWallet])
@@ -48,7 +48,7 @@ const CreateTokenWallets = (props: { hasWallet: boolean }) => {
         open={walletOpen}
         onClose={() => setWalletOpen(false)}
         showButtons={false}
-        onlyWalletAddr={currentWallet.address}
+        onlyWalletAddr={currentWallet?.address}
       />
       {!hasWallet && (
         <div
@@ -95,14 +95,14 @@ const CreateTokenWallets = (props: { hasWallet: boolean }) => {
       </div>
       <div className="mt-4">
         <div>
-          {currentWallet.name} {t('addr')}:
+          {currentWallet?.name} {t('addr')}:
         </div>
         <div className="flex items-center">
-          <span>{currentWallet.address}</span>
+          <span>{currentWallet?.address}</span>
           <AiOutlineCopy
             className="ml-2 cursor-pointer"
             size={18}
-            onClick={() => copy(currentWallet.address ?? '')}
+            onClick={() => copy(currentWallet?.address ?? '')}
           />
         </div>
       </div>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { IoMdWallet } from 'react-icons/io'
 import {
-  CircularProgress,
   Collapse,
   Divider,
   Table,
@@ -11,14 +10,10 @@ import {
   TableRow,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import toast from 'react-hot-toast'
 import numeral from 'numeral'
-import { useQuery } from '@tanstack/react-query'
 import { IoIosArrowDown } from 'react-icons/io'
 import clsx from 'clsx'
 
-import { walletApi } from '@/api/wallet'
-import { WalletPlatform } from '@/api/wallet/params'
 import { useChat } from '@/hooks/use-chat'
 import TokenRow from './token-row'
 import MessageBubble from '../message-bubble'
@@ -28,6 +23,8 @@ import type {
   ChatResponseAnswerMeta,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { WalletCardProps } from '@/components/wallet/types'
 
 interface Props extends React.ComponentProps<'div'> {
   meta?: ChatResponseAnswerMeta
@@ -39,22 +36,35 @@ const MyWalletsBubble = (props: Props) => {
   const [folds, setFolds] = useState<string[]>([])
   const { sendMsg, addMessageAndLoading } = useChat()
 
-  const { data: result, isLoading } = useQuery({
-    queryKey: [walletApi.getWallets.name],
-    queryFn: () => walletApi.getWallets({ platform: WalletPlatform.SOL }),
-    refetchInterval: 15_000,
-  })
-  const wallets = result?.data || []
+  const { wallets: data } = useWalletStore()
+
+  const wallets =
+    data.sort((a, b) => Number(b!.value)! - Number(a!.value)) || []
 
   const { t } = useTranslation()
 
+  const sendQ = (question: string) => {
+    addMessageAndLoading({ msg: question, position: 'right' })
+    sendMsg({
+      question: question,
+    })
+  }
+
   const onDetails = (token: ChatResponseWalletListToken) => {
-    console.log('onDetails click', token)
-    toast('Coming soon...')
+    const question = t('intent.detail').replace('$1', token.address)
+    sendQ(question)
   }
 
   const onBuy = (token: ChatResponseWalletListToken) => {
     const question = t('intent.buy')
+      .replace('$1', token.name)
+      .replace('$2', token.address)
+
+    sendQ(question)
+  }
+
+  const onSell = (token: ChatResponseWalletListToken) => {
+    const question = t('intent.sell')
       .replace('$1', token.name)
       .replace('$2', token.address)
 
@@ -64,16 +74,11 @@ const MyWalletsBubble = (props: Props) => {
     })
   }
 
-  const onSell = (token: ChatResponseWalletListToken) => {
-    console.log('onSell click', token)
-    toast('Coming soon...')
-  }
-
-  const onFold = (wallet: (typeof wallets)[number]) => {
-    if (folds.includes(wallet.id)) {
-      setFolds(utilArr.remove(folds, wallet.id))
+  const onFold = (wallet: WalletCardProps) => {
+    if (folds.includes(wallet?.id!)) {
+      setFolds(utilArr.remove(folds, wallet.id!))
     } else {
-      setFolds([...folds, wallet.id])
+      setFolds([...folds, wallet.id!])
     }
   }
 
@@ -81,19 +86,9 @@ const MyWalletsBubble = (props: Props) => {
     // If number of wallets >= 3, folded except the first one
     if (wallets.length >= 3) {
       const excludeFirst = wallets.filter((_, i) => i === 0)
-      setFolds(excludeFirst.map((w) => w.id))
+      setFolds(excludeFirst.map((w) => w.id!))
     }
   }, [])
-
-  if (isLoading) {
-    return (
-      <MessageBubble>
-        <div className="flex items-center">
-          <CircularProgress size={35} />
-        </div>
-      </MessageBubble>
-    )
-  }
 
   const TableHeader = () => (
     <TableHead>
@@ -128,21 +123,21 @@ const MyWalletsBubble = (props: Props) => {
               size={20}
               className={clsx(
                 'transition-all duration-300 cursor-pointer ml-2',
-                folds.includes(w.id) ? 'rotate-180' : ''
+                folds.includes(w.id!) ? 'rotate-180' : ''
               )}
             />
           </div>
-          <Collapse in={folds.includes(w.id)}>
+          <Collapse in={folds.includes(w.id!)}>
             <Table size="small">
               <TableHeader />
               <TableBody>
-                {w.tokens
-                  .sort((a, b) => Number(b.valueUsd) - Number(a.valueUsd))
+                {w?.tokens
+                  ?.sort((a, b) => Number(b.valueUsd) - Number(a.valueUsd))
                   .map((t, i) => (
                     <TokenRow
                       key={i}
                       token={t}
-                      showBorder={i !== w.tokens.length - 1}
+                      showBorder={i !== w!.tokens!.length - 1}
                       onDetails={onDetails}
                       onBuy={onBuy}
                       onSell={onSell}
