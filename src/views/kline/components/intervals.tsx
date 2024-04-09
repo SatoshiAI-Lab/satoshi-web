@@ -23,8 +23,9 @@ export const Intervals = (props: IntervalProps) => {
 
     const tvChart = chart?.activeChart()
     const targetResetId = Array.from(getResetCacheMap().keys()).find((id) =>
-      id.endsWith(interval)
+      id.endsWith(interval.toLocaleUpperCase())
     )
+    console.log('click', interval, getResetCacheMap().keys())
     const resetChartCache = getResetCacheMap().get(targetResetId ?? '')
     if (resetChartCache) {
       resetChartCache()
@@ -35,7 +36,7 @@ export const Intervals = (props: IntervalProps) => {
       return
     }
 
-    toast.error(`[Switch Eror]: Not have reset cache.`)
+    toast.error(`[Switch Error]: Not have reset cache.`)
   }
 
   return (
@@ -46,7 +47,9 @@ export const Intervals = (props: IntervalProps) => {
             key={i}
             className={clsx(
               'cursor-pointer transition-all hover:text-gray-600',
-              interval === item.interval ? 'text-black' : 'text-gray-400'
+              interval.toUpperCase() === item.interval
+                ? 'text-black'
+                : 'text-gray-400'
             )}
             onClick={() => onIntervalClick(item)}
           >

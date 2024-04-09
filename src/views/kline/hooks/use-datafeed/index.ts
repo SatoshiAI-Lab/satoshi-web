@@ -91,6 +91,7 @@ export const useDatafeed = () => {
           subscribeUID,
           onResetCacheNeededCallback
         )
+        console.log('subscribe', datafeedCacheApi.resetCacheMap)
 
         onUpdateBar((received) => {
           const bars = formatReceivedBars(received.data ?? [])
