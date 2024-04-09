@@ -26,7 +26,7 @@ export const MonitorNews = ({ data }: Props) => {
   }
 
   return (
-    <div className="px-10 pb-7 max-sm:px-6">
+    <div className="px-10 pb-7 max-sm:px-6 max-w-[550px]">
       <div className="relative left-[-8px] flex items-center">
         <Switch checked={checked} onChange={onSwitch}></Switch>
         <span>
