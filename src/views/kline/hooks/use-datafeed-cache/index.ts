@@ -3,6 +3,7 @@ import type {
   ResolutionString,
 } from '../../../../../public/tradingview/charting_library/charting_library'
 import type { Pair } from '@/types/types'
+import type { TagStr } from '../use-kline-api/types'
 
 export type ResetCacheMap<T = Function> = Map<string, T>
 
@@ -22,6 +23,9 @@ export const useDatafeedCache = () => {
 
     getLastSourcePair: () => cachedMap.get('lastSourcePair') as Pair,
     setLastSourcePair: (p: Pair) => cachedMap.set('lastSourcePair', p),
+
+    getLastTag: () => cachedMap.get('lastTag') as TagStr,
+    setLastTag: (tag: TagStr) => cachedMap.set('lastTag', tag),
 
     resetCacheMap: new Map() as ResetCacheMap,
   }

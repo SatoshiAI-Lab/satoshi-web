@@ -11,4 +11,6 @@ export const URL_CONFIG = {
   satoshiChatApi: 'https://ai.mysatoshi.ai',
 
   cdn: 'https://img.mysatoshi.ai',
+
+  kline: 'wss://ohlcv.mysatoshi.ai/ws', // dev API
 } as const

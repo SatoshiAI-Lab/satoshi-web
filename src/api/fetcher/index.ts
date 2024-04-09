@@ -49,7 +49,7 @@ export async function fetcher<T = ReadableStream<Uint8Array>>(
     signal,
     needAuth = true,
   } = options
-  const stringQuery = method === 'GET' ? utilParse.obj2Qs(query ?? {}) : ''
+  const stringQuery = method === 'GET' ? utilParse.objToQs(query ?? {}) : ''
   const url = baseURL + path + stringQuery
   // We can use this hook, because it's not relying React hooks.
   const token = useStorage().getLoginToken()

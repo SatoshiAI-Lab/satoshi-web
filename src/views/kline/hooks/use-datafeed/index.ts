@@ -33,7 +33,7 @@ export const useDatafeed: UseDatafeed = () => {
     // otherwise will be stack overflow.
     return {
       onReady(callback) {
-        onErrorMessage((e) => toast.error(e.msg ?? ''))
+        onErrorMessage((e) => toast.error(e.message ?? ''))
         setTimeout(() => callback(TV_DATAFEED_CONFIG), 0)
       },
       searchSymbols(userInput, exchange, symbolType, onResultReadyCallback) {},
@@ -76,9 +76,9 @@ export const useDatafeed: UseDatafeed = () => {
           return
         }
 
-        const bars = await getHistoryBars(symbolInfo, periodParams)
+        const bars = await getHistoryBars(periodParams)
 
-        onHistory(bars, { noData: !bars.length })
+        onHistory(bars.reverse(), { noData: !bars.length })
       },
       subscribeBars(
         symbolInfo,

@@ -59,7 +59,7 @@ export const MonitorEntryPointer = (props: Props) => {
       title: t('monitor.news.title'),
     },
     [MonitorMenuType.exInfo]: {
-      comp: <MonitorEXInfo data={data} />,
+      comp: <MonitorEXInfo />,
       title: t('monitor.exinfo.title'),
     },
   }
@@ -85,7 +85,6 @@ export const MonitorEntryPointer = (props: Props) => {
               {t('monitor')}
             </span>
           }
-          showCloseBtn
           onClose={hidden}
         ></DialogHeader>
         <MonitorMenu onOpenItem={handleOpenMonitorSetting}></MonitorMenu>
@@ -101,9 +100,6 @@ export const MonitorEntryPointer = (props: Props) => {
               {config?.title}
             </span>
           }
-          showCloseBtn
-          showBackBtn
-          onBack={hiddenSub}
           onClose={closeAll}
         ></DialogHeader>
         {config?.comp && config.comp}

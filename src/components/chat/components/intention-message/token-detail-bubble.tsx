@@ -1,6 +1,6 @@
 import {
   ChatResponseAnswerMeta,
-  ChatResponseWalletListToken,
+  ChatResponseTokenDetail,
 } from '@/api/chat/types'
 import MessageBubble from '../message-bubble'
 import { Avatar, IconButton } from '@mui/material'
@@ -12,13 +12,14 @@ import { FaTelegramPlane } from 'react-icons/fa'
 import { RiGlobalLine } from 'react-icons/ri'
 
 import ShowMoreText from 'react-show-more-text'
+import { link } from '@/config/link'
 
 interface Props {
   msg?: ChatResponseAnswerMeta
 }
 
 export const TokenDetailBubble = (props: Props) => {
-  const data = props.msg?.data as unknown as ChatResponseWalletListToken
+  const data = props.msg?.data as unknown as ChatResponseTokenDetail
   console.log(data)
   const { t } = useTranslation()
 
@@ -70,21 +71,21 @@ export const TokenDetailBubble = (props: Props) => {
           {numeral(data.market_cap).format('0a.00').toUpperCase()}
         </div>
         <div>
-          {t('holder')}
+          {t('volume')}
           {numeral(data.volume).format('0a.0').toUpperCase()}
         </div>
       </div>
       <div className="flex -ml-2">
         <IconButton
           disabled={!data.twitter}
-          onClick={() => window.open(`https://twitter.com/${data.twitter}`)}
+          onClick={() => window.open(`${link.twitter}${data.twitter}`)}
           color="primary"
         >
           <IoLogoTwitter></IoLogoTwitter>
         </IconButton>
         <IconButton
           disabled={!data.telegram}
-          onClick={() => window.open(`https://t.me/${data.telegram}`)}
+          onClick={() => window.open(`${link.tg}${data.telegram}`)}
           color="primary"
           className="!mx-2"
         >
