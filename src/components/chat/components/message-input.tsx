@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaPaperPlane } from 'react-icons/fa'
 import { AiOutlineLoading } from 'react-icons/ai'
-import { Button, IconButton, InputBase } from '@mui/material'
+import { Button, IconButton, InputBase, TextareaAutosize } from '@mui/material'
 import { useKey } from 'react-use'
 import clsx from 'clsx'
 import { FaRegCirclePause } from 'react-icons/fa6'
@@ -133,18 +133,13 @@ function MessageInput(props: MessageInputProps) {
             <FaRegCirclePause size={28} className="text-red-500" />
           </IconButton>
         </motion.div>
-        <InputBase
-          classes={{
-            root: '!pl-1 !text-lg !transition-all !text-black',
-            input: '!transition-all !truncate ',
-          }}
+        <TextareaAutosize
+          className="bg-transparent pl-1 text-lg transition-all text-black w-full outline-none"
           value={question}
           placeholder={t('chat.placeholder')}
-          multiline
-          maxRows={5}
+          maxRows={3}
           minRows={1}
-          fullWidth
-          inputRef={inputRef}
+          ref={inputRef}
           onKeyDown={handleEnterSend}
           onChange={(e) => setQuestion(e.target.value)}
           onKeyUp={throttledHandleInputKeyup}
