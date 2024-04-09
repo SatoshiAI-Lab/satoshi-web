@@ -53,7 +53,9 @@ export const WalletBalance = (props: Props) => {
             {utilFmt.addr(msgData.address)}
           </span>
         </CopyToClipboard>
-        <span className="ml-2 text-black font-bold">{getTotalUValue()}$</span>
+        <span className="ml-2 text-black font-bold">
+          ${Number(numeral(msgData.value).format('0.00'))}
+        </span>
       </div>
       <div className="">
         {tokens?.map((token, i) => {
@@ -68,12 +70,14 @@ export const WalletBalance = (props: Props) => {
                 }`
               )}
             >
-              <div className="text-primary truncate">{token.symbol || 'null'}</div>
+              <div className="text-primary truncate">
+                {token.symbol || 'null'}
+              </div>
               <div>${numeral(token.valueUsd).format('0,0.0')}</div>
               <div className="ml-2">
                 {numeral(
                   formatUnits(BigInt(token.amount!), token.decimals!)
-                ).format('0a.00')}
+                ).format('0a.00').toUpperCase()}
               </div>
             </div>
           )

@@ -61,8 +61,6 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
       walletApi
         .getWallets()
         .then((res) => {
-          console.log('钱包列表', res.data)
-
           set({ wallets: res.data.reverse(), loading: false })
           resolve(true)
         })

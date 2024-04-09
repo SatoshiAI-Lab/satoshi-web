@@ -42,6 +42,8 @@ export const CHAT_CONFIG = {
       'do_not_support_buy_token',
       'do_not_support_sell_token',
       'subscript_announcement',
+      'subscript_cancel',
+      'do_not_have_token',
     ],
 
     /** it's not need `useStream` */
