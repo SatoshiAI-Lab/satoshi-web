@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
-import { KLINE_RESOLUTIONS } from '@/config/kline'
+import { KLINE_INTERVALS } from '@/config/kline'
 import { useKLineStore } from '@/stores/use-kline-store'
 import { useStorage } from '@/hooks/use-storage'
-import { TV_INTERVAL_MAP } from '@/config/tradingview'
+import { useKLineFormat } from '../hooks/use-kline-format'
 
 import type { ResolutionString } from '../../../../public/tradingview/charting_library/charting_library'
 
@@ -16,23 +16,19 @@ interface IntervalProps extends React.ComponentProps<'div'> {
 export const Intervals = (props: IntervalProps) => {
   const { showFullscreen = true, className = '' } = props
   const { chart, interval, getResetCacheMap, setInterval } = useKLineStore()
+
   const { setKLineInterval } = useStorage()
+  const { toTVInterval, toNormalInterval } = useKLineFormat()
 
-  const onIntervalClick = (item: (typeof KLINE_RESOLUTIONS)[number]) => {
+  const onIntervalClick = (item: (typeof KLINE_INTERVALS)[number]) => {
     const { interval: newInterval, name } = item
-    if (newInterval === interval) return
+    if (name === interval) return
 
-    console.log(
-      'switch interval',
-      interval,
-      getResetCacheMap().keys(),
-      TV_INTERVAL_MAP[interval],
-      newInterval
-    )
+    console.log('switch', interval, getResetCacheMap().keys())
 
     const tvChart = chart?.activeChart()
     const targetResetId = Array.from(getResetCacheMap().keys()).find((id) =>
-      id.endsWith(TV_INTERVAL_MAP[interval].toUpperCase())
+      id.endsWith(toTVInterval(interval).toUpperCase())
     )
 
     const resetChartCache = getResetCacheMap().get(targetResetId ?? '')
@@ -48,19 +44,17 @@ export const Intervals = (props: IntervalProps) => {
     toast.error(`[Switch Error]: Not have reset cache.`)
   }
 
-  useEffect(() => {
-    console.log('init interval', interval)
-  }, [])
-
   return (
     <div className={clsx('flex justify-between px-1', className)}>
       <div className="flex items-center gap-4 px-1">
-        {KLINE_RESOLUTIONS.map((item, i) => (
+        {KLINE_INTERVALS.map((item, i) => (
           <div
             key={i}
             className={clsx(
               'cursor-pointer transition-all hover:text-gray-600',
-              interval === item.name ? 'text-black' : 'text-gray-400'
+              toNormalInterval(interval) === item.name
+                ? 'text-black'
+                : 'text-gray-400'
             )}
             onClick={() => onIntervalClick(item)}
           >

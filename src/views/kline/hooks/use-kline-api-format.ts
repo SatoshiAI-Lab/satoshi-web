@@ -1,21 +1,41 @@
-import { CexParams, CexTag, DexParams, DexTag } from './use-kline-api/types'
+import {
+  CexParams,
+  CexTag,
+  ChartTokenParams,
+  DexParams,
+  DexTag,
+  TagString,
+} from './use-kline-api/types'
 
 export const useKLineApiFormat = () => {
-  const toDexTag = (p: DexParams) => {
-    const str = ['dex', p.chain, p.address, p.pool, p.interval].join(':')
-    return str as DexTag
-  }
-
-  const toCexTag = (p: CexParams) => {
+  const cexParamsToCexTag = (p: CexParams) => {
     const str = ['cex', p.exchange, p.symbol, p.interval].join(':')
     return str as CexTag
   }
 
-  const parseDexTag = (tag?: DexTag) => {
+  const dexParamsToDexTag = (p: DexParams) => {
+    const str = ['dex', p.chain, p.address, p.pool, p.interval].join(':')
+    return str as DexTag
+  }
+
+  const cexTagToCexParams = (tag?: CexTag) => {
+    if (!tag) return {} as CexParams
+
+    const [type, exchange, symbol, interval] = tag.split(':')
+    return {
+      type,
+      exchange,
+      symbol,
+      interval,
+    } as CexParams
+  }
+
+  const dexTagToDexParams = (tag?: DexTag) => {
     if (!tag) return {} as DexParams
 
-    const [, chain, address, pool, interval] = tag.split(':')
+    const [type, chain, address, pool, interval] = tag.split(':')
     return {
+      type,
       chain,
       address,
       pool,
@@ -23,21 +43,31 @@ export const useKLineApiFormat = () => {
     } as DexParams
   }
 
-  const parseCexTag = (tag?: CexTag) => {
-    if (!tag) return {} as CexParams
+  const joinParams = (tag: CexParams | DexParams) => {
+    if (tag.type === 'cex') {
+      return {
+        ...tag,
+        source: tag.exchange,
+        symbol: tag.symbol,
+        interval: tag.interval,
+      } as ChartTokenParams
+    }
 
-    const [, exchange, symbol, interval] = tag.split(':')
     return {
-      exchange,
-      symbol,
-      interval,
-    } as CexParams
+      ...tag,
+      source: tag.chain,
+      symbol: tag.address,
+      interval: tag.interval,
+    } as ChartTokenParams
   }
 
   return {
-    toDexTag,
-    toCexTag,
-    parseDexTag,
-    parseCexTag,
+    dexParamsToDexTag,
+    cexParamsToCexTag,
+    dexTagToDexParams,
+    cexTagToCexParams,
+    joinParams,
+    tagIsCex: (tag?: TagString) => !!tag?.startsWith('cex'),
+    tagIsDex: (tag?: TagString) => !!tag?.startsWith('dex'),
   }
 }

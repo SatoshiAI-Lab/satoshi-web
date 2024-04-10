@@ -11,11 +11,10 @@ import { utilArr } from '@/utils/array'
 
 import type {
   IBasicDataFeed,
-  ResolutionString,
   LibrarySymbolInfo,
   Mark,
 } from '../../../../../public/tradingview/charting_library/charting_library'
-import type { Datafeeder } from './types'
+import type { CexParams, DexParams } from '../use-kline-api/types'
 
 export const useDatafeed = () => {
   const datafeedCacheApi = useDatafeedCache()
@@ -29,7 +28,7 @@ export const useDatafeed = () => {
     disconnect,
   } = useDatafeedHelper(datafeedCacheApi)
 
-  const datafeeder: Datafeeder = () => {
+  const datafeeder = (params: CexParams | DexParams) => {
     // datafeed callback must be called in async function,
     // otherwise will be stack overflow.
     return {
@@ -39,23 +38,16 @@ export const useDatafeed = () => {
       },
       searchSymbols(userInput, exchange, symbolType, onResultReadyCallback) {},
       async resolveSymbol(symbolName, onSymbolResolved, onResolveError) {
-        const tradingPair = `${symbolName}-USDT`
         // Initial `symbolInfo`, you can modify it in `getBars`
         const symbolInfo: LibrarySymbolInfo = {
           ...TV_SYMBOL_INFO_CONFIG,
           name: symbolName,
-          full_name: tradingPair.toUpperCase(),
-          description: tradingPair.toUpperCase(),
+          full_name: symbolName.toUpperCase(),
+          description: symbolName.toUpperCase(),
         }
-        const { interval } = useKLineStore.getState()
+
         try {
-          const { bars, lastBar } = await getInitBars(
-            symbolInfo,
-            interval as ResolutionString
-          )
-          
-          console.log(bars, lastBar)
-          
+          const { bars, lastBar } = await getInitBars(symbolInfo, params)
           const newPricescale = priceToPricescale(lastBar.open)
 
           symbolInfo.pricescale = newPricescale
@@ -73,7 +65,7 @@ export const useDatafeed = () => {
       async getBars(symbolInfo, resolution, periodParams, onHistory, onError) {
         // First request, switch resolution is also first request.
         if (periodParams.firstDataRequest) {
-          const bars = await handleInitBars(symbolInfo, resolution)
+          const bars = await handleInitBars(symbolInfo, params, resolution)
 
           datafeedCacheApi.setLastResolution(resolution)
           onHistory(bars, { noData: utilArr.isEmpty(bars) })

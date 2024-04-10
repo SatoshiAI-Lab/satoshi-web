@@ -1,4 +1,4 @@
-import type { StudiesName, Study } from '@/config/kline'
+import type { Study, StudyName } from '@/config/kline'
 import type { FormatExportedDataItem } from '../use-kline-format/types'
 import type {
   HandleShapeClick,
@@ -20,8 +20,7 @@ export interface UseAnnotationStudiesReturn<F = () => Promise<void>> {
   createKDJ: F
   createStochRSI: F
   hiddenAllStudy(): void
-  hiddenMainStudy(excludes?: StudiesName[]): void
-  hiddenStudy(studyName: StudiesName | StudiesName[]): void
+  hiddenStudy(studyName: StudyName | StudyName[]): void
   handleShapeClick: HandleShapeClick
 }
 

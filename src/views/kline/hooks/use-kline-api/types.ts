@@ -30,16 +30,24 @@ export interface KLineOnEvents {
   error: ReceiveBase<never>
 }
 
-export interface DexParams {
-  chain: string
-  address: string
-  pool: string
+export interface ChartTokenParams {
+  source: string
+  symbol: SymbolStr
   interval: string
 }
 
 export interface CexParams {
+  type: 'cex'
   exchange: string
   symbol: SymbolStr
+  interval: string
+}
+
+export interface DexParams {
+  type: 'dex'
+  chain: string
+  address: string
+  pool: string
   interval: string
 }
 

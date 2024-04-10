@@ -5,7 +5,13 @@ import StudyDialog from './study-dialog'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useKLineStore } from '@/stores/use-kline-store'
 import { useAnnotationStudies } from '../hooks/use-annotation-studies'
-import { KLINE_ANNOTATION, KLINE_STUDIES, StudiesName } from '@/config/kline'
+import {
+  KLINE_ANNOTATION,
+  KLINE_STUDIES,
+  Study,
+  StudyFullname,
+  StudyName,
+} from '@/config/kline'
 
 import type { ClickHandlerParams } from '../hooks/use-annotation/types'
 import type { EntityId } from '../../../../public/tradingview/charting_library/charting_library'
@@ -16,7 +22,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
   const { className = '' } = props
   const { tips } = KLINE_ANNOTATION
   const { chart } = useKLineStore()
-  const [actives, setActives] = useState<`${StudiesName}`[]>([])
+  const [actives, setActives] = useState<StudyFullname[]>([])
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -44,7 +50,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     const studies = chart?.activeChart().getAllStudies()
 
     studies?.forEach((study) => {
-      const name = study.name as `${StudiesName}`
+      const name = study.name as StudyFullname
 
       if (creatorMap[name]) {
         creatorMap[name]()
@@ -52,13 +58,13 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     })
   })
   const creatorMap = {
-    [StudiesName.VOL]: createVOL,
-    [StudiesName.MA]: createMA,
-    [StudiesName.EMA]: createEMA,
-    [StudiesName.BOLL]: createBOLL,
-    [StudiesName.WR]: createWR,
-    [StudiesName.MACD]: createMACD,
-    [StudiesName.RSI]: createRSI,
+    [StudyName.VOL]: createVOL,
+    [StudyName.MA]: createMA,
+    [StudyName.EMA]: createEMA,
+    [StudyName.BOLL]: createBOLL,
+    [StudyName.WR]: createWR,
+    [StudyName.MACD]: createMACD,
+    [StudyName.RSI]: createRSI,
   }
 
   const hiddenLegendStudy = () => {
@@ -89,7 +95,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     setOwnerStudyId(ownerStudyId)
   }
 
-  const onStudyClick = (study: typeof KLINE_STUDIES.vol) => {
+  const onStudyClick = (study: Study) => {
     const { name, isMain, inputs, overrides, options } = study
     const activeChart = chart?.activeChart()
     const allStudies = activeChart?.getAllStudies()
@@ -113,7 +119,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     // Inexisted, but is main chart.
     activeChart?.createStudy(
       name,
-      name === StudiesName.VOL,
+      name === StudyName.VOL,
       false,
       inputs,
       overrides,
@@ -130,7 +136,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     chart?.subscribe('onTick', onChartUpdate)
     intervalEvent?.subscribe(null, onChartUpdate)
     hiddenLegendStudy()
-    setActives([KLINE_STUDIES.vol.name])
+    setActives([StudyName.VOL])
   }
 
   useEffect(() => {
