@@ -27,6 +27,7 @@ const TwitterBubble = ({
     setImage(item)
     setOpen(true)
   }
+
   return (
     <MessageBubble
       className={clsx(
@@ -59,14 +60,13 @@ const TwitterBubble = ({
       >
         {currentContent}
       </ShowMoreText>
-      {/* TODO: click img to enlarge show. */}
       {photo.map((item) => (
         <img
           key={item}
           src={item}
           onClick={() => showImage(item)}
           alt="img"
-          className="rounded-md max-h-[300px] max-w-[300px] mb-[15px]"
+          className="rounded-md max-h-[300px] max-w-[300px] mb-[15px] cursor-pointer"
         />
       ))}
       <a
@@ -77,7 +77,7 @@ const TwitterBubble = ({
         {t('bubble.originlink')}
       </a>
 
-      <Dialog open={open} keepMounted onClose={() => setOpen(false)}>
+      <Dialog open={open} onClose={() => setOpen(false)}>
         <img src={image} alt="img" className="max-h-[600px] max-w-[600px]" />
       </Dialog>
     </MessageBubble>
