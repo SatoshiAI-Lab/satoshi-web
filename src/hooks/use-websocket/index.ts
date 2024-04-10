@@ -70,14 +70,6 @@ export const useWebSocket = <O extends OnEvents, E extends EmitEvents>(
   }
 
   const onMessage = (event: MessageEvent) => {
-    /**
-     * Do not disconnect here. because this is a pure hook.
-     * Should be not handle business logic.
-     */
-    // if (!useUserStore.getState().isLogined) {
-    //   disconnect()
-    //   return
-    // }
     const message = JSON.parse(event.data || 'null')
 
     options?.onMessage?.(event)
@@ -109,6 +101,7 @@ export const useWebSocket = <O extends OnEvents, E extends EmitEvents>(
 
   const disconnect = () => {
     ws?.close()
+    clearInterval(timer)
   }
 
   return {
