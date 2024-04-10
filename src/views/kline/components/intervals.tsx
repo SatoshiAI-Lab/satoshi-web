@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
@@ -23,8 +23,9 @@ export const Intervals = (props: IntervalProps) => {
 
     const tvChart = chart?.activeChart()
     const targetResetId = Array.from(getResetCacheMap().keys()).find((id) =>
-      id.endsWith(interval)
+      id.endsWith(interval.toLocaleUpperCase())
     )
+    console.log('click', interval, getResetCacheMap().keys())
     const resetChartCache = getResetCacheMap().get(targetResetId ?? '')
     if (resetChartCache) {
       resetChartCache()
@@ -35,8 +36,12 @@ export const Intervals = (props: IntervalProps) => {
       return
     }
 
-    toast.error(`[Switch Eror]: Not have reset cache.`)
+    toast.error(`[Switch Error]: Not have reset cache.`)
   }
+
+  useEffect(() => {
+    console.log('interval', interval)
+  }, [])
 
   return (
     <div className={clsx('flex justify-between px-1', className)}>
@@ -46,7 +51,7 @@ export const Intervals = (props: IntervalProps) => {
             key={i}
             className={clsx(
               'cursor-pointer transition-all hover:text-gray-600',
-              interval === item.interval ? 'text-black' : 'text-gray-400'
+              interval === item.name ? 'text-black' : 'text-gray-400'
             )}
             onClick={() => onIntervalClick(item)}
           >

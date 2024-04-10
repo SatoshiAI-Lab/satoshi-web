@@ -18,7 +18,8 @@ import type { CexTag, SymbolStr } from '../use-kline-api/types'
 export const useDatafeedHelper = (
   cachedApi: ReturnType<typeof useDatafeedCache>
 ) => {
-  const { listenToken, getHistory, onUpdateBar, onErrorMessage } = useKLineApi()
+  const { listenToken, getHistory, onUpdateBar, onErrorMessage, disconnect } =
+    useKLineApi()
   const { formatReceivedBars } = useKLineFormat()
   const { toCexTag, toDexTag, parseCexTag, parseDexTag } = useKLineApiFormat()
 
@@ -32,6 +33,8 @@ export const useDatafeedHelper = (
       resolution.toLowerCase() as keyof typeof TV_RESOLUTION_MAP
     // Convert a interval to TradingView format interval.
     const interval = TV_RESOLUTION_MAP[tvInterval] ?? tvInterval
+
+    console.log('interval', interval)
 
     const received = await listenToken({
       // TODO: judgement Cex or Dex
@@ -114,5 +117,6 @@ export const useDatafeedHelper = (
     getHistoryBars,
     onUpdateBar,
     onErrorMessage,
+    disconnect,
   }
 }

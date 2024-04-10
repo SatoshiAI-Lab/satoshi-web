@@ -15,9 +15,9 @@ import type {
   LibrarySymbolInfo,
   Mark,
 } from '../../../../../public/tradingview/charting_library/charting_library'
-import type { Datafeeder, UseDatafeed } from './types'
+import type { Datafeeder } from './types'
 
-export const useDatafeed: UseDatafeed = () => {
+export const useDatafeed = () => {
   const datafeedCacheApi = useDatafeedCache()
   const { formatReceivedBars, priceToPricescale } = useKLineFormat()
   const {
@@ -26,6 +26,7 @@ export const useDatafeed: UseDatafeed = () => {
     getHistoryBars,
     onUpdateBar,
     onErrorMessage,
+    disconnect,
   } = useDatafeedHelper(datafeedCacheApi)
 
   const datafeeder: Datafeeder = () => {
@@ -90,6 +91,7 @@ export const useDatafeed: UseDatafeed = () => {
           subscribeUID,
           onResetCacheNeededCallback
         )
+        console.log('subscribe', datafeedCacheApi.resetCacheMap)
 
         onUpdateBar((received) => {
           const bars = formatReceivedBars(received.data ?? [])
@@ -160,5 +162,6 @@ export const useDatafeed: UseDatafeed = () => {
   return {
     datafeeder,
     getResetCacheMap: () => datafeedCacheApi.resetCacheMap,
+    disconnect,
   }
 }
