@@ -4,41 +4,15 @@ import {
   CreateStudyOptions,
 } from '../../public/tradingview/charting_library/charting_library'
 
-export interface Studies<T = Study> {
-  vol: T
-  ma: T
-  ema: T
-  boll: T
-  wr: T
-  macd: T
-  rsi: T
-  // kdj: T
-  // stochRSI: T
-}
-
 export interface Study {
   label: StudyNickname
-  /** Show on main chart */
-  isMain?: boolean
-  // Below is study props, above is custom props.
-  name: `${StudiesName}`
+  isMain?: boolean // is main chart study
+  name: StudyName
   forceOverlay?: boolean
-  /** If locked, cannot open setting dialog. */
-  lock?: boolean
+  lock?: boolean // If locked, cannot open setting dialog.
   inputs?: Record<string, StudyInputValue>
   overrides?: StudyOverrides
   options?: CreateStudyOptions
-}
-
-/** @deprecated Using `StudyName` to instead */
-export enum StudiesName {
-  VOL = 'Volume',
-  MA = 'MA Cross',
-  EMA = 'EMA Cross',
-  BOLL = 'Bollinger Bands',
-  WR = 'Williams %R',
-  MACD = 'MACD',
-  RSI = 'Relative Strength Index',
 }
 
 export enum StudyName {
@@ -55,8 +29,10 @@ export enum StudyName {
 
 export type StudyNickname = keyof typeof StudyName
 
+export type StudyFullname = `${StudyName}`
+
 // Supported studies.
-export const KLINE_SUPPORTED_STUDIES: Record<StudyName, Study> = {
+export const KLINE_STUDIES: Record<StudyName, Study> = {
   // main chart studies
   [StudyName.VOL]: {
     label: 'VOL',

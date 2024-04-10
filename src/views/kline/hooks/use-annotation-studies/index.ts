@@ -1,9 +1,4 @@
-import {
-  Study,
-  StudiesName,
-  KLINE_SUPPORTED_STUDIES,
-  StudyName,
-} from '@/config/kline'
+import { Study, KLINE_STUDIES, StudyName, StudyFullname } from '@/config/kline'
 import { useKLine } from '@/views/kline/hooks/use-kline'
 import { useAnnotations } from '../use-annotation'
 
@@ -33,13 +28,13 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
     onPressureSupportClick,
   })
   const creators = {
-    vol: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.VOL]),
-    ma: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.MA]),
-    ema: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.EMA]),
-    boll: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.BOLL]),
-    wr: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.WR], false),
-    macd: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.MACD], false),
-    rsi: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.RSI], false),
+    vol: () => createStudy(KLINE_STUDIES[StudyName.VOL]),
+    ma: () => createStudy(KLINE_STUDIES[StudyName.MA]),
+    ema: () => createStudy(KLINE_STUDIES[StudyName.EMA]),
+    boll: () => createStudy(KLINE_STUDIES[StudyName.BOLL]),
+    wr: () => createStudy(KLINE_STUDIES[StudyName.WR], false),
+    macd: () => createStudy(KLINE_STUDIES[StudyName.MACD], false),
+    rsi: () => createStudy(KLINE_STUDIES[StudyName.RSI], false),
   }
 
   const createStudy = (study: Study, needClear = true) => {
@@ -47,7 +42,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
       chart?.onChartReady(async () => {
         try {
           const activeChart = chart?.activeChart()
-          const isExisted = findStudy(study.name as StudiesName)
+          const isExisted = findStudy(study.name as StudyFullname)
           const allStudies = activeChart.getAllStudies()
           const allShapes = activeChart.getAllShapes()
 
@@ -83,7 +78,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
     })
   }
 
-  const hiddenStudy = (studyNames: StudiesName | StudiesName[]) => {
+  const hiddenStudy = (studyNames: StudyName | StudyName[]) => {
     setTimeout(() => {
       studyNames = Array.isArray(studyNames) ? studyNames : [studyNames]
       const activeChart = chart?.activeChart()
@@ -140,7 +135,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
       return tuple
     })
     const studyName = isEMA ? 'EMA' : 'MA'
-    const ownerId = findStudy(StudiesName.MA)?.id
+    const ownerId = findStudy(StudyName.MA)?.id
 
     createForks([
       {
@@ -157,7 +152,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
       },
     ])
 
-    hiddenStudy(isEMA ? StudiesName.EMA : StudiesName.MA)
+    hiddenStudy(isEMA ? StudyName.EMA : StudyName.MA)
   }
 
   // Create EMA study, it's also MA.
@@ -180,7 +175,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
       return tuple
     })
     const studyName = 'BOLL'
-    const ownerId = findStudy(StudiesName.BOLL)?.id
+    const ownerId = findStudy(StudyName.BOLL)?.id
 
     createPressureSupport([
       {
@@ -197,7 +192,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
       },
     ])
 
-    hiddenStudy(StudiesName.BOLL)
+    hiddenStudy(StudyName.BOLL)
   }
 
   // Create WR study.
@@ -206,7 +201,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
     await getChartData((data, i, rawData) => {
       const absPlot = Math.abs(data.Plot)
       const studyName = 'WR'
-      const ownerId = findStudy(StudiesName.WR)?.id!
+      const ownerId = findStudy(StudyName.WR)?.id!
 
       if (i !== rawData.data.length - 1) return
       if (absPlot >= 0 && absPlot <= 20) {
@@ -256,7 +251,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
       })
       return tuple
     })
-    const ownerId = findStudy(StudiesName.MACD)?.id
+    const ownerId = findStudy(StudyName.MACD)?.id
     const golden = {
       time: first.time,
       price: first.low,
@@ -290,7 +285,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
       })
       return tuple
     })
-    const ownerId = findStudy(StudiesName.MACD)?.id
+    const ownerId = findStudy(StudyName.MACD)?.id
 
     createDivergence([
       {
@@ -336,7 +331,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
       return tuple
     })
 
-    const ownerId = findStudy(StudiesName.RSI)?.id
+    const ownerId = findStudy(StudyName.RSI)?.id
     const golden = {
       time: first.time,
       price: first.low,
@@ -386,7 +381,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
       return tuple
     })
 
-    const ownerId = findStudy(StudiesName.RSI)?.id
+    const ownerId = findStudy(StudyName.RSI)?.id
 
     createDivergence([
       {
@@ -411,7 +406,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
 
       if (i !== rawData.data.length - 1) return
 
-      const ownerId = findStudy(StudiesName.RSI)?.id
+      const ownerId = findStudy(StudyName.RSI)?.id
       const overbought = {
         time,
         price: high,
@@ -456,7 +451,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
     createKDJ,
     createStochRSI,
     hiddenStudy,
-    hiddenAllStudy: () => hiddenStudy(Object.values(StudiesName)),
+    hiddenAllStudy: () => hiddenStudy(Object.values(StudyName)),
     handleShapeClick,
   }
 }

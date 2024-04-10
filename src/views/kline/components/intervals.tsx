@@ -20,7 +20,8 @@ export const Intervals = (props: IntervalProps) => {
 
   const onIntervalClick = (item: (typeof KLINE_RESOLUTIONS)[number]) => {
     const { interval: newInterval, name } = item
-    if (newInterval === interval) return
+    console.log('click', newInterval, interval)
+    if (name === interval) return
 
     console.log(
       'switch interval',

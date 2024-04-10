@@ -7,7 +7,7 @@ import { useThemeStore } from '@/stores/use-theme-store'
 import { TV_CHART_OPTIONS, TV_INTERVAL_MAP } from '@/config/tradingview'
 import { FormatExportedDataHandler } from '@/views/kline/hooks/use-kline-format/types'
 import { useKLineFormat } from '@/views/kline/hooks/use-kline-format'
-import { StudiesName } from '@/config/kline'
+import { StudyName } from '@/config/kline'
 import {
   widget,
   ResolutionString,
@@ -90,7 +90,7 @@ export const useKLine = () => {
   }
 
   // Find a study from study name.
-  const findStudy = (studyName: StudiesName) => {
+  const findStudy = (studyName: StudyName) => {
     if (!chart) return
     const activeChart = chart?.activeChart()
 

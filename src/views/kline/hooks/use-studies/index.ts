@@ -1,4 +1,4 @@
-import { KLINE_SUPPORTED_STUDIES, StudyName, type Study } from '@/config/kline'
+import { KLINE_STUDIES, StudyName, type Study } from '@/config/kline'
 import { useKLineStore } from '@/stores/use-kline-store'
 
 import type {
@@ -10,7 +10,7 @@ import type {
  * KLine Study hook, only one create of the same study is allowed.
  */
 export const useStudies = () => {
-  const studies = Object.values(KLINE_SUPPORTED_STUDIES) as Study[]
+  const studies = Object.values(KLINE_STUDIES) as Study[]
   const { chart } = useKLineStore()
 
   /** Waiting for chart ready. */
@@ -44,10 +44,10 @@ export const useStudies = () => {
   const isNotExisted = (n: StudyName) => !findStudy(n)
 
   /** Check a study is main chart study. */
-  const isMainStudy = (n: StudyName) => !!KLINE_SUPPORTED_STUDIES[n].isMain
+  const isMainStudy = (n: StudyName) => !!KLINE_STUDIES[n].isMain
 
   /** Check a study is sub chart study. */
-  const isSubStudy = (n: StudyName) => !KLINE_SUPPORTED_STUDIES[n].isMain
+  const isSubStudy = (n: StudyName) => !KLINE_STUDIES[n].isMain
 
   /** Create a study from name. */
   const createStudy = (name: StudyName) => {
@@ -62,7 +62,7 @@ export const useStudies = () => {
       }
 
       const activeChart = chart.activeChart()
-      const studyParams = KLINE_SUPPORTED_STUDIES[name]
+      const studyParams = KLINE_STUDIES[name]
       const study = await activeChart.createStudy(
         studyParams.name,
         studyParams.isMain,
