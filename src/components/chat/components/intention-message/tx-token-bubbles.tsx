@@ -20,8 +20,7 @@ import { BigNumber } from 'bignumber.js'
 import { useChat } from '@/hooks/use-chat'
 import { FaArrowRightLong } from 'react-icons/fa6'
 import { utilFmt } from '@/utils/format'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import toast from 'react-hot-toast'
+import { link } from '@/config/link'
 
 interface Props {
   msg: ChatResponseAnswerMeta
@@ -123,7 +122,7 @@ export const TxTokenBubbles = (props: Props) => {
         .then(({ data }) => {
           setDisabled(true)
           addMessage({
-            msg: `${t('successful.transaction')}https://solscan.io/tx/${
+            msg: `${t('successful.transaction')}${link.solscan}tx/${
               data.hash_tx
             }`,
           })

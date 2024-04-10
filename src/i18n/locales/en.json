@@ -145,7 +145,7 @@
   "no-login": "Please Signin / Signup before",
   "monitor.address.list": "Monitor address list",
   "address.invaild": "Please input correct address",
-  "walletbubble.title": "Wallet transaction occurred",
+  "walletbubble.title": "A wallet transaction occurs for $1",
   "monitor.wallet.bubble.text1": "Successfully tracked this wallet.",
   "monitor.wallet.bubble.text2": "You will be notified if any on-chain transactions are made.",
   "monitor.wallet.bubble.text3": "You can manage the wallets you are tracking through",
@@ -229,5 +229,12 @@
   "mint-error": "However, there was an error during the minting process, you can:",
   "continue": "Continue mint",
   "back": "Back",
-  "pools.config.error": "The minimum value cannot exceed the maximum value"
+  "pools.config.error": "The minimum value cannot exceed the maximum value",
+  "trace.address.list": "Address list",
+  "wallet.track.error": "Please enter the correct address",
+  "name": "Name",
+  "remove.monitor.successful": "Delete monitor successfully",
+  "remove.monitor.error": "Delete monitor failed",
+  "no.monitor.wallet": "No monitoring address is available",
+  "tx": "Tx hash"
 }
