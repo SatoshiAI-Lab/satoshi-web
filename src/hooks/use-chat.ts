@@ -55,7 +55,20 @@ export const useChat = () => {
   }
 
   const addMonitorMessage = (msg: Message | Message[]) => {
-    addMessage(msg)
+    if (Array.isArray(msg)) {
+      msg.forEach((msg) => {
+        addMessage({
+          ...msg,
+          isMonitor: true,
+        })
+      })
+      return;
+    }
+
+    addMessage({
+      ...msg,
+      isMonitor: true,
+    })
   }
 
   /**

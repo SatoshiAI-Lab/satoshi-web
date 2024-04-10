@@ -4,21 +4,26 @@ import { useTranslation } from 'react-i18next'
 import { MdOutlineContentCopy } from 'react-icons/md'
 import toast from 'react-hot-toast'
 
-import MessageBubble from './message-bubble'
+import MessageBubble from '../bubbles/message-bubble'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { ChatResponseMetaWallet } from '@/api/chat/types'
 import dayjs from 'dayjs'
 
-const WalletBubble = ({
-  type,
-  created_at,
-  name,
-  sender,
-  currency_symbol,
-  side_amount,
-  side_symbol,
-  hash,
-}: ChatResponseMetaWallet) => {
+interface Props {
+  data: ChatResponseMetaWallet
+}
+
+const WalletBubble = ({ data }: Props) => {
+  const {
+    type,
+    created_at,
+    name,
+    sender,
+    currency_symbol,
+    side_amount,
+    side_symbol,
+    hash,
+  } = data
   const { t } = useTranslation()
 
   return (

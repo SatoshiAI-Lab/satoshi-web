@@ -1,25 +1,21 @@
 import { useState } from 'react'
 import clsx from 'clsx'
 
-import MessageBubble from './message-bubble'
+import MessageBubble from '../bubbles/message-bubble'
 import { ChatResponseMetaTwitter } from '@/api/chat/types'
 import dayjs from 'dayjs'
-import i18n from '@/i18n'
 import { t } from 'i18next'
 import ShowMoreText from 'react-show-more-text'
 import { Dialog } from '@mui/material'
+import { utilLang } from '@/utils/language'
 
-const TwitterBubble = ({
-  content,
-  created_at,
-  twitter,
-  tweets_id,
-  twitter_logo,
-  photo,
-}: ChatResponseMetaTwitter) => {
-  const { language } = i18n
-  const currentContent =
-    content[language] || Object.values(content).find((v) => v) || ''
+interface Props {
+  data: ChatResponseMetaTwitter
+}
+
+const TwitterBubble = ({ data }: Props) => {
+  const { content, created_at, twitter, tweets_id, twitter_logo, photo } = data
+  const currentContent = utilLang.getContent(content)
 
   const [open, setOpen] = useState(false)
   const [image, setImage] = useState<string>()

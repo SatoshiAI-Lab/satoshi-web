@@ -228,5 +228,6 @@
   "hash": "Hash",
   "mint-error": "However, there was an error during the minting process, you can:",
   "continue": "Continue mint",
-  "back": "Back"
+  "back": "Back",
+  "pools.config.error": "The minimum value cannot exceed the maximum value"
 }

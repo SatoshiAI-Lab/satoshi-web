@@ -17,9 +17,8 @@ export const MonitorLabelSwitch = ({
   onSetting,
 }: Props) => {
   return (
-    <div className="flex justify-between rounded-lg border border-black pl-2 pr-1 min-w-[200px]">
+    <div className="flex justify-between rounded-lg border border-black pl-2 pr-1 min-w-[220px]">
       <div className="flex items-center">
-        {/* <img src={data.logo} alt="Logo" width={22} /> */}
         <img
           src={data.logo || logo}
           alt="Logo"
@@ -30,9 +29,9 @@ export const MonitorLabelSwitch = ({
         <span className="ml-2 text-nowrap">{data.name ?? data.chain}</span>
       </div>
       <div className="flex items-center ml-3">
-        {data.slug && onSetting && (
+        {data.subscribed && onSetting && (
           <IoSettingsOutline
-            onClick={onSetting}
+            onClick={() => onSetting(data)}
             className="mr-1 cursor-pointer"
           ></IoSettingsOutline>
         )}
