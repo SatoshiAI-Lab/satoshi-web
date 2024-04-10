@@ -33,7 +33,7 @@ export const MonitorWallet = ({ data }: Props) => {
 
   const checkForm = () => {
     const error = []
-    if (!address.trim() || address.length != 44) {
+    if (!address.trim()) {
       error.push(t('address.invaild'))
     }
 
@@ -84,7 +84,7 @@ export const MonitorWallet = ({ data }: Props) => {
           placeholder={t('monitor.wallet.placeholder')}
           endAdornment={
             <span
-              className="cursor-pointer text-blue-500 text-nowrap"
+              className="cursor-pointer text-blue-500 text-nowrap ml-2"
               onClick={handlePaste}
             >
               {t('paste')}

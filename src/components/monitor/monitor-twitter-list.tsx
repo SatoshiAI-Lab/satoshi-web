@@ -30,7 +30,7 @@ export const MonitorTwitterList = ({ list, className }: Props) => {
   return (
     <div
       className={clsx(
-        'inline-flex flex-col max-sm:mx-auto justify-start',
+        'inline-flex flex-col max-sm:mx-auto justify-start max-w-[300px]',
         className
       )}
     >

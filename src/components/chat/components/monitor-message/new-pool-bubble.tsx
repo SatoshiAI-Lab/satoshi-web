@@ -1,6 +1,5 @@
 import React from 'react'
 import clsx from 'clsx'
-import { MdOutlineContentCopy } from 'react-icons/md'
 import { FaTwitter } from 'react-icons/fa'
 import { FaTelegramPlane } from 'react-icons/fa'
 import { GrLanguage } from 'react-icons/gr'
@@ -13,6 +12,7 @@ import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { ChatResponseMetaNewPool } from '@/api/chat/types'
 import { link } from '@/config/link'
+import { IoCopyOutline } from 'react-icons/io5'
 
 const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
   const { t } = useTranslation()
@@ -84,7 +84,7 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
         >
           {utilFmt.addr(props.address)}
         </a>
-        <MdOutlineContentCopy
+        <IoCopyOutline
           className="ml-3 cursor-pointer"
           onClick={() => copy(props.address)}
         />

@@ -69,7 +69,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               className="w-full"
               InputProps={{
                 classes: {
-                  root: 'w-full !border-2 !rounded-xl !bg-white',
+                  root: 'w-full !rounded-xl !bg-white',
                 },
               }}
               value={walletName}

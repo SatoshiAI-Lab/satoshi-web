@@ -2,7 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaPaperPlane } from 'react-icons/fa'
 import { AiOutlineLoading } from 'react-icons/ai'
-import { Button, IconButton, TextareaAutosize } from '@mui/material'
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  TextareaAutosize,
+} from '@mui/material'
 import { useKey } from 'react-use'
 import clsx from 'clsx'
 import { FaRegCirclePause } from 'react-icons/fa6'
@@ -158,17 +163,16 @@ function MessageInput(props: MessageInputProps) {
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
-        <button
-          className={clsx(
-            recording
-              ? 'animate-bounce animate-ease-linear animate-infinite'
-              : '',
-            'rounded-full p-1'
-          )}
+        <IconButton
+          className={clsx('rounded-full p-1 w-[40px] h-[40px]')}
           onClick={record}
         >
-          <MdMic size={22} />
-        </button>
+          {recording ? (
+            <img src="/svg/three-dots.svg" width={22} height={22}></img>
+          ) : (
+            <MdMic size={22} />
+          )}
+        </IconButton>
         <Button
           variant="contained"
           size="large"

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import clsx from 'clsx'
 
 import MessageBubble from '../bubbles/message-bubble'
@@ -6,7 +6,6 @@ import { ChatResponseMetaNewsInfo } from '@/api/chat/types'
 import dayjs from 'dayjs'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
-import i18n from '@/i18n'
 import ShowMoreText from 'react-show-more-text'
 import { utilLang } from '@/utils/language'
 
