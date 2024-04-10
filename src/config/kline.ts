@@ -31,7 +31,7 @@ export type StudyNickname = keyof typeof StudyName
 
 export type StudyFullname = `${StudyName}`
 
-// Supported studies.
+/** Supported studies. */
 export const KLINE_STUDIES: Record<StudyName, Study> = {
   // main chart studies
   [StudyName.VOL]: {
@@ -108,9 +108,44 @@ export const KLINE_STUDIES: Record<StudyName, Study> = {
   // },
 }
 
-/**
- * Chart annotation emoji/text/color config
- */
+/** Supported intervals. */
+export const KLINE_INTERVALS = [
+  {
+    name: '1m',
+    interval: '1',
+  },
+  {
+    name: '5m',
+    interval: '5',
+  },
+  {
+    name: '15m',
+    interval: '15',
+  },
+  {
+    name: '30m',
+    interval: '30',
+  },
+  {
+    name: '1h',
+    interval: '60',
+  },
+  {
+    name: '4h',
+    interval: '240',
+  },
+  {
+    name: '1d',
+    interval: '1D',
+  },
+] as const
+
+// export const KLINE_INTERVAL_MAP: Record<string, > =
+
+export type KLINE_SUPPORTED_INTERVALS =
+  (typeof KLINE_INTERVALS)[number]['interval']
+
+/** Chart annotation emoji/text/color config */
 export const KLINE_ANNOTATION = {
   emojis: {
     overbuy: '⛰️',
@@ -142,37 +177,3 @@ export const KLINE_ANNOTATION = {
       'The price may encounter resistance at this level, leading to a temporary halt in the upward movement or a pullback.',
   },
 } as const
-
-export const KLINE_RESOLUTIONS = [
-  {
-    name: '1m',
-    interval: '1',
-  },
-  {
-    name: '5m',
-    interval: '5',
-  },
-  {
-    name: '15m',
-    interval: '15',
-  },
-  {
-    name: '30m',
-    interval: '30',
-  },
-  {
-    name: '1h',
-    interval: '60',
-  },
-  {
-    name: '4h',
-    interval: '240',
-  },
-  {
-    name: '1d',
-    interval: '1D',
-  },
-] as const
-
-export type KLINE_SUPPORTED_INTERVALS =
-  (typeof KLINE_RESOLUTIONS)[number]['interval']

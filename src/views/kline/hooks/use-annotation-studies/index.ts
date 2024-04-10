@@ -1,5 +1,5 @@
 import { Study, KLINE_STUDIES, StudyName, StudyFullname } from '@/config/kline'
-import { useKLine } from '@/views/kline/hooks/use-kline'
+import { useKLineCreate } from '@/views/kline/hooks/use-kline'
 import { useAnnotations } from '../use-annotation'
 
 import type { GetLastFn, UseAnnotationStudies } from './types'
@@ -14,7 +14,7 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
     onOverBoughtSoldClick,
     onPressureSupportClick,
   } = clickListeners ?? {}
-  const { chart, getChartData, findStudy } = useKLine()
+  const { chart, getChartData, findStudy } = useKLineCreate()
   const {
     createForks,
     createPressureSupport,

@@ -8,34 +8,59 @@ import { useTranslation } from 'react-i18next'
 import Intervals from './components/intervals'
 import Studies from './components/studies'
 import { useStorage } from '@/hooks/use-storage'
-import { useKLineStore } from '@/stores/use-kline-store'
 import { TV_CHART_OVERRIDES } from '@/config/tradingview'
 import { useStudiesAnalysis } from './hooks/use-study-analysis'
-import { useKLine } from '@/views/kline/hooks/use-kline'
+import { useKLineCreate } from '@/views/kline/hooks/use-kline'
+import { useKLineApiFormat } from './hooks/use-kline-api-format'
 
 import type { AnyObject } from '@/types/types'
-import type { TagString } from './hooks/use-kline-api/types'
+import type {
+  CexTag,
+  ChartTokenParams,
+  DexTag,
+  TagString,
+} from './hooks/use-kline-api/types'
 
 const KLine = () => {
   const router = useRouter()
   const { getKLineInterval } = useStorage()
   const chartRef = useRef<HTMLDivElement>(null)
-  const { chart } = useKLineStore()
-  const { createChart, clearChart } = useKLine()
+  const { createChart, clearChart } = useKLineCreate()
   const { redBlackSoldiers, detectPinBars, detectSpiralCandles } =
     useStudiesAnalysis()
   const { t } = useTranslation()
+  const { cexTagToCexParams, dexTagToDexParams } = useKLineApiFormat()
+
+  const parseTagQuery = (tag?: TagString) => {
+    if (!tag) return
+    if (tag.startsWith('cex')) {
+      return cexTagToCexParams(tag as CexTag)
+    }
+    if (tag.startsWith('dex')) {
+      return dexTagToDexParams(tag as DexTag)
+    }
+  }
+
+  // TODO: Waiting for implement
+  const parseQuery = (options: AnyObject<string>) => {
+    return {} as ChartTokenParams
+  }
 
   // Create and initial chart style.
-  const createKLineChart = async () => {
-    const { symbol, interval } = router.query as AnyObject<string | undefined>
-    const tag = router.query.tag as TagString
+  const createCandleChart = async () => {
+    const { tag: tagString, ...restOptions } = router.query
+    const tag = parseTagQuery(tagString as TagString | undefined)
+    const options = parseQuery(restOptions as AnyObject<string>)
 
-    console.log('params interval', interval ?? getKLineInterval() ?? '15m')
-    const chartIns = await createChart(chartRef.current!, {
-      symbol: symbol ?? 'BTC-USDT',
-      interval: interval ?? getKLineInterval() ?? '15m',
-    }).catch((e) => (toast.error(`Create Chart Error: ${e}`), null))
+    if (!tag) {
+      toast.error(`[Create Chart Error]: Invalid tag: ${tag}`)
+      return
+    }
+
+    // If have tag, use tag, or else use options.
+    const chartIns = await createChart(chartRef.current!, tag).catch(
+      (e) => (toast.error(`Create Chart Error: ${e}`), null)
+    )
 
     chartIns?.applyOverrides(TV_CHART_OVERRIDES)
   }
@@ -45,8 +70,9 @@ const KLine = () => {
     // Handle refresh browser, in first render, browser can't get `router.query`,
     // bacause it hasn't been hydration yet, on `router.isReady`, it's ok.
     if (!router.isReady) return
+    if (!chartRef.current) return
 
-    createKLineChart()
+    createCandleChart()
     return clearChart
   }, [router.isReady])
 
