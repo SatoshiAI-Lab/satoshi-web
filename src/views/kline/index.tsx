@@ -14,6 +14,7 @@ import { useStudiesAnalysis } from './hooks/use-study-analysis'
 import { useKLine } from '@/views/kline/hooks/use-kline'
 
 import type { AnyObject } from '@/types/types'
+import type { TagString } from './hooks/use-kline-api/types'
 
 const KLine = () => {
   const router = useRouter()
@@ -28,6 +29,7 @@ const KLine = () => {
   // Create and initial chart style.
   const createKLineChart = async () => {
     const { symbol, interval } = router.query as AnyObject<string | undefined>
+    const tag = router.query.tag as TagString
     const chartIns = await createChart(chartRef.current!, {
       symbol: symbol ?? 'BTC-USDT',
       interval: interval ?? getKLineInterval() ?? '1d',

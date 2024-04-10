@@ -6,7 +6,7 @@ export type DexTag = `dex:${string}:${string}:${string}:${string}`
 // cex:<exchange>:<symbol-quote>:<interval>
 export type CexTag = `cex:${string}:${SymbolStr}:${string}`
 
-export type TagStr = DexTag | CexTag
+export type TagString = DexTag | CexTag
 
 export type WithPromiseExecutor<T> = (
   resolve: (value: T) => void,
@@ -44,7 +44,7 @@ export interface CexParams {
 }
 
 export interface ListenSend {
-  tag?: TagStr
+  tag?: TagString
   exchange?: string
   symbol?: SymbolStr
   interval?: string
@@ -54,14 +54,14 @@ export interface ListenSend {
 }
 
 export interface HistorySend extends ListenSend {
-  tag: TagStr
+  tag: TagString
   start: number
   limit: number
 }
 
 export interface ReceiveBase<T = unknown, M = string> {
   type: string
-  tag?: TagStr
+  tag?: TagString
   status?: 'error' | 'success'
   message?: M
   data?: T

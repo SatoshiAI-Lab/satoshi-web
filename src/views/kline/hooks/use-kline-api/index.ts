@@ -8,7 +8,7 @@ import type {
   ListenSend,
   HistorySend,
   Handler,
-  TagStr,
+  TagString,
 } from './types'
 
 /**
@@ -17,7 +17,7 @@ import type {
  * When you call any method, it will automatically connect to WebSocket.
  */
 export const useKLineApi = () => {
-  const listenTags: TagStr[] = []
+  const listenTags: TagString[] = []
   const ws = useWebSocket<KLineOnEvents, KLineEmitEvents>({
     heartbeat: JSON.stringify({ type: 'ping' }),
   })
