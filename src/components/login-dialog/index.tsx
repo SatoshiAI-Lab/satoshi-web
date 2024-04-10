@@ -176,7 +176,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   classes={{
                     root: 'w-full h-[50px] !rounded-[10px]',
                   }}
-                  onKeyDown={accountKeyDown}
+                  onKeyUp={accountKeyDown}
                   autoFocus={autoFocus}
                   defaultValue={userEmail}
                   onChange={({ target }) => setUserEmail(target.value)}
@@ -208,7 +208,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   inputRef={pswRef}
                   type="password"
                   onChange={({ target }) => setUserPassword(target.value)}
-                  onKeyDown={passwordKeyDown}
+                  onKeyUp={passwordKeyDown}
                 />
               </div>
               <Button

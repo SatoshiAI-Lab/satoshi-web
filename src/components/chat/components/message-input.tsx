@@ -32,9 +32,27 @@ function MessageInput(props: MessageInputProps) {
   const keyboardIsShow = useMobileKeyboard()
   const { question, chatEl, isLoading, setQuestion, setInputKeyup } =
     useChatStore()
+  // Why dynamic maxRows? Adaptation placeholder to long.
+  const [maxRows, setMaxRows] = useState(1)
+  const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
+  const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
+  const [recording, setRecording] = useState(false)
+
+  const record = () => {
+    if (recording) {
+      stopRecording()
+      setRecording(false)
+    } else {
+      startRecording()
+      setRecording(true)
+    }
+  }
 
   const handleEnterSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.shiftKey && e.key === 'Enter') return
+    if (e.shiftKey && e.key === 'Enter') {
+      if (maxRows < 5) setMaxRows(5)
+      return
+    }
     if (e.key !== 'Enter') return
 
     e.preventDefault()
@@ -45,6 +63,13 @@ function MessageInput(props: MessageInputProps) {
       onSend()
       return
     }
+  }
+
+  function handleInputKeyup() {
+    setInputKeyup(true)
+    setTimeout(() => {
+      setInputKeyup(false)
+    }, 10000)
   }
 
   // Keyboard shortcut for focus.
@@ -64,6 +89,10 @@ function MessageInput(props: MessageInputProps) {
     }
   }, [])
 
+  useEffect(() => {
+    if (!question) setMaxRows(1)
+  }, [question])
+
   // mobile virtual keyboard adapation.
   useEffect(() => {
     if (!chatEl || !keyboardIsShow) return
@@ -71,25 +100,6 @@ function MessageInput(props: MessageInputProps) {
     utilDom.scrollToBottom(chatEl)
   }, [keyboardIsShow, chatEl])
 
-  const handleInputKeyup = () => {
-    setInputKeyup(true)
-    setTimeout(() => {
-      setInputKeyup(false)
-    }, 10000)
-  }
-
-  const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
-  const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
-  const [recording, setRecording] = useState(false)
-  const record = () => {
-    if (recording) {
-      stopRecording()
-      setRecording(false)
-    } else {
-      startRecording()
-      setRecording(true)
-    }
-  }
   useEffect(() => {
     if (!recordingBlob) return
     const reader = new FileReader()
@@ -133,11 +143,14 @@ function MessageInput(props: MessageInputProps) {
           </IconButton>
         </motion.div>
         <TextareaAutosize
-          className="bg-transparent pl-1 text-lg transition-all text-black w-full outline-none"
+          className={clsx(
+            'bg-transparent pl-1 text-lg transition-all text-black w-full outline-none',
+            'resize-none placeholder:whitespace-nowrap placeholder:truncate'
+          )}
           value={question}
           placeholder={t('chat.placeholder')}
-          maxRows={3}
           minRows={1}
+          maxRows={maxRows}
           ref={inputRef}
           onKeyDown={handleEnterSend}
           onChange={(e) => setQuestion(e.target.value)}
