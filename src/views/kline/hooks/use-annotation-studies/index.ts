@@ -1,4 +1,9 @@
-import { Study, StudiesName, KLINE_STUDIES } from '@/config/kline'
+import {
+  Study,
+  StudiesName,
+  KLINE_SUPPORTED_STUDIES,
+  StudyName,
+} from '@/config/kline'
 import { useKLine } from '@/views/kline/hooks/use-kline'
 import { useAnnotations } from '../use-annotation'
 
@@ -14,7 +19,6 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
     onOverBoughtSoldClick,
     onPressureSupportClick,
   } = clickListeners ?? {}
-  const { vol, ma, ema, boll, wr, macd, rsi } = KLINE_STUDIES
   const { chart, getChartData, findStudy } = useKLine()
   const {
     createForks,
@@ -29,13 +33,13 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
     onPressureSupportClick,
   })
   const creators = {
-    vol: () => createStudy(vol),
-    ma: () => createStudy(ma),
-    ema: () => createStudy(ema),
-    boll: () => createStudy(boll),
-    wr: () => createStudy(wr, false),
-    macd: () => createStudy(macd, false),
-    rsi: () => createStudy(rsi, false),
+    vol: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.VOL]),
+    ma: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.MA]),
+    ema: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.EMA]),
+    boll: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.BOLL]),
+    wr: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.WR], false),
+    macd: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.MACD], false),
+    rsi: () => createStudy(KLINE_SUPPORTED_STUDIES[StudyName.RSI], false),
   }
 
   const createStudy = (study: Study, needClear = true) => {
@@ -77,14 +81,6 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
         }
       })
     })
-  }
-
-  const hiddenMainStudy = (excludes: StudiesName[] = []) => {
-    const mainStudies = Object.values(KLINE_STUDIES)
-      .filter((s) => s.isMain && !excludes.includes(s.name))
-      .map((s) => s.name)
-
-    hiddenStudy(mainStudies)
   }
 
   const hiddenStudy = (studyNames: StudiesName | StudiesName[]) => {
@@ -460,7 +456,6 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
     createKDJ,
     createStochRSI,
     hiddenStudy,
-    hiddenMainStudy,
     hiddenAllStudy: () => hiddenStudy(Object.values(StudiesName)),
     handleShapeClick,
   }

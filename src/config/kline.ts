@@ -17,7 +17,7 @@ export interface Studies<T = Study> {
 }
 
 export interface Study {
-  label: string
+  label: StudyNickname
   /** Show on main chart */
   isMain?: boolean
   // Below is study props, above is custom props.
@@ -30,9 +30,7 @@ export interface Study {
   options?: CreateStudyOptions
 }
 
-/**
- * Studies name map.
- */
+/** @deprecated Using `StudyName` to instead */
 export enum StudiesName {
   VOL = 'Volume',
   MA = 'MA Cross',
@@ -41,50 +39,61 @@ export enum StudiesName {
   WR = 'Williams %R',
   MACD = 'MACD',
   RSI = 'Relative Strength Index',
-  // KDJ = 'Stochastic',
-  // STOCHRSI = 'Stochastic RSI',
 }
 
-/**
- * Studies config.
- */
-export const KLINE_STUDIES: Studies<Study> = {
-  vol: {
+export enum StudyName {
+  VOL = 'Volume',
+  MA = 'MA Cross',
+  EMA = 'EMA Cross',
+  BOLL = 'Bollinger Bands',
+  WR = 'Williams %R',
+  MACD = 'MACD',
+  RSI = 'Relative Strength Index',
+  // KDJ = 'Stochastic',
+  // StochRSI = 'Stochastic RSI',
+}
+
+export type StudyNickname = keyof typeof StudyName
+
+// Supported studies.
+export const KLINE_SUPPORTED_STUDIES: Record<StudyName, Study> = {
+  // main chart studies
+  [StudyName.VOL]: {
     label: 'VOL',
-    name: StudiesName.VOL,
+    name: StudyName.VOL,
     isMain: true,
   },
-  ma: {
+  [StudyName.MA]: {
     label: 'MA',
-    name: StudiesName.MA,
+    name: StudyName.MA,
     inputs: {
       in_0: 7,
       in_1: 30,
     },
     isMain: true,
   },
-  ema: {
+  [StudyName.EMA]: {
     label: 'EMA',
-    name: StudiesName.EMA,
+    name: StudyName.EMA,
     inputs: {
       in_0: 7,
       in_1: 30,
     },
     isMain: true,
   },
-  boll: {
+  [StudyName.BOLL]: {
     label: 'BOLL',
-    name: StudiesName.BOLL,
+    name: StudyName.BOLL,
     inputs: {
       in_0: 21,
       in_1: 2,
     },
     isMain: true,
   },
-  // Below is subchart studies, above is main chart studies.
-  wr: {
+  // subchart studies.
+  [StudyName.WR]: {
     label: 'WR',
-    name: StudiesName.WR,
+    name: StudyName.WR,
     inputs: {
       in_0: 14,
       in_1: 'open',
@@ -92,18 +101,18 @@ export const KLINE_STUDIES: Studies<Study> = {
       in_3: true,
     },
   },
-  macd: {
+  [StudyName.MACD]: {
     label: 'MACD',
-    name: StudiesName.MACD,
+    name: StudyName.MACD,
     inputs: {
       in_0: 12,
       in_1: 26,
       in_2: 9,
     },
   },
-  rsi: {
+  [StudyName.RSI]: {
     label: 'RSI',
-    name: StudiesName.RSI,
+    name: StudyName.RSI,
     inputs: {
       length: 6,
       smoothingLine: 'SMA',
@@ -113,11 +122,11 @@ export const KLINE_STUDIES: Studies<Study> = {
       'smoothed ma.display': 15,
     },
   },
-  // kdj: {
+  // [StudyName.KDJ]: {
   //   label: 'KDJ',
-  //   name: 'Stochastic', // KDJ also Stochastic
+  //   name: 'Stochastic', // KDJ also known as `Stochastic`
   // },
-  // stochRSI: {
+  // [StudyName.StochRSI]: {
   //   label: 'StochRSI',
   //   name: 'Stochastic RSI',
   // },

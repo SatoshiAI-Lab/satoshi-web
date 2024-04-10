@@ -5,7 +5,13 @@ import StudyDialog from './study-dialog'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useKLineStore } from '@/stores/use-kline-store'
 import { useAnnotationStudies } from '../hooks/use-annotation-studies'
-import { KLINE_ANNOTATION, KLINE_STUDIES, StudiesName } from '@/config/kline'
+import {
+  KLINE_ANNOTATION,
+  KLINE_SUPPORTED_STUDIES,
+  StudiesName,
+  Study,
+  StudyName,
+} from '@/config/kline'
 
 import type { ClickHandlerParams } from '../hooks/use-annotation/types'
 import type { EntityId } from '../../../../public/tradingview/charting_library/charting_library'
@@ -89,7 +95,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     setOwnerStudyId(ownerStudyId)
   }
 
-  const onStudyClick = (study: typeof KLINE_STUDIES.vol) => {
+  const onStudyClick = (study: Study) => {
     const { name, isMain, inputs, overrides, options } = study
     const activeChart = chart?.activeChart()
     const allStudies = activeChart?.getAllStudies()
@@ -113,7 +119,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     // Inexisted, but is main chart.
     activeChart?.createStudy(
       name,
-      name === StudiesName.VOL,
+      name === StudyName.VOL,
       false,
       inputs,
       overrides,
@@ -130,7 +136,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
     chart?.subscribe('onTick', onChartUpdate)
     intervalEvent?.subscribe(null, onChartUpdate)
     hiddenLegendStudy()
-    setActives([KLINE_STUDIES.vol.name])
+    setActives([StudyName.VOL])
   }
 
   useEffect(() => {
@@ -147,7 +153,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
           className
         )}
       >
-        {Object.values(KLINE_STUDIES).map((study, i) => (
+        {Object.values(KLINE_SUPPORTED_STUDIES).map((study, i) => (
           <div
             key={i}
             className={clsx(

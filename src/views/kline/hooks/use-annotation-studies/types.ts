@@ -20,7 +20,6 @@ export interface UseAnnotationStudiesReturn<F = () => Promise<void>> {
   createKDJ: F
   createStochRSI: F
   hiddenAllStudy(): void
-  hiddenMainStudy(excludes?: StudiesName[]): void
   hiddenStudy(studyName: StudiesName | StudiesName[]): void
   handleShapeClick: HandleShapeClick
 }
