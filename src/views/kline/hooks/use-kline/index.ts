@@ -34,7 +34,9 @@ export const useKLine = () => {
       const { symbol, interval } = options
       const theme = isDark ? 'dark' : 'light'
       const locale = (getLang() ?? i18n.language) as LanguageCode
+      const tvInterval = TV_INTERVAL_MAP[interval] as ResolutionString
 
+      console.log('create interval', tvInterval)
       // For static params, should be set in the chart create before.
       setChartEl(container)
       setInterval(interval)
@@ -48,7 +50,7 @@ export const useKLine = () => {
           autosize: true,
           datafeed: datafeeder(),
           // TODO: Optimized the map.
-          interval: TV_INTERVAL_MAP[interval] as ResolutionString,
+          interval: tvInterval,
           timezone: 'Etc/UTC',
           ...TV_CHART_OPTIONS,
         })

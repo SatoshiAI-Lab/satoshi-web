@@ -30,9 +30,11 @@ const KLine = () => {
   const createKLineChart = async () => {
     const { symbol, interval } = router.query as AnyObject<string | undefined>
     const tag = router.query.tag as TagString
+
+    console.log('params interval', interval ?? getKLineInterval() ?? '15m')
     const chartIns = await createChart(chartRef.current!, {
       symbol: symbol ?? 'BTC-USDT',
-      interval: interval ?? getKLineInterval() ?? '1d',
+      interval: interval ?? getKLineInterval() ?? '15m',
     }).catch((e) => (toast.error(`Create Chart Error: ${e}`), null))
 
     chartIns?.applyOverrides(TV_CHART_OVERRIDES)
