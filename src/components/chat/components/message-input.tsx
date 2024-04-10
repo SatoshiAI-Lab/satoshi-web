@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaPaperPlane } from 'react-icons/fa'
 import { AiOutlineLoading } from 'react-icons/ai'
-import { Button, IconButton, InputBase, TextareaAutosize } from '@mui/material'
+import { Button, IconButton, TextareaAutosize } from '@mui/material'
 import { useKey } from 'react-use'
 import clsx from 'clsx'
 import { FaRegCirclePause } from 'react-icons/fa6'
 import { motion } from 'framer-motion'
+import { useAudioRecorder } from 'react-audio-voice-recorder'
+import { MdMic } from 'react-icons/md'
 
 import InputMenu from './input-menu'
 import { useChatStore } from '@/stores/use-chat-store'
@@ -15,9 +17,7 @@ import { utilDom } from '@/utils/dom'
 import { useInputHistory } from '@/hooks/use-input-history'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { chatApi } from '@/api/chat'
-import { useAudioRecorder } from 'react-audio-voice-recorder'
-import { MdMic } from 'react-icons/md'
-import { useChat } from '@/hooks/use-chat'
+
 interface MessageInputProps {
   autofocus?: boolean
   onSend: () => void
@@ -78,8 +78,6 @@ function MessageInput(props: MessageInputProps) {
     }, 10000)
   }
 
-  const onCancelAnswer = () => {}
-
   const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
   const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
   const [recording, setRecording] = useState(false)
@@ -106,6 +104,7 @@ function MessageInput(props: MessageInputProps) {
     }
     // recordingBlob will be present at this point after 'stopRecording' has been called
   }, [recordingBlob])
+
   return (
     <div
       className={clsx(

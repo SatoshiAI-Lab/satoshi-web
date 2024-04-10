@@ -18,8 +18,7 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
   const { t } = useTranslation()
   const { copy } = useClipboard()
 
-  console.log(props);
-  
+  console.log(props)
 
   return (
     <MessageBubble className={clsx('min-w-bubble pt-4 w-[500px]')}>
@@ -110,7 +109,7 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
           <div className="font-bold mt-2">⚙️ {t('ca-secutiry')}</div>
           {Object.keys(props.security).map((key) => (
             <div className="mt-2" key={key}>
-              {key}: {props.security[key]}
+              {key} {props.security[key]}
             </div>
           ))}
         </div>
