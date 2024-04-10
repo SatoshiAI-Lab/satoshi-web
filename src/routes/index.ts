@@ -4,5 +4,5 @@ export enum Routes {
   signin = '/signin',
   signup = '/signup',
 
-  kline = '/kline',
+  kline = '/ohlcv',
 }

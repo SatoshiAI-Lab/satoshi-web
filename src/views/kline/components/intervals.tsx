@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { KLINE_RESOLUTIONS } from '@/config/kline'
 import { useKLineStore } from '@/stores/use-kline-store'
 import { useStorage } from '@/hooks/use-storage'
+import { TV_INTERVAL_MAP } from '@/config/tradingview'
 
 import type { ResolutionString } from '../../../../public/tradingview/charting_library/charting_library'
 
@@ -18,21 +19,29 @@ export const Intervals = (props: IntervalProps) => {
   const { setKLineInterval } = useStorage()
 
   const onIntervalClick = (item: (typeof KLINE_RESOLUTIONS)[number]) => {
-    const { interval: newInterval } = item
+    const { interval: newInterval, name } = item
     if (newInterval === interval) return
+
+    console.log(
+      'switch interval',
+      interval,
+      getResetCacheMap().keys(),
+      TV_INTERVAL_MAP[interval],
+      newInterval
+    )
 
     const tvChart = chart?.activeChart()
     const targetResetId = Array.from(getResetCacheMap().keys()).find((id) =>
-      id.endsWith(interval.toLocaleUpperCase())
+      id.endsWith(TV_INTERVAL_MAP[interval].toUpperCase())
     )
-    console.log('click', interval, getResetCacheMap().keys())
+
     const resetChartCache = getResetCacheMap().get(targetResetId ?? '')
     if (resetChartCache) {
       resetChartCache()
       tvChart?.resetData()
       tvChart?.setResolution(newInterval as ResolutionString)
-      setInterval(newInterval)
-      setKLineInterval(newInterval)
+      setInterval(name)
+      setKLineInterval(name)
       return
     }
 
@@ -40,7 +49,7 @@ export const Intervals = (props: IntervalProps) => {
   }
 
   useEffect(() => {
-    console.log('interval', interval)
+    console.log('init interval', interval)
   }, [])
 
   return (

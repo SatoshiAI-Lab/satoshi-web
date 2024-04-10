@@ -167,7 +167,7 @@ export const TV_INTERVAL_MAP = {
   '30m': '30',
   '1h': '60',
   '4h': '240',
-  '8h': '480',
+  '1d': '1D',
 } as const
 
 /**
