@@ -13,8 +13,8 @@ export const useChatMonitorMsg = () => {
   const { userInfo, isLogined } = useUserStore()
   const { setUnreadMessage } = useChatStore()
   const { addMonitorMessage } = useChat()
-  const { setSocket } = useChatStore()
-  const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
+  const { socket, setSocket } = useChatStore()
+  const baseURL = `${URL_CONFIG.satoshiMonitorApi}ws/chat/`
 
   const { connect, on } = useWebSocket({
     heartbeat: JSON.stringify({ type: 'ping' }),
@@ -29,12 +29,15 @@ export const useChatMonitorMsg = () => {
 
     setSocket(await connect(wssUrl))
 
-    on('message', () => {})
-
     on('event', ({ data }) => {
       console.log(`Keyup: ${useChatStore.getState().inputKeyup}`)
       console.log(`readAnswer: ${useChatStore.getState().readAnswer}`)
       console.log(`waitAnswer: ${useChatStore.getState().waitAnswer}`)
+
+      if (!isLogined) {
+        socket?.close()
+        return
+      }
 
       // 1. Within 20 seconds after the input is in the state of Keyup
       // 2. Within 20 seconds after the latest question answer
@@ -60,6 +63,7 @@ export const useChatMonitorMsg = () => {
     if (isLogined) {
       inithMonitorReq()
     } else {
+      socket?.close()
     }
   }, [isLogined])
 }

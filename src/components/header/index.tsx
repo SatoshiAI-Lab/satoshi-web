@@ -95,12 +95,12 @@ function Header() {
 
   const onLogout = () => {
     socket?.close(1000)
-    if (socket?.CLOSED == 3) {
-      logout()
-      setMessage([])
-      handleCreatClose()
-      toast.success(t('logout.success'))
-    }
+    // if (socket?.CLOSED == 3) {
+    logout()
+    setMessage([])
+    handleCreatClose()
+    toast.success(t('logout.success'))
+    // }
   }
 
   const changeStatus = (status: boolean) => {

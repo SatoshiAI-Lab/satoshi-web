@@ -83,6 +83,8 @@ export const MonitorWallet = ({ data }: Props) => {
       content: addressList,
     })
       .then(() => {
+        setName('')
+        setAddress('')
         toast.success(t('monitor.successful'))
       })
       .catch(() => {
