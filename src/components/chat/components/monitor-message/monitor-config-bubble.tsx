@@ -31,7 +31,7 @@ export const MonitorConfigBubble = ({ msg }: Props) => {
   }
 
   if (msg.data_type === DataType.TradeInfo) {
-    return <WalletBubble data={msg.msg as unknown as ChatResponseMetaWallet} />
+    return <WalletBubble data={msg as unknown as ChatResponseMetaWallet} />
   }
 
   if (msg.data_type === DataType.TwitterInfo) {

@@ -78,7 +78,7 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
       <div className="flex items-center mb-2">
         <span className="font-bold">{t('ca')}:</span>{' '}
         <a
-          href={`${link.solscan}${props.address}`}
+          href={`${link.solscan}account/${props.address}`}
           target="_blank"
           className="text-primary ml-1 underline"
         >

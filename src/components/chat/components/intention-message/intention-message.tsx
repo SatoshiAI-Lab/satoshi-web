@@ -11,6 +11,8 @@ import CreateTokenBubble from '../bubbles/create-token-bubble'
 import { TokenDetailBubble } from './token-detail-bubble'
 import { ExMonitorBubble } from './ex-monitor-bubble'
 import { PoolMonitorBubble } from './pool-monitor-bubble'
+import { MonitorWalletList } from '@/components/monitor/monitor-wallet-list'
+import { MonitorWalletListBubble } from './monitor-wallet-list-bubble'
 
 interface Props {
   msg: Message
@@ -24,11 +26,15 @@ export const IntentMessage = ({ msg }: Props) => {
     twitterList,
     moniotrWallet,
     monitorWalletFail,
+    twitterCancelList,
     createTokenNoWallet,
     createTokenHaveWallet,
     tokenDetail,
     monitorExList,
+    cancelExList,
     monitorPoolList,
+    poolCancelList,
+    walletCancelList,
   } = CHAT_CONFIG.metadataType
 
   const metaType = msg?.msgs?.type!
@@ -49,7 +55,7 @@ export const IntentMessage = ({ msg }: Props) => {
   }
 
   // twitter list
-  if (metaType == twitterList) {
+  if (metaType == twitterList || metaType == twitterCancelList) {
     return <TwitterListBubble></TwitterListBubble>
   }
 
@@ -63,6 +69,11 @@ export const IntentMessage = ({ msg }: Props) => {
     return <MonitorAddressBubble msg={msg.msgs!}></MonitorAddressBubble>
   }
 
+  // Unmonitor wallet
+  if (metaType == walletCancelList) {
+    return <MonitorWalletListBubble></MonitorWalletListBubble>
+  }
+
   // Create token
   if (metaType === createTokenNoWallet || metaType == createTokenHaveWallet) {
     return <CreateTokenBubble hasWallet={metaType === createTokenHaveWallet} />
@@ -73,13 +84,13 @@ export const IntentMessage = ({ msg }: Props) => {
     return <TokenDetailBubble msg={msg.msgs!}></TokenDetailBubble>
   }
 
-  // token detail
-  if (metaType == monitorExList) {
+  // monitor CEX
+  if (metaType == monitorExList || metaType == cancelExList) {
     return <ExMonitorBubble></ExMonitorBubble>
   }
 
-  // token detail
-  if (metaType == monitorPoolList) {
+  // monitor new Pool
+  if (metaType == monitorPoolList || metaType == poolCancelList) {
     return <PoolMonitorBubble></PoolMonitorBubble>
   }
 

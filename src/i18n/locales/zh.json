@@ -145,7 +145,7 @@
   "no-login": "请先登录/注册",
   "monitor.address.list": "监控地址列表",
   "address.invaild": "请输入正确的地址",
-  "walletbubble.title": "发生钱包交易",
+  "walletbubble.title": "$1发生钱包交易",
   "monitor.wallet.bubble.text1": "成功监控到该钱包",
   "monitor.wallet.bubble.text2": "该钱包进行的任何链上交易，你将收到通知",
   "monitor.wallet.bubble.text4": "「监控-监控钱包」",
@@ -227,5 +227,11 @@
   "mint-error": "但是在铸造过程中出现了错误，您可以：",
   "continue": "继续铸造",
   "back": "返回",
-  "pools.config.error": "最小值不能超过最大值"
+  "pools.config.error": "最小值不能超过最大值",
+  "trace.address.list": "地址列表",
+  "wallet.track.error": "请输入正确的地址",
+  "name": "名字",
+  "remove.monitor.successful": "删除监控成功！",
+  "remove.monitor.error": "删除监控失败",
+  "no.monitor.wallet": "暂无监控地址"
 }

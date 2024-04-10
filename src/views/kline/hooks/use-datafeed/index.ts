@@ -53,6 +53,9 @@ export const useDatafeed = () => {
             symbolInfo,
             interval as ResolutionString
           )
+          
+          console.log(bars, lastBar)
+          
           const newPricescale = priceToPricescale(lastBar.open)
 
           symbolInfo.pricescale = newPricescale

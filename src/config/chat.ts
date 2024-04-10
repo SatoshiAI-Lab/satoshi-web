@@ -92,8 +92,11 @@ export const CHAT_CONFIG = {
     createTokenHaveWallet: 'create_token_have_wallet',
     transactionConfirmBuy: 'transaction_confirm_buy',
     monitorExList: 'subscript_announcement_list',
+    cancelExList: 'announcement_cancel_list',
     monitorPoolList: 'subscript_pool_list',
+    poolCancelList: 'pool_cancel_list',
     twitterCancelList: 'twitter_cancel_list',
+    walletCancelList: 'wallet_cancel_list',
   },
 
   intentTxToken: ['transaction_confirm_buy', 'transaction_confirm_sell'],
@@ -106,6 +109,8 @@ export const CHAT_CONFIG = {
 
   hiddenIntentText: [
     'subscript_twitter_list',
+    'pool_cancel_list',
+    'twitter_cancel_list',
     'delete_name_wallet_list',
     'subscript_wallet_address_success',
     'subscript_announcement_list',

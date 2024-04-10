@@ -1,8 +1,20 @@
-import { Button, CircularProgress, OutlinedInput } from '@mui/material'
-import { IoCopyOutline, IoEyeOutline } from 'react-icons/io5'
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  IconButton,
+  OutlinedInput,
+} from '@mui/material'
+import {
+  IoCloseOutline,
+  IoCopyOutline,
+  IoEyeOutline,
+  IoRemoveCircle,
+  IoRemoveOutline,
+} from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 
-import type { MonitorConfigData } from '@/api/monitor/type'
+import type { AddressData, MonitorConfigData } from '@/api/monitor/type'
 import { useState } from 'react'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { MonitorConfig } from '@/config/monitor'
@@ -10,18 +22,23 @@ import toast from 'react-hot-toast'
 import { utilFmt } from '@/utils/format'
 import clsx from 'clsx'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { DialogHeader } from '../dialog-header'
+import { useShow } from '@/hooks/use-show'
+import { MonitorWalletList } from './monitor-wallet-list'
 
 interface Props {
   data?: MonitorConfigData
 }
 
 export const MonitorWallet = ({ data }: Props) => {
-  const { t } = useTranslation()
   const [address, setAddress] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
-  const { configData, setConfig } = useMonitorStore()
   const [validateError, setValidateError] = useState<string[]>([])
+
+  const { t } = useTranslation()
+  const { configData, setConfig } = useMonitorStore()
+  const { show, open, hidden } = useShow()
 
   const addressList = configData?.trade?.content ?? []
 
@@ -57,7 +74,7 @@ export const MonitorWallet = ({ data }: Props) => {
     addressList.unshift({
       address,
       name: name || address.slice(-4),
-      chain: 'SOL',
+      chain: 'Solana',
     })
 
     setLoading(true)
@@ -67,6 +84,9 @@ export const MonitorWallet = ({ data }: Props) => {
     })
       .then(() => {
         toast.success(t('monitor.successful'))
+      })
+      .catch(() => {
+        toast.error(t('wallet.track.error'))
       })
       .finally(() => {
         setLoading(false)
@@ -125,36 +145,19 @@ export const MonitorWallet = ({ data }: Props) => {
         <div>{t('monitor.wallet.text2')}</div>
         <div>{t('monitor.wallet.text3')}</div>
       </div>
-
-      {addressList.length !== 0 ? (
-        <>
-          <div className="mt-5 font-bold">{t('monitor.address.list')}</div>
-          <div className="grid grid-cols-[80px_auto] mt-2 font-bold">
-            <span>名字</span>
-            <span>地址</span>
-          </div>
-          {addressList.map((data, i) => (
-            <div
-              className={clsx(
-                'grid grid-cols-[80px_auto] py-2 border-t',
-                i === addressList.length - 1 ? '!pb-0' : '',
-                i === 0 ? '!mt-2' : ''
-              )}
-            >
-              <span className="text-">{data.name}</span>
-              <CopyToClipboard
-                text={data.address}
-                onCopy={() => toast.success(t('copy-success'))}
-              >
-                <span className="flex items-center text-gray-500 hover:text-gray-700 cursor-pointer">
-                  {utilFmt.addr(data.address)}
-                  <IoCopyOutline className="ml-1"></IoCopyOutline>
-                </span>
-              </CopyToClipboard>
-            </div>
-          ))}
-        </>
-      ) : null}
+      <div
+        className="!mt-2 text-primary underline cursor-pointer !rounded-full"
+        onClick={open}
+      >
+        {t('trace.address.list')}
+      </div>
+      <Dialog open={show} onClose={hidden}>
+        <DialogHeader
+          text={t('trace.address.list')}
+          onClose={hidden}
+        ></DialogHeader>
+        <MonitorWalletList></MonitorWalletList>
+      </Dialog>
     </div>
   )
 }

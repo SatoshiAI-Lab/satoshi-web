@@ -28,17 +28,23 @@ const walletMenu = [
     disable: false,
   },
   {
-    id: 'evm',
-    title: 'EVM Wallet',
-    content: 'Support ETH/BSC/Blast/ARB',
-    disable: true,
-  },
-  {
-    id: 'icp',
-    title: 'ICP Wallet',
+    id: 'bera',
+    title: 'Berachain Wallet',
     content: '',
     disable: true,
   },
+  // {
+  //   id: 'evm',
+  //   title: 'EVM Wallet',
+  //   content: 'Support ETH/BSC/Blast/ARB',
+  //   disable: true,
+  // },
+  // {
+  //   id: 'icp',
+  //   title: 'ICP Wallet',
+  //   content: '',
+  //   disable: true,
+  // },
 ]
 
 const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
