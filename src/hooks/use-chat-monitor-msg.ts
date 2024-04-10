@@ -65,5 +65,5 @@ export const useChatMonitorMsg = () => {
     } else {
       socket?.close()
     }
-  }, [isLogined])
+  }, [isLogined, userInfo?.id])
 }

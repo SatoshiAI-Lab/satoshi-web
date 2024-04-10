@@ -49,7 +49,9 @@ export const MonitorWalletList = ({ className }: Props) => {
   return (
     <div className="px-10 pb-5 max-h-[300px] overflow-y-scroll">
       {addressList.length === 0 ? (
-        <div className='text-center text-gray-500 my-5'>{t('no.monitor.wallet')}</div>
+        <div className="text-center text-gray-500 my-5">
+          {t('no.monitor.wallet')}
+        </div>
       ) : (
         <div className={clsx('', className)}>
           <div className="grid grid-cols-[80px_150px_80px] mt-2 font-bold">
@@ -87,15 +89,7 @@ export const MonitorWalletList = ({ className }: Props) => {
             </div>
           ))}
         </div>
-<<<<<<< HEAD
-      ) : null}
-    </>
-  )
-}
-=======
       )}
     </div>
   )
 }
-// CHxHUpdXpGBQGPN7YaT9Qt914c6v8Mt1HAPuQ9nUVos4
->>>>>>> leo
