@@ -14,6 +14,7 @@ import clsx from 'clsx'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { IoCloseOutline } from 'react-icons/io5'
+import toast from 'react-hot-toast'
 
 import PercentTag from '../percent-tag'
 import TokenSearcher from '../token-searcher'
@@ -23,6 +24,7 @@ import { ListToken, TokenId, TokenStatus, TokenType } from '@/api/token/types'
 import { useShow } from '@/hooks/use-show'
 import { Routes } from '@/routes'
 import { utilFmt } from '@/utils/format'
+import { useUserStore } from '@/stores/use-user-store'
 
 export const Favorites = memo((props: React.ComponentProps<'div'>) => {
   const { className } = props
@@ -31,6 +33,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
     useFavorites()
   const router = useRouter()
   const { show, open, hidden } = useShow()
+  const { isLogined } = useUserStore()
 
   const onTokenClick = (token: ListToken) => {
     router.push({
@@ -50,6 +53,14 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
       ids: [id],
       status: TokenStatus.Cancel,
     })
+  }
+
+  const onAddFavorite = () => {
+    if (!isLogined) {
+      toast.error(t('no-login'))
+      return
+    }
+    open()
   }
 
   return (
@@ -78,7 +89,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
                 'text-lg cursor-pointer text-black dark:text-white',
                 'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
               )}
-              onClick={open}
+              onClick={onAddFavorite}
             />
           </motion.div>
         </div>

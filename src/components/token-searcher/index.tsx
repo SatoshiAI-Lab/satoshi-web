@@ -67,7 +67,7 @@ const TokenSearcher = (props: TokenSearcherProps) => {
     clearSearch()
   }
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       onSearch()
     }
@@ -131,7 +131,7 @@ const TokenSearcher = (props: TokenSearcherProps) => {
           size="small"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onKeyDown={onKeyDown}
+          onKeyUp={onKeyUp}
         />
       </div>
       <DialogContent classes={{ root: '!p-0' }}>
