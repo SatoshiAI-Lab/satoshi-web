@@ -35,10 +35,9 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
   const [walletOpen, setWalletOpen] = useState(false)
   const changeScene = useDebounce(changeBackground)
   const { isMute, setIsMute } = useLive2DStore()
-  const { getIsMuted, setIsMuted } = useStorage()
+  const { setIsMuted } = useStorage()
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
   const { setShow } = useNeedLoginStore()
-
   const { getWallets } = useWalletStore()
   const { isLogined } = useUserStore()
 
@@ -114,7 +113,8 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
               onMouseLeave={() => setHoverIdx(null)}
               className={clsx(
                 'flex items-center gap-1 transition-all mr-8',
-                'cursor-pointer hover:drop-shadow-chat-menu max-sm:mr-4'
+                'cursor-pointer max-sm:mr-4',
+                'hover:drop-shadow-bold-dark dark:hover:drop-shadow-bold'
               )}
               onClick={item.onClick}
             >
