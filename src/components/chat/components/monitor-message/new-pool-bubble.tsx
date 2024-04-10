@@ -1,24 +1,22 @@
 import React from 'react'
 import clsx from 'clsx'
-import { MdOutlineContentCopy } from 'react-icons/md'
 import { FaTwitter } from 'react-icons/fa'
 import { FaTelegramPlane } from 'react-icons/fa'
 import { GrLanguage } from 'react-icons/gr'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 
-import MessageBubble from './message-bubble'
+import MessageBubble from '../bubbles/message-bubble'
 import { IconButton } from '@mui/material'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { ChatResponseMetaNewPool } from '@/api/chat/types'
 import { link } from '@/config/link'
+import { IoCopyOutline } from 'react-icons/io5'
 
 const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
   const { t } = useTranslation()
   const { copy } = useClipboard()
-
-  console.log(props)
 
   return (
     <MessageBubble className={clsx('min-w-bubble pt-4 w-[500px]')}>
@@ -86,7 +84,7 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
         >
           {utilFmt.addr(props.address)}
         </a>
-        <MdOutlineContentCopy
+        <IoCopyOutline
           className="ml-3 cursor-pointer"
           onClick={() => copy(props.address)}
         />
@@ -105,24 +103,28 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
       </div>
 
       <div className="grid grid-cols-2">
-        <div>
-          <div className="font-bold mt-2">⚙️ {t('ca-secutiry')}</div>
-          {Object.keys(props.security).map((key) => (
-            <div className="mt-2" key={key}>
-              {key} {props.security[key]}
-            </div>
-          ))}
-        </div>
-        <div className="ml-4">
-          <div className="font-bold mt-2">🏦 {t('top-holders')}</div>
-          {Object.keys(props.top_holders).map((key) => (
-            <div className="mt-2" key={key}>
-              {key}: {props.top_holders[key]}
-            </div>
-          ))}
-          <div></div>
-        </div>
-        {props.score.score && (
+        {!!props.security && (
+          <div>
+            <div className="font-bold mt-2">⚙️ {t('ca-secutiry')}</div>
+            {Object.keys(props.security).map((key) => (
+              <div className="mt-2" key={key}>
+                {key}: {props.security[key]}
+              </div>
+            ))}
+          </div>
+        )}
+        {!!props.top_holders && (
+          <div className="ml-4">
+            <div className="font-bold mt-2">🏦 {t('top-holders')}</div>
+            {Object.keys(props.top_holders).map((key) => (
+              <div className="mt-2" key={key}>
+                {key}: {props.top_holders[key]}
+              </div>
+            ))}
+            <div></div>
+          </div>
+        )}
+        {!!props.score?.score && (
           <div className="my-2">
             <div className="font-bold mt-2">
               🧠 {t('score')}: {t(props.score.score)}

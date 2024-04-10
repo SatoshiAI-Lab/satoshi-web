@@ -58,6 +58,7 @@ export interface PoolData {
   min: number | null
   max: number | null
   subscribed: boolean
+  logo: string
 }
 export interface TwitterList {
   twitter_id: string

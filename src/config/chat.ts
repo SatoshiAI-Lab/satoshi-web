@@ -44,6 +44,7 @@ export const CHAT_CONFIG = {
       'do_not_support_buy_token',
       'do_not_support_sell_token',
       'subscript_announcement',
+      'subscript_stream',
       'subscript_cancel',
       'do_not_have_token',
     ],
@@ -92,6 +93,7 @@ export const CHAT_CONFIG = {
     transactionConfirmBuy: 'transaction_confirm_buy',
     monitorExList: 'subscript_announcement_list',
     monitorPoolList: 'subscript_pool_list',
+    twitterCancelList: 'twitter_cancel_list',
   },
 
   intentTxToken: ['transaction_confirm_buy', 'transaction_confirm_sell'],

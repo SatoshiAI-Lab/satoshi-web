@@ -1,27 +1,25 @@
 import React from 'react'
 import clsx from 'clsx'
 
-import MessageBubble from './message-bubble'
+import MessageBubble from '../bubbles/message-bubble'
 import { ChatResponseMetaAnnounceMent } from '@/api/chat/types'
 import dayjs from 'dayjs'
 import { Avatar } from '@mui/material'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
 import i18n from '@/i18n'
+import { utilLang } from '@/utils/language'
 
-const ExchangeAnnouncementBubble = ({
-  title,
-  created_at,
-  source_logo,
-  source_name,
-  url,
-}: ChatResponseMetaAnnounceMent) => {
-  const { language } = i18n
-  const currentTitle =
-    title[language] || Object.values(title).find((v) => v) || ''
+interface Props {
+  data: ChatResponseMetaAnnounceMent
+}
+
+const ExchangeAnnouncementBubble = ({ data }: Props) => {
+  const { title, created_at, source_logo, source_name, url } = data
+  const currentTitle = utilLang.getContent(title)
 
   const originLinkButton = () => {
-    const link = url[language] || Object.values(url).find((v) => v)
+    const link = utilLang.getContent(url)
     if (link) {
       return (
         <a href={link} target="_blank" className="text-primary w-fit">
