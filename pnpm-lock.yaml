@@ -17,12 +17,6 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^5.28.12
     version: 5.28.14(react@18.2.0)
-  '@types/bignumber.js':
-    specifier: ^5.0.0
-    version: 5.0.0
-  '@types/lodash':
-    specifier: ^4.17.0
-    version: 4.17.0
   bignumber.js:
     specifier: ^9.1.2
     version: 9.1.2
@@ -112,9 +106,15 @@ dependencies:
     version: 4.5.2(@types/react@18.2.73)(react@18.2.0)
 
 devDependencies:
+  '@types/bignumber.js':
+    specifier: ^5.0.0
+    version: 5.0.0
   '@types/hast':
     specifier: ^2.0.0
     version: 2.3.10
+  '@types/lodash':
+    specifier: ^4.17.0
+    version: 4.17.0
   '@types/node':
     specifier: ^20
     version: 20.12.2
@@ -1088,7 +1088,7 @@ packages:
     deprecated: This is a stub types definition for bignumber.js (https://github.com/MikeMcl/bignumber.js/). bignumber.js provides its own type definitions, so you don't need @types/bignumber.js installed!
     dependencies:
       bignumber.js: 9.1.2
-    dev: false
+    dev: true
 
   /@types/css-font-loading-module@0.0.7:
     resolution: {integrity: sha512-nl09VhutdjINdWyXxHWN/w9zlNCfr60JUqJbd24YXUuCwgeL0TpFSdElCwb6cxfB6ybE19Gjj4g0jsgkXxKv1Q==}
@@ -1125,7 +1125,7 @@ packages:
 
   /@types/lodash@4.17.0:
     resolution: {integrity: sha512-t7dhREVv6dbNj0q17X12j7yDG4bD/DHYX7o5/DbDxobP0HnGPgpRz2Ej77aL7TZT3DSw13fqUTj8J4mMnqa7WA==}
-    dev: false
+    dev: true
 
   /@types/mdast@3.0.15:
     resolution: {integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==}
@@ -1295,7 +1295,6 @@ packages:
 
   /bignumber.js@9.1.2:
     resolution: {integrity: sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==}
-    dev: false
 
   /binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
