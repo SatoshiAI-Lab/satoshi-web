@@ -32,8 +32,6 @@ function MessageInput(props: MessageInputProps) {
   const keyboardIsShow = useMobileKeyboard()
   const { question, chatEl, isLoading, setQuestion, setInputKeyup } =
     useChatStore()
-  // Why dynamic maxRows? Adaptation placeholder to long.
-  const [maxRows, setMaxRows] = useState(1)
   const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
   const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
   const [recording, setRecording] = useState(false)
@@ -49,14 +47,10 @@ function MessageInput(props: MessageInputProps) {
   }
 
   const handleEnterSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.shiftKey && e.key === 'Enter') {
-      if (maxRows < 5) setMaxRows(5)
-      return
-    }
+    if (e.shiftKey && e.key === 'Enter') return
     if (e.key !== 'Enter') return
 
     e.preventDefault()
-
     if (isLoading) return
     // Although is deprecated, but very useful.
     if (e.keyCode === 13) {
@@ -88,10 +82,6 @@ function MessageInput(props: MessageInputProps) {
       inputRef?.current?.focus()
     }
   }, [])
-
-  useEffect(() => {
-    if (!question) setMaxRows(1)
-  }, [question])
 
   // mobile virtual keyboard adapation.
   useEffect(() => {
@@ -150,7 +140,7 @@ function MessageInput(props: MessageInputProps) {
           value={question}
           placeholder={t('chat.placeholder')}
           minRows={1}
-          maxRows={maxRows}
+          maxRows={5}
           ref={inputRef}
           onKeyDown={handleEnterSend}
           onChange={(e) => setQuestion(e.target.value)}
