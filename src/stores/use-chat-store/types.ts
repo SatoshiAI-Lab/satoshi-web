@@ -20,6 +20,7 @@ export interface Message {
   className?: string
   isLoadingMsg?: boolean
   isInteractive?: boolean
+  isMonitor?: boolean
   isIntention?: boolean
   rawData?: ChatResponseAnswer
   msgId?: string

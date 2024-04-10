@@ -26,7 +26,7 @@ export const TokenDetailBubble = (props: Props) => {
   const priceCange = Number(data.price_change)
 
   return (
-    <MessageBubble>
+    <MessageBubble className='!w-[360px]'>
       <div className="flex">
         <Avatar src={data.logo} alt="Logo" sx={{ width: 30, height: 30 }}>
           {data.name.slice(0, 1)}

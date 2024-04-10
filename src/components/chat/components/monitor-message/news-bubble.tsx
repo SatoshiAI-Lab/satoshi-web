@@ -1,25 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
 
-import MessageBubble from './message-bubble'
+import MessageBubble from '../bubbles/message-bubble'
 import { ChatResponseMetaNewsInfo } from '@/api/chat/types'
 import dayjs from 'dayjs'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
 import i18n from '@/i18n'
 import ShowMoreText from 'react-show-more-text'
+import { utilLang } from '@/utils/language'
 
-const NewsBubble = ({
-  content,
-  created_at,
-  title,
-  source,
-}: ChatResponseMetaNewsInfo) => {
-  const { language } = i18n
-  const currentContent =
-    content[language] || Object.values(content).find((v) => v) || ''
-  const currentTitle =
-    title[language] || Object.values(title).find((v) => v) || ''
+interface Props {
+  data: ChatResponseMetaNewsInfo
+}
+
+const NewsBubble = ({ data }: Props) => {
+  const { content, created_at, title, source } = data
+  const currentContent = utilLang.getContent(content)
+  const currentTitle = utilLang.getContent(title)
   const originLinkButton = () => {
     if (source) {
       return (
@@ -28,6 +26,7 @@ const NewsBubble = ({
         </a>
       )
     }
+
     return (
       <button
         onClick={() => toast(t('bubble.nolink'))}

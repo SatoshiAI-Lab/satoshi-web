@@ -226,5 +226,6 @@
   "hash": "哈希",
   "mint-error": "但是在铸造过程中出现了错误，您可以：",
   "continue": "继续铸造",
-  "back": "返回"
+  "back": "返回",
+  "pools.config.error": "最小值不能超过最大值"
 }
