@@ -30,11 +30,7 @@ export const TokenRow = (props: TokensProps) => {
   const { t } = useTranslation()
 
   const cellCls = (...inputs: Parameters<typeof clsx>) => {
-    return clsx(
-      // '!text-base',
-      !showBorder && '!border-b-transparent',
-      ...inputs
-    )
+    return clsx(!showBorder && '!border-b-transparent', ...inputs)
   }
 
   return (
@@ -93,12 +89,13 @@ export const TokenRow = (props: TokensProps) => {
                 src={token.logoUrl}
                 sx={{ width: 45, height: 45, bgcolor: 'black' }}
               >
-                <div className="text-base">{token.name ?? 'Null'}</div>
+                <div className="text-base text-center leading-none">
+                  {token.symbol ?? 'Null'}
+                </div>
               </Avatar>
               <div className="flex flex-col justify-between ml-2">
                 <span className="text-primary">{token.symbol}</span>
                 <div className="flex items-center">
-                  {/* TODO: should be chain logo & name */}
                   <Avatar
                     src={token.chain_logo}
                     sx={{ width: 20, height: 20 }}

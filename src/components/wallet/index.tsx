@@ -1,3 +1,4 @@
+import { FC, createElement, useEffect, useState } from 'react'
 import {
   Button,
   CircularProgress,
@@ -6,39 +7,41 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material'
-import { FC, createElement, useEffect, useState } from 'react'
-import { WalletDialogProps } from './types'
 import { AiOutlineSafety, AiOutlineWallet } from 'react-icons/ai'
-import { WalletCard } from './wallet-card'
+import { WalletCard } from './components/wallet-card'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
 
-import { WalletExportKeyPop } from './walletpop-exportkey'
-import { WalletRenamePop } from './walletpop-rename'
-import { WalletImportKeyPop } from './walletpop-importkey'
-import { WalletDeletePop } from './walletepop-delete'
+import { WalletExportKeyPop } from './components/walletpop-exportkey'
+import { WalletRenamePop } from './components/walletpop-rename'
+import { WalletImportKeyPop } from './components/walletpop-importkey'
+import { WalletDeletePop } from './components/walletepop-delete'
 import { useWalletStore } from '@/stores/use-wallet-store'
+import { WalletPlatform } from '@/api/wallet/params'
+import { WalletChainSelect } from './components/wallet-chain-select'
+
+import type { WalletDialogProps } from './types'
 
 const walletMenu = [
   {
-    id: 'solana',
+    id: WalletPlatform.SOL,
     title: 'Solana Wallet',
     content: '',
     disable: false,
   },
   {
-    id: 'bera',
+    id: WalletPlatform.EVM,
+    title: 'EVM Wallet',
+    content: 'Support: ETH/OP/BSC/BLAST/ARB',
+    disable: false,
+  },
+  {
+    id: WalletPlatform.BEAR,
     title: 'Berachain Wallet',
     content: '',
     disable: true,
   },
-  // {
-  //   id: 'evm',
-  //   title: 'EVM Wallet',
-  //   content: 'Support ETH/BSC/Blast/ARB',
-  //   disable: true,
-  // },
   // {
   //   id: 'icp',
   //   title: 'ICP Wallet',
@@ -79,9 +82,9 @@ const Wallet: FC<WalletDialogProps> = ({
   const [currentPop, setCurrentPop] = useState<number>(0)
   const [popOpen, setPopOpen] = useState(false)
 
-  const createWalletFunc = (coin_id: string) => {
+  const onCreateWallet = (walletType: WalletPlatform) => {
     setAnchorEl(null)
-    createWallet(coin_id).then(async () => {
+    createWallet(walletType).then(async () => {
       const result = await getWallets()
       if (!result) return
       toast.success(t('wallet.createsuccess'))
@@ -152,15 +155,8 @@ const Wallet: FC<WalletDialogProps> = ({
               {showButtons && (
                 <div className="flex gap-3 mt-[22px] mb-[13px]">
                   {/* Create Wallet Menu */}
-
                   <div>
                     <Button
-                      id="basic-button"
-                      aria-controls={
-                        openCreateWallet ? 'basic-menu' : undefined
-                      }
-                      aria-haspopup="true"
-                      aria-expanded={openCreateWallet ? 'true' : undefined}
                       onClick={handleCreateClick}
                       startIcon={<AiOutlineWallet />}
                       classes={{
@@ -170,26 +166,22 @@ const Wallet: FC<WalletDialogProps> = ({
                       {t('wallet.createnewwallet')}
                     </Button>
                     <Menu
-                      id="basic-menu"
                       anchorEl={anchorEl}
                       open={openCreateWallet}
                       onClose={handleCreatClose}
-                      MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                      }}
-                      classes={{
-                        list: '!p-[0px]',
-                      }}
+                      classes={{ list: '!p-[0px]' }}
                     >
                       {walletMenu.map((item) => (
                         <MenuItem
                           disabled={item.disable}
                           key={item.id}
                           className="w-[295px] h-[65px] flex flex-col !items-start !justify-center"
-                          onClick={() => createWalletFunc(item.id)}
+                          onClick={() => onCreateWallet(item.id)}
                         >
-                          <div className="text-[16px]">{item.title}</div>
-                          <div className="text-[14px]">{item.content}</div>
+                          <div className="text-base">{item.title}</div>
+                          <div className="text-sm text-gray-500">
+                            {item.content}
+                          </div>
                         </MenuItem>
                       ))}
                     </Menu>
@@ -215,6 +207,7 @@ const Wallet: FC<WalletDialogProps> = ({
               <AiOutlineSafety size={162} color="#D4D4D4" />
             </div>
           </div>
+          <WalletChainSelect />
           {/* Wallets list */}
           <div className="flex flex-col h-[440px] max-h-[440px] overflow-scroll gap-[25px] mt-[20px]">
             {(wallets?.length &&

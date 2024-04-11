@@ -34,7 +34,7 @@ export const MarkdownParser: React.FC<MarkdownParserProps> = (props) => {
 
   return (
     <ReactMarkdown
-      children={formatLink(children)}
+      children={children}
       // `remarkMath` may cause market rendering to be repeated
       remarkPlugins={[remarkGfm]} // GFM: GitHub Flavored Markdown
       // @ts-ignore

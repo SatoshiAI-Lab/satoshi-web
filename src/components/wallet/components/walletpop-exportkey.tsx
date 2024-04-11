@@ -5,7 +5,7 @@ import { t } from 'i18next'
 import toast from 'react-hot-toast'
 
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { WalletDialogProps } from './types'
+import { WalletDialogProps } from '../types'
 
 const WalletExportKeyPop: FC<WalletDialogProps> = ({
   open,

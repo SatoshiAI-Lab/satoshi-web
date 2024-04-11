@@ -10,11 +10,14 @@ import {
   UserRenameWalletResp,
   UserDeleteWalletReq,
   UserDeleteWalletResp,
+  GetChainsRes,
 } from './params'
 
 export const walletApi = {
-  getWallets(params?: UserCreateWalletReq) {
-    return fetchSatoshi.get<UserCreateWalletResp[]>('/api/v1/wallet/', params)
+  getWallets(chain?: string) {
+    return fetchSatoshi.get<UserCreateWalletResp[]>('/api/v1/wallet/', {
+      chain,
+    })
   },
   createWallet(params: UserCreateWalletReq) {
     return fetchSatoshi.post<UserCreateWalletResp>('/api/v1/wallet/', params)
@@ -41,6 +44,19 @@ export const walletApi = {
   deleteWallet(params: UserDeleteWalletReq) {
     return fetchSatoshi.delete<UserDeleteWalletResp>(
       `/api/v1/wallet-delete/${params.wallet_id}/`
+    )
+  },
+
+  // Get all supported chains.
+  getChains() {
+    return fetchSatoshi.get<GetChainsRes>('/api/v1/chain/')
+  },
+
+  // Get the balance of a specific wallet.
+  getBalance(addr: string, chain?: string) {
+    return fetchSatoshi.get<UserCreateWalletResp>(
+      `/api/v1/wallet-balance/${addr}/`,
+      { chain }
     )
   },
 }
