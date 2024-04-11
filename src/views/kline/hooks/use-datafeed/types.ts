@@ -8,7 +8,6 @@ export interface DatafeederOptions {
 
 export interface UseDatafeedReturn {
   datafeeder: Datafeeder
-  getResetCacheMap(): ResetCacheMap
 }
 
 export interface Datafeeder {

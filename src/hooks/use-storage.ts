@@ -81,8 +81,8 @@ export const useStorage = (useSessionStorage = false) => {
     getLoginTokenRefresh,
     setLoginTokenRefresh,
 
-    // KLine related.
-    getKLineInterval: () => get('kline_interval'),
-    setKLineInterval: (val: string) => set('kline_interval', val),
+    // Chart related.
+    getChartInterval: () => get('chart_interval'),
+    setChartInterval: (val: string) => set('chart_interval', val),
   }
 }

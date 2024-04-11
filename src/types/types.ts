@@ -12,3 +12,5 @@ export enum SortType {
   Asc,
   Desc,
 }
+
+export type EmptyFn = () => void

@@ -3,11 +3,11 @@ import clsx from 'clsx'
 
 import StudyDialog from './study-dialog'
 import { useDebounce } from '@/hooks/use-debounce'
-import { useKLineStore } from '@/stores/use-kline-store'
+import { useChartStore } from '@/stores/use-chart-store'
 import { useAnnotationStudies } from '../hooks/use-annotation-studies'
 import {
-  KLINE_ANNOTATION,
-  KLINE_STUDIES,
+  CHART_ANNOTATION,
+  CHART_STUDIES,
   Study,
   StudyFullname,
   StudyName,
@@ -20,8 +20,8 @@ interface StudiesProps extends React.ComponentProps<'div'> {}
 
 export const Studies: React.FC<StudiesProps> = (props) => {
   const { className = '' } = props
-  const { tips } = KLINE_ANNOTATION
-  const { chart } = useKLineStore()
+  const { tips } = CHART_ANNOTATION
+  const { chart } = useChartStore()
   const [actives, setActives] = useState<StudyFullname[]>([])
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
@@ -153,7 +153,7 @@ export const Studies: React.FC<StudiesProps> = (props) => {
           className
         )}
       >
-        {Object.values(KLINE_STUDIES).map((study, i) => (
+        {Object.values(CHART_STUDIES).map((study, i) => (
           <div
             key={i}
             className={clsx(

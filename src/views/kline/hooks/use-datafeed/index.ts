@@ -1,10 +1,9 @@
 import toast from 'react-hot-toast'
 
 import { TV_DATAFEED_CONFIG, TV_SYMBOL_INFO_CONFIG } from '@/config/tradingview'
-import { KLINE_SUPPORTED_INTERVALS } from '@/config/kline'
 import { useKLineFormat } from '@/views/kline/hooks/use-kline-format'
-import { useKLineStore } from '@/stores/use-kline-store'
-import { utilKLine } from '@/utils/kline'
+import { useChartStore } from '@/stores/use-chart-store'
+import { utilChart } from '@/utils/kline'
 import { useDatafeedCache } from '../use-datafeed-cache'
 import { useDatafeedHelper } from '../use-datafeed-helper'
 import { utilArr } from '@/utils/array'
@@ -32,12 +31,16 @@ export const useDatafeed = () => {
     // datafeed callback must be called in async function,
     // otherwise will be stack overflow.
     return {
-      onReady(callback) {
+      // Main config function, chart init config.
+      onReady(ready) {
+        // WebSocket error message.
         onErrorMessage((e) => toast.error(e.message ?? ''))
-        setTimeout(() => callback(TV_DATAFEED_CONFIG), 0)
+        setTimeout(() => ready(TV_DATAFEED_CONFIG), 0)
       },
-      searchSymbols(userInput, exchange, symbolType, onResultReadyCallback) {},
-      async resolveSymbol(symbolName, onSymbolResolved, onResolveError) {
+      // TV's search function.
+      searchSymbols(input, exchange, symbolType, onResultReady) {},
+      // Main symbol function, symbol init info config.
+      async resolveSymbol(symbolName, onResolve, onError) {
         // Initial `symbolInfo`, you can modify it in `getBars`
         const symbolInfo: LibrarySymbolInfo = {
           ...TV_SYMBOL_INFO_CONFIG,
@@ -53,16 +56,14 @@ export const useDatafeed = () => {
           symbolInfo.pricescale = newPricescale
           datafeedCacheApi.setInitBars(bars)
           datafeedCacheApi.setLastBar(lastBar)
-          setTimeout(() => onSymbolResolved(symbolInfo), 0)
+          setTimeout(() => onResolve(symbolInfo), 0)
         } catch (error) {
           console.log('error', error)
-          onResolveError(`Cannot resolve this smybol: ${symbolName}`)
+          onError(`Cannot resolve this smybol: ${symbolName}`)
         }
       },
-      // If the data is correct, but the chart is blank,
-      // check the timestamp is normal, and the order is correct.
-      // The order should be ascending.
-      async getBars(symbolInfo, resolution, periodParams, onHistory, onError) {
+      // Main data getting function, init & switch interval will be call.
+      async getBars(symbolInfo, resolution, periodParams, onHistory) {
         // First request, switch resolution is also first request.
         if (periodParams.firstDataRequest) {
           const bars = await handleInitBars(symbolInfo, params, resolution)
@@ -75,26 +76,23 @@ export const useDatafeed = () => {
         const bars = await getHistoryBars(periodParams)
         onHistory(bars, { noData: utilArr.isEmpty(bars) })
       },
-      subscribeBars(
-        symbolInfo,
-        resolution,
-        onTick,
-        subscribeUID,
-        onResetCacheNeededCallback
-      ) {
-        datafeedCacheApi.resetCacheMap.set(
-          subscribeUID,
-          onResetCacheNeededCallback
+      // Real-time update bar & reset last one subscribe cache.
+      subscribeBars(_, resolution, onTick, uId, cacheRestter) {
+        datafeedCacheApi.setSubscribe(uId, cacheRestter)
+        console.log(
+          `subscribe cache:`,
+          datafeedCacheApi.getSubscribes(),
+          '\n',
+          `sub resolution: ${resolution}`,
+          '\n',
+          `stored interval: ${useChartStore.getState().interval}`
         )
-        console.log('subscribe', datafeedCacheApi.resetCacheMap)
 
         onUpdateBar((received) => {
           const bars = formatReceivedBars(received.data ?? [])
-          if (!bars.length) return
-          const targetResolution = useKLineStore.getState()
-            .interval as KLINE_SUPPORTED_INTERVALS
 
-          if (utilKLine.isTargetPeriod(targetResolution)) {
+          if (!bars.length) return
+          if (utilChart.isTargetPeriod(resolution)) {
             bars.forEach((bar) => {
               const lastTime = datafeedCacheApi.getLastBar().time ?? Infinity
 
@@ -106,11 +104,17 @@ export const useDatafeed = () => {
           onTick(utilArr.last(bars))
         })
       },
-      unsubscribeBars(subscriberUID) {
-        datafeedCacheApi.resetCacheMap.delete(subscriberUID)
+      // Don't disconnect here. because switch interval will be call.
+      unsubscribeBars(uId) {
+        console.log('unsubscribe cache:', uId, datafeedCacheApi.getSubscribes())
+
+        // clear cache.
+        datafeedCacheApi.getSubscribe(uId)?.()
+        datafeedCacheApi.removeSubscribe(uId)
       },
 
-      getMarks(symbolInfo, from, to, onDataCallback, resolution) {
+      // Below is not needed at the moment.
+      getMarks(symbolInfo, from, to, onData, resolution) {
         // console.log('getMarks', symbolInfo, from, to, resolution)
 
         const marks = [
@@ -136,7 +140,7 @@ export const useDatafeed = () => {
 
         // onDataCallback(marks)
       },
-      getTimescaleMarks(symbolInfo, from, to, onDataCallback, resolution) {
+      getTimescaleMarks(symbolInfo, from, to, onData, resolution) {
         // console.log('getTimescaleMarks', symbolInfo, from, to, resolution)
 
         const marks = [
@@ -156,7 +160,6 @@ export const useDatafeed = () => {
 
   return {
     datafeeder,
-    getResetCacheMap: () => datafeedCacheApi.resetCacheMap,
     disconnect,
   }
 }
