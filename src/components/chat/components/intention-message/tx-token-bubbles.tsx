@@ -1,26 +1,26 @@
-import { useTranslation } from 'react-i18next'
-import MessageBubble from '../message-bubble'
-import { Button, CircularProgress, OutlinedInput } from '@mui/material'
-import { IoCopyOutline, IoFlash } from 'react-icons/io5'
-import clsx from 'clsx'
 import { useState } from 'react'
-import {
+import { useTranslation } from 'react-i18next'
+import { Button, CircularProgress, OutlinedInput } from '@mui/material'
+import { IoFlash } from 'react-icons/io5'
+import { formatUnits } from 'viem'
+import { BigNumber } from 'bignumber.js'
+import { FaArrowRightLong } from 'react-icons/fa6'
+import clsx from 'clsx'
+import numeral from 'numeral'
+
+import MessageBubble from '../message-bubble'
+import { trandApi } from '@/api/trand'
+import { useShow } from '@/hooks/use-show'
+import { useWalletStore, type WalletCardProps } from '@/stores/use-wallet-store'
+import { CHAT_CONFIG } from '@/config/chat'
+import { useChat } from '@/hooks/use-chat'
+import { link } from '@/config/link'
+
+import type {
   ChatResponseAnswerMeta,
   ChatResponseTxConfrim,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
-import { trandApi } from '@/api/trand'
-import { useShow } from '@/hooks/use-show'
-import { formatUnits } from 'viem'
-import numeral from 'numeral'
-import { useWalletStore } from '@/stores/use-wallet-store'
-import { WalletCardProps } from '@/stores/use-wallet-store/types'
-import { CHAT_CONFIG } from '@/config/chat'
-import { BigNumber } from 'bignumber.js'
-import { useChat } from '@/hooks/use-chat'
-import { FaArrowRightLong } from 'react-icons/fa6'
-import { utilFmt } from '@/utils/format'
-import { link } from '@/config/link'
 
 interface Props {
   msg: ChatResponseAnswerMeta

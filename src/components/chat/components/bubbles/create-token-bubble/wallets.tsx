@@ -8,12 +8,12 @@ import { useWalletStore } from '@/stores/use-wallet-store'
 import { Wallet } from '@/components/wallet'
 import { utilArr } from '@/utils/array'
 import { useClipboard } from '@/hooks/use-clipboard'
+import { useWallet } from '@/hooks/use-wallet'
 
 const CreateTokenWallets = (props: { hasWallet: boolean }) => {
   const { hasWallet } = props
   const { t } = useTranslation()
-  const { currentWallet, wallets, getWallets, setCurrentWallet } =
-    useWalletStore()
+  const { wallets, currentWallet, setCurrentWallet } = useWalletStore()
   const [selectedWallet, setSelectedWallet] = useState<
     typeof currentWallet | undefined
   >(undefined)
@@ -26,6 +26,8 @@ const CreateTokenWallets = (props: { hasWallet: boolean }) => {
     setCurrentWallet(targetWallet?.address ?? '')
   }
 
+  useWallet({ enabled: true })
+
   useEffect(() => {
     if (utilArr.isEmpty(wallets)) return
 
@@ -37,10 +39,6 @@ const CreateTokenWallets = (props: { hasWallet: boolean }) => {
       setSelectedWallet(currentWallet)
     }
   }, [currentWallet])
-
-  useEffect(() => {
-    getWallets()
-  }, [])
 
   return (
     <>

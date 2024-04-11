@@ -69,7 +69,7 @@ interface GetChainsRes {
     name: string
     logo: string
   }[]
-  platforms: [string]
+  platforms: string[]
 }
 
 export type {

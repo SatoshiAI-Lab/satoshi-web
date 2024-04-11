@@ -1,8 +1,12 @@
+import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { walletApi } from '@/api/wallet'
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { utilArr } from '@/utils/array'
 
 export const useWalletChains = (enabled = false) => {
+  const { chains, platforms, setChains, setPlatforms } = useWalletStore()
   const {
     data: chainsData,
     isFetching: isFetchingChains,
@@ -13,9 +17,18 @@ export const useWalletChains = (enabled = false) => {
     queryFn: () => walletApi.getChains(),
   })
 
+  useEffect(() => {
+    const chains = chainsData?.data.chains ?? []
+    const platforms = chainsData?.data.platforms ?? []
+
+    if (utilArr.isEmpty(chains) || utilArr.isEmpty(platforms)) return
+    setChains(chains)
+    setPlatforms(platforms)
+  }, [chainsData])
+
   return {
-    chains: chainsData?.data.chains ?? [],
-    platforms: chainsData?.data?.platforms ?? [],
+    chains,
+    platforms,
     isFetchingChains,
     refetchChains,
   }

@@ -20,8 +20,10 @@ import { WalletDeletePop } from './components/walletepop-delete'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { WalletPlatform } from '@/api/wallet/params'
 import { WalletChainSelect } from './components/wallet-chain-select'
+import { useWallet } from '@/hooks/use-wallet'
 
 import type { WalletDialogProps } from './types'
+import CustomSuspense from '../custom-suspense'
 
 const walletMenu = [
   {
@@ -33,7 +35,7 @@ const walletMenu = [
   {
     id: WalletPlatform.EVM,
     title: 'EVM Wallet',
-    content: 'Support: ETH/OP/BSC/BLAST/ARB',
+    content: 'Support: ETH/BSC/OP/BLAST/ARB/BASE',
     disable: false,
   },
   {
@@ -65,9 +67,10 @@ const Wallet: FC<WalletDialogProps> = ({
   open,
   onClose,
 }) => {
-  const { wallets, loading, setCurrentWallet, createWallet, getWallets } =
-    useWalletStore()
-  // Copy from MUI menu
+  const { wallets, setCurrentWallet } = useWalletStore()
+  const { isFirstFetchingWallets, isFetchingWallets, createWallet } = useWallet(
+    { enabled: true }
+  )
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openCreateWallet = Boolean(anchorEl)
   const handleCreateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -82,13 +85,18 @@ const Wallet: FC<WalletDialogProps> = ({
   const [currentPop, setCurrentPop] = useState<number>(0)
   const [popOpen, setPopOpen] = useState(false)
 
-  const onCreateWallet = (walletType: WalletPlatform) => {
+  const onCreateWallet = async (walletType: WalletPlatform) => {
+    const id = toast.loading(t('wallet.creating'))
+
     setAnchorEl(null)
-    createWallet(walletType).then(async () => {
-      const result = await getWallets()
-      if (!result) return
+    try {
+      await createWallet(walletType)
       toast.success(t('wallet.createsuccess'))
-    })
+    } catch (error) {
+      toast.error(t('wallet.create-failed'))
+    } finally {
+      toast.dismiss(id)
+    }
   }
 
   const ImportWalletPrivateKey = () => {
@@ -209,8 +217,18 @@ const Wallet: FC<WalletDialogProps> = ({
           </div>
           <WalletChainSelect />
           {/* Wallets list */}
-          <div className="flex flex-col h-[440px] max-h-[440px] overflow-scroll gap-[25px] mt-[20px]">
-            {(wallets?.length &&
+          <CustomSuspense
+            container="div"
+            className="flex flex-col h-[440px] max-h-[440px] overflow-scroll gap-[25px] mt-[20px]"
+            isPendding={isFetchingWallets}
+            isStale={!isFirstFetchingWallets && isFetchingWallets}
+            fallback={
+              <div className="flex items-center justify-center h-[440px]">
+                <CircularProgress />
+              </div>
+            }
+          >
+            {wallets.length ? (
               (onlyWallet ? [onlyWallet] : wallets).map((item) => (
                 <WalletCard
                   {...item}
@@ -222,14 +240,13 @@ const Wallet: FC<WalletDialogProps> = ({
                   deleteWallet={deleteWallet}
                   key={item.address}
                 />
-              ))) || (
+              ))
+            ) : (
               <div className="h-full flex items-center justify-center">
-                {(loading && <CircularProgress />) || (
-                  <p>{t('wallet.nowallet')}</p>
-                )}
+                <p>{t('wallet.nowallet')}</p>
               </div>
             )}
-          </div>
+          </CustomSuspense>
         </div>
       </Dialog>
 

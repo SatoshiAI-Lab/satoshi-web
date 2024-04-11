@@ -4,10 +4,10 @@ import { userApi } from '@/api/user'
 import { UserEmailVerifyParams } from '@/api/user/params'
 import { useStorage } from '@/hooks/use-storage'
 import { useTokenRefresh } from '@/hooks/use-token-refresh'
-
-import type { States, Actions } from './types'
 import { walletApi } from '@/api/wallet'
 import { WalletPlatform } from '@/api/wallet/params'
+
+import type { States, Actions } from './types'
 
 export const useUserStore = create<States & Actions>((set, get) => ({
   isLogined: false,
@@ -31,11 +31,11 @@ export const useUserStore = create<States & Actions>((set, get) => ({
   },
   async register(email, verifyCode, password) {
     const self = get()
-    
+
     await userApi.register({ email, password })
-    
+
     const data = await self.login(email, password, false)
-    
+
     await walletApi.createWallet({ platform: WalletPlatform.SOL })
 
     return data
@@ -51,7 +51,7 @@ export const useUserStore = create<States & Actions>((set, get) => ({
   async fetchUserInfo() {
     try {
       const token = useStorage().getLoginToken()
-      
+
       if (!token) return
 
       const { data } = await userApi.getInfo()

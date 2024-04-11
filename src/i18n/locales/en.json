@@ -238,5 +238,8 @@
   "no.monitor.wallet": "No monitoring address is available",
   "tx": "Tx hash",
   "no-assets": "The wallet no assets yet.",
-  "select-chain": "Select Chain"
+  "select-chain": "Select Chain",
+  "wallet.creating": "Wallet is creating...",
+  "wallet.create-failed": "Wallet create failed",
+  "copied": "Copied!"
 }
