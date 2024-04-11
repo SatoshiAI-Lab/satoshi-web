@@ -120,14 +120,14 @@ const MyWalletsBubble = () => {
               <TableBody>
                 <CustomSuspense
                   nullback={
-                    <p
+                    <tr
                       className={clsx(
                         'text-gray-400 text-center w-full mt-2',
                         'text-sm'
                       )}
                     >
                       {t('no-assets')}
-                    </p>
+                    </tr>
                   }
                 >
                   {w?.tokens
