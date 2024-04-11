@@ -233,5 +233,6 @@
   "name": "名字",
   "remove.monitor.successful": "删除监控成功！",
   "remove.monitor.error": "删除监控失败",
-  "no.monitor.wallet": "暂无监控地址"
+  "no.monitor.wallet": "暂无监控地址",
+  "no-assets": "该钱包还没有资产。"
 }
