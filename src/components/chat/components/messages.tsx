@@ -43,6 +43,9 @@ const Messages = memo((props: MessagesProps) => {
       return <InteractiveMessage key={i} msgs={msg.msgs!} />
     }
 
+    console.log('msg:', msg)
+    
+
     return (
       <MessageBubble key={i} position={msg.position} className={className}>
         <MarkdownParser children={msg.msg} {...props} />
