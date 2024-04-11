@@ -1,13 +1,26 @@
 import React, { useEffect } from 'react'
-import { Avatar, MenuItem, Select, type SelectChangeEvent } from '@mui/material'
+import {
+  Avatar,
+  MenuItem,
+  Select,
+  type SxProps,
+  type SelectChangeEvent,
+  Theme,
+} from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import clsx from 'clsx'
 
 import { useWalletChains } from '../hooks/use-wallet-chains'
 import { utilArr } from '@/utils/array'
 import { useWallet } from '@/hooks/use-wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
 
-export const WalletChainSelect = () => {
+interface Props extends React.ComponentProps<'div'> {
+  avatarSize?: number
+}
+
+export const WalletChainSelect = (props: Props) => {
+  const { className, avatarSize = 24 } = props
   const { t } = useTranslation()
   const { chains, platforms } = useWalletChains(true)
   const { selectedChain, setSelectedChain } = useWalletStore()
@@ -26,7 +39,7 @@ export const WalletChainSelect = () => {
   }, [chains, platforms])
 
   return (
-    <div className="flex items-center my-2">
+    <div className={clsx('flex items-center my-2', className)}>
       <div className="mr-2 font-bold">{t('select-chain')}:</div>
       <Select
         classes={{ select: '!flex !items-center' }}
@@ -36,13 +49,7 @@ export const WalletChainSelect = () => {
       >
         {chains?.map((c, i) => (
           <MenuItem key={i} value={c.name}>
-            <Avatar
-              src={c.logo}
-              sx={{
-                width: 24,
-                height: 24,
-              }}
-            >
+            <Avatar src={c.logo} sx={{ width: avatarSize, height: avatarSize }}>
               {c.name}
             </Avatar>
             <div className="ml-2">{c.name}</div>

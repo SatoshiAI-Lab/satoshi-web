@@ -21,9 +21,9 @@ import { useWalletStore } from '@/stores/use-wallet-store'
 import { WalletPlatform } from '@/api/wallet/params'
 import { WalletChainSelect } from './components/wallet-chain-select'
 import { useWallet } from '@/hooks/use-wallet'
+import CustomSuspense from '../custom-suspense'
 
 import type { WalletDialogProps } from './types'
-import CustomSuspense from '../custom-suspense'
 
 const walletMenu = [
   {
