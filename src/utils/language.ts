@@ -3,7 +3,7 @@ import { useStorage } from '@/hooks/use-storage'
 export const utilLang = {
   getContent(content: any) {
     if (content == null) return ''
-    if (typeof content === 'string' && !content.trim()) return ''
+    if (typeof content === 'string') return content
     if (Array.isArray(content)) return ''
 
     const lang = useStorage().getLang() ?? 'en'
