@@ -7,11 +7,10 @@ import { useTranslation } from 'react-i18next'
 
 import Intervals from './components/intervals'
 import Studies from './components/studies'
-import { useStorage } from '@/hooks/use-storage'
 import { TV_CHART_OVERRIDES } from '@/config/tradingview'
 import { useStudiesAnalysis } from './hooks/use-study-analysis'
 import { useKLineCreate } from '@/views/kline/hooks/use-kline'
-import { useKLineApiFormat } from './hooks/use-kline-api-format'
+import { useTagParser } from './hooks/use-tag-parser'
 
 import type { AnyObject } from '@/types/types'
 import type {
@@ -21,15 +20,14 @@ import type {
   TagString,
 } from './hooks/use-kline-api/types'
 
-const KLine = () => {
+export const Candlestick = () => {
   const router = useRouter()
-  const { getKLineInterval } = useStorage()
   const chartRef = useRef<HTMLDivElement>(null)
   const { createChart, clearChart } = useKLineCreate()
   const { redBlackSoldiers, detectPinBars, detectSpiralCandles } =
     useStudiesAnalysis()
   const { t } = useTranslation()
-  const { cexTagToCexParams, dexTagToDexParams } = useKLineApiFormat()
+  const { cexTagToCexParams, dexTagToDexParams } = useTagParser()
 
   const parseTagQuery = (tag?: TagString) => {
     if (!tag) return
@@ -96,4 +94,4 @@ const KLine = () => {
   )
 }
 
-export default KLine
+export default Candlestick

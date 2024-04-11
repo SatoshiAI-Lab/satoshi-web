@@ -1,4 +1,4 @@
-import type { Study, KLINE_ANNOTATION } from '@/config/kline'
+import type { Study, CHART_ANNOTATION } from '@/config/kline'
 import type {
   EntityId,
   PricedPoint,
@@ -79,7 +79,7 @@ export type AddClickHandler = (params: ClickHandlerParams) => void
 export interface ClickHandlerParams
   extends ICreateShapeOptions,
     CreateMultipointShapeOptions<object> {
-  type: keyof typeof KLINE_ANNOTATION.tips
+  type: keyof typeof CHART_ANNOTATION.tips
   shapeId: IdOrNull
   onClick?: (params: ClickHandlerParams) => void
   getVisible: () => boolean
@@ -89,7 +89,7 @@ export interface ClickHandlerParams
 export type MarketType = 'bullish' | 'bearish'
 
 export interface ICreateShapeOptions {
-  type: keyof typeof KLINE_ANNOTATION.tips
+  type: keyof typeof CHART_ANNOTATION.tips
   colorType?: MarketType
   rawOptions: ShapeOptions
 }
@@ -107,7 +107,7 @@ export type CreateMultiShape = (
 export type Direction = 'up' | 'right' | 'down' | 'left'
 
 export interface ArrowPointOptions extends PricedPoint {
-  type: keyof typeof KLINE_ANNOTATION.tips
+  type: keyof typeof CHART_ANNOTATION.tips
   text: string
   ownerStudyId?: EntityId
 }

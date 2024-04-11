@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { useKLineStore } from '@/stores/use-kline-store'
+import { useChartStore } from '@/stores/use-chart-store'
 import { useDatafeed } from '../use-datafeed'
 import { useStorage } from '@/hooks/use-storage'
 import { useThemeStore } from '@/stores/use-theme-store'
@@ -15,19 +15,18 @@ import {
   IChartingLibraryWidget,
   ExportDataOptions,
 } from '../../../../../public/tradingview/charting_library/charting_library'
-import { useKLineApiFormat } from '../use-kline-api-format'
+import { useTagParser } from '../use-tag-parser'
 
 import type { CexParams, DexParams } from '../use-kline-api/types'
 
 export const useKLineCreate = () => {
-  const { chart, setChart, setChartEl, setInterval, setResetCacheMap } =
-    useKLineStore()
-  const { datafeeder, getResetCacheMap, disconnect } = useDatafeed()
+  const { chart, setChart, setChartEl, setInterval } = useChartStore()
+  const { datafeeder, disconnect } = useDatafeed()
   const { getLang } = useStorage()
   const { isDark } = useThemeStore()
   const { i18n } = useTranslation()
   const { formatExportedData, toTVInterval } = useKLineFormat()
-  const { joinParams } = useKLineApiFormat()
+  const { joinParams } = useTagParser()
 
   // Create a chart.
   // When the chart is created, WebSocket will be established.
@@ -45,7 +44,6 @@ export const useKLineCreate = () => {
       // For static params, should be set in the chart create before.
       setChartEl(container)
       setInterval(toTVInterval(normalInterval))
-      setResetCacheMap(getResetCacheMap)
       try {
         const chart = new (widget ?? window.TradingView.widget)({
           container,

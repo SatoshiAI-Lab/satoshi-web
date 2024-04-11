@@ -25,6 +25,7 @@ import { useShow } from '@/hooks/use-show'
 import { Routes } from '@/routes'
 import { utilFmt } from '@/utils/format'
 import { useUserStore } from '@/stores/use-user-store'
+import { useTagParser } from '@/views/kline/hooks/use-tag-parser'
 
 export const Favorites = memo((props: React.ComponentProps<'div'>) => {
   const { className } = props
@@ -34,13 +35,19 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
   const router = useRouter()
   const { show, open, hidden } = useShow()
   const { isLogined } = useUserStore()
+  const { cexParamsToCexTag } = useTagParser()
 
   const onTokenClick = (token: ListToken) => {
+    // TODO: Adaptation DEX token
+    const tag = cexParamsToCexTag({
+      exchange: '*',
+      symbol: `${token.symbol}-USDT`,
+      interval: '15m',
+    })
+
     router.push({
-      pathname: Routes.kline,
-      query: {
-        symbol: token.symbol,
-      },
+      pathname: Routes.candle,
+      query: { tag },
     })
   }
 

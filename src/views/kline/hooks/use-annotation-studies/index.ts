@@ -1,4 +1,4 @@
-import { Study, KLINE_STUDIES, StudyName, StudyFullname } from '@/config/kline'
+import { Study, CHART_STUDIES, StudyName, StudyFullname } from '@/config/kline'
 import { useKLineCreate } from '@/views/kline/hooks/use-kline'
 import { useAnnotations } from '../use-annotation'
 
@@ -28,13 +28,13 @@ export const useAnnotationStudies: UseAnnotationStudies = (clickListeners) => {
     onPressureSupportClick,
   })
   const creators = {
-    vol: () => createStudy(KLINE_STUDIES[StudyName.VOL]),
-    ma: () => createStudy(KLINE_STUDIES[StudyName.MA]),
-    ema: () => createStudy(KLINE_STUDIES[StudyName.EMA]),
-    boll: () => createStudy(KLINE_STUDIES[StudyName.BOLL]),
-    wr: () => createStudy(KLINE_STUDIES[StudyName.WR], false),
-    macd: () => createStudy(KLINE_STUDIES[StudyName.MACD], false),
-    rsi: () => createStudy(KLINE_STUDIES[StudyName.RSI], false),
+    vol: () => createStudy(CHART_STUDIES[StudyName.VOL]),
+    ma: () => createStudy(CHART_STUDIES[StudyName.MA]),
+    ema: () => createStudy(CHART_STUDIES[StudyName.EMA]),
+    boll: () => createStudy(CHART_STUDIES[StudyName.BOLL]),
+    wr: () => createStudy(CHART_STUDIES[StudyName.WR], false),
+    macd: () => createStudy(CHART_STUDIES[StudyName.MACD], false),
+    rsi: () => createStudy(CHART_STUDIES[StudyName.RSI], false),
   }
 
   const createStudy = (study: Study, needClear = true) => {

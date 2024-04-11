@@ -12,7 +12,7 @@ import {
 import { MdOutlineSettings } from 'react-icons/md'
 import Draggable from 'react-draggable'
 
-import { useKLineStore } from '@/stores/use-kline-store'
+import { useChartStore } from '@/stores/use-chart-store'
 
 import type { EntityId } from '../../../../public/tradingview/charting_library/charting_library'
 
@@ -38,7 +38,7 @@ export const StudyDialog: React.FC<StudyDialogProps> = (props) => {
     draggable = true,
     onClose,
   } = props
-  const { chart } = useKLineStore()
+  const { chart } = useChartStore()
   const [showStudy, setShowStudy] = useState(false)
 
   const DraggableDialog = (props: PaperProps) => {

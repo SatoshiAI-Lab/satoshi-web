@@ -2,7 +2,7 @@ import { useKLineApi } from '../use-kline-api'
 import { useKLineFormat } from '../use-kline-format'
 import { useDatafeedCache } from '../use-datafeed-cache'
 import { utilArr } from '@/utils/array'
-import { useKLineApiFormat } from '../use-kline-api-format'
+import { useTagParser } from '../use-tag-parser'
 
 import type {
   LibrarySymbolInfo,
@@ -32,7 +32,7 @@ export const useDatafeedHelper = (
     dexTagToDexParams,
     joinParams,
     tagIsCex,
-  } = useKLineApiFormat()
+  } = useTagParser()
 
   const getInitBars = async (
     symbolInfo: LibrarySymbolInfo,
@@ -61,28 +61,24 @@ export const useDatafeedHelper = (
     return { bars, lastBar }
   }
 
-  /**
-   * Handling Init bars, switching resolution is also init.
-   * @param {LibrarySymbolInfo} symbolInfo
-   * @param {ResolutionString} resolution
-   */
+  // Handle init bars & switch interval,
   const handleInitBars = async (
     symbolInfo: LibrarySymbolInfo,
     params: CexParams | DexParams,
-    resolution: ResolutionString
+    resolution: ResolutionString // used for switch interval
   ) => {
-    console.log('resolution', resolution)
     try {
-      // If `lastResolution` is exist, it means that the user is switching time granularity.
-      const hasLastResolution = cachedApi.getLastResolution()
+      // If `lastResolution` is exist,
+      // it means that the user is switching time granularity.
+      const lastResolution = cachedApi.getLastResolution()
 
       // If the `resolution` is the same as the last time,
       // it means repeat, should be return.
-      if (hasLastResolution && hasLastResolution === resolution) return []
+      if (lastResolution && lastResolution === resolution) return []
 
       // Switching `resolution` should be unlisten and listen again.
-      // but, useKLineApi has already been handled unlisten.
-      if (hasLastResolution) {
+      // but, `getInitBars` has already been handled unlisten.
+      if (lastResolution) {
         // This is switch interval
         const { bars } = await getInitBars(symbolInfo, {
           ...params,

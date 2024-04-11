@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
-import { useKLineStore } from '@/stores/use-kline-store'
-import { KLINE_ANNOTATION } from '@/config/kline'
+import { useChartStore } from '@/stores/use-chart-store'
+import { CHART_ANNOTATION } from '@/config/kline'
 import { RESOLUTION_TIMESTAMP_MAP } from '@/config/tradingview'
 
 import type {
@@ -34,8 +34,8 @@ export const useAnnotations: UseAnnotations = (clickListeners) => {
     onOverBoughtSoldClick,
     onPressureSupportClick,
   } = clickListeners ?? {}
-  const { colors, emojis, tips } = KLINE_ANNOTATION
-  const { chart } = useKLineStore()
+  const { colors, emojis, tips } = CHART_ANNOTATION
+  const { chart } = useChartStore()
   const { t } = useTranslation()
   const clickHandlers: ClickHandler[] = []
   const clickMap = {
