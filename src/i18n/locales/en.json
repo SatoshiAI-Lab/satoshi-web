@@ -237,5 +237,6 @@
   "remove.monitor.error": "Delete monitor failed",
   "no.monitor.wallet": "No monitoring address is available",
   "tx": "Tx hash",
-  "no-assets": "The wallet no assets yet."
+  "no-assets": "The wallet no assets yet.",
+  "select-chain": "Select Chain"
 }

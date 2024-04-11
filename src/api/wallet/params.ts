@@ -1,4 +1,4 @@
-import { ChatResponseWalletListToken } from "../chat/types"
+import { ChatResponseWalletListToken } from '../chat/types'
 
 interface UserCreateWalletReq {
   /**
@@ -10,6 +10,7 @@ interface UserCreateWalletReq {
 export enum WalletPlatform {
   SOL = 'SOL',
   EVM = 'EVM',
+  BEAR = 'BEAR',
 }
 
 interface UserCreateWalletResp {
@@ -58,9 +59,19 @@ interface UserRenameWalletResp {
 interface UserDeleteWalletReq {
   wallet_id: string
 }
+
 interface UserDeleteWalletResp {
   msg: string
 }
+
+interface GetChainsRes {
+  chains: {
+    name: string
+    logo: string
+  }[]
+  platforms: [string]
+}
+
 export type {
   UserCreateWalletReq,
   UserCreateWalletResp,
@@ -72,4 +83,5 @@ export type {
   UserRenameWalletResp,
   UserDeleteWalletReq,
   UserDeleteWalletResp,
+  GetChainsRes,
 }

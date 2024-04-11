@@ -1,7 +1,13 @@
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { Button, CircularProgress, Dialog, IconButton, TextField } from '@mui/material'
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  IconButton,
+  TextField,
+} from '@mui/material'
 import { FC, useEffect, useState } from 'react'
-import { WalletDialogProps } from './types'
+import { WalletDialogProps } from '../types'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
@@ -14,7 +20,7 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
 }) => {
   const [privateKey, setPrivateKey] = useState('')
   const { importWallet: importPrivateKey, getWallets } = useWalletStore()
-  const {hidden: hiddenLoading, open: openLoading, show} = useShow()
+  const { hidden: hiddenLoading, open: openLoading, show } = useShow()
   const importWallet = (privateKey: string) => {
     openLoading()
     importPrivateKey(privateKey)
@@ -25,7 +31,8 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
       })
       .catch(() => {
         toast.error(t('wallet.error'))
-      }).finally(() => {
+      })
+      .finally(() => {
         hiddenLoading()
       })
   }
@@ -61,7 +68,11 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
             value={privateKey}
             onChange={(e) => setPrivateKey(e.target.value)}
           />
-          <Button variant="contained" disabled={show || privateKey.length == 0} onClick={() => importWallet(privateKey)}>
+          <Button
+            variant="contained"
+            disabled={show || privateKey.length == 0}
+            onClick={() => importWallet(privateKey)}
+          >
             {show && <CircularProgress size={16}></CircularProgress>}
             {t('wallet.import-wallet.confirm')}
           </Button>

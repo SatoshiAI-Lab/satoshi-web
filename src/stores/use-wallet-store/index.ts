@@ -3,19 +3,42 @@ import { create } from 'zustand'
 import { walletApi } from '@/api/wallet'
 import { WalletPlatform } from '@/api/wallet/params'
 
-import type { Actions, States } from './types'
+import {
+  UserCreateWalletResp,
+  UserExportPrivateKeyResp,
+  UserImportPrivateKeyResp,
+  UserRenameWalletResp,
+  UserDeleteWalletResp,
+} from '@/api/wallet/params'
+
+interface WalletCardProps extends Partial<UserCreateWalletResp> {}
+
+interface States {
+  currentWallet?: WalletCardProps
+  wallets: WalletCardProps[]
+  loading: boolean
+}
+interface Actions {
+  createWallet(walletId: WalletPlatform): Promise<void>
+  importWallet(privateKey: string): Promise<UserImportPrivateKeyResp>
+  renameWallet(walletName: string): Promise<UserRenameWalletResp>
+  setCurrentWallet(address?: string): void
+  exportWalletPrivateKey(
+    wallet_id: string
+  ): Promise<void | UserExportPrivateKeyResp>
+  getWallets(isLoading?: boolean, chain?: string): Promise<boolean>
+  deleteWallet(wallet_id: string): Promise<UserDeleteWalletResp>
+  setLoadingStatus(status: boolean): void
+}
 
 export const useWalletStore = create<States & Actions>((set, get) => ({
   currentWallet: undefined,
   wallets: [],
   loading: true,
-  createWallet: async (walletId: string) => {
+
+  createWallet: async (walletType) => {
     set({ loading: true })
-    if (walletId === 'solana') {
-      await walletApi.createWallet({
-        platform: WalletPlatform.SOL,
-      })
-    }
+    await walletApi.createWallet({ platform: walletType })
   },
   importWallet: async (privateKey: string) => {
     return walletApi
@@ -53,13 +76,13 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
     // At the very least make sure it's `{}`
     set({ currentWallet: target ?? {} })
   },
-  getWallets: async (isLoading = true): Promise<boolean> => {
+  getWallets: async (isLoading = true, chain?: string): Promise<boolean> => {
     if (isLoading) {
       set({ wallets: [], loading: isLoading })
     }
     return new Promise((resolve, reject) => {
       walletApi
-        .getWallets()
+        .getWallets(chain)
         .then((res) => {
           set({ wallets: res.data.reverse(), loading: false })
           resolve(true)

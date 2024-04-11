@@ -6,7 +6,7 @@ import {
   TextField,
 } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
-import { WalletDialogProps } from './types'
+import { WalletDialogProps } from '../types'
 import { TfiClose } from 'react-icons/tfi'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import toast from 'react-hot-toast'
@@ -96,7 +96,11 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               disabled={show || !walletName}
               onClick={() => renameWallet(walletName)}
             >
-              {show ? <CircularProgress size={16} className='mr-2'></CircularProgress> : <></>}
+              {show ? (
+                <CircularProgress size={16} className="mr-2"></CircularProgress>
+              ) : (
+                <></>
+              )}
               {t('save')}
             </Button>
           </div>
