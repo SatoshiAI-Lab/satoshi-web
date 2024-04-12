@@ -1,16 +1,12 @@
-import { ChatResponseWalletListToken } from '../chat/types'
+import { WalletPlatform } from '@/config/wallet'
+
+import type { ChatResponseWalletListToken } from '../chat/types'
 
 interface UserCreateWalletReq {
   /**
    * Wallet platform: SOL or EVM, default: SOL
    */
   platform?: WalletPlatform
-}
-
-export enum WalletPlatform {
-  SOL = 'SOL',
-  EVM = 'EVM',
-  BEAR = 'BEAR',
 }
 
 interface UserCreateWalletResp {

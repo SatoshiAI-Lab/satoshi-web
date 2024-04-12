@@ -18,10 +18,10 @@ import { WalletRenamePop } from './components/walletpop-rename'
 import { WalletImportKeyPop } from './components/walletpop-importkey'
 import { WalletDeletePop } from './components/walletepop-delete'
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { WalletPlatform } from '@/api/wallet/params'
 import { WalletChainSelect } from './components/wallet-chain-select'
 import { useWallet } from '@/hooks/use-wallet'
-import CustomSuspense from '../custom-suspense'
+import { CustomSuspense } from '../custom-suspense'
+import { WalletPlatform } from '@/config/wallet'
 
 import type { WalletDialogProps } from './types'
 

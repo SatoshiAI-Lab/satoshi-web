@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 
-import { GetChainsRes, WalletPlatform } from '@/api/wallet/params'
+import { WALLET_CONFIG, WalletPlatform } from '@/config/wallet'
 
+import type { GetChainsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 export interface WalletCardProps extends Partial<UserCreateWalletResp> {}
@@ -29,8 +30,8 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   chains: [],
   platforms: [],
   currentWallet: undefined,
-  selectedChain: '',
-  selectedPlatform: WalletPlatform.SOL,
+  selectedChain: WALLET_CONFIG.defaultChain,
+  selectedPlatform: WALLET_CONFIG.defaultPlatform,
 
   setWallets: (wallets) => set({ wallets }),
   setChains: (chains) => set({ chains }),

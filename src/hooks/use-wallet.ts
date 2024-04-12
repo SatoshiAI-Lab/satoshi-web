@@ -1,11 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { utilArr } from '@/utils/array'
-
-import type { WalletPlatform } from '@/api/wallet/params'
+import { WalletPlatform } from '@/config/wallet'
 
 interface Options {
   enabled?: boolean
@@ -70,6 +68,7 @@ export const useWallet = (options?: Options) => {
     mutationFn: walletApi.exportPrivateKey,
   })
 
+  // Rename wallet.
   const {
     isPending: isRenaming,
     mutateAsync: mutateRenameWallet,

@@ -8,7 +8,7 @@ interface CustomSuspenseProps extends React.ComponentProps<'div'> {
   nullback?: React.ReactNode
 }
 
-const CustomSuspense = (props: CustomSuspenseProps) => {
+export const CustomSuspense = (props: CustomSuspenseProps) => {
   const {
     container = 'fragment',
     children,

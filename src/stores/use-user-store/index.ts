@@ -5,7 +5,7 @@ import { UserEmailVerifyParams } from '@/api/user/params'
 import { useStorage } from '@/hooks/use-storage'
 import { useTokenRefresh } from '@/hooks/use-token-refresh'
 import { walletApi } from '@/api/wallet'
-import { WalletPlatform } from '@/api/wallet/params'
+import { WalletPlatform } from '@/config/wallet'
 
 import type { States, Actions } from './types'
 
