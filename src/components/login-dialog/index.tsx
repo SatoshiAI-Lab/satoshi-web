@@ -4,6 +4,7 @@ import {
   Button,
   CircularProgress,
   Dialog,
+  IconButton,
   Input,
   Link,
   OutlinedInput,
@@ -45,7 +46,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
 
   // TODO: add forgot password
   const forgotPassword = () => {
-    console.log('forgot password')
+    toast('Coming Soon')
   }
 
   const checkForm = () => {
@@ -126,21 +127,25 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
           {/* left side image */}
           <div
             className={clsx(
-              'hidden md:block xl:min-w-[650px]',
-              'min-w-[480px] h-full transition-all bg-cover bg-center bg-no-repeat',
-              (isSignIn && 'bg-[url(/images/i2.png)]') ||
-                'bg-[url(/images/i1.png)]'
+              'hidden md:block xl:min-w-[650px] min-w-[480px] h-full',
+              'transition-all bg-cover bg-center bg-no-repeat',
+              isSignIn ? 'bg-[url(/images/i2.png)]' : 'bg-[url(/images/i1.png)]'
             )}
           ></div>
           {/* right side misc */}
           <div className="flex-1 flex flex-col justify-center md:block items-center overflow-hidden">
             {/* close button */}
-            <button
-              className="absolute md:relative top-4 left-4 w-[50px] h-[50px] flex justify-center items-center rounded-full border border-1 md:m-[49px] m-4"
+            <IconButton
+              className={clsx(
+                'flex justify-center items-center',
+                'absolute md:relative top-4 left-4 !w-[50px] !h-[50px]',
+                'md:!m-[49px] !m-4'
+              )}
+              style={{ border: '1px solid gray' }}
               onClick={onClose}
             >
               <MdOutlineArrowBackIosNew size={24} />
-            </button>
+            </IconButton>
             {/* logo */}
             <div className="w-[418px] mx-auto md:ml-[187px] flex flex-col items-center">
               <Image
@@ -170,12 +175,12 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
               </div>
               {/* email input form */}
               <div>
-                <div className="py-[3px] text-[#101010] text-xl">Email</div>
+                <div className="py-[3px] text-[#101010] text-xl">
+                  {t('email')}
+                </div>
                 <OutlinedInput
                   placeholder={t('login.placeholder-email')}
-                  classes={{
-                    root: 'w-full h-[50px] !rounded-[10px]',
-                  }}
+                  classes={{ root: 'w-full h-[50px] !rounded-[10px]' }}
                   onKeyUp={accountKeyDown}
                   autoFocus={autoFocus}
                   defaultValue={userEmail}
@@ -185,9 +190,9 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
               {/* password input form */}
               <div className="mt-10">
                 <div className="py-[3px] text-[#101010] text-xl">
-                  {(isSignIn && (
+                  {isSignIn ? (
                     <div className="flex justify-between items-center">
-                      <div>Password</div>
+                      <div>{t('password')}</div>
                       <Link
                         classes={{
                           root: '!text-[18px] !text-black !decoration-black',
@@ -195,16 +200,17 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                         className="cursor-pointer"
                         onClick={forgotPassword}
                       >
-                        Forgot?
+                        {t('forgot')}?
                       </Link>
                     </div>
-                  )) || <div>Password</div>}
+                  ) : (
+                    <div>{t('password')}</div>
+                  )}
                 </div>
+                {/* Password input */}
                 <OutlinedInput
                   placeholder={t('login.placeholder-password')}
-                  classes={{
-                    root: 'w-full h-[50px] !rounded-[10px]',
-                  }}
+                  classes={{ root: 'w-full h-[50px] !rounded-[10px]' }}
                   inputRef={pswRef}
                   type="password"
                   onChange={({ target }) => setUserPassword(target.value)}

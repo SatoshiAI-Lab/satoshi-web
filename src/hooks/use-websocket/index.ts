@@ -4,9 +4,23 @@ import type { UseWebSocketOptions } from './types'
 
 /**
  * A WebSocket hook, it's not dependent on React.
- * You can pass two generics, `OnEvents` for listening to events sent by the server,
- * and `EmitEvents` for events sent from the client to the server, used for type hints.
+ * Use two generics to define the `on` & `emit` events & received data type.
  * @param options
+ *
+ * @example
+ * ```tsx
+ * const ws = useWebSocket({
+ *   // If set url, will be immediate connection.
+ *   url: 'wss://example.com',
+ *   heartbeat: JSON.stringify({ type: 'ping' }),
+ * })
+ *
+ * // If you have not want to immediate connection,
+ * // don't set url & use `ws.connect`. like:
+ * await ws.connect('wss://example.com')
+ * ws.on('event', (data) => {})
+ * ws.emit('event', data)
+ * ```
  */
 export const useWebSocket = <O extends OnEvents, E extends EmitEvents>(
   options?: UseWebSocketOptions

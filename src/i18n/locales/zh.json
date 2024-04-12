@@ -238,5 +238,9 @@
   "select-chain": "选择网络",
   "wallet.creating": "钱包正在创建中...",
   "wallet.create-failed": "钱包创建失败",
-  "copied": "已复制!"
+  "copied": "已复制!",
+  "signin": "登录",
+  "email": "邮箱",
+  "password": "密码",
+  "forgot": "忘记了"
 }

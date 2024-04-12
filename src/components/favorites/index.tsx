@@ -116,7 +116,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
               {i !== 0 && <Divider />}
               <ListItemButton
                 onClick={() => onTokenClick(t)}
-                className={'dark:!text-white relative group !justify-between'}
+                className="dark:!text-white relative group !justify-between"
               >
                 <div className="flex justify-between flex-1">
                   <div className="flex items-center gap-2 grow">
@@ -174,7 +174,11 @@ const FavoritesSkeleton: React.FC<React.ComponentProps<'div'>> = (props) => {
   return (
     <div className={clsx('flex flex-col gap-3 my-2', className)}>
       {Array.from({ length: 5 }).map((_, i) => (
-        <Skeleton key={i} height={36} className="!mx-4 !scale-100" />
+        <Skeleton
+          key={i}
+          height={36}
+          className="!mx-4 !scale-100 dark:bg-gray-800"
+        />
       ))}
     </div>
   )

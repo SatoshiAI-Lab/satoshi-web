@@ -1,8 +1,9 @@
-import { Routes } from '@/routes'
 import { Button, Dialog, IconButton } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { IoCloseOutline } from 'react-icons/io5'
+
+import { Routes } from '@/routes'
 
 interface Props {
   show: boolean
@@ -60,7 +61,7 @@ export const NeedLoginDialog = (props: Props) => {
             size="large"
             onClick={toLogin}
           >
-            {t('login.2')}
+            {t('signin')}
           </Button>
         </div>
       </div>
