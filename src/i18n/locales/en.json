@@ -247,5 +247,8 @@
   "password": "Password",
   "forgot": "Forgot",
   "select-platform": "Select platform",
-  "unsupported-chain": "Unsupported chain, currently only supports:"
+  "unsupported-chain": "Unsupported chain, currently only supports:",
+  "normal": "Yes",
+  "risk": "No",
+  "unknown": "Unknown"
 }

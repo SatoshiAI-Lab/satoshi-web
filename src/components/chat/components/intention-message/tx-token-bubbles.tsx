@@ -49,8 +49,8 @@ export const TxTokenBubbles = (props: Props) => {
 
   const rawWalletList = [...wallets]
     .filter((wallet) => {
-      const x = wallet.platform == data.chain_filter.platform
-      const y = wallet.chain?.name == data.chain_filter.chain_name
+      const x = wallet.platform == data.chain_filter?.platform
+      const y = wallet.chain?.name == data.chain_filter?.chain_name
       const z = wallet.tokens?.some(isToken)
 
       return x && y && z
