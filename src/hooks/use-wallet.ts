@@ -117,8 +117,6 @@ export const useWallet = (options?: Options) => {
 
   // Stored wallet list
   useEffect(() => {
-    if (utilArr.isEmpty(walletsData?.data ?? [])) return
-
     setWallets(walletsData?.data ?? [])
   }, [walletsData])
 

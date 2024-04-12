@@ -1,18 +1,10 @@
 import React, { useEffect } from 'react'
-import {
-  Avatar,
-  MenuItem,
-  Select,
-  type SxProps,
-  type SelectChangeEvent,
-  Theme,
-} from '@mui/material'
+import { Avatar, MenuItem, Select, type SelectChangeEvent } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 
 import { useWalletChains } from '../hooks/use-wallet-chains'
 import { utilArr } from '@/utils/array'
-import { useWallet } from '@/hooks/use-wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
 
 interface Props extends React.ComponentProps<'div'> {
@@ -24,11 +16,9 @@ export const WalletChainSelect = (props: Props) => {
   const { t } = useTranslation()
   const { chains, platforms } = useWalletChains(true)
   const { selectedChain, setSelectedChain } = useWalletStore()
-  const { refetchWallets } = useWallet()
 
   const onSelectChain = ({ target }: SelectChangeEvent<string>) => {
     setSelectedChain(target.value)
-    refetchWallets()
   }
 
   useEffect(() => {
