@@ -113,8 +113,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
               onMouseLeave={() => setHoverIdx(null)}
               className={clsx(
                 'flex items-center gap-1 transition-all mr-8',
-                'cursor-pointer max-sm:mr-4',
-                'hover:drop-shadow-bold-dark dark:hover:drop-shadow-bold'
+                'cursor-pointer max-sm:mr-4 drop-shadow-bold-dark'
               )}
               onClick={item.onClick}
             >
