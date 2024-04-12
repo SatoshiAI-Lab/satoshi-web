@@ -1,11 +1,11 @@
+import { useEffect } from 'react'
+
 import { chatApi } from '@/api/chat'
 import { URL_CONFIG } from '@/config/url'
 import { useUserStore } from '@/stores/use-user-store'
-import { useEffect } from 'react'
 import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
-import { Message } from '@/stores/use-chat-store/types'
 import { useChat } from './use-chat'
 
 export const useChatMonitorMsg = () => {
@@ -13,12 +13,10 @@ export const useChatMonitorMsg = () => {
   const { userInfo, isLogined } = useUserStore()
   const { setUnreadMessage } = useChatStore()
   const { addMonitorMessage } = useChat()
-  const { socket, setSocket } = useChatStore()
-  const baseURL = `${URL_CONFIG.satoshiMonitorApi}ws/chat/`
-
-  const { connect, on } = useWebSocket({
+  const ws = useWebSocket({
     heartbeat: JSON.stringify({ type: 'ping' }),
   })
+  const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
 
   const inithMonitorReq = async () => {
     if (!userInfo?.id) return
@@ -27,15 +25,15 @@ export const useChatMonitorMsg = () => {
     const token = getLoginToken()
     const wssUrl = `${baseURL}${data.id}/?access_token=${token}`
 
-    setSocket(await connect(wssUrl))
+    await ws.connect(wssUrl)
 
-    on('event', ({ data }) => {
+    ws.on('event', ({ data }) => {
       console.log(`Keyup: ${useChatStore.getState().inputKeyup}`)
       console.log(`readAnswer: ${useChatStore.getState().readAnswer}`)
       console.log(`waitAnswer: ${useChatStore.getState().waitAnswer}`)
 
       if (!isLogined) {
-        socket?.close()
+        ws.disconnect()
         return
       }
 
@@ -63,7 +61,9 @@ export const useChatMonitorMsg = () => {
     if (isLogined) {
       inithMonitorReq()
     } else {
-      socket?.close()
+      ws.disconnect()
     }
+
+    return ws.disconnect
   }, [isLogined, userInfo?.id])
 }

@@ -2,11 +2,11 @@
  * Management project URLs.
  */
 export const URL_CONFIG = {
-  satoshiApi: process.env.NEXT_PUBLIC_SATOSHI_API!,
+  satoshiApi: 'https://api.mysatoshi.ai',
 
   satoshiChainDataApi: process.env.NEXT_PUBLIC_SATOSHI_CHAIN_DATA_API!,
 
-  satoshiMonitorApi: process.env.NEXT_PUBLIC_SATOSHI_MONITOR_API!,
+  satoshiMonitorApi: 'wss://api.mysatoshi.ai',
 
   satoshiChatApi: 'https://ai.mysatoshi.ai',
 
