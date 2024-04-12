@@ -1,39 +1,43 @@
-import {
-  ChatResponseAnswerMeta,
-  ChatResponseTokenDetail,
-} from '@/api/chat/types'
-import MessageBubble from '../message-bubble'
-import { Avatar, IconButton } from '@mui/material'
-import { IoArrowDown, IoArrowUp, IoLogoTwitter } from 'react-icons/io5'
-import { utilFmt } from '@/utils/format'
 import { useTranslation } from 'react-i18next'
 import numeral from 'numeral'
 import { FaTelegramPlane } from 'react-icons/fa'
 import { RiGlobalLine } from 'react-icons/ri'
-
 import ShowMoreText from 'react-show-more-text'
+import { Avatar, IconButton } from '@mui/material'
+import { IoArrowDown, IoArrowUp, IoLogoTwitter } from 'react-icons/io5'
+
+import MessageBubble from '../message-bubble'
+import { utilFmt } from '@/utils/format'
 import { link } from '@/config/link'
+
+import type {
+  ChatResponseAnswerMeta,
+  ChatResponseTokenDetail,
+} from '@/api/chat/types'
 
 interface Props {
   msg?: ChatResponseAnswerMeta
+  avatarSize?: number
 }
 
 export const TokenDetailBubble = (props: Props) => {
-  const data = props.msg?.data as unknown as ChatResponseTokenDetail
-  console.log(data)
+  const { avatarSize = 45, msg } = props
+  const data = msg?.data as unknown as ChatResponseTokenDetail
+  const priceCange = Number(data.price_change)
   const { t } = useTranslation()
 
-  const priceCange = Number(data.price_change)
-
   return (
-    <MessageBubble className='!w-[360px]'>
-      <div className="flex">
-        <Avatar src={data.logo} alt="Logo" sx={{ width: 30, height: 30 }}>
+    <MessageBubble className="!w-[360px]">
+      <div className="flex items-stretch">
+        <Avatar
+          src={data.logo}
+          alt="Logo"
+          sx={{ width: avatarSize, height: avatarSize }}
+        >
           {data.name.slice(0, 1)}
         </Avatar>
-        <div className="ml-2 w-full flex flex-col justify-center">
+        <div className="ml-2 w-full flex flex-col justify-between">
           <div>{data.symbol}</div>
-
           {data.description && (
             <ShowMoreText
               anchorClass="text-primary cursor-pointer block text-sm"
@@ -46,7 +50,7 @@ export const TokenDetailBubble = (props: Props) => {
           )}
         </div>
       </div>
-      <div className="flex items-center my-1">
+      <div className="flex items-center mt-2 mb-1">
         <div className="font-bold">${utilFmt.token(Number(data.price))}</div>
         <div className="flex items-center ml-5 font-bold text-yellow-600">
           {priceCange < 0 ? (
