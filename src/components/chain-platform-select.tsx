@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Avatar, MenuItem, Select } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 
-import { useChainsPlatforms } from '../hooks/use-chains-platforms'
+import { useChainsPlatforms } from './wallet/hooks/use-chains-platforms'
 import { useWalletStore } from '@/stores/use-wallet-store'
 
 interface Props extends React.ComponentProps<'div'> {
@@ -12,14 +12,14 @@ interface Props extends React.ComponentProps<'div'> {
   avatarSize?: number
 }
 
-export const ChainPlatformSelect = (props: Props) => {
+export const ChainPlatformSelect = memo((props: Props) => {
   const { type = 'chain', className, avatarSize = 24 } = props
   const { t } = useTranslation()
   const { chains, platforms } = useChainsPlatforms(true)
   const {
     selectedChain,
-    setSelectedChain,
     selectedPlatform,
+    setSelectedChain,
     setSelectedPlatform,
   } = useWalletStore()
 
@@ -75,6 +75,6 @@ export const ChainPlatformSelect = (props: Props) => {
       {type === 'platform' && <PlatformSelect />}
     </div>
   )
-}
+})
 
 export default ChainPlatformSelect

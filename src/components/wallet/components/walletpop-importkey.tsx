@@ -13,7 +13,7 @@ import toast from 'react-hot-toast'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
 import { useWallet } from '@/hooks/use-wallet'
-import ChainPlatformSelect from './wallet-chain-select'
+import ChainPlatformSelect from '../../chain-platform-select'
 
 import type { WalletDialogProps } from '../types'
 

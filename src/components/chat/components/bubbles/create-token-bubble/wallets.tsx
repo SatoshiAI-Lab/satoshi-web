@@ -9,7 +9,7 @@ import { Wallet } from '@/components/wallet'
 import { utilArr } from '@/utils/array'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { useWallet } from '@/hooks/use-wallet'
-import ChainPlatformSelect from '@/components/wallet/components/wallet-chain-select'
+import ChainPlatformSelect from '@/components/chain-platform-select'
 
 const CreateTokenWallets = (props: { hasWallet: boolean }) => {
   const { hasWallet } = props

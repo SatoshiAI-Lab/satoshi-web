@@ -1,4 +1,4 @@
-import { FC, createElement, useEffect, useState } from 'react'
+import { FC, createElement, memo, useEffect, useState } from 'react'
 import {
   Button,
   CircularProgress,
@@ -18,7 +18,7 @@ import { WalletRenamePop } from './components/walletpop-rename'
 import { WalletImportKeyPop } from './components/walletpop-importkey'
 import { WalletDeletePop } from './components/walletepop-delete'
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { ChainPlatformSelect } from './components/wallet-chain-select'
+import { ChainPlatformSelect } from '../chain-platform-select'
 import { useWallet } from '@/hooks/use-wallet'
 import { CustomSuspense } from '../custom-suspense'
 import { WalletPlatform } from '@/config/wallet'
@@ -60,14 +60,15 @@ const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
   3: WalletDeletePop,
 }
 
-const Wallet: FC<WalletDialogProps> = ({
-  finish,
-  showButtons = true,
-  // Used for show a wallet details.
-  onlyWalletAddr,
-  open,
-  onClose,
-}) => {
+export const Wallet: FC<WalletDialogProps> = memo((props) => {
+  const {
+    finish,
+    showButtons = true,
+    // Used for show a wallet details.
+    onlyWalletAddr,
+    open,
+    onClose,
+  } = props
   const { wallets, setCurrentWallet } = useWalletStore()
   const { isFirstFetchingWallets, isFetchingWallets, createWallet } = useWallet(
     { enabled: true }
@@ -259,6 +260,6 @@ const Wallet: FC<WalletDialogProps> = ({
         })}
     </>
   )
-}
+})
 
-export { Wallet }
+export default Wallet
