@@ -108,7 +108,7 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
             <div className="font-bold mt-2">⚙️ {t('ca-secutiry')}</div>
             {Object.keys(props.security).map((key) => (
               <div className="mt-2" key={key}>
-                {key}: {props.security[key]}
+                {key} {props.security[key]}
               </div>
             ))}
           </div>
