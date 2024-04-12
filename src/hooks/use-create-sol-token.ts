@@ -7,7 +7,7 @@ import { interactiveApi } from '@/api/interactive'
 import { CreateTokenReq, MintTokenReq } from '@/api/interactive/types'
 import { useWaitingStatus } from './use-waiting'
 
-export const useCreateToken = () => {
+export const useCreateSolToken = () => {
   const [total, setTotal] = useState(-1)
   const [walletId, setWalletId] = useState('')
   const [createdHash, setCreatedHash] = useState('')

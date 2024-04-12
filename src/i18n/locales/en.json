@@ -246,5 +246,6 @@
   "email": "Email",
   "password": "Password",
   "forgot": "Forgot",
-  "select-platform": "Select platform"
+  "select-platform": "Select platform",
+  "unsupported-chain": "Unsupported chain, currently only supports:"
 }

@@ -21,6 +21,7 @@ export interface CreateTokenReq {
   symbol: string
   decimals: number
   desc?: string
+  amount?: number
 }
 
 export interface CreateTokenRes {

@@ -18,9 +18,14 @@ import ImageUploader from '@/components/image-uploader'
 import CreateTokenWallets from './wallets'
 import CreateTokenLoading from './loading'
 import CreateTokenSuccess from './success'
-import { useCreateToken } from '@/hooks/use-create-token'
-import { useWalletStore } from '@/stores/use-wallet-store'
+import { useCreateSolToken } from '@/hooks/use-create-sol-token'
 import { DialogHeader } from '@/components/dialog-header'
+import { WalletChain } from '@/config/wallet'
+import { useCreateOpToken } from '@/hooks/use-create-op-token'
+import { useCreateTokenConfig } from '@/hooks/use-create-token-config'
+
+import type { UserCreateWalletResp } from '@/api/wallet/params'
+import type { CreateTokenReq } from '@/api/interactive/types'
 
 enum HotToken {
   WIF = 100_000_000,
@@ -29,15 +34,19 @@ enum HotToken {
 
 interface CreateTokenBubbleProps extends React.ComponentProps<'div'> {
   hasWallet: boolean
+  chain?: string
 }
 
 const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
-  const { hasWallet } = props
+  const { hasWallet, chain } = props
   const { t } = useTranslation()
   const [symbol, setSymbol] = useState('')
   const [name, setName] = useState('')
   const [total, setTokenTotal] = useState(0)
   const [intro, setTokenIntro] = useState('')
+  const [mintOpen, setMintOpen] = useState(false)
+  // Use simplest method passed data, because just is parent-child component.
+  const [selectedWallet, setSelectedWallet] = useState<UserCreateWalletResp>()
   const {
     hash,
     address,
@@ -47,38 +56,55 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
     isMintSuccess,
     isMintError,
     isLongTime,
-    createToken,
+    createToken: createSolToken,
     mintToken,
     cancel,
-  } = useCreateToken()
-  const { currentWallet } = useWalletStore()
+  } = useCreateSolToken()
+  const { isOpLoading, isOpSuccess, createOpToken } = useCreateOpToken()
+  const { config, configs } = useCreateTokenConfig(chain)
 
   const nicknameIsValid = !!name.trim()
   const nameIsValid = !!symbol.trim()
   const totalIsValid = total > 0
+  const balance = Number(selectedWallet?.value || 0)
 
   const onCreate = () => {
-    if (!currentWallet?.id) {
+    if (!chain || !config) return
+    if (!selectedWallet?.id) {
       toast.error(t('no-wallet'))
       return
     }
-    const minBalance = 0.16
-    if (Number(currentWallet?.value || 0) < minBalance) {
-      toast.error(t('balance-less-than').replace('{}', String(minBalance)))
-      return
-    }
+    // TODO: uncomment
+    // if (balance < config.minBalance) {
+    //   toast.error(
+    //     t('balance-less-than').replace('{}', String(config.minBalance))
+    //   )
+    //   return
+    // }
 
-    createToken({
-      id: currentWallet.id,
+    const params = {
+      chain,
+      id: selectedWallet.id,
       name: name.trim(),
       symbol: symbol.trim(),
       desc: intro.trim(),
-      decimals: 9, // TODO: the decimals should be dynamic.
+      decimals: config.decimals,
       total,
-    })
-  }
+    } as CreateTokenReq & {
+      id: string
+      total: number
+    }
 
-  const [mintOpen, setMintOpen] = useState(false)
+    if (chain === WalletChain.SOL) {
+      createSolToken(params)
+      return
+    }
+
+    if (chain === WalletChain.OP) {
+      createOpToken(params)
+      return
+    }
+  }
 
   useEffect(() => {
     if (isMintError) {
@@ -86,7 +112,22 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
     }
   }, [isMintError])
 
-  if (isLoading) {
+  // Unsupoorted chain.
+  if (!config) {
+    return (
+      <MessageBubble className="pb-4 w-bubble">
+        <div>{t('unsupported-chain')}</div>
+        <ul>
+          {Object.keys(configs).map((c) => (
+            <li>- {c}</li>
+          ))}
+        </ul>
+      </MessageBubble>
+    )
+  }
+
+  // Loading state.
+  if (isLoading || isOpLoading) {
     return (
       <CreateTokenLoading
         isMinting={isMinting}
@@ -96,16 +137,18 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
     )
   }
 
-  if (isCreateSuccess && isMintSuccess) {
+  // Success state.
+  if ((isCreateSuccess && isMintSuccess) || isOpSuccess) {
     return (
       <CreateTokenSuccess
         tokenName={name}
         tokenAddr={address}
-        walletName={currentWallet?.name}
+        walletName={selectedWallet?.name}
       />
     )
   }
 
+  // Create bubble.
   return (
     <MessageBubble className="pb-4 w-bubble">
       <Dialog open={mintOpen}>
@@ -219,7 +262,11 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
         />
       </div>
       {/* Wallet list select */}
-      <CreateTokenWallets hasWallet={hasWallet} />
+      <CreateTokenWallets
+        hasWallet={hasWallet}
+        chain={chain}
+        onSelectWallet={(wallet) => setSelectedWallet(wallet)}
+      />
       <div className="my-4">
         {!nicknameIsValid && (
           <div className="text-rise text-sm">

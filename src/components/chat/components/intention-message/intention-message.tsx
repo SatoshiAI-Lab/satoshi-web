@@ -76,7 +76,12 @@ export const IntentMessage = ({ msg }: Props) => {
 
   // Create token
   if (metaType === createTokenNoWallet || metaType == createTokenHaveWallet) {
-    return <CreateTokenBubble hasWallet={metaType === createTokenHaveWallet} />
+    return (
+      <CreateTokenBubble
+        hasWallet={metaType === createTokenHaveWallet}
+        chain={msg.msgs?.chain}
+      />
+    )
   }
 
   // token detail

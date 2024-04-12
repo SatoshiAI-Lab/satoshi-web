@@ -243,5 +243,6 @@
   "email": "邮箱",
   "password": "密码",
   "forgot": "忘记了",
-  "select-platform": "选择平台"
+  "select-platform": "选择平台",
+  "unsupported-chain": "不支持的链，目前仅支持："
 }

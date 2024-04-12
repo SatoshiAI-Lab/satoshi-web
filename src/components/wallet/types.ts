@@ -1,3 +1,5 @@
+import { UserCreateWalletResp } from '@/api/wallet/params'
+
 export interface WalletDialogProps {
   open: boolean
   onClose?(): void
@@ -6,7 +8,7 @@ export interface WalletDialogProps {
   finish?: boolean
   showButtons?: boolean
   // If not null & find same wallet, only show this wallet
-  onlyWalletAddr?: string
+  onlyWallet?: UserCreateWalletResp
 }
 
 export interface WalletCardProps {
