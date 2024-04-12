@@ -1,4 +1,4 @@
-import { FC, createElement, useEffect, useState } from 'react'
+import { FC, createElement, memo, useEffect, useState } from 'react'
 import {
   Button,
   CircularProgress,
@@ -18,13 +18,14 @@ import { WalletRenamePop } from './components/walletpop-rename'
 import { WalletImportKeyPop } from './components/walletpop-importkey'
 import { WalletDeletePop } from './components/walletepop-delete'
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { WalletChainSelect } from './components/wallet-chain-select'
+import { ChainPlatformSelect } from '../chain-platform-select'
 import { useWallet } from '@/hooks/use-wallet'
 import { CustomSuspense } from '../custom-suspense'
 import { WalletPlatform } from '@/config/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
 
 import type { WalletDialogProps } from './types'
+import WalletSkeleton from './components/skeleton'
 
 const walletMenu = [
   {
@@ -60,18 +61,17 @@ const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
   3: WalletDeletePop,
 }
 
-const Wallet: FC<WalletDialogProps> = ({
-  finish,
-  showButtons = true,
-  // Used for show a wallet details.
-  onlyWalletAddr,
-  open,
-  onClose,
-}) => {
+export const Wallet: FC<WalletDialogProps> = memo((props) => {
+  const {
+    finish,
+    showButtons = true,
+    // Used for show a wallet details.
+    onlyWalletAddr,
+    open,
+    onClose,
+  } = props
   const { wallets, setCurrentWallet } = useWalletStore()
-  const { isFirstFetchingWallets, isFetchingWallets, createWallet } = useWallet(
-    { enabled: true }
-  )
+  const { isFirstFetchingWallets, createWallet } = useWallet({ enabled: true })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openCreateWallet = Boolean(anchorEl)
   const { copy } = useClipboard()
@@ -217,18 +217,14 @@ const Wallet: FC<WalletDialogProps> = ({
               <AiOutlineSafety size={162} color="#D4D4D4" />
             </div>
           </div>
-          <WalletChainSelect />
+          {/* If only one wallet, hide select */}
+          {!onlyWalletAddr && <ChainPlatformSelect />}
           {/* Wallets list */}
           <CustomSuspense
             container="div"
             className="flex flex-col h-[440px] max-h-[440px] overflow-scroll gap-[25px] mt-[20px]"
-            isPendding={isFetchingWallets}
-            isStale={!isFirstFetchingWallets && isFetchingWallets}
-            fallback={
-              <div className="flex items-center justify-center h-[440px]">
-                <CircularProgress />
-              </div>
-            }
+            isPendding={isFirstFetchingWallets}
+            fallback={<WalletSkeleton className="h-[440px] max-h-[440px]" />}
           >
             {wallets.length ? (
               (onlyWallet ? [onlyWallet] : wallets).map((item) => (
@@ -260,6 +256,6 @@ const Wallet: FC<WalletDialogProps> = ({
         })}
     </>
   )
-}
+})
 
-export { Wallet }
+export default Wallet

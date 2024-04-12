@@ -25,7 +25,7 @@ const CreateTokenSuccess = (props: Props) => {
   const { currentWallet } = useWalletStore()
 
   return (
-    <MessageBubble className="w-[550px]">
+    <MessageBubble className="w-bubble">
       <Wallet
         open={open}
         onClose={() => setOpen(false)}

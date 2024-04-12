@@ -1,5 +1,6 @@
 import { CHART_STUDIES, StudyName, type Study } from '@/config/kline'
 import { useChartStore } from '@/stores/use-chart-store'
+import { useEnv } from '@/hooks/use-env'
 
 import type {
   EntityId,
@@ -12,13 +13,14 @@ import type {
 export const useStudies = () => {
   const studies = Object.values(CHART_STUDIES) as Study[]
   const { chart } = useChartStore()
+  const { isProdMode } = useEnv()
 
   /** Waiting for chart ready. */
-  const watingForReady = (newChart?: IChartingLibraryWidget | null) => {
+  const waitingForReady = (newChart?: IChartingLibraryWidget | null) => {
     return new Promise<IChartingLibraryWidget>((resolve, reject) => {
       const chartIns = newChart || chart
       if (!chartIns) {
-        return reject('[watingForReady Error]: chart is null')
+        return reject('[waitingForReady Error]: chart is null')
       }
 
       chartIns.onChartReady(() => resolve(chartIns))
@@ -66,7 +68,7 @@ export const useStudies = () => {
       const study = await activeChart.createStudy(
         studyParams.name,
         studyParams.isMain,
-        false, // TODO: Use `studyParams.lock` in production mode.
+        isProdMode ? studyParams.lock : false, // Unlock in dev mode.
         studyParams.inputs,
         studyParams.overrides,
         studyParams.options
@@ -121,6 +123,6 @@ export const useStudies = () => {
     isSubStudy,
     getVisible,
     setVisible,
-    watingForReady,
+    waitingForReady,
   }
 }

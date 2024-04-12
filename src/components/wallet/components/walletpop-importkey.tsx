@@ -13,6 +13,7 @@ import toast from 'react-hot-toast'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
 import { useWallet } from '@/hooks/use-wallet'
+import ChainPlatformSelect from '../../chain-platform-select'
 
 import type { WalletDialogProps } from '../types'
 
@@ -71,6 +72,7 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
         </div>
         <div className="flex flex-col justify-center items-center m-auto py-7 gap-4 w-[358px]">
           <div>{t('wallet.import-wallet.private-key')}</div>
+          <ChainPlatformSelect type="platform" className="!my-0 !self-start" />
           <TextField
             autoFocus
             fullWidth

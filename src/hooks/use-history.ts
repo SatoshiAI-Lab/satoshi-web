@@ -13,9 +13,12 @@ export const useHistory = (options: Options) => {
   const { inputRef, onChange } = options
   const historyRef = useRef<string[]>([])
   const pointerRef = useRef(0)
+  const initHeight = useRef(0)
 
   const addHistory = (str: string) => {
     historyRef.current.unshift(str)
+    // Each add reset pointer.
+    pointerRef.current = 0
   }
 
   const getPrevHistory = () => {
@@ -39,7 +42,9 @@ export const useHistory = (options: Options) => {
 
   const onKeyUp = (event: Event) => {
     const e = event as KeyboardEvent
+    const isMultiline = inputRef.current!.offsetHeight > initHeight.current
 
+    if (isMultiline) return
     if (e.key === 'ArrowUp') {
       onChange(getPrevHistory())
       return
@@ -53,9 +58,11 @@ export const useHistory = (options: Options) => {
   useEffect(() => {
     if (!inputRef.current) return
 
+    initHeight.current = inputRef.current.offsetHeight
     inputRef.current.addEventListener('keyup', onKeyUp)
 
     return () => {
+      initHeight.current = 0
       inputRef.current?.removeEventListener('keyup', onKeyUp)
     }
   }, [inputRef])

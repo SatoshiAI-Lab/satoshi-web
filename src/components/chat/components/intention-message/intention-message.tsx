@@ -41,7 +41,7 @@ export const IntentMessage = ({ msg }: Props) => {
 
   // Balances(Wallet list)
   if (msg.type == walletList || metaType == walletList) {
-    return <MyWalletsBubble />
+    return <MyWalletsBubble meta={msg.msgs} />
   }
 
   // Change name wallet list

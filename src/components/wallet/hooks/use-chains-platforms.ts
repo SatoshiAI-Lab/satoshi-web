@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
 
-export const useWalletChains = (enabled = false) => {
+export const useChainsPlatforms = (enabled = false) => {
   const { chains, platforms, setChains, setPlatforms } = useWalletStore()
 
   const {

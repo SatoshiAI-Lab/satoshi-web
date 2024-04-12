@@ -6,7 +6,7 @@ interface UserCreateWalletReq {
   /**
    * Wallet platform: SOL or EVM, default: SOL
    */
-  platform?: WalletPlatform
+  platform?: string
 }
 
 interface UserCreateWalletResp {

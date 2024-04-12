@@ -5,21 +5,21 @@ import { FaTelegramPlane } from 'react-icons/fa'
 import { GrLanguage } from 'react-icons/gr'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
+import { IoCopyOutline } from 'react-icons/io5'
+import { IconButton } from '@mui/material'
 
 import MessageBubble from '../bubbles/message-bubble'
-import { IconButton } from '@mui/material'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { ChatResponseMetaNewPool } from '@/api/chat/types'
 import { link } from '@/config/link'
-import { IoCopyOutline } from 'react-icons/io5'
 
 const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
   const { t } = useTranslation()
   const { copy } = useClipboard()
 
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4 w-[500px]')}>
+    <MessageBubble className={clsx('w-bubble pt-4')}>
       {/* Avatar, name */}
       <div className="flex justify-between">
         <div className="flex items-stretch gap-[8px]">

@@ -3,7 +3,6 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { WalletPlatform } from '@/config/wallet'
 
 interface Options {
   enabled?: boolean
@@ -79,7 +78,7 @@ export const useWallet = (options?: Options) => {
   })
 
   // Create wallet API.
-  const createWallet = async (platform: WalletPlatform) => {
+  const createWallet = async (platform: string) => {
     await mutateCreateWallet({ platform })
     await refetchWallets()
     resetCreateWallet()
@@ -93,10 +92,7 @@ export const useWallet = (options?: Options) => {
   }
 
   // Import wallet API.
-  const importPrivateKey = async (
-    private_key: string,
-    platform: WalletPlatform
-  ) => {
+  const importPrivateKey = async (private_key: string, platform: string) => {
     await mutateImportPrivateKey({ private_key, platform })
     await refetchWallets()
     resetImportPrivateKey()
