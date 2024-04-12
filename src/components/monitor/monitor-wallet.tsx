@@ -1,27 +1,12 @@
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  IconButton,
-  OutlinedInput,
-} from '@mui/material'
-import {
-  IoCloseOutline,
-  IoCopyOutline,
-  IoEyeOutline,
-  IoRemoveCircle,
-  IoRemoveOutline,
-} from 'react-icons/io5'
+import { Button, CircularProgress, Dialog, OutlinedInput } from '@mui/material'
+import { IoEyeOutline } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 
-import type { AddressData, MonitorConfigData } from '@/api/monitor/type'
+import type { MonitorConfigData } from '@/api/monitor/type'
 import { useState } from 'react'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { MonitorConfig } from '@/config/monitor'
 import toast from 'react-hot-toast'
-import { utilFmt } from '@/utils/format'
-import clsx from 'clsx'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { DialogHeader } from '../dialog-header'
 import { useShow } from '@/hooks/use-show'
 import { MonitorWalletList } from './monitor-wallet-list'

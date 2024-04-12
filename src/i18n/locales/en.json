@@ -246,5 +246,8 @@
   "email": "Email",
   "password": "Password",
   "forgot": "Forgot",
-  "select-platform": "Select platform"
+  "select-platform": "Select platform",
+  "normal": "Yes",
+  "risk": "No",
+  "unknown": "Unknown"
 }

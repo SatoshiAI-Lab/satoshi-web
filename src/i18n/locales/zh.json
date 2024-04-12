@@ -243,5 +243,8 @@
   "email": "邮箱",
   "password": "密码",
   "forgot": "忘记了",
-  "select-platform": "选择平台"
+  "select-platform": "选择平台",
+  "normal": "正常",
+  "risk": "风险",
+  "unknown": "未知风险"
 }
