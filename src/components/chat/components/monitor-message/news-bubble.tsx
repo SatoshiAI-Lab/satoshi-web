@@ -38,7 +38,7 @@ const NewsBubble = ({ data }: Props) => {
   return (
     <MessageBubble
       className={clsx(
-        '!min-w-bubble pt-[12px] pr-[14px] pb-[15px] pl-[18px] flex flex-col'
+        'w-bubble pt-[12px] pr-[14px] pb-[15px] pl-[18px] flex flex-col'
       )}
     >
       <div className="font-bold text-[18px]">{currentTitle}</div>

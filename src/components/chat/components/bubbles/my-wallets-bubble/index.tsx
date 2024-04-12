@@ -21,10 +21,18 @@ import CustomSuspense from '@/components/custom-suspense'
 import { utilArr } from '@/utils/array'
 import { useWalletStore } from '@/stores/use-wallet-store'
 
-import type { ChatResponseWalletListToken } from '@/api/chat/types'
+import type {
+  ChatResponseAnswerMeta,
+  ChatResponseWalletListToken,
+} from '@/api/chat/types'
 import type { WalletCardProps } from '@/components/wallet/types'
 
-const MyWalletsBubble = () => {
+interface Props {
+  meta?: ChatResponseAnswerMeta
+}
+
+const MyWalletsBubble = (props: Props) => {
+  const { meta } = props
   const [folds, setFolds] = useState<string[]>([])
   const { t } = useTranslation()
   const { sendMsg, addMessageAndLoading } = useChat()
@@ -32,11 +40,11 @@ const MyWalletsBubble = () => {
   const wallets =
     data.sort((a, b) => Number(b!.value)! - Number(a!.value)) || []
 
+  console.log('meta', meta)
+
   const sendQ = (question: string) => {
     addMessageAndLoading({ msg: question, position: 'right' })
-    sendMsg({
-      question: question,
-    })
+    sendMsg({ question })
   }
 
   const onDetails = (token: ChatResponseWalletListToken) => {

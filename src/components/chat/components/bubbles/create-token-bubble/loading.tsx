@@ -16,7 +16,7 @@ const CreateTokenLoading = (props: {
   return (
     <MessageBubble
       className={clsx(
-        'min-w-bubble flex flex-col items-center justify-center',
+        'w-bubble flex flex-col items-center justify-center',
         'bg-white pb-4'
       )}
     >

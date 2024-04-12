@@ -107,7 +107,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   }
 
   return (
-    <MessageBubble className="pb-4 min-w-bubble">
+    <MessageBubble className="pb-4 w-bubble">
       <Dialog open={mintOpen}>
         <DialogHeader onClose={() => setMintOpen(false)}>
           <div className="mr-10">Your token has been created.</div>

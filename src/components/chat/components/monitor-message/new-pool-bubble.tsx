@@ -19,7 +19,7 @@ const NewPoolBubble = ({ ...props }: ChatResponseMetaNewPool) => {
   const { copy } = useClipboard()
 
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4 w-[500px]')}>
+    <MessageBubble className={clsx('w-bubble pt-4')}>
       {/* Avatar, name */}
       <div className="flex justify-between">
         <div className="flex items-stretch gap-[8px]">
