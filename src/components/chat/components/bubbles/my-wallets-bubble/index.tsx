@@ -13,19 +13,21 @@ import { useTranslation } from 'react-i18next'
 import numeral from 'numeral'
 import { IoIosArrowDown } from 'react-icons/io'
 import clsx from 'clsx'
+import { useQuery } from '@tanstack/react-query'
 
 import { useChat } from '@/hooks/use-chat'
 import TokenRow from './token-row'
 import MessageBubble from '../message-bubble'
 import CustomSuspense from '@/components/custom-suspense'
 import { utilArr } from '@/utils/array'
-import { useWalletStore } from '@/stores/use-wallet-store'
+import { walletApi } from '@/api/wallet'
 
 import type {
   ChatResponseAnswerMeta,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
 import type { WalletCardProps } from '@/components/wallet/types'
+import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 interface Props {
   meta?: ChatResponseAnswerMeta
@@ -34,13 +36,16 @@ interface Props {
 const MyWalletsBubble = (props: Props) => {
   const { meta } = props
   const [folds, setFolds] = useState<string[]>([])
+  const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
   const { t } = useTranslation()
   const { sendMsg, addMessageAndLoading } = useChat()
-  const { wallets: data } = useWalletStore()
-  const wallets =
-    data.sort((a, b) => Number(b!.value)! - Number(a!.value)) || []
 
-  console.log('meta', meta)
+  // Don't use `useWallet`, here is independent.
+  const { data: walletData } = useQuery({
+    staleTime: Infinity, // Each bubble only request once.
+    queryKey: [walletApi.getWallets.name, meta?.chain],
+    queryFn: () => walletApi.getWallets(meta?.chain),
+  })
 
   const sendQ = (question: string) => {
     addMessageAndLoading({ msg: question, position: 'right' })
@@ -84,6 +89,18 @@ const MyWalletsBubble = (props: Props) => {
       setFolds(excludeFirst.map((w) => w.id!))
     }
   }, [])
+
+  useEffect(() => {
+    const walletList = walletData?.data ?? []
+
+    // Optimize performance
+    if (utilArr.sameLen(walletList, wallets)) return
+
+    const sortedWalelts = walletList.sort(
+      (a, b) => Number(b!.value)! - Number(a!.value)
+    )
+    setWallets(sortedWalelts)
+  }, [walletData])
 
   const TableHeader = () => (
     <TableHead>
@@ -134,7 +151,7 @@ const MyWalletsBubble = (props: Props) => {
                         'text-sm inline-block'
                       )}
                     >
-                      {t('no-assets')}
+                      <td>{t('no-assets')}</td>
                     </tr>
                   }
                 >
