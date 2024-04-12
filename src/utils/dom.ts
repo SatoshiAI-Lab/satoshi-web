@@ -4,10 +4,14 @@ export const utilDom = {
    * @param el target element.
    * @param delay optional delay scroll time. default: 100ms.
    */
-  scrollToBottom(el: HTMLElement, delay: number = 100) {
+  scrollToBottom(el: HTMLElement, delay = 100, smooth = true) {
     if (!el) return
 
-    setTimeout(() => el.scrollTo(0, el.scrollHeight), delay)
+    el.style.scrollBehavior = smooth ? 'smooth' : 'auto'
+    setTimeout(() => {
+      el.scrollTo(0, el.scrollHeight)
+      el.style.scrollBehavior = 'auto'
+    }, delay)
   },
 
   /**
