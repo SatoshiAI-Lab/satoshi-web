@@ -18,7 +18,7 @@ import { WalletRenamePop } from './components/walletpop-rename'
 import { WalletImportKeyPop } from './components/walletpop-importkey'
 import { WalletDeletePop } from './components/walletepop-delete'
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { WalletChainSelect } from './components/wallet-chain-select'
+import { ChainPlatformSelect } from './components/wallet-chain-select'
 import { useWallet } from '@/hooks/use-wallet'
 import { CustomSuspense } from '../custom-suspense'
 import { WalletPlatform } from '@/config/wallet'
@@ -217,13 +217,12 @@ const Wallet: FC<WalletDialogProps> = ({
               <AiOutlineSafety size={162} color="#D4D4D4" />
             </div>
           </div>
-          <WalletChainSelect />
+          <ChainPlatformSelect />
           {/* Wallets list */}
           <CustomSuspense
             container="div"
             className="flex flex-col h-[440px] max-h-[440px] overflow-scroll gap-[25px] mt-[20px]"
-            isPendding={isFetchingWallets}
-            isStale={!isFirstFetchingWallets && isFetchingWallets}
+            isPendding={isFirstFetchingWallets}
             fallback={
               <div className="flex items-center justify-center h-[440px]">
                 <CircularProgress />

@@ -95,7 +95,7 @@ const MyWalletsBubble = () => {
   )
 
   return (
-    <MessageBubble>
+    <MessageBubble className="pt-4">
       {wallets.map((w, i) => (
         <React.Fragment key={w.id}>
           <div

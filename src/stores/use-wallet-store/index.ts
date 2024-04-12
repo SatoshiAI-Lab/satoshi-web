@@ -13,7 +13,7 @@ interface States {
   platforms: GetChainsRes['platforms']
   currentWallet?: WalletCardProps
   selectedChain: string
-  selectedPlatform: WalletPlatform
+  selectedPlatform: string
 }
 
 interface Actions {
@@ -22,7 +22,7 @@ interface Actions {
   setPlatforms(platforms: GetChainsRes['platforms']): void
   setCurrentWallet(address?: string): void
   setSelectedChain(chain: string): void
-  setSelectedPlatform(platform: WalletPlatform): void
+  setSelectedPlatform(platform: string): void
 }
 
 export const useWalletStore = create<States & Actions>((set, get) => ({

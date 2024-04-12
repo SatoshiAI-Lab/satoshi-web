@@ -242,5 +242,6 @@
   "signin": "登录",
   "email": "邮箱",
   "password": "密码",
-  "forgot": "忘记了"
+  "forgot": "忘记了",
+  "select-platform": "选择平台"
 }

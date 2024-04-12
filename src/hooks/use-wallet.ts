@@ -79,7 +79,7 @@ export const useWallet = (options?: Options) => {
   })
 
   // Create wallet API.
-  const createWallet = async (platform: WalletPlatform) => {
+  const createWallet = async (platform: string) => {
     await mutateCreateWallet({ platform })
     await refetchWallets()
     resetCreateWallet()
@@ -93,10 +93,7 @@ export const useWallet = (options?: Options) => {
   }
 
   // Import wallet API.
-  const importPrivateKey = async (
-    private_key: string,
-    platform: WalletPlatform
-  ) => {
+  const importPrivateKey = async (private_key: string, platform: string) => {
     await mutateImportPrivateKey({ private_key, platform })
     await refetchWallets()
     resetImportPrivateKey()
