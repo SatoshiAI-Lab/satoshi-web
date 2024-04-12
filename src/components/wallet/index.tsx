@@ -25,6 +25,7 @@ import { WalletPlatform } from '@/config/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
 
 import type { WalletDialogProps } from './types'
+import WalletSkeleton from './components/skeleton'
 
 const walletMenu = [
   {
@@ -223,11 +224,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
             container="div"
             className="flex flex-col h-[440px] max-h-[440px] overflow-scroll gap-[25px] mt-[20px]"
             isPendding={isFirstFetchingWallets}
-            fallback={
-              <div className="flex items-center justify-center h-[440px]">
-                <CircularProgress />
-              </div>
-            }
+            fallback={<WalletSkeleton className="h-[440px] max-h-[440px]" />}
           >
             {wallets.length ? (
               (onlyWallet ? [onlyWallet] : wallets).map((item) => (
