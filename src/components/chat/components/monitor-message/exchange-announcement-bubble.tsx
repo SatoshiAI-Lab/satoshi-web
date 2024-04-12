@@ -38,9 +38,7 @@ const ExchangeAnnouncementBubble = ({ data }: Props) => {
   }
   return (
     <MessageBubble
-      className={clsx(
-        '!min-w-[450px] !max-w-[550px] pt-[12px] pr-[14px] pb-[15px] pl-[18px]'
-      )}
+      className={clsx('!min-w-bubble pt-[12px] pr-[14px] pb-[15px] pl-[18px]')}
     >
       {/* Avatar, chain */}
       <div className="flex items-stretch">
