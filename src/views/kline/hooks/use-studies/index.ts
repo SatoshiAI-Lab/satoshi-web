@@ -14,11 +14,11 @@ export const useStudies = () => {
   const { chart } = useChartStore()
 
   /** Waiting for chart ready. */
-  const watingForReady = (newChart?: IChartingLibraryWidget | null) => {
+  const waitingForReady = (newChart?: IChartingLibraryWidget | null) => {
     return new Promise<IChartingLibraryWidget>((resolve, reject) => {
       const chartIns = newChart || chart
       if (!chartIns) {
-        return reject('[watingForReady Error]: chart is null')
+        return reject('[waitingForReady Error]: chart is null')
       }
 
       chartIns.onChartReady(() => resolve(chartIns))
@@ -121,6 +121,6 @@ export const useStudies = () => {
     isSubStudy,
     getVisible,
     setVisible,
-    watingForReady,
+    waitingForReady,
   }
 }
