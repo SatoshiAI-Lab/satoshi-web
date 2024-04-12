@@ -7,22 +7,19 @@ import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { IoCopyOutline } from 'react-icons/io5'
 import { IconButton, Dialog } from '@mui/material'
+import { BiError } from 'react-icons/bi'
 
 import MessageBubble from '../bubbles/message-bubble'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
-import {
-  ChatResponseMetaNewPool,
-  ChatResponseMetaNewPoolV2,
-  SecurityContent,
-} from '@/api/chat/types'
 import { link } from '@/config/link'
+import { WalletChain } from '@/config/wallet'
 import { utilLang } from '@/utils/language'
 import { useShow } from '@/hooks/use-show'
 import { DialogHeader } from '@/components/dialog-header'
-import { BiError } from 'react-icons/bi'
-import { WalletPlatform } from '@/config/wallet'
 import { MonitorPoolStatus } from '@/config/monitor'
+
+import type { ChatResponseMetaNewPoolV2 } from '@/api/chat/types'
 
 const data = {
   id: 'd7cb3851-1d54-4f71-8b8d-eb5f8decfc0e',
@@ -237,13 +234,13 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
 
   const { show, open, hidden } = useShow()
 
-  props = data as unknown as ChatResponseMetaNewPoolV2
+  // props = data as unknown as ChatResponseMetaNewPoolV2
 
   const normalList: SecurityList[] = []
   const riskList: SecurityList[] = []
   const unknownList: SecurityList[] = []
 
-  props.security.content.forEach((item) => {
+  props.security?.content.forEach((item) => {
     const desc = utilLang.getContent(item.content)
     switch (item.status) {
       case MonitorPoolStatus.normal: {
@@ -390,8 +387,8 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
             <div className="font-bold mt-2">🏦 {t('top-holders')}</div>
             {Object.keys(props.top_holders).map((key) => (
               <div className="mt-2" key={key}>
-                {props.chain == WalletPlatform.SOL ? key : utilFmt.addr(key)}:{' '}
-                {props.chain == WalletPlatform.SOL
+                {props.chain == WalletChain.SOL ? key : utilFmt.addr(key)}:{' '}
+                {props.chain == WalletChain.SOL
                   ? props.top_holders[key]
                   : `${Number(props.top_holders[key]).toFixed(2)}%`}
               </div>
