@@ -250,6 +250,5 @@
   "unsupported-chain": "Unsupported chain, currently only supports:",
   "normal": "Yes",
   "risk": "No",
-  "unknown": "Unknown",
-  "unsupported-chain": "Unsupported chain, currently only supports:"
+  "unknown": "Unknown"
 }
