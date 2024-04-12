@@ -285,6 +285,49 @@ export interface ChatResponseMetaNewPool {
   created_at: string
   data_type: string
 }
+export interface ChatResponseMetaNewPoolV2 {
+  id: string
+  chain: string
+  address: string
+  name: string
+  symbol: string
+  liquidity: number
+  price: number
+  started: string
+  twitter: string
+  telegram: string
+  website: string
+  security: Security
+  top_holders: TopHolders
+  score: Score
+  created_at: string
+  data_type: string
+}
+
+export interface Score {
+  score: number
+  detail: { type: string; ring: string }[]
+}
+
+export interface Security {
+  content: SecurityContent[]
+  remark: Remark
+}
+
+export interface SecurityContent {
+  status: number
+  content: Remark
+  type: string
+}
+
+export interface Remark {
+  en: string
+  zh: string
+}
+
+export interface TopHolders {
+  [x: string]: string
+}
 
 export interface SpeechResponse {
   data: { text: string }

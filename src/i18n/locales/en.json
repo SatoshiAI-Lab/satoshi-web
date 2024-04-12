@@ -245,5 +245,8 @@
   "signin": "Sign in",
   "email": "Email",
   "password": "Password",
-  "forgot": "Forgot"
+  "forgot": "Forgot",
+  "normal": "Yes",
+  "risk": "No",
+  "unknown": "Unknown"
 }

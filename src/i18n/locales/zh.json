@@ -242,5 +242,8 @@
   "signin": "登录",
   "email": "邮箱",
   "password": "密码",
-  "forgot": "忘记了"
+  "forgot": "忘记了",
+  "normal": "正常",
+  "risk": "风险",
+  "unknown": "未知风险"
 }

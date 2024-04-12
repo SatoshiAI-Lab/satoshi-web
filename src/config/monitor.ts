@@ -5,3 +5,9 @@ export enum MonitorConfig {
   trade,
   pool,
 }
+
+export enum MonitorPoolStatus {
+  normal,
+  risk,
+  unknown,
+}
