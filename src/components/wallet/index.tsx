@@ -22,6 +22,7 @@ import { WalletChainSelect } from './components/wallet-chain-select'
 import { useWallet } from '@/hooks/use-wallet'
 import { CustomSuspense } from '../custom-suspense'
 import { WalletPlatform } from '@/config/wallet'
+import { useClipboard } from '@/hooks/use-clipboard'
 
 import type { WalletDialogProps } from './types'
 
@@ -73,6 +74,8 @@ const Wallet: FC<WalletDialogProps> = ({
   )
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openCreateWallet = Boolean(anchorEl)
+  const { copy } = useClipboard()
+
   const handleCreateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -120,8 +123,7 @@ const Wallet: FC<WalletDialogProps> = ({
   }
 
   const copyWalletAddress = (address: string) => {
-    navigator.clipboard.writeText(address)
-    toast.success(t('wallet.copy-address.success'))
+    copy(address, t('wallet.copy-address.success'))
   }
 
   const deleteWallet = (address: string) => {

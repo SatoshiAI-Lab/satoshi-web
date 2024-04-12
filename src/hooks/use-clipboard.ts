@@ -1,14 +1,10 @@
 import { t } from 'i18next'
 import toast from 'react-hot-toast'
 
-interface UseClipboardReturn {
-  copy: (content: string) => Promise<boolean>
-}
-
 /**
  * Clipboard hook. supported lower version browser.
  */
-export const useClipboard: () => UseClipboardReturn = () => {
+export const useClipboard = () => {
   const deprecatedCopy = (content: string) => {
     try {
       const textarea = document.createElement('textarea')
@@ -30,17 +26,17 @@ export const useClipboard: () => UseClipboardReturn = () => {
     }
   }
 
-  const copy = async (content: string) => {
+  const copy = async (content: string, tips?: string, errTips?: string) => {
     try {
       // if users browser version is so low,
       // use `document.execCommand` to copy.
       if (!navigator.clipboard) return deprecatedCopy(content)
 
       await navigator.clipboard.writeText(content)
-      toast.success(t('copy-success'))
+      toast.success(tips ?? t('copy-success'))
       return true
     } catch (error) {
-      toast.error(t('copy-failed') + error)
+      toast.error(errTips ?? t('copy-failed') + error)
       return false
     }
   }
