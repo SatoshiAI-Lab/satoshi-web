@@ -21,10 +21,10 @@ import { useThemeStore } from '@/stores/use-theme-store'
 import { useUserStore } from '@/stores/use-user-store'
 import { useShow } from '@/hooks/use-show'
 import { utilFmt } from '@/utils/format'
+import { useChatStore } from '@/stores/use-chat-store'
 
 import type { CustomDropdownItem } from '../custom-dropdown/types'
 import type { HeaderItem } from './types'
-import { useChatStore } from '@/stores/use-chat-store'
 
 function Header() {
   const router = useRouter()
@@ -186,7 +186,7 @@ function Header() {
                 }}
                 onClick={() => changeStatus(true)}
               >
-                {t('login')}
+                {t('login.tosignin')}
               </Button>
               <Button
                 variant="contained"
