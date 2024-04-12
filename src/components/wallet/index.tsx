@@ -70,9 +70,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     onClose,
   } = props
   const { wallets, setCurrentWallet } = useWalletStore()
-  const { isFirstFetchingWallets, isFetchingWallets, createWallet } = useWallet(
-    { enabled: true }
-  )
+  const { isFirstFetchingWallets, createWallet } = useWallet({ enabled: true })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openCreateWallet = Boolean(anchorEl)
   const { copy } = useClipboard()

@@ -30,8 +30,12 @@ const CreateTokenWallets = (props: { hasWallet: boolean }) => {
   useWallet({ enabled: true })
 
   useEffect(() => {
+    // If is empty, cannot select wallet.
     if (utilArr.isEmpty(wallets)) return
+    // If has current wallet, don't select.
+    if (currentWallet?.address) return
 
+    // By default, select first.
     setCurrentWallet(utilArr.first(wallets).address ?? '')
   }, [wallets])
 

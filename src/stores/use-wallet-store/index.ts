@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { WALLET_CONFIG, WalletPlatform } from '@/config/wallet'
+import { WALLET_CONFIG } from '@/config/wallet'
 
 import type { GetChainsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'

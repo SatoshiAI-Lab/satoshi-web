@@ -3,7 +3,6 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { WalletPlatform } from '@/config/wallet'
 
 interface Options {
   enabled?: boolean
