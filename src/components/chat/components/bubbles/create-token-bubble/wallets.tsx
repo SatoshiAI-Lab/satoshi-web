@@ -8,12 +8,13 @@ import { useWalletStore } from '@/stores/use-wallet-store'
 import { Wallet } from '@/components/wallet'
 import { utilArr } from '@/utils/array'
 import { useClipboard } from '@/hooks/use-clipboard'
+import { useWallet } from '@/hooks/use-wallet'
+import WalletChainSelect from '@/components/wallet/components/wallet-chain-select'
 
 const CreateTokenWallets = (props: { hasWallet: boolean }) => {
   const { hasWallet } = props
   const { t } = useTranslation()
-  const { currentWallet, wallets, getWallets, setCurrentWallet } =
-    useWalletStore()
+  const { wallets, currentWallet, setCurrentWallet } = useWalletStore()
   const [selectedWallet, setSelectedWallet] = useState<
     typeof currentWallet | undefined
   >(undefined)
@@ -26,6 +27,8 @@ const CreateTokenWallets = (props: { hasWallet: boolean }) => {
     setCurrentWallet(targetWallet?.address ?? '')
   }
 
+  useWallet({ enabled: true })
+
   useEffect(() => {
     if (utilArr.isEmpty(wallets)) return
 
@@ -37,10 +40,6 @@ const CreateTokenWallets = (props: { hasWallet: boolean }) => {
       setSelectedWallet(currentWallet)
     }
   }, [currentWallet])
-
-  useEffect(() => {
-    getWallets()
-  }, [])
 
   return (
     <>
@@ -68,6 +67,10 @@ const CreateTokenWallets = (props: { hasWallet: boolean }) => {
       )}
       <div className="mt-4">
         <div className="mb-1">{t('use-below-wallet')}</div>
+        <WalletChainSelect
+          avatarSize={20}
+          className="flex-col !items-start !mt-0"
+        />
         <div className="flex items-stretch">
           <Select
             size="small"

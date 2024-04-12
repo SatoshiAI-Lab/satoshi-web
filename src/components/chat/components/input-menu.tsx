@@ -13,9 +13,9 @@ import { Wallet } from '@/components/wallet'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useLive2DStore } from '@/stores/use-live2d-store'
 import { useStorage } from '@/hooks/use-storage'
-import { useWalletStore } from '@/stores/use-wallet-store'
 import { useUserStore } from '@/stores/use-user-store'
 import { useNeedLoginStore } from '@/stores/use-need-login-store'
+import { useWallet } from '@/hooks/use-wallet'
 
 enum AnimateType {
   None,
@@ -38,7 +38,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
   const { setIsMuted } = useStorage()
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
   const { setShow } = useNeedLoginStore()
-  const { getWallets } = useWalletStore()
+  const { refetchWallets } = useWallet()
   const { isLogined } = useUserStore()
 
   const items = [
@@ -65,7 +65,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
           return
         }
         setWalletOpen(true)
-        getWallets()
+        refetchWallets()
       },
     },
     {

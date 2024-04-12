@@ -1,38 +1,34 @@
-import { useWalletStore } from '@/stores/use-wallet-store'
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  IconButton,
-  TextField,
-} from '@mui/material'
-import { FC, useEffect, useState } from 'react'
-import { WalletDialogProps } from '../types'
+import { FC } from 'react'
+import { Button, CircularProgress, Dialog, IconButton } from '@mui/material'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
+
+import { useWalletStore } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
+import { useWallet } from '@/hooks/use-wallet'
+
+import type { WalletDialogProps } from '../types'
 
 const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
-  const { deleteWallet, getWallets, currentWallet } = useWalletStore()
+  const { currentWallet } = useWalletStore()
+  const { removeWallet } = useWallet()
   const { show, open: openLoading, hidden: hiddenLoading } = useShow()
-  const userDeleteWallet = async () => {
+
+  const onRemoveWallet = async () => {
     openLoading()
-    deleteWallet(currentWallet?.id!)
-      .then((res) => {
-        if (res.msg === 'ok') {
-          onClose?.()
-          toast.success(t('wallet.delete-wallet.success'))
-          getWallets()
-        }
-      })
-      .catch(() => {
-        toast.error(t('wallet.error'))
-      })
-      .finally(() => {
-        hiddenLoading()
-      })
+
+    try {
+      removeWallet(currentWallet?.id!)
+      toast.success(t('wallet.delete-wallet.success'))
+      onClose?.()
+    } catch (error) {
+      toast.error(t('wallet.error'))
+    } finally {
+      hiddenLoading()
+    }
   }
+
   return (
     <Dialog
       maxWidth="lg"
@@ -70,7 +66,7 @@ const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               variant="contained"
               className="!h-[50px] !text-[18px] !rounded-xl"
               fullWidth
-              onClick={userDeleteWallet}
+              onClick={onRemoveWallet}
               disabled={show}
             >
               {show && (

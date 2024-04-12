@@ -2,30 +2,39 @@ import { FC, useEffect, useState } from 'react'
 import { Button, CircularProgress, Dialog, IconButton } from '@mui/material'
 import { TfiClose } from 'react-icons/tfi'
 import { t } from 'i18next'
-import toast from 'react-hot-toast'
 
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { WalletDialogProps } from '../types'
+import { useWallet } from '@/hooks/use-wallet'
+import { useClipboard } from '@/hooks/use-clipboard'
+
+import type { WalletDialogProps } from '../types'
 
 const WalletExportKeyPop: FC<WalletDialogProps> = ({
   open,
   onClose,
   title,
 }) => {
-  const { currentWallet, exportWalletPrivateKey } = useWalletStore()
-  const [privateKey, setPrivateKey] = useState('')
-  const [loading, setLoading] = useState(true)
+  const { currentWallet } = useWalletStore()
+  const { privateKey, isExporting, exportPrivateKey, resetExportPrivateKey } =
+    useWallet()
+  const { copy } = useClipboard()
+  const [isCopied, setIsCopied] = useState(false)
+
   useEffect(() => {
-    setLoading(true)
-    exportWalletPrivateKey(currentWallet?.id!)
-      .then((res) => {
-        if (res) {
-          setPrivateKey(res.private_key)
-          setLoading(false)
-        }
-      })
-      .catch((err) => {})
-  }, [currentWallet?.address])
+    if (!currentWallet) return
+    if (!open) resetExportPrivateKey()
+
+    exportPrivateKey(currentWallet?.id ?? '')
+  }, [currentWallet, open])
+
+  useEffect(() => {
+    if (isCopied) {
+      setTimeout(() => {
+        setIsCopied(false)
+      }, 1_000)
+    }
+  }, [isCopied])
+
   return (
     <Dialog
       maxWidth="lg"
@@ -51,17 +60,24 @@ const WalletExportKeyPop: FC<WalletDialogProps> = ({
           </div>
           <div>{t('wallet.export-privatekey')}</div>
           <div className="w-[358px] break-words px-[22px] py-[16px] bg-[#0f40f519] rounded-[10px] text-blue-700">
-            {(loading && <CircularProgress />) || privateKey}
+            {isExporting ? (
+              <div className="flex justify-center">
+                <CircularProgress />
+              </div>
+            ) : (
+              privateKey
+            )}
           </div>
           <Button
             variant="contained"
-            disabled={loading}
+            classes={{ root: '!rounded-full !px-8' }}
+            disabled={isExporting || isCopied}
             onClick={() => {
-              navigator.clipboard.writeText(privateKey)
-              toast.success(t('wallet.copy-privatekey.success'))
+              copy(privateKey)
+              setIsCopied(true)
             }}
           >
-            {t('wallet.copy-privatekey')}
+            {isCopied ? t('copied') : t('wallet.copy-privatekey')}
           </Button>
         </div>
       </div>

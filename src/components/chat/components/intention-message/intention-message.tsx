@@ -39,9 +39,9 @@ export const IntentMessage = ({ msg }: Props) => {
 
   const metaType = msg?.msgs?.type!
 
-  // Wallet list
+  // Balances(Wallet list)
   if (msg.type == walletList || metaType == walletList) {
-    return <MyWalletsBubble meta={msg.msgs} />
+    return <MyWalletsBubble />
   }
 
   // Change name wallet list

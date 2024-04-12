@@ -235,5 +235,8 @@
   "remove.monitor.error": "删除监控失败",
   "no.monitor.wallet": "暂无监控地址",
   "no-assets": "该钱包还没有资产。",
-  "select-chain": "选择网络"
+  "select-chain": "选择网络",
+  "wallet.creating": "钱包正在创建中...",
+  "wallet.create-failed": "钱包创建失败",
+  "copied": "已复制!"
 }

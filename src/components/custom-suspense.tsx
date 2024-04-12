@@ -8,7 +8,7 @@ interface CustomSuspenseProps extends React.ComponentProps<'div'> {
   nullback?: React.ReactNode
 }
 
-const CustomSuspense = (props: CustomSuspenseProps) => {
+export const CustomSuspense = (props: CustomSuspenseProps) => {
   const {
     container = 'fragment',
     children,
@@ -20,7 +20,7 @@ const CustomSuspense = (props: CustomSuspenseProps) => {
   } = props
   const isEmpty = !children || children!.toString().trim() === ''
 
-  if (isPendding) return fallback
+  if (isPendding && !isStale) return fallback
   if (isEmpty) return nullback
   if (container === 'fragment') {
     return <>{children}</>

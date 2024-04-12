@@ -1,20 +1,21 @@
-import {
-  ChatResponseWalletList,
-  ChatResponseWalletListToken,
-} from '@/api/chat/types'
-import { walletApi } from '@/api/wallet'
-import { UserCreateWalletResp, WalletPlatform } from '@/api/wallet/params'
-import { CHAT_CONFIG } from '@/config/chat'
-import { useChat } from '@/hooks/use-chat'
-import { utilFmt } from '@/utils/format'
 import { IconButton, Radio } from '@mui/material'
-import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import numeral from 'numeral'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { RiDeleteBin5Line } from 'react-icons/ri'
+
+import { UserCreateWalletResp } from '@/api/wallet/params'
+import { CHAT_CONFIG } from '@/config/chat'
+import { useChat } from '@/hooks/use-chat'
+import { utilFmt } from '@/utils/format'
+import { useWallet } from '@/hooks/use-wallet'
+
+import type {
+  ChatResponseWalletList,
+  ChatResponseWalletListToken,
+} from '@/api/chat/types'
 
 interface Props {
   type: string
@@ -24,16 +25,14 @@ export const WalletList = (props: Props) => {
   const { type } = props
   const { t } = useTranslation()
   const { addMessageAndLoading, sendMsg } = useChat()
-
-  const { data: result, refetch } = useQuery({
-    queryKey: [walletApi.getWallets.name],
-    queryFn: () => walletApi.getWallets({ platform: WalletPlatform.SOL }),
+  const { wallets, refetchWallets } = useWallet({
+    enabled: true,
     refetchInterval: 15_000,
   })
-
   // const [active, setActive] = useState(false)
-  const walletList = result?.data.sort(
-    (a, b) => new Date(b.added_at).getTime() - new Date(a.added_at).getTime()
+  const walletList = wallets.sort(
+    (a, b) =>
+      new Date(b.added_at ?? 0).getTime() - new Date(a.added_at ?? 0).getTime()
   )
 
   const { changeNameWalletList, deleteNameWalletList, exportWalletList } =
@@ -41,6 +40,7 @@ export const WalletList = (props: Props) => {
   const isChange = type == changeNameWalletList
   const isDelete = type == deleteNameWalletList
   const isExport = type == exportWalletList
+
   const handleSelect = (wallet: ChatResponseWalletList) => {
     let question = ''
 
@@ -59,13 +59,9 @@ export const WalletList = (props: Props) => {
     question = question.replace('$1', wallet.name)
     addMessageAndLoading({ msg: question, position: 'right' })
 
-    sendMsg({
-      question,
-    })
+    sendMsg({ question })
     // onClickIcon?.(wallet)
-    setTimeout(() => {
-      refetch()
-    }, 2000)
+    setTimeout(refetchWallets, 2000)
   }
 
   const getTokenBalance = (tokens?: ChatResponseWalletListToken[]) => {
@@ -134,11 +130,11 @@ export const WalletList = (props: Props) => {
                 )}
               >
                 <CopyToClipboard
-                  text={item.address}
+                  text={item.address ?? ''}
                   onCopy={() => toast.success(t('copy-success'))}
                 >
                   <span className="text-nowrap cursor-pointer">
-                    {utilFmt.addr(item.address)}
+                    {utilFmt.addr(item.address ?? '')}
                   </span>
                 </CopyToClipboard>
               </div>
@@ -147,7 +143,9 @@ export const WalletList = (props: Props) => {
                   {getTokenBalance(item.tokens)}
                 </span>
               </div>
-              <div className="text-nowrap text-center">{getIcon(item)}</div>
+              <div className="text-nowrap text-center">
+                {getIcon(item as UserCreateWalletResp)}
+              </div>
             </div>
           )
         })}

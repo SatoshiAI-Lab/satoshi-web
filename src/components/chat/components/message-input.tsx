@@ -2,12 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaPaperPlane } from 'react-icons/fa'
 import { AiOutlineLoading } from 'react-icons/ai'
-import {
-  Button,
-  CircularProgress,
-  IconButton,
-  TextareaAutosize,
-} from '@mui/material'
+import { Button, IconButton, TextareaAutosize } from '@mui/material'
 import { useKey } from 'react-use'
 import clsx from 'clsx'
 import { FaRegCirclePause } from 'react-icons/fa6'
@@ -19,9 +14,9 @@ import InputMenu from './input-menu'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
 import { utilDom } from '@/utils/dom'
-import { useInputHistory } from '@/hooks/use-input-history'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { chatApi } from '@/api/chat'
+import { useHistory } from '@/hooks/use-history'
 
 interface MessageInputProps {
   autofocus?: boolean
@@ -40,6 +35,10 @@ function MessageInput(props: MessageInputProps) {
   const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
   const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
   const [recording, setRecording] = useState(false)
+  const { addHistory } = useHistory({
+    inputRef: inputRef,
+    onChange: setQuestion,
+  })
 
   const record = () => {
     if (recording) {
@@ -51,6 +50,11 @@ function MessageInput(props: MessageInputProps) {
     }
   }
 
+  const send = () => {
+    addHistory(question)
+    onSend()
+  }
+
   const handleEnterSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.shiftKey && e.key === 'Enter') return
     if (e.key !== 'Enter') return
@@ -58,10 +62,7 @@ function MessageInput(props: MessageInputProps) {
     e.preventDefault()
     if (isLoading) return
     // Although is deprecated, but very useful.
-    if (e.keyCode === 13) {
-      onSend()
-      return
-    }
+    if (e.keyCode === 13) send()
   }
 
   function handleInputKeyup() {
@@ -79,7 +80,7 @@ function MessageInput(props: MessageInputProps) {
   })
 
   // Recorded input histroy.
-  useInputHistory(inputRef, setQuestion)
+  // useInputHistory(inputRef, setQuestion)
 
   // Autofocus input.
   useEffect(() => {
@@ -178,7 +179,7 @@ function MessageInput(props: MessageInputProps) {
             )
           }
           disabled={isLoading}
-          onClick={onSend}
+          onClick={send}
         >
           {isLoading ? t('chat.asking') : t('chat.ask')}
         </Button>
