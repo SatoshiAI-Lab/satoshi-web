@@ -27,6 +27,7 @@ export interface CreateTokenReq {
 export interface CreateTokenRes {
   hash_tx: string
   status: TokenCreateStatus
+  address: string
 }
 
 export interface MintTokenReq {

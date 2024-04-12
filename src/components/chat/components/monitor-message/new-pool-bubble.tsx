@@ -234,6 +234,9 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
 
   const { show, open, hidden } = useShow()
 
+  // TODO: Remove
+  return <></>
+
   // props = data as unknown as ChatResponseMetaNewPoolV2
 
   const normalList: SecurityList[] = []

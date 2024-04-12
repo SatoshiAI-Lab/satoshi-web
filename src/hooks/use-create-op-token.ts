@@ -7,8 +7,9 @@ import { useWaitingStatus } from './use-waiting'
 
 import type { CreateTokenReq } from '@/api/interactive/types'
 
-export const useCreateOpToken = () => {
+export const useCreateOpToken = (chain?: string) => {
   const [opHash, setOpHash] = useState('')
+  const [opAddr, setOpAddr] = useState('')
 
   const { isPending: isCreatingOp, mutateAsync: mutateCreate } = useMutation({
     mutationKey: [interactiveApi.createToken.name],
@@ -31,10 +32,12 @@ export const useCreateOpToken = () => {
       amount: total,
     })
     setOpHash(data?.hash_tx)
+    setOpAddr(data?.address)
   }
 
   const { isLoading: isOpWaiting, isSuccess } = useWaitingStatus({
     hash: opHash,
+    chain,
     onSuccess(data) {
       console.log('create op success', data)
     },
@@ -44,6 +47,7 @@ export const useCreateOpToken = () => {
   })
 
   return {
+    opAddr,
     isOpLoading: isCreatingOp || isOpWaiting,
     isOpSuccess: isSuccess,
     createOpToken,

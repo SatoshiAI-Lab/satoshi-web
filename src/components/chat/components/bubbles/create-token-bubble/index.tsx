@@ -49,7 +49,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   const [selectedWallet, setSelectedWallet] = useState<UserCreateWalletResp>()
   const {
     hash,
-    address,
+    address: solAddr,
     isLoading,
     isMinting,
     isCreateSuccess,
@@ -60,7 +60,8 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
     mintToken,
     cancel,
   } = useCreateSolToken()
-  const { isOpLoading, isOpSuccess, createOpToken } = useCreateOpToken()
+  const { opAddr, isOpLoading, isOpSuccess, createOpToken } =
+    useCreateOpToken(chain)
   const { config, configs } = useCreateTokenConfig(chain)
 
   const nicknameIsValid = !!name.trim()
@@ -74,13 +75,12 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
       toast.error(t('no-wallet'))
       return
     }
-    // TODO: uncomment
-    // if (balance < config.minBalance) {
-    //   toast.error(
-    //     t('balance-less-than').replace('{}', String(config.minBalance))
-    //   )
-    //   return
-    // }
+    if (balance < config.minBalance) {
+      toast.error(
+        t('balance-less-than').replace('{}', String(config.minBalance))
+      )
+      return
+    }
 
     const params = {
       chain,
@@ -142,7 +142,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
     return (
       <CreateTokenSuccess
         tokenName={name}
-        tokenAddr={address}
+        tokenAddr={solAddr || opAddr}
         walletName={selectedWallet?.name}
       />
     )
@@ -157,7 +157,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
         </DialogHeader>
         <DialogContent>
           <div className="text-lg">
-            <span className="font-bold">{t('addr')}</span>:{address}
+            <span className="font-bold">{t('addr')}</span>:{solAddr}
           </div>
           <div className="text-lg">
             <span className="font-bold">{t('hash')}</span>:{hash}

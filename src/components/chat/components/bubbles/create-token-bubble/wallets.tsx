@@ -31,7 +31,6 @@ const CreateTokenWallets = (props: Props) => {
 
   // Use independent request.
   const { data: walletData } = useQuery({
-    staleTime: Infinity, // Each bubble only request once.
     queryKey: [walletApi.getWallets.name, chain],
     queryFn: () => walletApi.getWallets(chain),
   })
