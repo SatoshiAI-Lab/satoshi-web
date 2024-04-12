@@ -17,7 +17,7 @@ import {
   SecurityContent,
 } from '@/api/chat/types'
 import { link } from '@/config/link'
-import { WalletPlatform } from '@/config/wallet'
+import { WalletChain } from '@/config/wallet'
 import { utilLang } from '@/utils/language'
 import { MonitorPoolStatus } from '@/config/monitor'
 import { BiError } from 'react-icons/bi'
@@ -237,13 +237,13 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
 
   const { show, open, hidden } = useShow()
 
-  props = data as unknown as ChatResponseMetaNewPoolV2
+  // props = data as unknown as ChatResponseMetaNewPoolV2
 
   const normalList: SecurityList[] = []
   const riskList: SecurityList[] = []
   const unknownList: SecurityList[] = []
 
-  props.security.content.forEach((item) => {
+  props.security?.content.forEach((item) => {
     const desc = utilLang.getContent(item.content)
     switch (item.status) {
       case MonitorPoolStatus.normal: {
@@ -390,8 +390,8 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
             <div className="font-bold mt-2">🏦 {t('top-holders')}</div>
             {Object.keys(props.top_holders).map((key) => (
               <div className="mt-2" key={key}>
-                {props.chain == WalletPlatform.SOL ? key : utilFmt.addr(key)}:{' '}
-                {props.chain == WalletPlatform.SOL
+                {props.chain == WalletChain.SOL ? key : utilFmt.addr(key)}:{' '}
+                {props.chain == WalletChain.SOL
                   ? props.top_holders[key]
                   : `${Number(props.top_holders[key]).toFixed(2)}%`}
               </div>
