@@ -242,5 +242,8 @@
   "wallet.creating": "Wallet is creating...",
   "wallet.create-failed": "Wallet create failed",
   "copied": "Copied!",
-  "signin": "Sign in"
+  "signin": "Sign in",
+  "email": "Email",
+  "password": "Password",
+  "forgot": "Forgot"
 }
