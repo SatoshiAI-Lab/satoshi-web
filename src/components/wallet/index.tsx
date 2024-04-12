@@ -218,7 +218,8 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
               <AiOutlineSafety size={162} color="#D4D4D4" />
             </div>
           </div>
-          <ChainPlatformSelect />
+          {/* If only one wallet, hide select */}
+          {!onlyWalletAddr && <ChainPlatformSelect />}
           {/* Wallets list */}
           <CustomSuspense
             container="div"
