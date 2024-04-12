@@ -247,5 +247,6 @@
   "unsupported-chain": "不支持的链，目前仅支持：",
   "normal": "正常",
   "risk": "风险",
-  "unknown": "未知风险"
+  "unknown": "未知风险",
+  "unsupported-chain": "不支持的链，目前仅支持："
 }
