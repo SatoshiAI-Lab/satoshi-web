@@ -117,4 +117,6 @@ export const CHAT_CONFIG = {
     'subscript_pool_list',
     'transaction_confirm_stream',
   ],
+
+  largeDataType: ['export_wallet_list'],
 }

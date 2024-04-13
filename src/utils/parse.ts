@@ -31,6 +31,7 @@ export const utilParse = {
         } catch (err) {
           toast.error(`[ParseStream Error]: ${err}`)
           console.error('[ParseStream Error]:', err)
+          console.error('[ParseStream Error m]:', m.replace('data: ', ''))
           return m
         }
       })

@@ -42,8 +42,6 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
 
   const { show, open, hidden } = useShow()
 
-  console.log(props)
-
   // props = data as unknown as ChatResponseMetaNewPoolV2
 
   const normalList: SecurityList[] = []
@@ -90,7 +88,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
 
   const handleRiskList = () => {
     if (!riskList.length) {
-      return <div className='mt-[6px]'>{t('no.contract.risk')}</div>
+      return <div className="mt-[6px]">{t('no.contract.risk')}</div>
     }
     return riskList.map((item) => {
       return <SecurityItem {...item}></SecurityItem>
