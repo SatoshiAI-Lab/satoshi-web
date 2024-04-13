@@ -1,4 +1,5 @@
 import { ChatResponseAnswer } from '@/api/chat/types'
+import toast from 'react-hot-toast'
 
 interface ParseStreamStringOnParsed {
   (data: ChatResponseAnswer, result: string[], index: number): void
@@ -21,9 +22,17 @@ export const utilParse = {
     const arr = str.trim().split('\n').filter(Boolean)
     return arr
       .map((m, i) => {
-        const parsed = JSON.parse(m.replace('data: ', '')) as ChatResponseAnswer
-        onParsed(parsed, arr, i)
-        return parsed
+        try {
+          const parsed = JSON.parse(
+            m.replace('data: ', '')
+          ) as ChatResponseAnswer
+          onParsed(parsed, arr, i)
+          return parsed
+        } catch (err) {
+          toast.error(`[ParseStream Error]: ${err}`)
+          console.error('[ParseStream Error]:', err)
+          return m
+        }
       })
       .flat()
       .join('')
