@@ -9,6 +9,7 @@ export interface WalletDialogProps {
   showButtons?: boolean
   // If not null & find same wallet, only show this wallet
   onlyWallet?: UserCreateWalletResp
+  onlyWalletRefetch?: () => void
 }
 
 export interface WalletCardProps {

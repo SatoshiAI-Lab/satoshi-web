@@ -16,7 +16,8 @@ import { useWallet } from '@/hooks/use-wallet'
 
 import type { WalletDialogProps } from '../types'
 
-const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
+const WalletRenamePop: FC<WalletDialogProps> = (props) => {
+  const { open, onClose, title, onlyWalletRefetch } = props
   const [walletName, setWalletName] = useState('')
   const { currentWallet } = useWalletStore()
   const { renameWallet } = useWallet()
@@ -32,6 +33,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
       toast.error(t('wallet.error'))
     } finally {
       hiddenLoading()
+      onlyWalletRefetch?.()
     }
   }
 

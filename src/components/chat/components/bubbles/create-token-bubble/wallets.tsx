@@ -26,11 +26,12 @@ const CreateTokenWallets = (props: Props) => {
   const { copy } = useClipboard()
   const [walletOpen, setWalletOpen] = useState(false)
   const { config } = useCreateTokenConfig(chain)
+
   const nativeTokenTip = config?.nativeToken ?? ''
   const minBalanceTip = `${config?.minBalance ?? 0} ${nativeTokenTip}`
 
   // Use independent request.
-  const { data: walletData } = useQuery({
+  const { data: walletData, refetch } = useQuery({
     queryKey: [walletApi.getWallets.name, chain],
     queryFn: () => walletApi.getWallets(chain),
   })
@@ -41,16 +42,24 @@ const CreateTokenWallets = (props: Props) => {
     onSelectWallet?.(wallet)
   }
 
+  const defualtSelect = (list: UserCreateWalletResp[]) => {
+    const selected = list.find((w) => w.address === selectedWallet?.address)
+
+    // If not select, select first.
+    if (!selected) {
+      const first = utilArr.first(list)
+      setSelectedWallet(first)
+      onSelectWallet?.(first)
+      return
+    }
+    setSelectedWallet(selected)
+  }
+
   useEffect(() => {
     const walletList = walletData?.data ?? []
 
     setWallets(walletList)
-    // If not select, select first.
-    if (!selectedWallet) {
-      const first = utilArr.first(walletList)
-      setSelectedWallet(first)
-      onSelectWallet?.(first)
-    }
+    defualtSelect(walletList)
   }, [walletData?.data])
 
   return (
@@ -60,6 +69,7 @@ const CreateTokenWallets = (props: Props) => {
         onClose={() => setWalletOpen(false)}
         showButtons={false}
         onlyWallet={selectedWallet}
+        onlyWalletRefetch={refetch}
       />
       {!hasWallet && (
         <div

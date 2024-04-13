@@ -1,4 +1,4 @@
-import { FC, createElement, memo, useState } from 'react'
+import { FC, createElement, memo, useEffect, useState } from 'react'
 import { Button, Dialog, IconButton, Menu, MenuItem } from '@mui/material'
 import { AiOutlineSafety, AiOutlineWallet } from 'react-icons/ai'
 import { TfiClose } from 'react-icons/tfi'
@@ -61,6 +61,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     showButtons = true,
     // Used for show a wallet details.
     onlyWallet,
+    onlyWalletRefetch,
     open,
     onClose,
   } = props
@@ -236,9 +237,10 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
 
       {currentPopTitle &&
         createElement(dyNamicPop[currentPop], {
+          title: currentPopTitle,
           open: popOpen,
           onClose: () => setPopOpen(false),
-          title: currentPopTitle,
+          onlyWalletRefetch,
         })}
     </>
   )
