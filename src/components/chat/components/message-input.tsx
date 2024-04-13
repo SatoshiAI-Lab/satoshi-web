@@ -5,8 +5,6 @@ import { AiOutlineLoading } from 'react-icons/ai'
 import { Button, IconButton, TextareaAutosize } from '@mui/material'
 import { useKey } from 'react-use'
 import clsx from 'clsx'
-import { FaRegCirclePause } from 'react-icons/fa6'
-import { motion } from 'framer-motion'
 import { useAudioRecorder } from 'react-audio-voice-recorder'
 import { MdMic } from 'react-icons/md'
 
@@ -17,6 +15,8 @@ import { utilDom } from '@/utils/dom'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { chatApi } from '@/api/chat'
 import { useHistory } from '@/hooks/use-history'
+import { useScroll } from '@/hooks/use-scroll'
+import { InputButtons } from './input-buttons'
 
 interface MessageInputProps {
   autofocus?: boolean
@@ -39,6 +39,7 @@ function MessageInput(props: MessageInputProps) {
     inputRef: inputRef,
     onChange: setQuestion,
   })
+  const { isTrigger, scrollToBottom } = useScroll({ el: chatEl })
 
   const record = () => {
     if (recording) {
@@ -127,17 +128,14 @@ function MessageInput(props: MessageInputProps) {
           'relative'
         )}
       >
-        <motion.div
-          className={clsx('!absolute right-0 -top-14')}
-          animate={{
-            opacity: isLoading ? 1 : 0,
-            y: isLoading ? 0 : 56,
-          }}
-        >
-          <IconButton onClick={onCancel} className="!bg-slate-50">
-            <FaRegCirclePause size={28} className="text-red-500" />
-          </IconButton>
-        </motion.div>
+        <InputButtons
+          className="!absolute right-0 -top-14"
+          isShow={isTrigger || isLoading}
+          showToBottom={isTrigger}
+          showPasuse={isLoading}
+          onToBottomClick={scrollToBottom}
+          onPasuseClick={onCancel}
+        />
         <TextareaAutosize
           className={clsx(
             'bg-transparent pl-1 text-lg transition-all text-black w-full outline-none',

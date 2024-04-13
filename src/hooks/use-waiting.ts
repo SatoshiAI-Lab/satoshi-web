@@ -6,12 +6,13 @@ import { interactiveApi } from '@/api/interactive'
 
 interface UseWaitingOptions {
   hash?: string
+  chain?: string
   onSuccess?: (data: GetHashStatusRes | undefined) => void
   onError?: (reason: string) => void
 }
 
 export const useWaitingStatus = (options: UseWaitingOptions) => {
-  const { hash = '', onError, onSuccess } = options
+  const { hash = '', chain = '', onError, onSuccess } = options
   const [enabled, setEnabled] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [isError, setIsError] = useState(false)
@@ -21,10 +22,10 @@ export const useWaitingStatus = (options: UseWaitingOptions) => {
   const { data } = useQuery({
     enabled,
     refetchInterval: 3_000,
-    queryKey: [interactiveApi.getHashStatus.name, hash],
+    queryKey: [interactiveApi.getHashStatus.name, hash, chain],
     queryFn: () => {
       setIsLoading(true)
-      return interactiveApi.getHashStatus({ hash_tx: hash })
+      return interactiveApi.getHashStatus({ hash_tx: hash, chain })
     },
   })
   const status = data?.data.status
@@ -51,17 +52,17 @@ export const useWaitingStatus = (options: UseWaitingOptions) => {
 
     setIsLoading(false)
     setIsComplete(true)
-    if (status === TokenCreateStatus.Timeout) {
+
+    if (
+      status === TokenCreateStatus.Timeout ||
+      status === TokenCreateStatus.Failed
+    ) {
       setEnabled(false)
       setIsError(true)
-      onError?.('Timeout')
-    }
-    if (status === TokenCreateStatus.Failed) {
-      setEnabled(false)
-      setIsError(true)
-      onError?.('Failed')
+      onError?.(status === TokenCreateStatus.Timeout ? 'Timeout' : 'Failed')
       return
     }
+
     if (status === TokenCreateStatus.Success) {
       setEnabled(false)
       setIsSuccess(true)

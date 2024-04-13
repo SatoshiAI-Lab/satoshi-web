@@ -42,7 +42,6 @@ const MyWalletsBubble = (props: Props) => {
 
   // Don't use `useWallet`, here is independent.
   const { data: walletData } = useQuery({
-    staleTime: Infinity, // Each bubble only request once.
     queryKey: [walletApi.getWallets.name, meta?.chain],
     queryFn: () => walletApi.getWallets(meta?.chain),
   })

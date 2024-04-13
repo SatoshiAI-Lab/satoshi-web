@@ -16,19 +16,23 @@ export interface GetHashStatusRes {
 }
 
 export interface CreateTokenReq {
+  id: string
   chain?: string
   name: string
   symbol: string
   decimals: number
   desc?: string
+  amount?: number
 }
 
 export interface CreateTokenRes {
   hash_tx: string
   status: TokenCreateStatus
+  address: string
 }
 
 export interface MintTokenReq {
+  id: string
   chain?: string
   created_hash: string
   amount: number

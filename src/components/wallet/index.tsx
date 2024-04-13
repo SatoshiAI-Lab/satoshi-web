@@ -1,18 +1,11 @@
 import { FC, createElement, memo, useEffect, useState } from 'react'
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  IconButton,
-  Menu,
-  MenuItem,
-} from '@mui/material'
+import { Button, Dialog, IconButton, Menu, MenuItem } from '@mui/material'
 import { AiOutlineSafety, AiOutlineWallet } from 'react-icons/ai'
-import { WalletCard } from './components/wallet-card'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
 
+import { WalletCard } from './components/wallet-card'
 import { WalletExportKeyPop } from './components/walletpop-exportkey'
 import { WalletRenamePop } from './components/walletpop-rename'
 import { WalletImportKeyPop } from './components/walletpop-importkey'
@@ -23,9 +16,10 @@ import { useWallet } from '@/hooks/use-wallet'
 import { CustomSuspense } from '../custom-suspense'
 import { WalletPlatform } from '@/config/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
+import WalletSkeleton from './components/skeleton'
+import { useChainsPlatforms } from './hooks/use-chains-platforms'
 
 import type { WalletDialogProps } from './types'
-import WalletSkeleton from './components/skeleton'
 
 const walletMenu = [
   {
@@ -66,7 +60,8 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     finish,
     showButtons = true,
     // Used for show a wallet details.
-    onlyWalletAddr,
+    onlyWallet,
+    onlyWalletRefetch,
     open,
     onClose,
   } = props
@@ -133,14 +128,8 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     setPopOpen(true)
   }
 
-  const [onlyWallet, setOnlyWallet] = useState<
-    (typeof wallets)[number] | undefined
-  >(undefined)
-
-  useEffect(() => {
-    const target = wallets.find((w) => w.address === onlyWalletAddr)
-    setOnlyWallet(target)
-  }, [onlyWalletAddr])
+  // on mounted, request chains & platforms.
+  useChainsPlatforms(true)
 
   return (
     <>
@@ -199,9 +188,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
 
                   {/* Import Waller Menu */}
                   <Button
-                    classes={{
-                      root: '!text-black !rounded-full !w-[138px]',
-                    }}
+                    classes={{ root: '!text-black !rounded-full !w-[138px]' }}
                     className="!border-gray-400 hover:!bg-gray-100"
                     variant="outlined"
                     onClick={ImportWalletPrivateKey}
@@ -218,7 +205,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
             </div>
           </div>
           {/* If only one wallet, hide select */}
-          {!onlyWalletAddr && <ChainPlatformSelect />}
+          {!onlyWallet && <ChainPlatformSelect />}
           {/* Wallets list */}
           <CustomSuspense
             container="div"
@@ -250,9 +237,10 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
 
       {currentPopTitle &&
         createElement(dyNamicPop[currentPop], {
+          title: currentPopTitle,
           open: popOpen,
           onClose: () => setPopOpen(false),
-          title: currentPopTitle,
+          onlyWalletRefetch,
         })}
     </>
   )

@@ -7,6 +7,8 @@ import { useClipboard } from '@/hooks/use-clipboard'
 import { Wallet } from '@/components/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
 
+import type { UserCreateWalletResp } from '@/api/wallet/params'
+
 interface Props {
   tokenName?: string
   tokenAddr?: string
@@ -14,11 +16,7 @@ interface Props {
 }
 
 const CreateTokenSuccess = (props: Props) => {
-  const {
-    tokenName = 'DOGEKING',
-    tokenAddr = 'asdawdjwpaidjwaidjapwdsajdiasdawjdwiadjiwasdas',
-    walletName = 'Wallet 2345',
-  } = props
+  const { tokenName = '', tokenAddr = '', walletName = '' } = props
   const { t } = useTranslation()
   const { copy } = useClipboard()
   const [open, setOpen] = useState(false)
@@ -30,7 +28,7 @@ const CreateTokenSuccess = (props: Props) => {
         open={open}
         onClose={() => setOpen(false)}
         showButtons={false}
-        onlyWalletAddr={currentWallet?.address}
+        onlyWallet={currentWallet as UserCreateWalletResp}
       />
       <div className="font-bold">
         {t('create-token.success')}: {tokenName}

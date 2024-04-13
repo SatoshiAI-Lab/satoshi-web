@@ -10,7 +10,8 @@ import { useWallet } from '@/hooks/use-wallet'
 
 import type { WalletDialogProps } from '../types'
 
-const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
+const WalletDeletePop: FC<WalletDialogProps> = (props) => {
+  const { open, onClose, title, onlyWalletRefetch } = props
   const { currentWallet } = useWalletStore()
   const { removeWallet } = useWallet()
   const { show, open: openLoading, hidden: hiddenLoading } = useShow()
@@ -19,13 +20,14 @@ const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
     openLoading()
 
     try {
-      removeWallet(currentWallet?.id!)
+      await removeWallet(currentWallet?.id!)
       toast.success(t('wallet.delete-wallet.success'))
       onClose?.()
     } catch (error) {
       toast.error(t('wallet.error'))
     } finally {
       hiddenLoading()
+      onlyWalletRefetch?.()
     }
   }
 

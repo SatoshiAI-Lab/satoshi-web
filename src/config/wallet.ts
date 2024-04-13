@@ -13,6 +13,8 @@ export enum WalletChain {
   BASE = 'BASE',
 }
 
+export type WalletChainSymbol = keyof typeof WalletChain
+
 export const WALLET_CONFIG = {
   defaultChain: WalletChain.ETH,
   defaultPlatform: WalletPlatform.EVM,
