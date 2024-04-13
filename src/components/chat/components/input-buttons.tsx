@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { IconButton } from '@mui/material'
 import { IoIosArrowDown } from 'react-icons/io'
 import { FaRegCirclePause } from 'react-icons/fa6'
+import { FaCircle } from 'react-icons/fa'
 
 interface Props extends React.ComponentProps<'div'> {
   isShow?: boolean
@@ -39,6 +40,14 @@ export const InputButtons = (props: Props) => {
         </IconButton>
       )
     }
+
+    // There must be an empty element,
+    // otherwise will be no exit animation.
+    return (
+      <IconButton className="!bg-slate-50">
+        <FaCircle size={20} className="text-transparent bg-transparent" />
+      </IconButton>
+    )
   }
 
   return (
