@@ -39,6 +39,8 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
   const { t } = useTranslation()
   const { copy } = useClipboard()
 
+  return <></>
+
   const { show, open, hidden } = useShow()
 
   // TODO: Remove

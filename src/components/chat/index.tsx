@@ -93,7 +93,6 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
           ref={chatRef}
         >
           <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
-          <NewPoolBubble />
           <Messages messages={messages} />
           {/* <CreateTokenBubble /> */}
         </div>

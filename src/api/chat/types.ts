@@ -1,3 +1,5 @@
+import { WalletChain, WalletPlatform } from "@/config/wallet"
+
 export interface ChatResponse {
   status: number
   message: string
@@ -43,7 +45,7 @@ export interface ChatResponseMetaBalance {
 }
 
 export interface ChatResponseTxConfrim {
-  from_token_name: string
+  from_token_name: ChatResponseTokenDetail[]
   from_token_contract: string
   amount: number
   to_token_name: string
@@ -56,7 +58,15 @@ export interface ChatResponseTxConfrim {
   }
 }
 
-export interface ChatResponseTokneDetail {
+export interface ChatResponseTokenInfo {
+  platform: WalletPlatform
+  chain: WalletChain
+  token_name: string
+  contract: string
+  platform_id: number //平台ID
+}
+
+export interface ChatResponseTokneName {
   address: string
   logo: string
   name: string
@@ -108,6 +118,7 @@ export interface ChatResponseWalletListToken {
   symbol: string
   valueUsd: number
 }
+
 export interface ChatResponseTokenDetail {
   address: string
   description: string

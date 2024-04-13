@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, CircularProgress, OutlinedInput } from '@mui/material'
 import { IoFlash } from 'react-icons/io5'
@@ -18,6 +18,7 @@ import { link } from '@/config/link'
 
 import type {
   ChatResponseAnswerMeta,
+  ChatResponseTokenInfo,
   ChatResponseTxConfrim,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
@@ -26,34 +27,122 @@ interface Props {
   msg: ChatResponseAnswerMeta
 }
 
+const sell = {
+  from_token_name: 'USDC',
+  from_token_contract: [
+    {
+      contract: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      platform_id: 16,
+    },
+  ],
+  amount: 0,
+  to_token_name: [
+    {
+      platform: 'SOL',
+      chain: 'Solana',
+      token_name: 'SOL',
+      contract: 'So11111111111111111111111111111111111111112',
+      platform_id: 16,
+    },
+  ],
+}
+
+const buy = {
+  from_token_info: [
+    {
+      platform: 'SOL',
+      chain: 'Solana',
+      token_name: 'USDC',
+      contract: 'So11111111111111111111111111111111111111112',
+      platform_id: 16,
+    },
+    {
+      platform: 'EVM',
+      chain: 'Ethereum',
+      token_name: 'USDC',
+      contract: '0x0000000000000000000000000000000000000000',
+      platform_id: 1,
+    },
+  ],
+  amount: 0,
+  to_token_name: 'DAI',
+  to_token_contract: [
+    {
+      contract: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      platform_id: 1,
+    },
+    {
+      contract: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
+      platform_id: 14,
+    },
+    {
+      contract: 'EjmyN6qEC1Tf1JxiG1ae7UTJhUxSwk1TCWNWqxWV4J6o',
+      platform_id: 16,
+    },
+    {
+      contract: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+      platform_id: 51,
+    },
+    {
+      contract: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+      platform_id: 42,
+    },
+  ],
+}
+
 const rate = [20, 50, 100]
 export const TxTokenBubbles = (props: Props) => {
-  const data = props.msg.data as unknown as ChatResponseTxConfrim
+  const data = buy ?? (props.msg.data as unknown as ChatResponseTxConfrim)
   const isBuy = props.msg.type == CHAT_CONFIG.metadataType.transactionConfirmBuy
+
+  const tokenInfo = data.from_token_info?.[0] as ChatResponseTokenInfo
 
   const [disbaled, setDisabled] = useState(false)
   const [curRate, setCurRate] = useState(-1)
   const [buyValue, setBuyValue] = useState(data.amount)
   const [slippage, setSlippage] = useState(5)
   const [validateErr, setValidateErr] = useState<string[]>([])
+  const [selectToken, setSelectToken] =
+    useState<ChatResponseTokenInfo>(tokenInfo)
 
   const { t } = useTranslation()
   const { addMessage } = useChat()
 
-  const { wallets, currentWallet, setCurrentWallet } = useWalletStore()
+  const {
+    wallets,
+    currentWallet,
+    setCurrentWallet,
+    setSelectedChain,
+    setPlatforms,
+  } = useWalletStore()
   const { show: loading, open: showLoading, hidden: closeLoading } = useShow()
 
   const isToken = (token: ChatResponseWalletListToken) => {
-    return token.amount > 0 && data.address_filter.includes(token.address)
+    // TODO: Checked
+    // if (token.amount <= 0) {
+    //   return false
+    // }
+
+    if (isBuy) {
+      return data.from_token_info.findIndex((item) => item.token_name)
+    }
+
+    return data.from_token_info.findIndex((item) => item.token_name)
   }
 
+  console.log(selectToken, wallets)
+  
   const rawWalletList = [...wallets]
     .filter((wallet) => {
-      const x = wallet.platform == data.chain_filter?.platform
-      const y = wallet.chain?.name == data.chain_filter?.chain_name
-      const z = wallet.tokens?.some(isToken)
+      const index = wallet.tokens?.findIndex(
+        (token) => token.address == selectToken.contract
+      )
 
-      return x && y && z
+      // const x = wallet.platform == data.chain_filter?.platform
+      // const y = wallet.chain?.name == data.chain_filter?.chain_name
+      // const z = wallet.tokens?.some(isToken)
+
+      // return x && y && z
     })
     ?.sort((a, b) => {
       const x = new Date(b.added_at!).getTime()
@@ -64,7 +153,10 @@ export const TxTokenBubbles = (props: Props) => {
   if (!rawWalletList.length) {
     return (
       <MessageBubble>
-        {t('insufficient.balance.terms').replace('$1', data.from_token_name)}
+        {t('insufficient.balance.terms').replace(
+          '$1',
+          data.from_token_info?.[0].token_name
+        )}
       </MessageBubble>
     )
   }
@@ -109,14 +201,18 @@ export const TxTokenBubbles = (props: Props) => {
   }
 
   const onConfirm = () => {
-    if (checkForm()) {
+    const toToken = data.to_token_contract.find(
+      (item) => item.platform_id == selectToken.platform_id
+    )
+
+    if (checkForm() && toToken) {
       showLoading()
       trandApi
         .buyToken(currentWallet!.id!, {
           amount: `${buyValue}`,
-          input_token: data.from_token_contract,
-          output_token: data.to_token_contract,
-          platform: 'SOL',
+          input_token: selectToken.contract,
+          output_token: toToken?.contract,
+          chain: selectToken.chain,
           slippageBps: slippage,
         })
         .then(({ data }) => {
@@ -250,7 +346,7 @@ export const TxTokenBubbles = (props: Props) => {
       <div className="font-bold mt-1 mb-1">
         {(isBuy ? t('tx.token.text1') : t('tx.token2')).replace(
           '$1',
-          data.from_token_name
+          selectToken.token_name ?? ''
         )}
       </div>
       <div className="flex items-center">
@@ -266,7 +362,7 @@ export const TxTokenBubbles = (props: Props) => {
             placeholder={t('custom')}
             endAdornment={
               <div className="h-full leading-none py-[14px] text-sm border-l-2 text-nowrap pl-3">
-                {data.from_token_name.toUpperCase()}
+                {selectToken.token_name?.toUpperCase()}
               </div>
             }
             value={buyValue}
