@@ -1,15 +1,17 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
-
-import MessageBubble from '../message-bubble'
 import { Button } from '@mui/material'
 
-const CreateTokenLoading = (props: {
+import MessageBubble from '../message-bubble'
+
+interface Props {
   isMinting: boolean
   isLongTime: boolean
   onCancel?: () => void
-}) => {
+}
+
+const CreateTokenLoading = (props: Props) => {
   const { isMinting, isLongTime, onCancel } = props
   const { t } = useTranslation()
 
@@ -33,7 +35,7 @@ const CreateTokenLoading = (props: {
       ></video>
       {isLongTime && (
         <Button variant="outlined" onClick={onCancel}>
-          Cancel
+          {t('cancel')}
         </Button>
       )}
     </MessageBubble>
