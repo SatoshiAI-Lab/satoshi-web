@@ -250,5 +250,6 @@
   "unsupported-chain": "Unsupported chain, currently only supports:",
   "normal": "Yes",
   "risk": "No",
-  "unknown": "Unknown"
+  "unknown": "Unknown",
+  "create-token.created": "Your token has been created."
 }

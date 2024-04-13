@@ -25,7 +25,7 @@ import { useCreateOpToken } from '@/hooks/use-create-op-token'
 import { useCreateTokenConfig } from '@/hooks/use-create-token-config'
 
 import type { UserCreateWalletResp } from '@/api/wallet/params'
-import type { CreateTokenReq } from '@/api/interactive/types'
+import type { CreateTokenInfo } from './types'
 
 enum HotToken {
   WIF = 100_000_000,
@@ -48,19 +48,19 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   // Use simplest method passed data, because just is parent-child component.
   const [selectedWallet, setSelectedWallet] = useState<UserCreateWalletResp>()
   const {
-    hash,
-    address: solAddr,
-    isLoading,
-    isMinting,
-    isCreateSuccess,
-    isMintSuccess,
-    isMintError,
-    isLongTime,
-    createToken: createSolToken,
-    mintToken,
-    cancel,
+    solHash,
+    solAddr,
+    isSolLoading,
+    isSolMinting,
+    isSolCreateSuccess,
+    isSolMintSuccess,
+    isSolMintError,
+    isSolLongTime,
+    createSolToken,
+    mintSolToken,
+    cancelSol,
   } = useCreateSolToken()
-  const { opAddr, isOpLoading, isOpSuccess, createOpToken } =
+  const { opAddr, isOpLoading, isOpLongTime, isOpSuccess, createOpToken } =
     useCreateOpToken(chain)
   const { config, configs } = useCreateTokenConfig(chain)
 
@@ -82,7 +82,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
       return
     }
 
-    const params = {
+    const params: CreateTokenInfo = {
       chain,
       id: selectedWallet.id,
       name: name.trim(),
@@ -90,16 +90,12 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
       desc: intro.trim(),
       decimals: config.decimals,
       total,
-    } as CreateTokenReq & {
-      id: string
-      total: number
     }
 
     if (chain === WalletChain.SOL) {
       createSolToken(params)
       return
     }
-
     if (chain === WalletChain.OP) {
       createOpToken(params)
       return
@@ -107,10 +103,10 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   }
 
   useEffect(() => {
-    if (isMintError) {
+    if (isSolMintError) {
       setMintOpen(true)
     }
-  }, [isMintError])
+  }, [isSolMintError])
 
   // Unsupoorted chain.
   if (!config) {
@@ -127,18 +123,18 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   }
 
   // Loading state.
-  if (isLoading || isOpLoading) {
+  if (isSolLoading || isOpLoading) {
     return (
       <CreateTokenLoading
-        isMinting={isMinting}
-        isLongTime={isLongTime}
-        onCancel={cancel}
+        isMinting={isSolMinting}
+        isLongTime={isSolLongTime || isOpLongTime}
+        onCancel={cancelSol}
       />
     )
   }
 
   // Success state.
-  if ((isCreateSuccess && isMintSuccess) || isOpSuccess) {
+  if ((isSolCreateSuccess && isSolMintSuccess) || isOpSuccess) {
     return (
       <CreateTokenSuccess
         tokenName={name}
@@ -153,14 +149,14 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
     <MessageBubble className="pb-4 w-bubble">
       <Dialog open={mintOpen}>
         <DialogHeader onClose={() => setMintOpen(false)}>
-          <div className="mr-10">Your token has been created.</div>
+          <div className="mr-10">{t('create-token.created')}</div>
         </DialogHeader>
         <DialogContent>
           <div className="text-lg">
             <span className="font-bold">{t('addr')}</span>:{solAddr}
           </div>
           <div className="text-lg">
-            <span className="font-bold">{t('hash')}</span>:{hash}
+            <span className="font-bold">{t('hash')}</span>:{solHash}
           </div>
           <div className="text-lg mt-4">{t('mint-error')}</div>
         </DialogContent>
@@ -169,7 +165,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
             variant="contained"
             onClick={() => {
               setMintOpen(false)
-              mintToken()
+              mintSolToken()
             }}
           >
             {t('continue')}

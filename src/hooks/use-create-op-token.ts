@@ -1,31 +1,33 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 
 import { interactiveApi } from '@/api/interactive'
 import { useWaitingStatus } from './use-waiting'
 
-import type { CreateTokenReq } from '@/api/interactive/types'
+import type { CreateTokenInfo } from '@/components/chat/components/bubbles/create-token-bubble/types'
 
 export const useCreateOpToken = (chain?: string) => {
   const [opHash, setOpHash] = useState('')
   const [opAddr, setOpAddr] = useState('')
+  const [isOpLongTime, setIsOpLongTime] = useState(false)
+  const timerRef = useRef<number>()
 
-  const { isPending: isCreatingOp, mutateAsync: mutateCreate } = useMutation({
+  const {
+    isPending: isCreating,
+    isSuccess: isCreated,
+    mutateAsync: mutateCreate,
+    reset: resetCreate,
+  } = useMutation({
     mutationKey: [interactiveApi.createToken.name],
-    mutationFn: (params: CreateTokenReq & { id: string }) => {
-      const { id, ...req } = params
-      return interactiveApi.createToken(id, req)
-    },
+    mutationFn: interactiveApi.createToken,
     onError: (err) => {
       const e = err as unknown as { data: { error: string } }
       toast.error(`[Create Error]: ${e?.data?.error}`)
     },
   })
 
-  const createOpToken = async (
-    params: CreateTokenReq & { id: string; total: number }
-  ) => {
+  const createOpToken = async (params: CreateTokenInfo) => {
     const { total, ...req } = params
     const { data } = await mutateCreate({
       ...req,
@@ -35,21 +37,46 @@ export const useCreateOpToken = (chain?: string) => {
     setOpAddr(data?.address)
   }
 
-  const { isLoading: isOpWaiting, isSuccess } = useWaitingStatus({
-    hash: opHash,
-    chain,
-    onSuccess(data) {
-      console.log('create op success', data)
-    },
-    onError(err) {
-      console.log('create op success', err)
-    },
-  })
+  const { isLoading: isWaiting, isSuccess: isCreateSuccess } = useWaitingStatus(
+    {
+      hash: opHash,
+      chain,
+      onSuccess(data) {
+        console.log('create op success', data)
+      },
+      onError(err) {
+        console.log('create op success', err)
+      },
+    }
+  )
+
+  const cancelOp = () => {
+    setOpHash('')
+    setOpAddr('')
+    setIsOpLongTime(false)
+    resetCreate()
+    clearTimeout(timerRef.current)
+  }
+
+  useEffect(() => {
+    if (!isCreated) return
+
+    timerRef.current = window.setTimeout(() => {
+      setIsOpLongTime(true)
+    }, 10_000)
+
+    return () => {
+      setIsOpLongTime(false)
+      clearTimeout(timerRef.current)
+    }
+  }, [isCreated])
 
   return {
     opAddr,
-    isOpLoading: isCreatingOp || isOpWaiting,
-    isOpSuccess: isSuccess,
+    isOpLoading: isCreating || isWaiting,
+    isOpSuccess: isCreateSuccess,
+    isOpLongTime,
     createOpToken,
+    cancelOp,
   }
 }

@@ -16,6 +16,7 @@ export interface GetHashStatusRes {
 }
 
 export interface CreateTokenReq {
+  id: string
   chain?: string
   name: string
   symbol: string
@@ -31,6 +32,7 @@ export interface CreateTokenRes {
 }
 
 export interface MintTokenReq {
+  id: string
   chain?: string
   created_hash: string
   amount: number

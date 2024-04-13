@@ -13,8 +13,8 @@ interface Config {
 
 const configs: Record<string, Config> = {
   [WalletChain.SOL]: {
-    symbol: 'SOL',
-    nativeToken: 'SOL',
+    symbol: 'SOL', // The token symbol.
+    nativeToken: 'SOL', // The chain native token.
     minBalance: 0.2, // Wallet min balance.
     decimals: 9, // The chain decimals.
   },
