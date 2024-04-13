@@ -251,5 +251,9 @@
   "normal": "Yes",
   "risk": "No",
   "unknown": "Unknown",
-  "create-token.created": "Your token has been created."
+  "create-token.created": "Your token has been created.",
+  "create-token.confirm": "Please pay attention",
+  "create-token.confirm2": "Are you sure you want to create a token on the {} chain?",
+  "create-token.confirm1": "This operation may spend {} of your {} wallet.",
+  "confirm-pure": "Confirm"
 }

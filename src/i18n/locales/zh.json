@@ -248,5 +248,9 @@
   "normal": "正常",
   "risk": "风险",
   "unknown": "未知风险",
-  "create-token.created": "您的代币已创建。"
+  "create-token.created": "您的代币已创建。",
+  "create-token.confirm": "请注意",
+  "create-token.confirm2": "用于在 {} 链上创建一个代币，您确定这样做吗？",
+  "create-token.confirm1": "此操作可能会花费您的 {} 钱包的 {}。",
+  "confirm-pure": "确认"
 }

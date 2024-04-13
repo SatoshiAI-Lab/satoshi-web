@@ -63,6 +63,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   const { opAddr, isOpLoading, isOpLongTime, isOpSuccess, createOpToken } =
     useCreateOpToken(chain)
   const { config, configs } = useCreateTokenConfig(chain)
+  const [createTipOpen, setCreateTipOpen] = useState(false)
 
   const nicknameIsValid = !!name.trim()
   const nameIsValid = !!symbol.trim()
@@ -147,6 +148,44 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   // Create bubble.
   return (
     <MessageBubble className="pb-4 w-bubble">
+      <Dialog open={createTipOpen}>
+        <DialogHeader
+          text={t('create-token.confirm')}
+          onClose={() => setCreateTipOpen(false)}
+        />
+        <DialogContent>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: t('create-token.confirm1')
+                .replace(
+                  '{}',
+                  `<span class="font-bold">${selectedWallet?.name ?? ''}</span>`
+                )
+                .replace(
+                  '{}',
+                  `<span class="font-bold">${config.minBalance} ${config.nativeToken}</span>`
+                ),
+            }}
+          ></div>
+          <div
+            className="mt-2"
+            dangerouslySetInnerHTML={{
+              __html: t('create-token.confirm2').replace(
+                '{}',
+                `<span class="font-bold">${chain}</span>`
+              ),
+            }}
+          ></div>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={onCreate}>
+            {t('confirm-pure')}
+          </Button>
+          <Button variant="outlined" onClick={() => setCreateTipOpen(false)}>
+            {t('cancel')}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog open={mintOpen}>
         <DialogHeader onClose={() => setMintOpen(false)}>
           <div className="mr-10">{t('create-token.created')}</div>
@@ -286,7 +325,7 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
         variant="contained"
         classes={{ root: '!rounded-full !px-8 !text-base' }}
         disabled={!nicknameIsValid || !nameIsValid || !totalIsValid}
-        onClick={onCreate}
+        onClick={() => setCreateTipOpen(true)}
         startIcon={<BsFillLightningFill size={18} />}
       >
         {t('create')}
