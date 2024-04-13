@@ -1,8 +1,11 @@
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { nanoid } from 'nanoid'
+import { Dialog } from '@mui/material'
+
 import MessageBubble from '../message-bubble'
 import { ChatResponseAnswerMeta } from '@/api/chat/types'
 import { useShow } from '@/hooks/use-show'
-import { Dialog } from '@mui/material'
 import { DialogHeader } from '@/components/dialog-header'
 import { MonitorWallet } from '@/components/monitor/monitor-wallet'
 
@@ -11,33 +14,35 @@ interface Props {
 }
 
 export const MonitorAddressBubble = ({ msg }: Props) => {
-  const { t, i18n } = useTranslation()
-
+  const { t } = useTranslation()
   const { show, open, hidden } = useShow()
+  const idRef = useRef(nanoid())
+
+  const onMonitorSetting = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const target = e.target as HTMLElement
+
+    // If is target span, open monitor setting dialog.
+    if (target.id === idRef.current) open()
+  }
 
   return (
     <>
       <MessageBubble>
-        <div className="">{t('monitor.wallet.bubble.text1')}</div>
-        <div className="">{t('monitor.wallet.bubble.text2')}</div>
-        {i18n.language == 'en' ? (
-          <>
-            <div className="">
-              You can manage the wallets you are tracking through
-              <span className="text-primary cursor-pointer" onClick={open}>
-                Monitor-Track Wallet.
-              </span>
-            </div>
-          </>
-        ) : (
-          <div>
-            您可以通过
-            <span className="text-primary cursor-pointer" onClick={open}>
-              「监控-监控钱包」
-            </span>
-            管理您正在跟踪的钱包。
-          </div>
-        )}
+        <div>{t('monitor.wallet.bubble.text1')}</div>
+        <div>{t('monitor.wallet.bubble.text2')}</div>
+        <div
+          onClick={onMonitorSetting}
+          dangerouslySetInnerHTML={{
+            __html: t('monitor.addr').replace(
+              '{}',
+              `<span id="${
+                idRef.current
+              }" class="text-primary cursor-pointer">${t(
+                'monitor.addr-track'
+              )}</span>`
+            ),
+          }}
+        ></div>
       </MessageBubble>
       <Dialog open={show} onClose={hidden}>
         <DialogHeader

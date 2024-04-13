@@ -22,7 +22,7 @@ interface Props {
 
 export const TokenDetailBubble = (props: Props) => {
   const { avatarSize = 45, msg } = props
-  const data = msg?.data as unknown as ChatResponseTokenDetail
+  const data = msg?.data as unknown as Partial<ChatResponseTokenDetail>
   const priceCange = Number(data.price_change)
   const { t } = useTranslation()
 
@@ -34,7 +34,7 @@ export const TokenDetailBubble = (props: Props) => {
           alt="Logo"
           sx={{ width: avatarSize, height: avatarSize }}
         >
-          {data.name.slice(0, 1)}
+          {data.name?.slice(0, 1)}
         </Avatar>
         <div className="ml-2 w-full flex flex-col justify-between">
           <div>{data.symbol}</div>
@@ -96,8 +96,8 @@ export const TokenDetailBubble = (props: Props) => {
           <FaTelegramPlane></FaTelegramPlane>
         </IconButton>
         <IconButton
-          disabled={!data.websites.length}
-          onClick={() => window.open(data.websites[0])}
+          disabled={!data.websites?.length}
+          onClick={() => window.open(data.websites?.[0])}
           color="primary"
         >
           <RiGlobalLine></RiGlobalLine>

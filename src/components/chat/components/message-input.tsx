@@ -116,30 +116,30 @@ function MessageInput(props: MessageInputProps) {
     <div
       className={clsx(
         'sticky bottom-4 z-20 max-sm:mx-5 mr-10 max-sm:bottom-0',
-        'transition-all '
+        'transition-all'
       )}
     >
       <InputMenu />
+      <InputButtons
+        className="!absolute right-0 -top-4"
+        isShow={isTrigger || isLoading}
+        showToBottom={isTrigger}
+        showPasuse={isLoading}
+        onToBottomClick={scrollToBottom}
+        onPasuseClick={onCancel}
+      />
       <div
         className={clsx(
           'flex rounded-md gap-2 border-2 border-solid items-center duration-500',
           'bg-slate-100 transition-all py-1 px-1 pl-2 hover:border-primary',
-          isFocus ? 'border-primary' : 'border-transparent',
-          'relative'
+          isFocus ? 'border-primary' : 'border-transparent'
         )}
       >
-        <InputButtons
-          className="!absolute right-0 -top-14"
-          isShow={isTrigger || isLoading}
-          showToBottom={isTrigger}
-          showPasuse={isLoading}
-          onToBottomClick={scrollToBottom}
-          onPasuseClick={onCancel}
-        />
         <TextareaAutosize
           className={clsx(
-            'bg-transparent pl-1 text-lg transition-all text-black w-full outline-none',
-            'resize-none placeholder:whitespace-nowrap placeholder:truncate'
+            'bg-transparent pl-1 text-lg transition-all text-black w-full',
+            'resize-none placeholder:whitespace-nowrap placeholder:truncate',
+            'outline-none break-all'
           )}
           value={question}
           placeholder={t('chat.placeholder')}
@@ -167,7 +167,8 @@ function MessageInput(props: MessageInputProps) {
           size="large"
           disableElevation
           className={clsx(
-            'shrink-0 !text-lg !rounded-md !px-4 !pr-3 self-end !text-white'
+            'shrink-0 !text-lg !rounded-md !px-4 !pr-3 self-end',
+            '!text-white'
           )}
           startIcon={
             isLoading ? (

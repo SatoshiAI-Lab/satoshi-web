@@ -1,4 +1,4 @@
-import { FC, createElement, memo, useEffect, useState } from 'react'
+import { FC, createElement, memo, useState } from 'react'
 import { Button, Dialog, IconButton, Menu, MenuItem } from '@mui/material'
 import { AiOutlineSafety, AiOutlineWallet } from 'react-icons/ai'
 import { TfiClose } from 'react-icons/tfi'
@@ -18,6 +18,7 @@ import { WalletPlatform } from '@/config/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
 import WalletSkeleton from './components/skeleton'
 import { useChainsPlatforms } from './hooks/use-chains-platforms'
+import { WalletSearch } from './components/wallet-search'
 
 import type { WalletDialogProps } from './types'
 
@@ -65,11 +66,13 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     open,
     onClose,
   } = props
-  const { wallets, setCurrentWallet } = useWalletStore()
+  const { wallets, selectedChain, setCurrentWallet } = useWalletStore()
   const { isFirstFetchingWallets, createWallet } = useWallet({ enabled: true })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openCreateWallet = Boolean(anchorEl)
   const { copy } = useClipboard()
+  // Used for search.
+  const [filteredWallets, setFilteredWallets] = useState<typeof wallets>([])
 
   const handleCreateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -128,7 +131,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     setPopOpen(true)
   }
 
-  // on mounted, request chains & platforms.
+  // Request chains & platforms when mounted.
   useChainsPlatforms(true)
 
   return (
@@ -205,7 +208,16 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
             </div>
           </div>
           {/* If only one wallet, hide select */}
-          {!onlyWallet && <ChainPlatformSelect />}
+          {!onlyWallet && (
+            <div className="flex justify-between items-center">
+              <ChainPlatformSelect />
+              <WalletSearch
+                wallets={wallets}
+                chain={selectedChain}
+                onResult={(results) => setFilteredWallets(results)}
+              />
+            </div>
+          )}
           {/* Wallets list */}
           <CustomSuspense
             container="div"
@@ -213,8 +225,8 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
             isPendding={isFirstFetchingWallets}
             fallback={<WalletSkeleton className="h-[440px] max-h-[440px]" />}
           >
-            {wallets.length ? (
-              (onlyWallet ? [onlyWallet] : wallets).map((item) => (
+            {filteredWallets.length ? (
+              (onlyWallet ? [onlyWallet] : filteredWallets).map((item) => (
                 <WalletCard
                   {...item}
                   platform={item.platform!}

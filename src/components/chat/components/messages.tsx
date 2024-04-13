@@ -43,8 +43,7 @@ const Messages = memo((props: MessagesProps) => {
       return <InteractiveMessage key={i} msgs={msg.msgs!} />
     }
 
-    console.log('msg:', msg)
-    
+    // console.log('msg:', msg)
 
     return (
       <MessageBubble key={i} position={msg.position} className={className}>
