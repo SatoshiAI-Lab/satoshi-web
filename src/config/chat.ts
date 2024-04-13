@@ -115,5 +115,6 @@ export const CHAT_CONFIG = {
     'subscript_wallet_address_success',
     'subscript_announcement_list',
     'subscript_pool_list',
+    'transaction_confirm_stream',
   ],
 }
