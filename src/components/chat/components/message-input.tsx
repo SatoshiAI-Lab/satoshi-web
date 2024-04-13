@@ -137,8 +137,9 @@ function MessageInput(props: MessageInputProps) {
       >
         <TextareaAutosize
           className={clsx(
-            'bg-transparent pl-1 text-lg transition-all text-black w-full outline-none',
-            'resize-none placeholder:whitespace-nowrap placeholder:truncate'
+            'bg-transparent pl-1 text-lg transition-all text-black w-full',
+            'resize-none placeholder:whitespace-nowrap placeholder:truncate',
+            'outline-none break-all'
           )}
           value={question}
           placeholder={t('chat.placeholder')}
