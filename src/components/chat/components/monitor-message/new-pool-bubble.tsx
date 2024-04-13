@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import clsx from 'clsx'
 import { FaTwitter } from 'react-icons/fa'
 import { FaTelegramPlane } from 'react-icons/fa'
@@ -23,16 +23,17 @@ import { MonitorPoolStatus } from '@/config/monitor'
 import { BiError } from 'react-icons/bi'
 import { DialogHeader } from '@/components/dialog-header'
 import { useShow } from '@/hooks/use-show'
+import numeral from 'numeral'
 
 interface SecurityList {
   desc: string
-  status: string
-  icon: React.ReactElement
+  status: ReactNode
+  icon: ReactNode
 }
 
 const SecurityItem = ({ desc, status, icon }: SecurityList) => {
   return (
-    <div className="flex items-center">
+    <div className="flex items-center mt-2">
       {desc}: {status} {icon}
     </div>
   )
@@ -42,9 +43,9 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
   const { t } = useTranslation()
   const { copy } = useClipboard()
 
-  return <></>
-
   const { show, open, hidden } = useShow()
+
+  console.log(props)
 
   // props = data as unknown as ChatResponseMetaNewPoolV2
 
@@ -52,14 +53,22 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
   const riskList: SecurityList[] = []
   const unknownList: SecurityList[] = []
 
-  props.security?.content.forEach((item) => {
+  props.security?.content?.forEach((item) => {
     const desc = utilLang.getContent(item.content)
     switch (item.status) {
       case MonitorPoolStatus.normal: {
         normalList.push({ desc, status: t('normal'), icon: <></> })
       }
       case MonitorPoolStatus.risk: {
-        riskList.push({ desc, status: t('risk'), icon: <BiError /> })
+        riskList.push({
+          desc,
+          status: <span className="text-red-500">{t('risk')}</span>,
+          icon: (
+            <span className="text-red-500">
+              <BiError />
+            </span>
+          ),
+        })
       }
       case MonitorPoolStatus.unknown: {
         unknownList.push({ desc, status: t('unknown'), icon: <></> })
@@ -75,7 +84,6 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
       <>
         <div className="">
           {normalList.map((item) => {
-            item.status
             return <SecurityItem {...item}></SecurityItem>
           })}
         </div>
@@ -85,7 +93,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
 
   const handleRiskList = () => {
     if (!riskList.length) {
-      return <></>
+      return <div className='mt-[6px]'>{t('no.contract.risk')}</div>
     }
     return riskList.map((item) => {
       return <SecurityItem {...item}></SecurityItem>
@@ -113,7 +121,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
           /> */}
           <div className="flex flex-col">
             <span className="font-bold h-[20px] leading-none">
-              {t('new-pool').replace('{}', 'Solana')}
+              {t('new-pool').replace('{}', props.chain)}
             </span>
             <span className="text-gray-400 h-[20px] text-sm">
               {dayjs(props.created_at).format('H:mm M/D')}
@@ -174,23 +182,28 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
       </div>
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('liquidity')}:</span>
-        <span>${props.liquidity}</span>
+        <span>{numeral(props.liquidity).format('$0,0a.00')}</span>
       </div>
-      <div className="flex items-center mb-2">
-        <span className="font-bold mr-1">{t('started')}:</span>{' '}
-        <span>${props.started}</span>
-      </div>
+      {props.started ? (
+        <div className="flex items-center mb-2">
+          <span className="font-bold mr-1">{t('started')}:</span>{' '}
+          <span>{numeral(props.started).format('$0,0a.00')}</span>
+        </div>
+      ) : null}
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('price')}:</span>
-        <span>${props.price}</span>
+        <span>${utilFmt.token(props.price)}</span>
       </div>
 
       <div className="grid grid-cols-2">
         {!!props.security && (
           <div>
             <div className="font-bold mt-2">⚙️ {t('ca-secutiry')}</div>
-            <div className="max-h-[205px] overflow-y-scroll">
+            <div className="max-h-[185px] overflow-y-scroll">
               {handleRiskList()}
+              <div className="mt-2 text-sm text-gray-500">
+                {utilLang.getContent(props.security.remark)}
+              </div>
             </div>
           </div>
         )}
@@ -208,18 +221,19 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
             <div></div>
           </div>
         )}
-        {!!props.score?.score && (
-          <div className="my-2">
-            <div className="font-bold mt-2">
-              🧠 {t('score')}: {props.score.score}
-            </div>
-            {props.score?.detail?.map((item) => (
-              <div className="mt-2" key={item}>
-                {item}
-              </div>
-            ))}
+        <div className="my-2">
+          <div className="font-bold mt-2">
+            🧠 {t('score')}:{' '}
+            {props.score.score ?? (
+              <span className="text-red-500">{t('hight.risk')}</span>
+            )}
           </div>
-        )}
+          {props.score?.detail?.map((item) => (
+            <div className="mt-2" key={item}>
+              {item}
+            </div>
+          ))}
+        </div>
       </div>
       <Dialog open={show} onClose={hidden}>
         <DialogHeader text={'list'} onClose={hidden}></DialogHeader>

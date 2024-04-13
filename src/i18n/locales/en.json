@@ -249,5 +249,7 @@
   "select-platform": "Select platform",
   "normal": "Yes",
   "risk": "No",
-  "unknown": "Unknown"
+  "unknown": "Unknown",
+  "no.contract.risk": "No contract risk detected ✅",
+  "hight.risk": "High risk"
 }
