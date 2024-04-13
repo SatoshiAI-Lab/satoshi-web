@@ -8,7 +8,7 @@ export const URL_CONFIG = {
 
   satoshiMonitorApi: 'wss://api.mysatoshi.ai',
 
-  satoshiChatApi: 'https://lab.mysatoshi.ai',
+  satoshiChatApi: process.env.NEXT_PUBLIC_SATOSHI_AI_API!,
 
   cdn: 'https://img.mysatoshi.ai',
 

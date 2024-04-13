@@ -1,5 +1,7 @@
+import { WalletChain } from "@/config/wallet"
+
 export interface BuyTokenParams {
-  platform?: 'SOL' | 'EVM'
+  chain?: WalletChain
   input_token: string
   output_token: string
   amount: string

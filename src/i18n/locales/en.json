@@ -256,5 +256,7 @@
   "create-token.confirm2": "Are you sure you want to create a token on the {} chain?",
   "create-token.confirm1": "This operation may spend {} of your {} wallet.",
   "confirm-pure": "Confirm",
-  "search-wallet": "Search wallet"
+  "search-wallet": "Search wallet",
+  "no.contract.risk": "No contract risk detected ✅",
+  "hight.risk": "High risk"
 }

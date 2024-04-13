@@ -39,11 +39,14 @@ export const MonitorPools = ({ data, className }: Props) => {
     const content =
       configData?.pool.content
         .filter((item) => item.subscribed)
-        .map((item) => ({
-          min: min ?? defaultMin,
-          max: max ?? defaultMax,
-          chain: item.chain,
-        })) || []
+        .map((item) => {
+
+          return {
+            min: item.chain == chain?.chain ? min ?? defaultMin : chain?.min,
+            max: item.chain == chain?.chain ? max ?? defaultMax : chain?.max,
+            chain: item.chain,
+          }
+        }) || []
 
     setConfig({
       message_type: MonitorConfig.pool,
@@ -82,7 +85,7 @@ export const MonitorPools = ({ data, className }: Props) => {
             key={i}
             data={chain}
             onSwitch={onSwitch}
-            disabled={chain.chain !== 'Solana'}
+            disabled={false}
             onSetting={chain.subscribed ? openSetting : null}
             logo={
               chain.logo ??
