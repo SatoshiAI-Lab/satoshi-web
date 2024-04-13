@@ -218,19 +218,19 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
             <div></div>
           </div>
         )}
-        <div className="my-2">
-          <div className="font-bold mt-2">
-            🧠 {t('score')}:{' '}
-            {props.score.score ?? (
-              <span className="text-red-500">{t('hight.risk')}</span>
-            )}
-          </div>
-          {props.score?.detail?.map((item) => (
-            <div className="mt-2" key={item}>
-              {item}
-            </div>
-          ))}
+      </div>
+      <div className="my-2">
+        <div className="font-bold mt-2">
+          🧠 {t('score')}:{' '}
+          {props.score.score ?? (
+            <span className="text-red-500">{t('hight.risk')}</span>
+          )}
         </div>
+        {props.score?.detail?.map((item) => (
+          <div className="mt-2" key={item}>
+            {item}
+          </div>
+        ))}
       </div>
       <Dialog open={show} onClose={hidden}>
         <DialogHeader text={'list'} onClose={hidden}></DialogHeader>
