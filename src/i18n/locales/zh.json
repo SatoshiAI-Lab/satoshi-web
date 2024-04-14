@@ -254,5 +254,7 @@
   "create-token.confirm1": "此操作可能会花费您的 {} 钱包的 {}。",
   "confirm-pure": "确认",
   "no.contract.risk": "没有检测出合约风险 ✅",
-  "hight.risk": "高风险"
+  "hight.risk": "高风险",
+  "swap": "兑换",
+  "for": "成"
 }

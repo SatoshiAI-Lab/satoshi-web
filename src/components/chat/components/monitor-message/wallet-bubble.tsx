@@ -51,17 +51,17 @@ const WalletBubble = ({ data }: Props) => {
         <a href="#" target="_blank" className="underline text-primary">
           {name}
         </a>{' '}
-        {type}
+        {t('swap')}
         <a href="#" target="_blank" className="text-primary">
           {' '}
           {currency_symbol}{' '}
         </a>
-        for {side_amount} {side_symbol}
+        {t('for')} {utilFmt.token(side_amount)} {side_symbol}
       </div>
       {/* contract address */}
       <div className="flex items-center my-1">
         <div className="mr-2">
-          <span className="font-bold">{side_symbol} CA</span>:{" "}
+          <span className="font-bold">{side_symbol} CA</span>:{' '}
           {utilFmt.addr(sender)}
         </div>
         <CopyToClipboard

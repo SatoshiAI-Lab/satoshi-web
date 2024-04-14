@@ -257,5 +257,7 @@
   "create-token.confirm1": "This operation may spend {} of your {} wallet.",
   "confirm-pure": "Confirm",
   "no.contract.risk": "No contract risk detected ✅",
-  "hight.risk": "High risk"
+  "hight.risk": "High risk",
+  "swap": "swap",
+  "for": "for"
 }
