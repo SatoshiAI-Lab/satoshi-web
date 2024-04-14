@@ -262,5 +262,8 @@
   "monitor.addr": "You can manage the wallets you are tracking through {}",
   "monitor.addr-track": "Monitor-Track Wallet",
   "swap": "swap",
-  "for": "for"
+  "for": "for",
+  "trading.timeout": "Trading timeout",
+  "trading.fail": "Trade failed",
+  "trading.success": "Successful transaction"
 }

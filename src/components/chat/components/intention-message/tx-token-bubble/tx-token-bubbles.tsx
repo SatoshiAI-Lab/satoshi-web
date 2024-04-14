@@ -23,6 +23,8 @@ import { useShow } from '@/hooks/use-show'
 import { trandApi } from '@/api/trand'
 import { useChat } from '@/hooks/use-chat'
 import { useWallet } from '@/hooks/use-wallet'
+import { interactiveApi } from '@/api/interactive'
+import toast from 'react-hot-toast'
 
 interface Props {
   msg: ChatResponseAnswerMeta
@@ -125,12 +127,38 @@ export const TxTokenBubbles = (props: Props) => {
         output_token: `${outputToken?.contract}`,
         slippageBps: slippage,
       })
+
+      const getStatus = async () => {
+        const { data: result } = await interactiveApi.getHashStatus({
+          hash_tx: data.hash_tx,
+          chain: inputToken?.chain,
+        })
+        if (result.status == 0) {
+          await getStatus()
+          return
+        }
+        if (result.status == 1) {
+          toast.success(t('trading.success'))
+          return
+        }
+        if (result.status == 2) {
+          toast.error(t('trading.timeout'))
+          return Promise.reject()
+        }
+        if (result.status == 3) {
+          toast.error(t('trading.fail'))
+          return Promise.reject()
+        }
+      }
+
+      await getStatus()
       addMessage({
         msg: `${t('successful.transaction')}${data.hash_tx}`,
       })
       setIsFinalTx(true)
       getAllWallet()
     } catch {
+      toast.error(t('trading.fail'))
     } finally {
       hiddenLoading()
     }

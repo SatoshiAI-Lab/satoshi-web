@@ -259,5 +259,8 @@
   "monitor.addr": "您可以通过{}管理您正在跟踪的钱包。",
   "monitor.addr-track": "「监控-监控钱包」",
   "swap": "兑换",
-  "for": "成"
+  "for": "成",
+  "trading.timeout": "交易超时",
+  "trading.fail": "交易失败",
+  "trading.success": "交易成功"
 }
