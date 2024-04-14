@@ -262,5 +262,6 @@
   "for": "成",
   "trading.timeout": "交易超时",
   "trading.fail": "交易失败",
-  "trading.success": "交易成功"
+  "trading.success": "交易成功",
+  "export-wallet": "悬浮显示私钥（请注意您的私钥安全）"
 }

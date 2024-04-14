@@ -184,7 +184,7 @@
   "total.balance": "Total balance",
   "operation": "Operation",
   "wallet.list.empty": "The list of wallets is empty",
-  "export.wallet.intent.text": "Export $1 wallet",
+  "export.wallet.intent.text": "Export wallet $1",
   "changename.walllet": "Change the name of the $1 wallet",
   "bubble.nolink": "Origin link not ready, please try again later",
   "cancel": "Cancel",
@@ -265,5 +265,6 @@
   "for": "for",
   "trading.timeout": "Trading timeout",
   "trading.fail": "Trade failed",
-  "trading.success": "Successful transaction"
+  "trading.success": "Successful transaction",
+  "export-wallet": "Hover to show private key(Attention private key security)"
 }

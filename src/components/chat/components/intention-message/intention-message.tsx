@@ -99,5 +99,7 @@ export const IntentMessage = ({ msg }: Props) => {
     return <PoolMonitorBubble></PoolMonitorBubble>
   }
 
+  // console.log('type', msg.msgs)
+
   return <></>
 }
