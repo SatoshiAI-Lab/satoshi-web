@@ -5,10 +5,11 @@ import MessageBubble from './bubbles/message-bubble'
 import InteractiveMessage from './interactive-message'
 import MarkdownParser from '@/components/markdown-parser'
 import { useTranslation } from 'react-i18next'
-
-import { type Message } from '@/stores/use-chat-store/types'
 import { IntentMessage } from './intention-message/intention-message'
 import { MonitorConfigBubble } from './monitor-message/monitor-config-bubble'
+import { PrivateKeyMessage } from './private-key-message'
+
+import { type Message } from '@/stores/use-chat-store/types'
 
 interface MessagesProps {
   messages: Message[]
@@ -43,7 +44,11 @@ const Messages = memo((props: MessagesProps) => {
       return <InteractiveMessage key={i} msgs={msg.msgs!} />
     }
 
-    // console.log('msg:', msg)
+    const privKeyData = msg.msgs?.data as unknown as { private_key?: string }
+    const privateKey = privKeyData?.private_key
+    if (privateKey) {
+      return <PrivateKeyMessage privateKey={privateKey} />
+    }
 
     return (
       <MessageBubble key={i} position={msg.position} className={className}>

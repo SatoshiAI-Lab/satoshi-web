@@ -81,6 +81,7 @@ export const useChat = () => {
     const { messages } = useChatStore.getState()
     const lastMessage = messages[messages.length - 1]
     const newMsg: Message = {
+      ...ops,
       ...lastMessage,
       msg: lastMessage.msg + content,
       isLoadingMsg: false,
@@ -251,7 +252,7 @@ export const useChat = () => {
       intention.includes(metaType ?? '') // create token message
     ) {
       if (data.text && !hiddenIntentText.includes(data?.meta.type!)) {
-        addStreamMessage(data.text)
+        addStreamMessage(data.text, { msgs: data.meta })
       }
 
       data.meta.data?.reverse?.()
