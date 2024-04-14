@@ -78,8 +78,8 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
     return (
       <>
         <div className="">
-          {normalList.map((item) => {
-            return <SecurityItem {...item}></SecurityItem>
+          {normalList.map((item, i) => {
+            return <SecurityItem key={i} {...item}></SecurityItem>
           })}
         </div>
       </>
@@ -90,8 +90,8 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
     if (!riskList.length) {
       return <div className="mt-[6px]">{t('no.contract.risk')}</div>
     }
-    return riskList.map((item) => {
-      return <SecurityItem {...item}></SecurityItem>
+    return riskList.map((item, i) => {
+      return <SecurityItem key={i} {...item}></SecurityItem>
     })
   }
 
@@ -99,8 +99,8 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
     if (!unknownList.length) {
       return <></>
     }
-    return unknownList.map((item) => {
-      return <SecurityItem {...item}></SecurityItem>
+    return unknownList.map((item, i) => {
+      return <SecurityItem key={i} {...item}></SecurityItem>
     })
   }
 
@@ -164,7 +164,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
       <div className="flex items-center mb-2">
         <span className="font-bold">{t('ca')}:</span>{' '}
         <a
-          href={`${link.solscan}account/${props.address}`}
+          href={props.outside_url}
           target="_blank"
           className="text-primary ml-1 underline"
         >
@@ -209,26 +209,29 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
               <div className="mt-2" key={key}>
                 {props.chain == WalletChain.SOL ? key : utilFmt.addr(key)}:{' '}
                 {props.chain == WalletChain.SOL
-                  ? props.top_holders[key]
+                  ? `${
+                      `${parseFloat(props.top_holders[key])}%` ||
+                      props.top_holders[key]
+                    }`
                   : `${Number(props.top_holders[key]).toFixed(2)}%`}
               </div>
             ))}
             <div></div>
           </div>
         )}
-      </div>
-      <div className="my-2">
-        <div className="font-bold mt-2">
-          🧠 {t('score')}:{' '}
-          {props.score.score ?? (
-            <span className="text-red-500">{t('hight.risk')}</span>
-          )}
-        </div>
-        {props.score?.detail?.map((item) => (
-          <div className="mt-2" key={item}>
-            {item}
+        <div className="my-2">
+          <div className="font-bold mt-2">
+            🧠 {t('score')}:{' '}
+            {props.score.score ?? (
+              <span className="text-red-500">{t('hight.risk')}</span>
+            )}
           </div>
-        ))}
+          {props.score?.detail?.map((item) => (
+            <div className="mt-2" key={item}>
+              {item}
+            </div>
+          ))}
+        </div>
       </div>
       <Dialog open={show} onClose={hidden}>
         <DialogHeader text={'list'} onClose={hidden}></DialogHeader>

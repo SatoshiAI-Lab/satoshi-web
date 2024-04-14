@@ -260,5 +260,7 @@
   "no.contract.risk": "No contract risk detected ✅",
   "hight.risk": "High risk",
   "monitor.addr": "You can manage the wallets you are tracking through {}",
-  "monitor.addr-track": "Monitor-Track Wallet"
+  "monitor.addr-track": "Monitor-Track Wallet",
+  "swap": "swap",
+  "for": "for"
 }

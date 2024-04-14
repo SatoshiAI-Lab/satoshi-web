@@ -45,25 +45,22 @@ export interface ChatResponseMetaBalance {
 }
 
 export interface ChatResponseTxConfrim {
-  from_token_name: ChatResponseTokenDetail[]
-  from_token_contract: string
+  from_token_info: TokenInfo[]
   amount: number
+  from_token_name: string
   to_token_name: string
-  to_token_contract: string
-  match_wallets: ChatResponseWalletList[]
-  address_filter: string[]
-  chain_filter: {
-    chain_name: string
-    platform: string
-  }
+  to_token_info: TokenInfo[]
 }
 
-export interface ChatResponseTokenInfo {
-  platform: WalletPlatform
+export interface TokenInfo {
+  platform: string
   chain: WalletChain
-  token_name: string
+  token_name: null | string
   contract: string
-  platform_id: number //平台ID
+  platform_id: number
+  chain_logo: string
+  chain_symbol: string
+  token_logo: null | string
 }
 
 export interface ChatResponseTokneName {
@@ -314,6 +311,7 @@ export interface ChatResponseMetaNewPoolV2 {
   score: Score
   created_at: string
   data_type: string
+  outside_url: string
 }
 
 export interface Score {

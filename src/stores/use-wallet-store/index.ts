@@ -9,6 +9,7 @@ export interface WalletCardProps extends Partial<UserCreateWalletResp> {}
 
 interface States {
   wallets: WalletCardProps[]
+  allWallets: WalletCardProps[]
   chains: GetChainsRes['chains']
   platforms: GetChainsRes['platforms']
   currentWallet?: WalletCardProps
@@ -18,6 +19,7 @@ interface States {
 
 interface Actions {
   setWallets(wallets: WalletCardProps[]): void
+  setAllWallets(wallets: WalletCardProps[]): void
   setChains(chains: GetChainsRes['chains']): void
   setPlatforms(platforms: GetChainsRes['platforms']): void
   setCurrentWallet(address?: string): void
@@ -27,6 +29,7 @@ interface Actions {
 
 export const useWalletStore = create<States & Actions>((set, get) => ({
   wallets: [],
+  allWallets: [],
   chains: [],
   platforms: [],
   currentWallet: undefined,
@@ -34,6 +37,7 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   selectedPlatform: WALLET_CONFIG.defaultPlatform,
 
   setWallets: (wallets) => set({ wallets }),
+  setAllWallets: (allWallets) => set({ allWallets }),
   setChains: (chains) => set({ chains }),
   setPlatforms: (platforms) => set({ platforms }),
   setCurrentWallet: (address) => {

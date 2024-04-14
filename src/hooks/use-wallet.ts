@@ -3,6 +3,8 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
+import { UserCreateWalletResp } from '@/api/wallet/params'
+import { FetcherResponse } from '@/api/fetcher/types'
 
 interface Options {
   enabled?: boolean
@@ -11,13 +13,29 @@ interface Options {
 
 export const useWallet = (options?: Options) => {
   const { enabled = false, refetchInterval = false } = options ?? {}
-  const { wallets, selectedChain, setWallets } = useWalletStore()
+  const { wallets, allWallets, setAllWallets, selectedChain, setWallets } =
+    useWalletStore()
+
+  const getAllWallet = async () => {
+    const allWallet: Promise<FetcherResponse<UserCreateWalletResp[]>>[] = []
+    ;['Solana', 'Ethereum', 'Optimism', 'Arbitrum'].forEach((chain) => {
+      allWallet.push(walletApi.getWallets(chain))
+    })
+    const data = await Promise.all(allWallet)
+    const ruslt: UserCreateWalletResp[] = []
+    data.forEach((item) => {
+      ruslt.push(...item.data)
+    })
+    setAllWallets(ruslt)
+    return ruslt
+  }
 
   // Get wallet list.
   const {
     data: walletsData,
     isLoading: isFirstFetchingWallets,
     isFetching: isFetchingWallets,
+    isFetched,
     refetch: refetchWallets,
   } = useQuery({
     enabled, // By default is disabled.
@@ -112,8 +130,10 @@ export const useWallet = (options?: Options) => {
 
   // Stored wallet list
   useEffect(() => {
-    setWallets(walletsData?.data ?? [])
-  }, [walletsData])
+    if (isFetched && walletsData?.data) {
+      setWallets(walletsData?.data)
+    }
+  }, [walletsData, isFetched])
 
   return {
     wallets,
@@ -125,6 +145,8 @@ export const useWallet = (options?: Options) => {
     isImporting,
     isExporting,
     isRenaming,
+    allWallets,
+    getAllWallet,
     refetchWallets,
     createWallet,
     removeWallet,

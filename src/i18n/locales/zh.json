@@ -257,5 +257,7 @@
   "no.contract.risk": "没有检测出合约风险 ✅",
   "hight.risk": "高风险",
   "monitor.addr": "您可以通过{}管理您正在跟踪的钱包。",
-  "monitor.addr-track": "「监控-监控钱包」"
+  "monitor.addr-track": "「监控-监控钱包」",
+  "swap": "兑换",
+  "for": "成"
 }

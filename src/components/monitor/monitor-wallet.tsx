@@ -18,7 +18,6 @@ import toast from 'react-hot-toast'
 import { DialogHeader } from '../dialog-header'
 import { useShow } from '@/hooks/use-show'
 import { MonitorWalletList } from './monitor-wallet-list'
-import { useChainsPlatforms } from '../wallet/hooks/use-chains-platforms'
 import { isAddress } from 'viem'
 
 interface Props {
