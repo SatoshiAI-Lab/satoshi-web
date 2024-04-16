@@ -7,8 +7,10 @@ import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useChat } from './use-chat'
+import { useTranslation } from 'react-i18next'
 
 export const useChatMonitorMsg = () => {
+  const { i18n } = useTranslation()
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
   const { setUnreadMessage } = useChatStore()
@@ -56,6 +58,10 @@ export const useChatMonitorMsg = () => {
       }
     })
   }
+
+  useEffect(() => {
+    ws.emit('lang', i18n.language)
+  }, [i18n.language])
 
   useEffect(() => {
     if (isLogined) {
