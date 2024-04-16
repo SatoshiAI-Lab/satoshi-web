@@ -10,7 +10,7 @@ import { IconButton, Dialog } from '@mui/material'
 import { BiError } from 'react-icons/bi'
 import numeral from 'numeral'
 
-import MessageBubble from '../bubbles/message-bubble'
+import MessageBubble from '../message-bubble'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { WalletChain } from '@/config/wallet'

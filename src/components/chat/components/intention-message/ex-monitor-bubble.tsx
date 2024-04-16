@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { MonitorEXInfo } from '@/components/monitor/monitor-ex-info'
-import MessageBubble from '../bubbles/message-bubble'
+import MessageBubble from '../message-bubble'
 
 export const ExMonitorBubble = () => {
   const { t } = useTranslation()

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { MonitorPools } from '@/components/monitor/monitor-pools'
-import { MessageBubble } from '../bubbles/message-bubble'
+import { MessageBubble } from '../message-bubble'
 
 export const PoolMonitorBubble = () => {
   const { t } = useTranslation()

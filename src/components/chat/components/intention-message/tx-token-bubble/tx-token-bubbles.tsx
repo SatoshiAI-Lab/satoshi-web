@@ -19,7 +19,7 @@ import { trandApi } from '@/api/trand'
 import { useChat } from '@/hooks/use-chat'
 import { useWallet } from '@/hooks/use-wallet'
 import { interactiveApi } from '@/api/interactive'
-import MessageBubble from '../../bubbles/message-bubble'
+import MessageBubble from '../../message-bubble'
 
 import type {
   ChatResponseAnswerMeta,

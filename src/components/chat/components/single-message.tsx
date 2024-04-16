@@ -5,7 +5,7 @@ import { Divider } from '@mui/material'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
 
-import MessageBubble from './bubbles/message-bubble'
+import MessageBubble from './message-bubble'
 import { utilDom } from '@/utils/dom'
 
 import type {
@@ -75,7 +75,6 @@ function SingleMessage(props: SingleMessageProps) {
   if (!msgs.length) return <></>
 
   console.log('msgs', msgs)
-  
 
   return (
     <>

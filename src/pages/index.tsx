@@ -4,7 +4,7 @@ import Header from '@/components/header'
 import Favorites from '@/components/favorites'
 import Chat from '@/components/chat'
 import { useBackground } from '@/hooks/use-background'
-import { NeedLoginDialog } from '@/components/need-login-dialog'
+import { LoginAuthDialog } from '@/components/login-auth-dialog'
 import { useNeedLoginStore } from '@/stores/use-need-login-store'
 import { useChatMonitorMsg } from '@/hooks/use-chat-monitor-msg'
 import { useMonitorStore } from '@/stores/use-monitor-store'
@@ -49,7 +49,6 @@ export default function Home() {
     if (walletsData?.data) setWallets(walletsData.data)
   }, [walletsData])
 
-
   useEffect(() => {
     getAllWallet()
   }, [])
@@ -69,10 +68,10 @@ export default function Home() {
         {/* User Favorites panel */}
         <Favorites />
       </div>
-      <NeedLoginDialog
+      <LoginAuthDialog
         show={show}
         onClose={() => setShow(false)}
-      ></NeedLoginDialog>
+      ></LoginAuthDialog>
     </main>
   )
 }

@@ -3,7 +3,7 @@ import { Divider, FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import { BsChevronRight } from 'react-icons/bs'
 import clsx from 'clsx'
 
-import MessageBubble from '../bubbles/message-bubble'
+import MessageBubble from '../message-bubble'
 import { utilArr } from '@/utils/array'
 import { useChat } from '@/hooks/use-chat'
 

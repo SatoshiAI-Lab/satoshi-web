@@ -7,7 +7,7 @@ import { ChatResponseAnswerMeta } from '@/api/chat/types'
 import { useShow } from '@/hooks/use-show'
 import { DialogHeader } from '@/components/dialog-header'
 import { MonitorWallet } from '@/components/monitor/monitor-wallet'
-import MessageBubble from '../bubbles/message-bubble'
+import MessageBubble from '../message-bubble'
 
 interface Props {
   msg: ChatResponseAnswerMeta

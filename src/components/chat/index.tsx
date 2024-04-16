@@ -3,13 +3,13 @@ import clsx from 'clsx'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 
-import MessageBubble from './components/bubbles/message-bubble'
+import MessageBubble from './components/message-bubble'
 import MessageInput from './components/message-input'
 import Messages from './components/messages'
 import Live2DModel from '../live2d-model'
 import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
-import { MessageAlert } from './components/bubbles/message-alert'
+import { MessageAlert } from './components/message-alert'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { MessageBubble } from '../../bubbles/message-bubble'
+import { MessageBubble } from '../../message-bubble'
 import { ChatResponseAnswerMeta } from '@/api/chat/types'
 
 interface Props {

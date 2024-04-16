@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { MonitorTwitterList } from '@/components/monitor/monitor-twitter-list'
-import { MessageBubble } from '../bubbles/message-bubble'
+import { MessageBubble } from '../message-bubble'
 
 export const TwitterListBubble = () => {
   const { t } = useTranslation()

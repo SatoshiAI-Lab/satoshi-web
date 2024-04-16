@@ -8,7 +8,7 @@ import { IoArrowDown, IoArrowUp, IoLogoTwitter } from 'react-icons/io5'
 
 import { utilFmt } from '@/utils/format'
 import { link } from '@/config/link'
-import { MessageBubble } from '../bubbles/message-bubble'
+import { MessageBubble } from '../message-bubble'
 
 import type {
   ChatResponseAnswerMeta,

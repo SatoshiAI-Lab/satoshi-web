@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import toast from 'react-hot-toast'
 import ShowMoreText from 'react-show-more-text'
 
-import MessageBubble from '../bubbles/message-bubble'
+import MessageBubble from '../message-bubble'
 import { utilLang } from '@/utils/language'
 
 import type { ChatResponseMetaNewsInfo } from '@/api/chat/types'

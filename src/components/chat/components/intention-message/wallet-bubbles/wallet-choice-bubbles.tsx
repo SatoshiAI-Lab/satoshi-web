@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { ChatResponseAnswerMeta } from '@/api/chat/types'
-import { MessageBubble } from '../../bubbles/message-bubble'
+import { MessageBubble } from '../../message-bubble'
 import { WalletList } from './wallet-list'
 import { useChat } from '@/hooks/use-chat'
 

@@ -6,7 +6,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import toast from 'react-hot-toast'
 
 import { utilFmt } from '@/utils/format'
-import { MessageBubble } from '../../bubbles/message-bubble'
+import { MessageBubble } from '../../message-bubble'
 
 import type {
   ChatResponseAnswerMeta,

@@ -6,7 +6,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import dayjs from 'dayjs'
 import { IoCopyOutline } from 'react-icons/io5'
 
-import { MessageBubble } from '../bubbles/message-bubble'
+import { MessageBubble } from '../message-bubble'
 import { link } from '@/config/link'
 import { utilFmt } from '@/utils/format'
 

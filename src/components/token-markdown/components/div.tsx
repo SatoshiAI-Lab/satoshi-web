@@ -4,21 +4,10 @@ import { CHAT_CONFIG } from '@/config/chat'
 
 import type { ReactMarkdownProps } from 'react-markdown/lib/complex-types'
 
-interface DivParserProps {
-  divProps: Omit<
-    React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
-    >,
-    'ref'
-  > &
-    ReactMarkdownProps
-}
+interface Props extends ReactMarkdownProps {}
 
-function DivParser(props: DivParserProps) {
-  const {
-    divProps: { node, children },
-  } = props
+export const Div = (props: Props) => {
+  const { node, children } = props
   const { tokenProp } = CHAT_CONFIG.refRule
 
   // Token div
@@ -33,4 +22,4 @@ function DivParser(props: DivParserProps) {
   return <div>{children}</div>
 }
 
-export default DivParser
+export default Div

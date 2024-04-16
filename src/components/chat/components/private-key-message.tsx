@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 
-import MessageBubble from './bubbles/message-bubble'
+import MessageBubble from './message-bubble'
 
 interface Props {
   privateKey: string

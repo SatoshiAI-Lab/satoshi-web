@@ -5,7 +5,7 @@ import { Avatar } from '@mui/material'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
 
-import { MessageBubble } from '../bubbles/message-bubble'
+import { MessageBubble } from '../message-bubble'
 import { utilLang } from '@/utils/language'
 
 import type { ChatResponseMetaAnnounceMent } from '@/api/chat/types'
