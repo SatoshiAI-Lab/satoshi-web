@@ -13,9 +13,9 @@ import { Wallet } from '@/components/wallet'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useLive2DStore } from '@/stores/use-live2d-store'
 import { useStorage } from '@/hooks/use-storage'
-import { useWalletStore } from '@/stores/use-wallet-store'
 import { useUserStore } from '@/stores/use-user-store'
 import { useNeedLoginStore } from '@/stores/use-need-login-store'
+import { useWallet } from '@/hooks/use-wallet'
 
 enum AnimateType {
   None,
@@ -35,11 +35,10 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
   const [walletOpen, setWalletOpen] = useState(false)
   const changeScene = useDebounce(changeBackground)
   const { isMute, setIsMute } = useLive2DStore()
-  const { getIsMuted, setIsMuted } = useStorage()
+  const { setIsMuted } = useStorage()
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
   const { setShow } = useNeedLoginStore()
-
-  const { getWallets } = useWalletStore()
+  const { refetchWallets } = useWallet()
   const { isLogined } = useUserStore()
 
   const items = [
@@ -66,7 +65,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
           return
         }
         setWalletOpen(true)
-        getWallets()
+        refetchWallets()
       },
     },
     {
@@ -114,7 +113,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
               onMouseLeave={() => setHoverIdx(null)}
               className={clsx(
                 'flex items-center gap-1 transition-all mr-8',
-                'cursor-pointer hover:drop-shadow-chat-menu max-sm:mr-4'
+                'cursor-pointer max-sm:mr-4 drop-shadow-bold-dark'
               )}
               onClick={item.onClick}
             >

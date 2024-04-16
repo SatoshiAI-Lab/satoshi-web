@@ -1,27 +1,40 @@
-import { Button, CircularProgress, OutlinedInput } from '@mui/material'
-import { IoCopyOutline, IoEyeOutline } from 'react-icons/io5'
+import {
+  Avatar,
+  Button,
+  CircularProgress,
+  Dialog,
+  MenuItem,
+  OutlinedInput,
+  Select,
+} from '@mui/material'
+import { IoEyeOutline } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 
 import type { MonitorConfigData } from '@/api/monitor/type'
 import { useState } from 'react'
 import { useMonitorStore } from '@/stores/use-monitor-store'
-import { MonitorConfig } from '@/config/monitor'
+import { MonitorConfig, monitorWalletSupperChain } from '@/config/monitor'
 import toast from 'react-hot-toast'
-import { utilFmt } from '@/utils/format'
-import clsx from 'clsx'
-import CopyToClipboard from 'react-copy-to-clipboard'
+import { DialogHeader } from '../dialog-header'
+import { useShow } from '@/hooks/use-show'
+import { MonitorWalletList } from './monitor-wallet-list'
+import { isAddress } from 'viem'
 
 interface Props {
   data?: MonitorConfigData
 }
 
+const op = 'Optimism'
 export const MonitorWallet = ({ data }: Props) => {
-  const { t } = useTranslation()
   const [address, setAddress] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
-  const { configData, setConfig } = useMonitorStore()
   const [validateError, setValidateError] = useState<string[]>([])
+  const [selectedChain, setSelectedChain] = useState<string>(op)
+
+  const { t } = useTranslation()
+  const { configData, setConfig } = useMonitorStore()
+  const { show, open, hidden } = useShow()
 
   const addressList = configData?.trade?.content ?? []
 
@@ -33,7 +46,11 @@ export const MonitorWallet = ({ data }: Props) => {
 
   const checkForm = () => {
     const error = []
-    if (!address.trim() || address.length != 44) {
+    if (!address.trim()) {
+      error.push(t('address.invaild'))
+    }
+
+    if (selectedChain === op && !isAddress(address)) {
       error.push(t('address.invaild'))
     }
 
@@ -57,7 +74,7 @@ export const MonitorWallet = ({ data }: Props) => {
     addressList.unshift({
       address,
       name: name || address.slice(-4),
-      chain: 'SOL',
+      chain: selectedChain,
     })
 
     setLoading(true)
@@ -66,7 +83,12 @@ export const MonitorWallet = ({ data }: Props) => {
       content: addressList,
     })
       .then(() => {
+        setName('')
+        setAddress('')
         toast.success(t('monitor.successful'))
+      })
+      .catch(() => {
+        toast.error(t('wallet.track.error'))
       })
       .finally(() => {
         setLoading(false)
@@ -84,7 +106,7 @@ export const MonitorWallet = ({ data }: Props) => {
           placeholder={t('monitor.wallet.placeholder')}
           endAdornment={
             <span
-              className="cursor-pointer text-blue-500 text-nowrap"
+              className="cursor-pointer text-blue-500 text-nowrap ml-2"
               onClick={handlePaste}
             >
               {t('paste')}
@@ -92,18 +114,40 @@ export const MonitorWallet = ({ data }: Props) => {
           }
           onChange={(e) => setAddress(e.target.value)}
         />
-        <div className="mt-4 mb-2">{t('monitor.wallet.name')}</div>
-        <OutlinedInput
-          value={name}
-          size="small"
-          placeholder={t('monitor.wallet.name.placeholder')}
-          className="!max-w-[150px]"
-          onChange={(e) => setName(e.target.value)}
-        />
+        <div className="flex items-center mt-4">
+          <div className="mr-5">
+            <div>{t('monitor.wallet.name')}</div>
+            <OutlinedInput
+              value={name}
+              size="small"
+              placeholder={t('monitor.wallet.name.placeholder')}
+              className="!max-w-[150px] !mt-2"
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div>
+            <div className='mb-2'>{t('select-chain')}</div>
+            <Select
+              classes={{ select: '!flex !items-center' }}
+              size="small"
+              value={selectedChain}
+              onChange={({ target }) => setSelectedChain(target.value)}
+            >
+              {monitorWalletSupperChain?.map((c, i) => (
+                <MenuItem key={i} value={c.name}>
+                  <Avatar src={c.logo} sx={{ width: 22, height: 22 }}>
+                    {c.name}
+                  </Avatar>
+                  <div className="ml-2">{c.name}</div>
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+        </div>
+
         {validateError.map((msg) => {
           return <div className="mt-4 -mb-2 text-sm text-green-600">{msg}</div>
         })}
-
         <Button
           variant="contained"
           className="!mt-5 !py-2 !rounded-full "
@@ -125,36 +169,19 @@ export const MonitorWallet = ({ data }: Props) => {
         <div>{t('monitor.wallet.text2')}</div>
         <div>{t('monitor.wallet.text3')}</div>
       </div>
-
-      {addressList.length !== 0 ? (
-        <>
-          <div className="mt-5 font-bold">{t('monitor.address.list')}</div>
-          <div className="grid grid-cols-[80px_auto] mt-2 font-bold">
-            <span>名字</span>
-            <span>地址</span>
-          </div>
-          {addressList.map((data, i) => (
-            <div
-              className={clsx(
-                'grid grid-cols-[80px_auto] py-2 border-t',
-                i === addressList.length - 1 ? '!pb-0' : '',
-                i === 0 ? '!mt-2' : ''
-              )}
-            >
-              <span className="text-">{data.name}</span>
-              <CopyToClipboard
-                text={data.address}
-                onCopy={() => toast.success(t('copy-success'))}
-              >
-                <span className="flex items-center text-gray-500 hover:text-gray-700 cursor-pointer">
-                  {utilFmt.addr(data.address)}
-                  <IoCopyOutline className="ml-1"></IoCopyOutline>
-                </span>
-              </CopyToClipboard>
-            </div>
-          ))}
-        </>
-      ) : null}
+      <div
+        className="!mt-2 text-primary underline cursor-pointer !rounded-full"
+        onClick={open}
+      >
+        {t('trace.address.list')}
+      </div>
+      <Dialog open={show} onClose={hidden}>
+        <DialogHeader
+          text={t('trace.address.list')}
+          onClose={hidden}
+        ></DialogHeader>
+        <MonitorWalletList></MonitorWalletList>
+      </Dialog>
     </div>
   )
 }

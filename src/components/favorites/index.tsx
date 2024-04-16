@@ -14,6 +14,7 @@ import clsx from 'clsx'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { IoCloseOutline } from 'react-icons/io5'
+import toast from 'react-hot-toast'
 
 import PercentTag from '../percent-tag'
 import TokenSearcher from '../token-searcher'
@@ -23,6 +24,8 @@ import { ListToken, TokenId, TokenStatus, TokenType } from '@/api/token/types'
 import { useShow } from '@/hooks/use-show'
 import { Routes } from '@/routes'
 import { utilFmt } from '@/utils/format'
+import { useUserStore } from '@/stores/use-user-store'
+import { useTagParser } from '@/views/kline/hooks/use-tag-parser'
 
 export const Favorites = memo((props: React.ComponentProps<'div'>) => {
   const { className } = props
@@ -31,13 +34,20 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
     useFavorites()
   const router = useRouter()
   const { show, open, hidden } = useShow()
+  const { isLogined } = useUserStore()
+  const { cexParamsToCexTag } = useTagParser()
 
   const onTokenClick = (token: ListToken) => {
+    // TODO: Adaptation DEX token
+    const tag = cexParamsToCexTag({
+      exchange: '*',
+      symbol: `${token.symbol}-USDT`,
+      interval: '15m',
+    })
+
     router.push({
-      pathname: Routes.kline,
-      query: {
-        symbol: token.symbol,
-      },
+      pathname: Routes.candle,
+      query: { tag },
     })
   }
 
@@ -50,6 +60,14 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
       ids: [id],
       status: TokenStatus.Cancel,
     })
+  }
+
+  const onAddFavorite = () => {
+    if (!isLogined) {
+      toast.error(t('no-login'))
+      return
+    }
+    open()
   }
 
   return (
@@ -78,7 +96,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
                 'text-lg cursor-pointer text-black dark:text-white',
                 'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
               )}
-              onClick={open}
+              onClick={onAddFavorite}
             />
           </motion.div>
         </div>
@@ -98,7 +116,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
               {i !== 0 && <Divider />}
               <ListItemButton
                 onClick={() => onTokenClick(t)}
-                className={'dark:!text-white relative group !justify-between'}
+                className="dark:!text-white relative group !justify-between"
               >
                 <div className="flex justify-between flex-1">
                   <div className="flex items-center gap-2 grow">
@@ -156,7 +174,11 @@ const FavoritesSkeleton: React.FC<React.ComponentProps<'div'>> = (props) => {
   return (
     <div className={clsx('flex flex-col gap-3 my-2', className)}>
       {Array.from({ length: 5 }).map((_, i) => (
-        <Skeleton key={i} height={36} className="!mx-4 !scale-100" />
+        <Skeleton
+          key={i}
+          height={36}
+          className="!mx-4 !scale-100 dark:bg-gray-800"
+        />
       ))}
     </div>
   )

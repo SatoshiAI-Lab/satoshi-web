@@ -14,6 +14,7 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   unreadMessages: [],
   chatEl: null,
   isLoading: false,
+  socket: undefined,
   // hasSmooth: true,
   // controller: null,
   // isReceiving: false,
@@ -32,5 +33,6 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   setInputKeyup: (bool) => set({ inputKeyup: bool }),
   setReadAnswer: (bool) => set({ readAnswer: bool }),
   setWaitAnswer: (bool) => set({ waitAnswer: bool }),
+  setSocket: (socket) => set({ socket: socket }),
   // removeAllMessage: () => set({ messages: [] }),
 }))

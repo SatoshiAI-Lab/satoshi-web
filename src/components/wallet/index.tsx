@@ -1,44 +1,52 @@
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  IconButton,
-  Menu,
-  MenuItem,
-} from '@mui/material'
-import { FC, createElement, useEffect, useState } from 'react'
-import { WalletDialogProps } from './types'
+import { FC, createElement, memo, useState } from 'react'
+import { Button, Dialog, IconButton, Menu, MenuItem } from '@mui/material'
 import { AiOutlineSafety, AiOutlineWallet } from 'react-icons/ai'
-import { WalletCard } from './wallet-card'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
 
-import { WalletExportKeyPop } from './walletpop-exportkey'
-import { WalletRenamePop } from './walletpop-rename'
-import { WalletImportKeyPop } from './walletpop-importkey'
-import { WalletDeletePop } from './walletepop-delete'
+import { WalletCard } from './components/wallet-card'
+import { WalletExportKeyPop } from './components/walletpop-exportkey'
+import { WalletRenamePop } from './components/walletpop-rename'
+import { WalletImportKeyPop } from './components/walletpop-importkey'
+import { WalletDeletePop } from './components/walletepop-delete'
 import { useWalletStore } from '@/stores/use-wallet-store'
+import { ChainPlatformSelect } from '../chain-platform-select'
+import { useWallet } from '@/hooks/use-wallet'
+import { CustomSuspense } from '../custom-suspense'
+import { WalletPlatform } from '@/config/wallet'
+import { useClipboard } from '@/hooks/use-clipboard'
+import WalletSkeleton from './components/skeleton'
+import { useChainsPlatforms } from './hooks/use-chains-platforms'
+import { WalletSearch } from './components/wallet-search'
+
+import type { WalletDialogProps } from './types'
 
 const walletMenu = [
   {
-    id: 'solana',
+    id: WalletPlatform.SOL,
     title: 'Solana Wallet',
     content: '',
     disable: false,
   },
   {
-    id: 'evm',
+    id: WalletPlatform.EVM,
     title: 'EVM Wallet',
-    content: 'Support ETH/BSC/Blast/ARB',
-    disable: true,
+    content: 'Support: ETH/BSC/OP/BLAST/ARB/BASE',
+    disable: false,
   },
   {
-    id: 'icp',
-    title: 'ICP Wallet',
+    id: WalletPlatform.BEAR,
+    title: 'Berachain Wallet',
     content: '',
     disable: true,
   },
+  // {
+  //   id: 'icp',
+  //   title: 'ICP Wallet',
+  //   content: '',
+  //   disable: true,
+  // },
 ]
 
 const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
@@ -48,19 +56,24 @@ const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
   3: WalletDeletePop,
 }
 
-const Wallet: FC<WalletDialogProps> = ({
-  finish,
-  showButtons = true,
-  // Used for show a wallet details.
-  onlyWalletAddr,
-  open,
-  onClose,
-}) => {
-  const { wallets, loading, setCurrentWallet, createWallet, getWallets } =
-    useWalletStore()
-  // Copy from MUI menu
+export const Wallet: FC<WalletDialogProps> = memo((props) => {
+  const {
+    finish,
+    showButtons = true,
+    // Used for show a wallet details.
+    onlyWallet,
+    onlyWalletRefetch,
+    open,
+    onClose,
+  } = props
+  const { wallets, selectedChain, setCurrentWallet } = useWalletStore()
+  const { isFirstFetchingWallets, createWallet } = useWallet({ enabled: true })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openCreateWallet = Boolean(anchorEl)
+  const { copy } = useClipboard()
+  // Used for search.
+  const [filteredWallets, setFilteredWallets] = useState<typeof wallets>([])
+
   const handleCreateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -73,13 +86,18 @@ const Wallet: FC<WalletDialogProps> = ({
   const [currentPop, setCurrentPop] = useState<number>(0)
   const [popOpen, setPopOpen] = useState(false)
 
-  const createWalletFunc = (coin_id: string) => {
+  const onCreateWallet = async (walletType: WalletPlatform) => {
+    const id = toast.loading(t('wallet.creating'))
+
     setAnchorEl(null)
-    createWallet(coin_id).then(async () => {
-      const result = await getWallets()
-      if (!result) return
+    try {
+      await createWallet(walletType)
       toast.success(t('wallet.createsuccess'))
-    })
+    } catch (error) {
+      toast.error(t('wallet.create-failed'))
+    } finally {
+      toast.dismiss(id)
+    }
   }
 
   const ImportWalletPrivateKey = () => {
@@ -103,8 +121,7 @@ const Wallet: FC<WalletDialogProps> = ({
   }
 
   const copyWalletAddress = (address: string) => {
-    navigator.clipboard.writeText(address)
-    toast.success(t('wallet.copy-address.success'))
+    copy(address, t('wallet.copy-address.success'))
   }
 
   const deleteWallet = (address: string) => {
@@ -114,14 +131,8 @@ const Wallet: FC<WalletDialogProps> = ({
     setPopOpen(true)
   }
 
-  const [onlyWallet, setOnlyWallet] = useState<
-    (typeof wallets)[number] | undefined
-  >(undefined)
-
-  useEffect(() => {
-    const target = wallets.find((w) => w.address === onlyWalletAddr)
-    setOnlyWallet(target)
-  }, [onlyWalletAddr])
+  // Request chains & platforms when mounted.
+  useChainsPlatforms(true)
 
   return (
     <>
@@ -146,15 +157,8 @@ const Wallet: FC<WalletDialogProps> = ({
               {showButtons && (
                 <div className="flex gap-3 mt-[22px] mb-[13px]">
                   {/* Create Wallet Menu */}
-
                   <div>
                     <Button
-                      id="basic-button"
-                      aria-controls={
-                        openCreateWallet ? 'basic-menu' : undefined
-                      }
-                      aria-haspopup="true"
-                      aria-expanded={openCreateWallet ? 'true' : undefined}
                       onClick={handleCreateClick}
                       startIcon={<AiOutlineWallet />}
                       classes={{
@@ -164,26 +168,22 @@ const Wallet: FC<WalletDialogProps> = ({
                       {t('wallet.createnewwallet')}
                     </Button>
                     <Menu
-                      id="basic-menu"
                       anchorEl={anchorEl}
                       open={openCreateWallet}
                       onClose={handleCreatClose}
-                      MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                      }}
-                      classes={{
-                        list: '!p-[0px]',
-                      }}
+                      classes={{ list: '!p-[0px]' }}
                     >
                       {walletMenu.map((item) => (
                         <MenuItem
                           disabled={item.disable}
                           key={item.id}
                           className="w-[295px] h-[65px] flex flex-col !items-start !justify-center"
-                          onClick={() => createWalletFunc(item.id)}
+                          onClick={() => onCreateWallet(item.id)}
                         >
-                          <div className="text-[16px]">{item.title}</div>
-                          <div className="text-[14px]">{item.content}</div>
+                          <div className="text-base">{item.title}</div>
+                          <div className="text-sm text-gray-500">
+                            {item.content}
+                          </div>
                         </MenuItem>
                       ))}
                     </Menu>
@@ -191,9 +191,7 @@ const Wallet: FC<WalletDialogProps> = ({
 
                   {/* Import Waller Menu */}
                   <Button
-                    classes={{
-                      root: '!text-black !rounded-full !w-[138px]',
-                    }}
+                    classes={{ root: '!text-black !rounded-full !w-[138px]' }}
                     className="!border-gray-400 hover:!bg-gray-100"
                     variant="outlined"
                     onClick={ImportWalletPrivateKey}
@@ -209,10 +207,26 @@ const Wallet: FC<WalletDialogProps> = ({
               <AiOutlineSafety size={162} color="#D4D4D4" />
             </div>
           </div>
+          {/* If only one wallet, hide select */}
+          {!onlyWallet && (
+            <div className="flex justify-between items-center">
+              <ChainPlatformSelect />
+              <WalletSearch
+                wallets={wallets}
+                chain={selectedChain}
+                onResult={(results) => setFilteredWallets(results)}
+              />
+            </div>
+          )}
           {/* Wallets list */}
-          <div className="flex flex-col h-[440px] max-h-[440px] overflow-scroll gap-[25px] mt-[20px]">
-            {(wallets?.length &&
-              (onlyWallet ? [onlyWallet] : wallets).map((item) => (
+          <CustomSuspense
+            container="div"
+            className="flex flex-col h-[440px] max-h-[440px] overflow-scroll gap-[25px] mt-[20px]"
+            isPendding={isFirstFetchingWallets}
+            fallback={<WalletSkeleton className="h-[440px] max-h-[440px]" />}
+          >
+            {filteredWallets.length ? (
+              (onlyWallet ? [onlyWallet] : filteredWallets).map((item) => (
                 <WalletCard
                   {...item}
                   platform={item.platform!}
@@ -223,25 +237,25 @@ const Wallet: FC<WalletDialogProps> = ({
                   deleteWallet={deleteWallet}
                   key={item.address}
                 />
-              ))) || (
+              ))
+            ) : (
               <div className="h-full flex items-center justify-center">
-                {(loading && <CircularProgress />) || (
-                  <p>{t('wallet.nowallet')}</p>
-                )}
+                <p>{t('wallet.nowallet')}</p>
               </div>
             )}
-          </div>
+          </CustomSuspense>
         </div>
       </Dialog>
 
       {currentPopTitle &&
         createElement(dyNamicPop[currentPop], {
+          title: currentPopTitle,
           open: popOpen,
           onClose: () => setPopOpen(false),
-          title: currentPopTitle,
+          onlyWalletRefetch,
         })}
     </>
   )
-}
+})
 
-export { Wallet }
+export default Wallet

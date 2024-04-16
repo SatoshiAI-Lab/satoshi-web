@@ -43,7 +43,10 @@ module.exports = {
       boxShadow: {
         bubble: '2px 2px 2px 1px rgb(0,0,0,0.3)',
       },
-
+      dropShadow: {
+        bold: '0 0 2px white',
+        'bold-dark': '0 0 2px black',
+      },
       width: {
         ...baseWidths,
       },

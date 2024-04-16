@@ -21,6 +21,7 @@ import { useThemeStore } from '@/stores/use-theme-store'
 import { useUserStore } from '@/stores/use-user-store'
 import { useShow } from '@/hooks/use-show'
 import { utilFmt } from '@/utils/format'
+import { useChatStore } from '@/stores/use-chat-store'
 
 import type { CustomDropdownItem } from '../custom-dropdown/types'
 import type { HeaderItem } from './types'
@@ -34,6 +35,7 @@ function Header() {
   const { show, open, hidden } = useShow()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openLogoutWallet = Boolean(anchorEl)
+  const { setMessage } = useChatStore()
 
   const langs = useMemo(() => {
     return Object.entries(i18n.options.resources ?? {}).map(([key, value]) => ({
@@ -51,6 +53,7 @@ function Header() {
 
   const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
   const { isDark } = useThemeStore()
+  const { socket } = useChatStore()
 
   const items: HeaderItem[] = []
 
@@ -91,9 +94,13 @@ function Header() {
   }
 
   const onLogout = () => {
+    socket?.close(1000)
+    // if (socket?.CLOSED == 3) {
     logout()
+    setMessage([])
     handleCreatClose()
     toast.success(t('logout.success'))
+    // }
   }
 
   const changeStatus = (status: boolean) => {
@@ -179,7 +186,7 @@ function Header() {
                 }}
                 onClick={() => changeStatus(true)}
               >
-                {t('login')}
+                {t('login.tosignin')}
               </Button>
               <Button
                 variant="contained"

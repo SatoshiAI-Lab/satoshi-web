@@ -1,31 +1,36 @@
-import { useWalletStore } from '@/stores/use-wallet-store'
-import { Button, CircularProgress, Dialog, IconButton, TextField } from '@mui/material'
-import { FC, useEffect, useState } from 'react'
-import { WalletDialogProps } from './types'
+import { FC } from 'react'
+import { Button, CircularProgress, Dialog, IconButton } from '@mui/material'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
-import { useShow } from '@/hooks/use-show'
 
-const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
-  const { deleteWallet, getWallets, currentWallet } = useWalletStore()
-  const {show, open: openLoading, hidden: hiddenLoading} = useShow()
-  const userDeleteWallet = async () => {
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { useShow } from '@/hooks/use-show'
+import { useWallet } from '@/hooks/use-wallet'
+
+import type { WalletDialogProps } from '../types'
+
+const WalletDeletePop: FC<WalletDialogProps> = (props) => {
+  const { open, onClose, title, onlyWalletRefetch } = props
+  const { currentWallet } = useWalletStore()
+  const { removeWallet } = useWallet()
+  const { show, open: openLoading, hidden: hiddenLoading } = useShow()
+
+  const onRemoveWallet = async () => {
     openLoading()
-    deleteWallet(currentWallet?.id!)
-      .then((res) => {
-        if (res.msg === 'ok') {
-          onClose?.()
-          toast.success(t('wallet.delete-wallet.success'))
-          getWallets()
-        }
-      })
-      .catch(() => {
-        toast.error(t('wallet.error'))
-      }).finally(() => {
-        hiddenLoading()
-      })
+
+    try {
+      await removeWallet(currentWallet?.id!)
+      toast.success(t('wallet.delete-wallet.success'))
+      onClose?.()
+    } catch (error) {
+      toast.error(t('wallet.error'))
+    } finally {
+      hiddenLoading()
+      onlyWalletRefetch?.()
+    }
   }
+
   return (
     <Dialog
       maxWidth="lg"
@@ -63,10 +68,12 @@ const WalletDeletePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               variant="contained"
               className="!h-[50px] !text-[18px] !rounded-xl"
               fullWidth
-              onClick={userDeleteWallet}
+              onClick={onRemoveWallet}
               disabled={show}
             >
-              {show && <CircularProgress size={16} className='mr-2'></CircularProgress>}
+              {show && (
+                <CircularProgress size={16} className="mr-2"></CircularProgress>
+              )}
               {t('save')}
             </Button>
           </div>

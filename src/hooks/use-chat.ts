@@ -55,7 +55,20 @@ export const useChat = () => {
   }
 
   const addMonitorMessage = (msg: Message | Message[]) => {
-    addMessage(msg)
+    if (Array.isArray(msg)) {
+      msg.forEach((msg) => {
+        addMessage({
+          ...msg,
+          isMonitor: true,
+        })
+      })
+      return
+    }
+
+    addMessage({
+      ...msg,
+      isMonitor: true,
+    })
   }
 
   /**
@@ -68,6 +81,7 @@ export const useChat = () => {
     const { messages } = useChatStore.getState()
     const lastMessage = messages[messages.length - 1]
     const newMsg: Message = {
+      ...ops,
       ...lastMessage,
       msg: lastMessage.msg + content,
       isLoadingMsg: false,
@@ -238,7 +252,7 @@ export const useChat = () => {
       intention.includes(metaType ?? '') // create token message
     ) {
       if (data.text && !hiddenIntentText.includes(data?.meta.type!)) {
-        addStreamMessage(data.text)
+        addStreamMessage(data.text, { msgs: data.meta })
       }
 
       data.meta.data?.reverse?.()
@@ -306,26 +320,48 @@ export const useChat = () => {
     const reader = response.pipeThrough(new TextDecoderStream()).getReader()
 
     isReceiving.current = true
-
     while (isReceiving) {
       if (!isReceiving) {
         controller.current?.abort()
         break
       }
-      const data = await reader?.read()
+      const { done, value = '' } = await reader?.read()
 
       hasSmooth.current = false
 
       // clear status
-      if (data?.done) {
+      if (done) {
         controller.current?.abort()
         resetSomeState()
         break
       }
 
+      // Too large response data, in general is not stream data.
+      if (CHAT_CONFIG.largeDataType.some((s) => value.includes(s))) {
+        handleLarge(reader, value)
+        break
+      }
+
       // parsing streaming string
-      utilParse.parseStreamString(data?.value!, messageHandler)
+      utilParse.parseStreamString(value, messageHandler)
     }
+  }
+
+  const handleLarge = async (
+    reader: ReadableStreamDefaultReader<string>,
+    prevStr: string
+  ) => {
+    console.log('large data', prevStr)
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+
+      prevStr += value
+    }
+
+    utilParse.parseStreamString(prevStr, messageHandler)
+    resetSomeState()
   }
 
   const sendMsg = async (opts?: InteractiveMessageOptions) => {

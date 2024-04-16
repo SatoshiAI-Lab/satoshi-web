@@ -26,7 +26,20 @@ export const utilArr = {
 
   remove: <T>(arr: T[], el: T) => arr.filter((e) => e !== el),
 
+  /** Array Whether only one element. */
   onlyOne: <T>(arr: T[]) => arr.length === 1,
+
+  modifyFirst: <T>(arr: T[], el: T) => {
+    arr[0] = el
+    return arr
+  },
+
+  modifyLast: <T>(arr: T[], el: T) => {
+    arr[arr.length - 1] = el
+    return arr
+  },
+
+  sameLen: <T, V>(arr1: T[], arr2: V[]) => arr1.length === arr2.length,
 
   /**
    * Categorize an array to Object and Map based on specified key.

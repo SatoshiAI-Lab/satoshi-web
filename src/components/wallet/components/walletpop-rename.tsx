@@ -1,3 +1,4 @@
+import { FC, useEffect, useState } from 'react'
 import {
   Button,
   CircularProgress,
@@ -5,42 +6,41 @@ import {
   IconButton,
   TextField,
 } from '@mui/material'
-import { FC, useEffect, useState } from 'react'
-import { WalletDialogProps } from './types'
 import { TfiClose } from 'react-icons/tfi'
-import { useWalletStore } from '@/stores/use-wallet-store'
 import toast from 'react-hot-toast'
 import { t } from 'i18next'
-import { useShow } from '@/hooks/use-show'
 
-const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
-  const {
-    currentWallet,
-    renameWallet: renameWithDefaultName,
-    getWallets,
-  } = useWalletStore()
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { useShow } from '@/hooks/use-show'
+import { useWallet } from '@/hooks/use-wallet'
+
+import type { WalletDialogProps } from '../types'
+
+const WalletRenamePop: FC<WalletDialogProps> = (props) => {
+  const { open, onClose, title, onlyWalletRefetch } = props
   const [walletName, setWalletName] = useState('')
+  const { currentWallet } = useWalletStore()
+  const { renameWallet } = useWallet()
   const { open: openLoading, show, hidden: hiddenLoading } = useShow()
 
-  const renameWallet = (walletName: string) => {
+  const onRenameWallet = async (walletName: string) => {
     openLoading()
-    renameWithDefaultName(walletName)
-      .then(async (res) => {
-        toast.success(t('wallet.rename-wallet.success'))
-        onClose?.()
-        await getWallets()
-      })
-      .catch(() => {
-        toast.error(t('wallet.error'))
-      })
-      .finally(() => {
-        hiddenLoading()
-      })
+    try {
+      await renameWallet(currentWallet?.id!, walletName)
+      toast.success(t('wallet.rename-wallet.success'))
+      onClose?.()
+    } catch (error) {
+      toast.error(t('wallet.error'))
+    } finally {
+      hiddenLoading()
+      onlyWalletRefetch?.()
+    }
   }
 
   useEffect(() => {
     setWalletName(currentWallet?.name!)
   }, [open])
+
   return (
     <Dialog
       maxWidth="lg"
@@ -69,7 +69,7 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               className="w-full"
               InputProps={{
                 classes: {
-                  root: 'w-full !border-2 !rounded-xl !bg-white',
+                  root: 'w-full !rounded-xl !bg-white',
                 },
               }}
               value={walletName}
@@ -94,9 +94,9 @@ const WalletRenamePop: FC<WalletDialogProps> = ({ open, onClose, title }) => {
               className="!h-[50px] !text-[18px] !rounded-xl"
               fullWidth
               disabled={show || !walletName}
-              onClick={() => renameWallet(walletName)}
+              onClick={() => onRenameWallet(walletName)}
+              startIcon={show ? <CircularProgress size={16} /> : <></>}
             >
-              {show ? <CircularProgress size={16} className='mr-2'></CircularProgress> : <></>}
               {t('save')}
             </Button>
           </div>

@@ -1,4 +1,1 @@
-export interface CreateChartOptions {
-  symbol: string
-  interval: string
-}
+import { CexParams, DexParams, SymbolStr } from '../use-kline-api/types'

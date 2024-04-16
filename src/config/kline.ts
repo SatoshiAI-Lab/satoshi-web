@@ -4,36 +4,18 @@ import {
   CreateStudyOptions,
 } from '../../public/tradingview/charting_library/charting_library'
 
-export interface Studies<T = Study> {
-  vol: T
-  ma: T
-  ema: T
-  boll: T
-  wr: T
-  macd: T
-  rsi: T
-  // kdj: T
-  // stochRSI: T
-}
-
 export interface Study {
-  label: string
-  /** Show on main chart */
-  isMain?: boolean
-  // Below is study props, above is custom props.
-  name: `${StudiesName}`
+  label: StudyNickname
+  isMain?: boolean // is main chart study
+  name: StudyName
   forceOverlay?: boolean
-  /** If locked, cannot open setting dialog. */
-  lock?: boolean
+  lock?: boolean // If locked, cannot open setting dialog.
   inputs?: Record<string, StudyInputValue>
   overrides?: StudyOverrides
   options?: CreateStudyOptions
 }
 
-/**
- * Studies name map.
- */
-export enum StudiesName {
+export enum StudyName {
   VOL = 'Volume',
   MA = 'MA Cross',
   EMA = 'EMA Cross',
@@ -42,49 +24,52 @@ export enum StudiesName {
   MACD = 'MACD',
   RSI = 'Relative Strength Index',
   // KDJ = 'Stochastic',
-  // STOCHRSI = 'Stochastic RSI',
+  // StochRSI = 'Stochastic RSI',
 }
 
-/**
- * Studies config.
- */
-export const KLINE_STUDIES: Studies<Study> = {
-  vol: {
+export type StudyNickname = keyof typeof StudyName
+
+export type StudyFullname = `${StudyName}`
+
+/** Supported studies. */
+export const CHART_STUDIES: Record<StudyName, Study> = {
+  // main chart studies
+  [StudyName.VOL]: {
     label: 'VOL',
-    name: StudiesName.VOL,
+    name: StudyName.VOL,
     isMain: true,
   },
-  ma: {
+  [StudyName.MA]: {
     label: 'MA',
-    name: StudiesName.MA,
+    name: StudyName.MA,
     inputs: {
       in_0: 7,
       in_1: 30,
     },
     isMain: true,
   },
-  ema: {
+  [StudyName.EMA]: {
     label: 'EMA',
-    name: StudiesName.EMA,
+    name: StudyName.EMA,
     inputs: {
       in_0: 7,
       in_1: 30,
     },
     isMain: true,
   },
-  boll: {
+  [StudyName.BOLL]: {
     label: 'BOLL',
-    name: StudiesName.BOLL,
+    name: StudyName.BOLL,
     inputs: {
       in_0: 21,
       in_1: 2,
     },
     isMain: true,
   },
-  // Below is subchart studies, above is main chart studies.
-  wr: {
+  // subchart studies.
+  [StudyName.WR]: {
     label: 'WR',
-    name: StudiesName.WR,
+    name: StudyName.WR,
     inputs: {
       in_0: 14,
       in_1: 'open',
@@ -92,18 +77,18 @@ export const KLINE_STUDIES: Studies<Study> = {
       in_3: true,
     },
   },
-  macd: {
+  [StudyName.MACD]: {
     label: 'MACD',
-    name: StudiesName.MACD,
+    name: StudyName.MACD,
     inputs: {
       in_0: 12,
       in_1: 26,
       in_2: 9,
     },
   },
-  rsi: {
+  [StudyName.RSI]: {
     label: 'RSI',
-    name: StudiesName.RSI,
+    name: StudyName.RSI,
     inputs: {
       length: 6,
       smoothingLine: 'SMA',
@@ -113,20 +98,18 @@ export const KLINE_STUDIES: Studies<Study> = {
       'smoothed ma.display': 15,
     },
   },
-  // kdj: {
+  // [StudyName.KDJ]: {
   //   label: 'KDJ',
-  //   name: 'Stochastic', // KDJ also Stochastic
+  //   name: 'Stochastic', // KDJ also known as `Stochastic`
   // },
-  // stochRSI: {
+  // [StudyName.StochRSI]: {
   //   label: 'StochRSI',
   //   name: 'Stochastic RSI',
   // },
 }
 
-/**
- * Chart annotation emoji/text/color config
- */
-export const KLINE_ANNOTATION = {
+/** Chart annotation emoji/text/color config */
+export const CHART_ANNOTATION = {
   emojis: {
     overbuy: '⛰️',
     oversell: '⚓',
@@ -157,37 +140,3 @@ export const KLINE_ANNOTATION = {
       'The price may encounter resistance at this level, leading to a temporary halt in the upward movement or a pullback.',
   },
 } as const
-
-export const KLINE_RESOLUTIONS = [
-  {
-    name: '1m',
-    interval: '1',
-  },
-  {
-    name: '5m',
-    interval: '5',
-  },
-  {
-    name: '15m',
-    interval: '15',
-  },
-  {
-    name: '30m',
-    interval: '30',
-  },
-  {
-    name: '1h',
-    interval: '60',
-  },
-  {
-    name: '4h',
-    interval: '240',
-  },
-  {
-    name: '1d',
-    interval: '1D',
-  },
-] as const
-
-export type KLINE_SUPPORTED_INTERVALS =
-  (typeof KLINE_RESOLUTIONS)[number]['interval']

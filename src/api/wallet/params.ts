@@ -1,15 +1,12 @@
-import { ChatResponseWalletListToken } from "../chat/types"
+import { WalletPlatform } from '@/config/wallet'
+
+import type { ChatResponseWalletListToken } from '../chat/types'
 
 interface UserCreateWalletReq {
   /**
    * Wallet platform: SOL or EVM, default: SOL
    */
-  platform?: WalletPlatform
-}
-
-export enum WalletPlatform {
-  SOL = 'SOL',
-  EVM = 'EVM',
+  platform?: string
 }
 
 interface UserCreateWalletResp {
@@ -58,9 +55,19 @@ interface UserRenameWalletResp {
 interface UserDeleteWalletReq {
   wallet_id: string
 }
+
 interface UserDeleteWalletResp {
   msg: string
 }
+
+interface GetChainsRes {
+  chains: {
+    name: string
+    logo: string
+  }[]
+  platforms: string[]
+}
+
 export type {
   UserCreateWalletReq,
   UserCreateWalletResp,
@@ -72,4 +79,5 @@ export type {
   UserRenameWalletResp,
   UserDeleteWalletReq,
   UserDeleteWalletResp,
+  GetChainsRes,
 }

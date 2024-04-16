@@ -1,3 +1,5 @@
+import { WalletChain, WalletPlatform } from "@/config/wallet"
+
 export interface ChatResponse {
   status: number
   message: string
@@ -43,20 +45,25 @@ export interface ChatResponseMetaBalance {
 }
 
 export interface ChatResponseTxConfrim {
-  from_token_name: string
-  from_token_contract: string
+  from_token_info: TokenInfo[]
   amount: number
+  from_token_name: string
   to_token_name: string
-  to_token_contract: string
-  match_wallets: ChatResponseWalletList[]
-  address_filter: string[]
-  chain_filter: {
-    chain_name: string
-    platform: string
-  }
+  to_token_info: TokenInfo[]
 }
 
-export interface ChatResponseTokneDetail {
+export interface TokenInfo {
+  platform: string
+  chain: WalletChain
+  token_name: null | string
+  contract: string
+  platform_id: number
+  chain_logo: string
+  chain_symbol: string
+  token_logo: null | string
+}
+
+export interface ChatResponseTokneName {
   address: string
   logo: string
   name: string
@@ -76,6 +83,7 @@ export interface ChatResponseTokneDetail {
 export interface ChatResponseWalletListRaw {
   status: number
   data: ChatResponseWalletList[]
+  chain: string
 }
 
 export interface ChatResponseWalletBalance {
@@ -107,6 +115,7 @@ export interface ChatResponseWalletListToken {
   symbol: string
   valueUsd: number
 }
+
 export interface ChatResponseTokenDetail {
   address: string
   description: string
@@ -284,6 +293,50 @@ export interface ChatResponseMetaNewPool {
   }
   created_at: string
   data_type: string
+}
+export interface ChatResponseMetaNewPoolV2 {
+  id: string
+  chain: string
+  address: string
+  name: string
+  symbol: string
+  liquidity: number
+  price: number
+  started: string
+  twitter: string
+  telegram: string
+  website: string
+  security: Security
+  top_holders: TopHolders
+  score: Score
+  created_at: string
+  data_type: string
+  outside_url: string
+}
+
+export interface Score {
+  score: number
+  detail: { type: string; ring: string }[]
+}
+
+export interface Security {
+  content: SecurityContent[]
+  remark: Remark
+}
+
+export interface SecurityContent {
+  status: number
+  content: Remark
+  type: string
+}
+
+export interface Remark {
+  en: string
+  zh: string
+}
+
+export interface TopHolders {
+  [x: string]: string
 }
 
 export interface SpeechResponse {

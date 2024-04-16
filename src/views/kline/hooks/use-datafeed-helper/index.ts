@@ -1,16 +1,20 @@
-import { TV_DEFAULT_QUOTE, TV_RESOLUTION_MAP } from '@/config/tradingview'
 import { useKLineApi } from '../use-kline-api'
 import { useKLineFormat } from '../use-kline-format'
 import { useDatafeedCache } from '../use-datafeed-cache'
 import { utilArr } from '@/utils/array'
-import { useKLineApiFormat } from '../use-kline-api-format'
+import { useTagParser } from '../use-tag-parser'
 
 import type {
   LibrarySymbolInfo,
   ResolutionString,
   PeriodParams,
 } from '../../../../../public/tradingview/charting_library/charting_library'
-import type { CexTag, SymbolStr } from '../use-kline-api/types'
+import type {
+  CexParams,
+  CexTag,
+  DexParams,
+  DexTag,
+} from '../use-kline-api/types'
 
 /**
  * Datafeed APIs helper, handle KLine API for datafeed.
@@ -18,65 +22,68 @@ import type { CexTag, SymbolStr } from '../use-kline-api/types'
 export const useDatafeedHelper = (
   cachedApi: ReturnType<typeof useDatafeedCache>
 ) => {
-  const { listenToken, getHistory, onUpdateBar, onErrorMessage } = useKLineApi()
-  const { formatReceivedBars } = useKLineFormat()
-  const { toCexTag, toDexTag, parseCexTag, parseDexTag } = useKLineApiFormat()
+  const { listenToken, getHistory, onUpdateBar, onErrorMessage, disconnect } =
+    useKLineApi()
+  const { formatReceivedBars, toNormalInterval } = useKLineFormat()
+  const {
+    cexParamsToCexTag,
+    cexTagToCexParams,
+    dexParamsToDexTag,
+    dexTagToDexParams,
+    joinParams,
+    tagIsCex,
+  } = useTagParser()
 
   const getInitBars = async (
     symbolInfo: LibrarySymbolInfo,
-    resolution: ResolutionString
+    params: CexParams | DexParams
   ) => {
-    const { name: token } = symbolInfo
-    const symbol = `${token}-${TV_DEFAULT_QUOTE}`.toUpperCase() as SymbolStr
-    const tvInterval =
-      resolution.toLowerCase() as keyof typeof TV_RESOLUTION_MAP
-    // Convert a interval to TradingView format interval.
-    const interval = TV_RESOLUTION_MAP[tvInterval] ?? tvInterval
-
-    const received = await listenToken({
-      // TODO: judgement Cex or Dex
-      tag: toCexTag({
-        exchange: '*',
-        symbol,
-        interval,
-      }),
-    })
+    const tag =
+      params.type === 'cex'
+        ? cexParamsToCexTag(params)
+        : dexParamsToDexTag(params)
+    const received = await listenToken({ tag })
     const bars = formatReceivedBars(received.data ?? [])
     const lastBar = utilArr.last(bars)
-    // TODO: judgement Cex or Dex
-    const { exchange } = parseCexTag(received.tag as CexTag)
+    const parsedParams = joinParams(
+      tagIsCex(received?.tag)
+        ? cexTagToCexParams(received?.tag as CexTag)
+        : dexTagToDexParams(received?.tag as DexTag)
+    )
 
     cachedApi.setLastBar(lastBar)
     cachedApi.setLastTag(received.tag!)
     Object.assign(symbolInfo, {
-      exchange: exchange.toUpperCase(),
-      listed_exchange: exchange,
+      exchange: parsedParams.source.toUpperCase(),
+      listed_exchange: parsedParams.source,
     } as typeof symbolInfo)
 
     return { bars, lastBar }
   }
 
-  /**
-   * Handling Init bars, switching resolution is also init.
-   * @param {LibrarySymbolInfo} symbolInfo
-   * @param {ResolutionString} resolution
-   */
+  // Handle init bars & switch interval,
   const handleInitBars = async (
     symbolInfo: LibrarySymbolInfo,
-    resolution: ResolutionString
+    params: CexParams | DexParams,
+    resolution: ResolutionString // used for switch interval
   ) => {
     try {
-      // If `lastResolution` is exist, it means that the user is switching time granularity.
-      const hasLastResolution = cachedApi.getLastResolution()
+      // If `lastResolution` is exist,
+      // it means that the user is switching time granularity.
+      const lastResolution = cachedApi.getLastResolution()
 
       // If the `resolution` is the same as the last time,
       // it means repeat, should be return.
-      if (hasLastResolution && hasLastResolution === resolution) return []
+      if (lastResolution && lastResolution === resolution) return []
 
       // Switching `resolution` should be unlisten and listen again.
-      // but, useKLineApi has already been handled unlisten.
-      if (hasLastResolution) {
-        const { bars } = await getInitBars(symbolInfo, resolution)
+      // but, `getInitBars` has already been handled unlisten.
+      if (lastResolution) {
+        // This is switch interval
+        const { bars } = await getInitBars(symbolInfo, {
+          ...params,
+          interval: toNormalInterval(resolution),
+        })
 
         return bars
       }
@@ -84,7 +91,7 @@ export const useDatafeedHelper = (
       const cachedBars = cachedApi.getInitBars()
       const { bars } = utilArr.isNotEmpty(cachedBars)
         ? { bars: cachedBars }
-        : await getInitBars(symbolInfo, resolution)
+        : await getInitBars(symbolInfo, params)
 
       return bars
     } catch (error) {
@@ -114,5 +121,6 @@ export const useDatafeedHelper = (
     getHistoryBars,
     onUpdateBar,
     onErrorMessage,
+    disconnect,
   }
 }

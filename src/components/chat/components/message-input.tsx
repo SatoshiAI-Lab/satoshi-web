@@ -2,21 +2,22 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaPaperPlane } from 'react-icons/fa'
 import { AiOutlineLoading } from 'react-icons/ai'
-import { Button, IconButton, InputBase } from '@mui/material'
+import { Button, IconButton, TextareaAutosize } from '@mui/material'
 import { useKey } from 'react-use'
 import clsx from 'clsx'
-import { FaRegCirclePause } from 'react-icons/fa6'
-import { motion } from 'framer-motion'
+import { useAudioRecorder } from 'react-audio-voice-recorder'
+import { MdMic } from 'react-icons/md'
 
 import InputMenu from './input-menu'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
 import { utilDom } from '@/utils/dom'
-import { useInputHistory } from '@/hooks/use-input-history'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { chatApi } from '@/api/chat'
-import { useAudioRecorder } from 'react-audio-voice-recorder'
-import { MdMic } from 'react-icons/md'
+import { useHistory } from '@/hooks/use-history'
+import { useScroll } from '@/hooks/use-scroll'
+import { InputButtons } from './input-buttons'
+
 interface MessageInputProps {
   autofocus?: boolean
   onSend: () => void
@@ -31,19 +32,45 @@ function MessageInput(props: MessageInputProps) {
   const keyboardIsShow = useMobileKeyboard()
   const { question, chatEl, isLoading, setQuestion, setInputKeyup } =
     useChatStore()
+  const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
+  const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
+  const [recording, setRecording] = useState(false)
+  const { addHistory } = useHistory({
+    inputRef: inputRef,
+    onChange: setQuestion,
+  })
+  const { isTrigger, scrollToBottom } = useScroll({ el: chatEl })
+
+  const record = () => {
+    if (recording) {
+      stopRecording()
+      setRecording(false)
+    } else {
+      startRecording()
+      setRecording(true)
+    }
+  }
+
+  const send = () => {
+    addHistory(question)
+    onSend()
+  }
 
   const handleEnterSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.shiftKey && e.key === 'Enter') return
     if (e.key !== 'Enter') return
 
     e.preventDefault()
-
     if (isLoading) return
     // Although is deprecated, but very useful.
-    if (e.keyCode === 13) {
-      onSend()
-      return
-    }
+    if (e.keyCode === 13) send()
+  }
+
+  function handleInputKeyup() {
+    setInputKeyup(true)
+    setTimeout(() => {
+      setInputKeyup(false)
+    }, 10000)
   }
 
   // Keyboard shortcut for focus.
@@ -54,7 +81,7 @@ function MessageInput(props: MessageInputProps) {
   })
 
   // Recorded input histroy.
-  useInputHistory(inputRef, setQuestion)
+  // useInputHistory(inputRef, setQuestion)
 
   // Autofocus input.
   useEffect(() => {
@@ -70,27 +97,6 @@ function MessageInput(props: MessageInputProps) {
     utilDom.scrollToBottom(chatEl)
   }, [keyboardIsShow, chatEl])
 
-  const handleInputKeyup = () => {
-    setInputKeyup(true)
-    setTimeout(() => {
-      setInputKeyup(false)
-    }, 10000)
-  }
-
-  const onCancelAnswer = () => {}
-
-  const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
-  const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
-  const [recording, setRecording] = useState(false)
-  const record = () => {
-    if (recording) {
-      stopRecording()
-      setRecording(false)
-    } else {
-      startRecording()
-      setRecording(true)
-    }
-  }
   useEffect(() => {
     if (!recordingBlob) return
     const reader = new FileReader()
@@ -100,73 +106,69 @@ function MessageInput(props: MessageInputProps) {
       const base64WithoutPrefix = base64data.split(',')[1]
       const {
         data: { text },
-      } = await chatApi.getSpeechText(base64WithoutPrefix)
+      } = await chatApi.getVoidText(base64WithoutPrefix)
       setQuestion(text)
     }
     // recordingBlob will be present at this point after 'stopRecording' has been called
   }, [recordingBlob])
+
   return (
     <div
       className={clsx(
         'sticky bottom-4 z-20 max-sm:mx-5 mr-10 max-sm:bottom-0',
-        'transition-all '
+        'transition-all'
       )}
     >
       <InputMenu />
+      <InputButtons
+        className="!absolute right-0 -top-4"
+        isShow={isTrigger || isLoading}
+        showToBottom={isTrigger}
+        showPasuse={isLoading}
+        onToBottomClick={scrollToBottom}
+        onPasuseClick={onCancel}
+      />
       <div
         className={clsx(
           'flex rounded-md gap-2 border-2 border-solid items-center duration-500',
           'bg-slate-100 transition-all py-1 px-1 pl-2 hover:border-primary',
-          isFocus ? 'border-primary' : 'border-transparent',
-          'relative'
+          isFocus ? 'border-primary' : 'border-transparent'
         )}
       >
-        <motion.div
-          className={clsx('!absolute right-0 -top-14')}
-          animate={{
-            opacity: isLoading ? 1 : 0,
-            y: isLoading ? 0 : 56,
-          }}
-        >
-          <IconButton onClick={onCancel} className="!bg-slate-50">
-            <FaRegCirclePause size={28} className="text-red-500" />
-          </IconButton>
-        </motion.div>
-        <InputBase
-          classes={{
-            root: '!pl-1 !text-lg !transition-all !text-black',
-            input: '!transition-all !truncate ',
-          }}
+        <TextareaAutosize
+          className={clsx(
+            'bg-transparent pl-1 text-lg transition-all text-black w-full',
+            'resize-none placeholder:whitespace-nowrap placeholder:truncate',
+            'outline-none break-all'
+          )}
           value={question}
           placeholder={t('chat.placeholder')}
-          multiline
-          maxRows={5}
           minRows={1}
-          fullWidth
-          inputRef={inputRef}
+          maxRows={5}
+          ref={inputRef}
           onKeyDown={handleEnterSend}
           onChange={(e) => setQuestion(e.target.value)}
           onKeyUp={throttledHandleInputKeyup}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
         />
-        {/* <button
-          className={clsx(
-            recording
-              ? 'animate-bounce animate-ease-linear animate-infinite'
-              : '',
-            'rounded-full p-1'
-          )}
+        <IconButton
+          className={clsx('rounded-full p-1 w-[40px] h-[40px]')}
           onClick={record}
         >
-          <MdMic size={22} />
-        </button> */}
+          {recording ? (
+            <img src="/svg/three-dots.svg" width={22} height={22}></img>
+          ) : (
+            <MdMic size={22} />
+          )}
+        </IconButton>
         <Button
           variant="contained"
           size="large"
           disableElevation
           className={clsx(
-            'shrink-0 !text-lg !rounded-md !px-4 !pr-3 self-end !text-white'
+            'shrink-0 !text-lg !rounded-md !px-4 !pr-3 self-end',
+            '!text-white'
           )}
           startIcon={
             isLoading ? (
@@ -176,7 +178,7 @@ function MessageInput(props: MessageInputProps) {
             )
           }
           disabled={isLoading}
-          onClick={onSend}
+          onClick={send}
         >
           {isLoading ? t('chat.asking') : t('chat.ask')}
         </Button>

@@ -17,6 +17,7 @@ type TVChartOptions = Omit<
 
 /** TradingView chart options config. */
 export const TV_CHART_OPTIONS: TVChartOptions = {
+  // debug: true, // output all debug info
   library_path: 'tradingview/charting_library/',
   disabled_features: [
     // Header
@@ -132,16 +133,16 @@ export const TV_DATAFEED_CONFIG: DatafeedConfiguration = {
     '15',
     '30',
     '1h',
-    '2h',
+    // '2h',
     '4h',
-    '8h',
+    // '8h',
     '1d',
-    '3d',
-    '1W',
-    '1M',
-    '3M',
-    '6M',
-    '12M',
+    // '3d',
+    // '1W',
+    // '1M',
+    // '3M',
+    // '6M',
+    // '12M',
   ] as ResolutionString[],
   supports_marks: true,
   supports_timescale_marks: true,
@@ -156,6 +157,17 @@ export const TV_RESOLUTION_MAP = {
   '60': '1h',
   '240': '4h',
   '480': '8h',
+} as const
+
+/** TradingView required format map. */
+export const TV_INTERVAL_MAP = {
+  '1m': '1',
+  '5m': '5',
+  '15m': '15',
+  '30m': '30',
+  '1h': '60',
+  '4h': '240',
+  '1d': '1D',
 } as const
 
 /**

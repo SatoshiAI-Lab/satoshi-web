@@ -5,21 +5,11 @@ import MessageBubble from './bubbles/message-bubble'
 import InteractiveMessage from './interactive-message'
 import MarkdownParser from '@/components/markdown-parser'
 import { useTranslation } from 'react-i18next'
-
-import { DataType, type Message } from '@/stores/use-chat-store/types'
 import { IntentMessage } from './intention-message/intention-message'
-import {
-  ChatResponseMetaAnnounceMent,
-  ChatResponseMetaNewPool,
-  ChatResponseMetaNewsInfo,
-  ChatResponseMetaTwitter,
-  ChatResponseMetaWallet,
-} from '@/api/chat/types'
-import NewsBubble from './bubbles/news-bubble'
-import ExchangeAnnouncementBubble from './bubbles/exchange-announcement-bubble'
-import WalletBubble from './bubbles/wallet-bubble'
-import TwitterBubble from './bubbles/twitter-bubble'
-import NewPoolBubble from './bubbles/new-pool-bubble'
+import { MonitorConfigBubble } from './monitor-message/monitor-config-bubble'
+import { PrivateKeyMessage } from './private-key-message'
+
+import { type Message } from '@/stores/use-chat-store/types'
 
 interface MessagesProps {
   messages: Message[]
@@ -42,51 +32,22 @@ const Messages = memo((props: MessagesProps) => {
       )
     }
 
-    if (msg.data_type === DataType.NewsInfo) {
-      return (
-        <NewsBubble key={i} {...(msg as unknown as ChatResponseMetaNewsInfo)} />
-      )
+    if (msg.isMonitor) {
+      return <MonitorConfigBubble key={i} msg={msg} />
     }
 
-    if (msg.data_type === DataType.AnnouncementInfo) {
-      return (
-        <ExchangeAnnouncementBubble
-          key={i}
-          {...(msg as unknown as ChatResponseMetaAnnounceMent)}
-        />
-      )
-    }
-
-    if (msg.data_type === DataType.TradeInfo) {
-      return (
-        <WalletBubble key={i} {...(msg as unknown as ChatResponseMetaWallet)} />
-      )
-    }
-
-    if (msg.data_type === DataType.TwitterInfo) {
-      return (
-        <TwitterBubble
-          key={i}
-          {...(msg as unknown as ChatResponseMetaTwitter)}
-        />
-      )
-    }
-
-    if (msg.data_type === DataType.PoolInfo) {
-      return (
-        <NewPoolBubble
-          key={i}
-          {...{ ...(msg as unknown as ChatResponseMetaNewPool) }}
-        />
-      )
+    if (msg.isIntention) {
+      return <IntentMessage key={i} msg={msg!}></IntentMessage>
     }
 
     if (msg.isInteractive) {
       return <InteractiveMessage key={i} msgs={msg.msgs!} />
     }
 
-    if (msg.isIntention) {
-      return <IntentMessage key={i} msg={msg!}></IntentMessage>
+    const privKeyData = msg.msgs?.data as unknown as { private_key?: string }
+    const privateKey = privKeyData?.private_key
+    if (privateKey) {
+      return <PrivateKeyMessage privateKey={privateKey} />
     }
 
     return (

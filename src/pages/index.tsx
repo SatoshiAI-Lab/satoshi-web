@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import Header from '@/components/header'
 import Favorites from '@/components/favorites'
@@ -10,27 +10,26 @@ import { useChatMonitorMsg } from '@/hooks/use-chat-monitor-msg'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { useQuery } from '@tanstack/react-query'
 import { monitorApi } from '@/api/monitor'
-import { useWalletStore } from '@/stores/use-wallet-store'
 import { useUserStore } from '@/stores/use-user-store'
+import { useWallet } from '@/hooks/use-wallet'
+import { walletApi } from '@/api/wallet'
+import { useWalletStore } from '@/stores/use-wallet-store'
 
 export default function Home() {
   const { src, blurStyle } = useBackground(true)
   const { show, setShow } = useNeedLoginStore()
   const { isLogined } = useUserStore()
+  const { selectedChain, setWallets } = useWalletStore()
   const { timerByUpdate } = useMonitorStore()
-  const { getWallets } = useWalletStore()
+
+  const { getAllWallet } = useWallet()
 
   useChatMonitorMsg()
 
-  useQuery({
-    queryKey: [getWallets.name, isLogined],
-    queryFn: () => {
-      if (!isLogined) {
-        return Promise.resolve({})
-      }
-      return getWallets(false)
-    },
+  const { data: walletsData } = useQuery({
     refetchInterval: 15_000,
+    queryKey: [`${walletApi.getWallets.name}-refresh`, selectedChain],
+    queryFn: () => walletApi.getWallets(selectedChain),
   })
 
   useQuery({
@@ -45,6 +44,15 @@ export default function Home() {
     },
     refetchInterval: 15_000,
   })
+
+  useEffect(() => {
+    if (walletsData?.data) setWallets(walletsData.data)
+  }, [walletsData])
+
+
+  useEffect(() => {
+    getAllWallet()
+  }, [])
 
   return (
     <main className="flex flex-col h-screen !overflow-hidden">

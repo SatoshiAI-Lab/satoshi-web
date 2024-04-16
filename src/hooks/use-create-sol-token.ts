@@ -3,27 +3,27 @@ import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 
 import { interactiveApi } from '@/api/interactive'
-
-import { CreateTokenReq, MintTokenReq } from '@/api/interactive/types'
 import { useWaitingStatus } from './use-waiting'
 
-export const useCreateToken = () => {
+import type { CreateTokenInfo } from '@/components/chat/components/bubbles/create-token-bubble/types'
+
+export const useCreateSolToken = () => {
   const [total, setTotal] = useState(-1)
   const [walletId, setWalletId] = useState('')
   const [createdHash, setCreatedHash] = useState('')
   const [mintHash, setMintHash] = useState('')
+  const [isSolLongTime, setIsSolLongTime] = useState(false)
+  const timerRef = useRef<number>()
 
   // Create token.
   const {
     data: createdToken,
     isPending: isCreating,
     mutateAsync: createTokenAsync,
+    reset: resetCreateToken,
   } = useMutation({
     mutationKey: [interactiveApi.createToken.name],
-    mutationFn: (params: CreateTokenReq & { id: string }) => {
-      const { id, ...req } = params
-      return interactiveApi.createToken(id, req)
-    },
+    mutationFn: interactiveApi.createToken,
     onError: (e) => toast.error(`[Create Error]: ${e}`),
   })
 
@@ -32,20 +32,17 @@ export const useCreateToken = () => {
     data: mintedToken,
     isPending: isMinting,
     mutateAsync: mintTokenAsync,
+    reset: resetMintToken,
   } = useMutation({
     mutationKey: [interactiveApi.mintToken.name],
-    mutationFn: (params: MintTokenReq & { id: string }) => {
-      const { id, ...req } = params
-
-      return interactiveApi.mintToken(id, req)
-    },
+    mutationFn: interactiveApi.mintToken,
     onError: (e) => toast.error(`[Mint Error]: ${e}`),
   })
 
   // Waiting for create token.
   const {
-    isLoading: isCreatingStatus,
-    isSuccess: isCreateSuccess,
+    isLoading: isWaitingCreateStatus,
+    isSuccess: isSolCreateSuccess,
     isError: isCreateError,
     clear: clearCreate,
   } = useWaitingStatus({
@@ -76,9 +73,9 @@ export const useCreateToken = () => {
 
   // Waiting for mint token.
   const {
-    isLoading: isMintingStatus,
-    isSuccess: isMintSuccess,
-    isError: isMintError,
+    isLoading: isWaitingMintStatus,
+    isSuccess: isSolMintSuccess,
+    isError: isSolMintError,
     clear: clearMint,
   } = useWaitingStatus({
     hash: mintHash,
@@ -91,9 +88,7 @@ export const useCreateToken = () => {
     },
   })
 
-  const createToken = async (
-    params: CreateTokenReq & { id: string; total: number }
-  ) => {
+  const createSolToken = async (params: CreateTokenInfo) => {
     console.log('createToken', params)
     try {
       const { data } = await createTokenAsync(params)
@@ -109,7 +104,7 @@ export const useCreateToken = () => {
     }
   }
 
-  const mintToken = async () => {
+  const mintSolToken = async () => {
     try {
       const { data } = await mintTokenAsync({
         id: walletId,
@@ -123,7 +118,7 @@ export const useCreateToken = () => {
     }
   }
 
-  const cancel = () => {
+  const cancelSol = () => {
     console.log('cancel')
     setCreatedHash('')
     setMintHash('')
@@ -131,33 +126,33 @@ export const useCreateToken = () => {
     setWalletId('')
     clearCreate()
     clearMint()
+    resetCreateToken()
+    resetMintToken()
   }
-
-  const timerRef = useRef<number>()
-  const [isLongTime, setIsLongTime] = useState(false)
 
   useEffect(() => {
     timerRef.current = window.setTimeout(() => {
-      setIsLongTime(true)
-    }, 20 * 1000)
+      setIsSolLongTime(true)
+    }, 10_000)
 
     return () => {
-      setIsLongTime(false)
+      setIsSolLongTime(false)
       clearTimeout(timerRef.current)
     }
-  }, [isCreateSuccess, isMintSuccess])
+  }, [isSolCreateSuccess, isSolMintSuccess])
 
   return {
-    isLongTime,
-    isMinting: isMinting || isMintingStatus,
-    isLoading: isCreating || isMinting || isCreatingStatus || isMintingStatus,
-    isCreateSuccess,
-    isMintSuccess,
-    isMintError,
-    address: mintedToken?.data.address ?? '',
-    hash: mintedToken?.data.hash_tx ?? '',
-    createToken,
-    mintToken,
-    cancel,
+    isSolLongTime,
+    isSolMinting: isMinting || isWaitingMintStatus,
+    isSolLoading:
+      isCreating || isMinting || isWaitingCreateStatus || isWaitingMintStatus,
+    isSolCreateSuccess,
+    isSolMintSuccess,
+    isSolMintError,
+    solAddr: mintedToken?.data.address ?? '',
+    solHash: mintedToken?.data.hash_tx ?? '',
+    createSolToken,
+    mintSolToken,
+    cancelSol,
   }
 }

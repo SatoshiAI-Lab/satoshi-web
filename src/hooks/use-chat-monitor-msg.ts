@@ -1,11 +1,11 @@
+import { useEffect } from 'react'
+
 import { chatApi } from '@/api/chat'
 import { URL_CONFIG } from '@/config/url'
 import { useUserStore } from '@/stores/use-user-store'
-import { useEffect } from 'react'
 import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
-import { Message } from '@/stores/use-chat-store/types'
 import { useChat } from './use-chat'
 
 export const useChatMonitorMsg = () => {
@@ -13,11 +13,10 @@ export const useChatMonitorMsg = () => {
   const { userInfo, isLogined } = useUserStore()
   const { setUnreadMessage } = useChatStore()
   const { addMonitorMessage } = useChat()
-  const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
-
-  const { connect, on } = useWebSocket({
+  const ws = useWebSocket({
     heartbeat: JSON.stringify({ type: 'ping' }),
   })
+  const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
 
   const inithMonitorReq = async () => {
     if (!userInfo?.id) return
@@ -26,14 +25,17 @@ export const useChatMonitorMsg = () => {
     const token = getLoginToken()
     const wssUrl = `${baseURL}${data.id}/?access_token=${token}`
 
-    connect(wssUrl)
+    await ws.connect(wssUrl)
 
-    on('message', () => {})
-
-    on('event', ({ data }) => {
+    ws.on('event', ({ data }) => {
       console.log(`Keyup: ${useChatStore.getState().inputKeyup}`)
       console.log(`readAnswer: ${useChatStore.getState().readAnswer}`)
       console.log(`waitAnswer: ${useChatStore.getState().waitAnswer}`)
+
+      if (!isLogined) {
+        ws.disconnect()
+        return
+      }
 
       // 1. Within 20 seconds after the input is in the state of Keyup
       // 2. Within 20 seconds after the latest question answer
@@ -46,7 +48,7 @@ export const useChatMonitorMsg = () => {
         useChatStore.getState().waitAnswer
       ) {
         setUnreadMessage([
-          useChatStore.getState().unreadMessages,
+          ...useChatStore.getState().unreadMessages,
           ...data.reverse(),
         ])
       } else {
@@ -59,6 +61,9 @@ export const useChatMonitorMsg = () => {
     if (isLogined) {
       inithMonitorReq()
     } else {
+      ws.disconnect()
     }
-  }, [isLogined])
+
+    return ws.disconnect
+  }, [isLogined, userInfo?.id])
 }

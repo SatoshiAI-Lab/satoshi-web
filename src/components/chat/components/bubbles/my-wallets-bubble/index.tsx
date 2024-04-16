@@ -13,41 +13,42 @@ import { useTranslation } from 'react-i18next'
 import numeral from 'numeral'
 import { IoIosArrowDown } from 'react-icons/io'
 import clsx from 'clsx'
+import { useQuery } from '@tanstack/react-query'
 
 import { useChat } from '@/hooks/use-chat'
 import TokenRow from './token-row'
 import MessageBubble from '../message-bubble'
+import CustomSuspense from '@/components/custom-suspense'
 import { utilArr } from '@/utils/array'
+import { walletApi } from '@/api/wallet'
 
 import type {
   ChatResponseAnswerMeta,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
-import { useWalletStore } from '@/stores/use-wallet-store'
-import { WalletCardProps } from '@/components/wallet/types'
+import type { WalletCardProps } from '@/components/wallet/types'
+import type { UserCreateWalletResp } from '@/api/wallet/params'
 
-interface Props extends React.ComponentProps<'div'> {
+interface Props {
   meta?: ChatResponseAnswerMeta
 }
 
 const MyWalletsBubble = (props: Props) => {
-  // const { meta } = props
-  // const wallets = meta?.data ?? []
+  const { meta } = props
   const [folds, setFolds] = useState<string[]>([])
+  const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
+  const { t } = useTranslation()
   const { sendMsg, addMessageAndLoading } = useChat()
 
-  const { wallets: data } = useWalletStore()
-
-  const wallets =
-    data.sort((a, b) => Number(b!.value)! - Number(a!.value)) || []
-
-  const { t } = useTranslation()
+  // Don't use `useWallet`, here is independent.
+  const { data: walletData } = useQuery({
+    queryKey: [walletApi.getWallets.name, meta?.chain],
+    queryFn: () => walletApi.getWallets(meta?.chain),
+  })
 
   const sendQ = (question: string) => {
     addMessageAndLoading({ msg: question, position: 'right' })
-    sendMsg({
-      question: question,
-    })
+    sendMsg({ question })
   }
 
   const onDetails = (token: ChatResponseWalletListToken) => {
@@ -69,12 +70,10 @@ const MyWalletsBubble = (props: Props) => {
       .replace('$2', token.address)
 
     addMessageAndLoading({ msg: question, position: 'right' })
-    sendMsg({
-      question: question,
-    })
+    sendMsg({ question: question })
   }
 
-  const onFold = (wallet: WalletCardProps) => {
+  const onFold = (wallet: Partial<WalletCardProps>) => {
     if (folds.includes(wallet?.id!)) {
       setFolds(utilArr.remove(folds, wallet.id!))
     } else {
@@ -89,6 +88,18 @@ const MyWalletsBubble = (props: Props) => {
       setFolds(excludeFirst.map((w) => w.id!))
     }
   }, [])
+
+  useEffect(() => {
+    const walletList = walletData?.data ?? []
+
+    // Optimize performance
+    if (utilArr.sameLen(walletList, wallets)) return
+
+    const sortedWalelts = walletList.sort(
+      (a, b) => Number(b!.value)! - Number(a!.value)
+    )
+    setWallets(sortedWalelts)
+  }, [walletData])
 
   const TableHeader = () => (
     <TableHead>
@@ -108,7 +119,7 @@ const MyWalletsBubble = (props: Props) => {
   )
 
   return (
-    <MessageBubble>
+    <MessageBubble className="pt-4">
       {wallets.map((w, i) => (
         <React.Fragment key={w.id}>
           <div
@@ -131,18 +142,31 @@ const MyWalletsBubble = (props: Props) => {
             <Table size="small">
               <TableHeader />
               <TableBody>
-                {w?.tokens
-                  ?.sort((a, b) => Number(b.valueUsd) - Number(a.valueUsd))
-                  .map((t, i) => (
-                    <TokenRow
-                      key={i}
-                      token={t}
-                      showBorder={i !== w!.tokens!.length - 1}
-                      onDetails={onDetails}
-                      onBuy={onBuy}
-                      onSell={onSell}
-                    />
-                  ))}
+                <CustomSuspense
+                  nullback={
+                    <tr
+                      className={clsx(
+                        'text-gray-400 text-center w-full pt-2',
+                        'text-sm inline-block'
+                      )}
+                    >
+                      <td>{t('no-assets')}</td>
+                    </tr>
+                  }
+                >
+                  {w?.tokens
+                    ?.sort((a, b) => Number(b.valueUsd) - Number(a.valueUsd))
+                    .map((t, i) => (
+                      <TokenRow
+                        key={i}
+                        token={t}
+                        showBorder={i !== w!.tokens!.length - 1}
+                        onDetails={onDetails}
+                        onBuy={onBuy}
+                        onSell={onSell}
+                      />
+                    ))}
+                </CustomSuspense>
               </TableBody>
             </Table>
             {wallets.length - 1 !== i && (

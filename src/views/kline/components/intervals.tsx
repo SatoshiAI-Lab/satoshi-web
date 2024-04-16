@@ -1,12 +1,15 @@
 import React from 'react'
-import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
-import { KLINE_RESOLUTIONS } from '@/config/kline'
-import { useKLineStore } from '@/stores/use-kline-store'
-import { useStorage } from '@/hooks/use-storage'
+import { useChartStore } from '@/stores/use-chart-store'
+import { useKLineFormat } from '../hooks/use-kline-format'
+import { useRouter } from 'next/router'
+import { utilArr } from '@/utils/array'
+import { TV_DATAFEED_CONFIG } from '@/config/tradingview'
+import { useTagParser } from '../hooks/use-tag-parser'
 
 import type { ResolutionString } from '../../../../public/tradingview/charting_library/charting_library'
+import type { TagString } from '../hooks/use-kline-api/types'
 
 interface IntervalProps extends React.ComponentProps<'div'> {
   showFullscreen?: boolean
@@ -14,43 +17,71 @@ interface IntervalProps extends React.ComponentProps<'div'> {
 
 export const Intervals = (props: IntervalProps) => {
   const { showFullscreen = true, className = '' } = props
-  const { chart, interval, getResetCacheMap, setInterval } = useKLineStore()
-  const { setKLineInterval } = useStorage()
+  const { chart, setInterval } = useChartStore()
+  const { toNormalInterval } = useKLineFormat()
+  const { tagToParams } = useTagParser()
+  const router = useRouter()
+  const interval = tagToParams(router.query.tag as TagString).interval
 
-  const onIntervalClick = (item: (typeof KLINE_RESOLUTIONS)[number]) => {
-    const { interval: newInterval } = item
-    if (newInterval === interval) return
+  // Not needed at the moment.
+  // if switch interval ouccured time violation error,
+  // you may need this function.
+  // const clearCache = () => {
+  //   const targetResetId = Array.from(getResetCacheMap().keys()).find((id) =>
+  //     // Note: Here `interval` is old interval,
+  //     // don't use new interval(`resolution` or `newInterval`)
+  //     id.endsWith(toTVInterval(interval).toUpperCase())
+  //   )
+  //   const resetChartCache = getResetCacheMap().get(targetResetId ?? '')
 
-    const tvChart = chart?.activeChart()
-    const targetResetId = Array.from(getResetCacheMap().keys()).find((id) =>
-      id.endsWith(interval)
+  //   if (!resetChartCache) {
+  //     toast.error(`[Switch Error]: Not have reset cache.`)
+  //     return false
+  //   }
+
+  //   resetChartCache()
+  //   return true
+  // }
+
+  const modifyQueryInterval = (newInterval: string) => {
+    const tag = router.query.tag as TagString
+    const modified = utilArr.modifyLast(
+      tag.split(':'),
+      toNormalInterval(newInterval)
     )
-    const resetChartCache = getResetCacheMap().get(targetResetId ?? '')
-    if (resetChartCache) {
-      resetChartCache()
-      tvChart?.resetData()
-      tvChart?.setResolution(newInterval as ResolutionString)
-      setInterval(newInterval)
-      setKLineInterval(newInterval)
-      return
-    }
+    const newTag = modified.join(':')
 
-    toast.error(`[Switch Eror]: Not have reset cache.`)
+    router.push({
+      pathname: router.pathname,
+      query: { tag: newTag },
+    })
+  }
+
+  const onIntervalClick = (resolution: ResolutionString) => {
+    const activeChart = chart?.activeChart()
+    const newInterval = toNormalInterval(resolution)
+
+    // If need clear cache, uncomment here.
+    // if (!clearCache()) return
+    modifyQueryInterval(newInterval)
+    setInterval(newInterval)
+    activeChart?.resetData()
+    activeChart?.setResolution(resolution)
   }
 
   return (
     <div className={clsx('flex justify-between px-1', className)}>
       <div className="flex items-center gap-4 px-1">
-        {KLINE_RESOLUTIONS.map((item, i) => (
+        {TV_DATAFEED_CONFIG.supported_resolutions?.map((r, i) => (
           <div
             key={i}
             className={clsx(
               'cursor-pointer transition-all hover:text-gray-600',
-              interval === item.interval ? 'text-black' : 'text-gray-400'
+              toNormalInterval(r) === interval ? 'text-black' : 'text-gray-400'
             )}
-            onClick={() => onIntervalClick(item)}
+            onClick={() => onIntervalClick(r)}
           >
-            {item.name}
+            {toNormalInterval(r)}
           </div>
         ))}
       </div>

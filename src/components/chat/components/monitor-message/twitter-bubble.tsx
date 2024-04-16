@@ -1,25 +1,21 @@
 import { useState } from 'react'
 import clsx from 'clsx'
 
-import MessageBubble from './message-bubble'
+import MessageBubble from '../bubbles/message-bubble'
 import { ChatResponseMetaTwitter } from '@/api/chat/types'
 import dayjs from 'dayjs'
-import i18n from '@/i18n'
 import { t } from 'i18next'
 import ShowMoreText from 'react-show-more-text'
 import { Dialog } from '@mui/material'
+import { utilLang } from '@/utils/language'
 
-const TwitterBubble = ({
-  content,
-  created_at,
-  twitter,
-  tweets_id,
-  twitter_logo,
-  photo,
-}: ChatResponseMetaTwitter) => {
-  const { language } = i18n
-  const currentContent =
-    content[language] || Object.values(content).find((v) => v) || ''
+interface Props {
+  data: ChatResponseMetaTwitter
+}
+
+const TwitterBubble = ({ data }: Props) => {
+  const { content, created_at, twitter, tweets_id, twitter_logo, photo } = data
+  const currentContent = utilLang.getContent(content)
 
   const [open, setOpen] = useState(false)
   const [image, setImage] = useState<string>()
@@ -27,20 +23,25 @@ const TwitterBubble = ({
     setImage(item)
     setOpen(true)
   }
+
   return (
-    <MessageBubble className={clsx('min-w-bubble pt-4 flex flex-col')}>
+    <MessageBubble
+      className={clsx(
+        'w-bubble pt-[12px] pr-[14px] pb-[15px] pl-[18px] flex flex-col'
+      )}
+    >
       {/* Avatar, name */}
-      <div className="flex items-stretch">
+      <div className="flex items-stretch max-h-[40px] overflow-hidden">
         <img
           src={twitter_logo}
           alt="avatar"
-          className="w-12 h-12 rounded-full mr-2"
+          className="w-[40px] h-[40px] rounded-full mr-[8px]"
         />
         <div className="flex flex-col justify-between">
-          <span className="font-bold">
+          <span className="font-bold text-[14px]">
             {twitter} {t('bubble.new-tweet')}
           </span>
-          <span className="text-gray-400">
+          <span className="text-[#10101040] text-[14px]">
             {dayjs(created_at).format('H:mm M/D')}
           </span>
         </div>
@@ -48,32 +49,31 @@ const TwitterBubble = ({
       {/* Text content */}
       <ShowMoreText
         anchorClass="text-primary cursor-pointer block text-sm w-fit ml-auto"
-        className="my-2"
+        className="mt-[11px] mb-[15px]"
         lines={4}
         more={t('bubble.show.more')}
         less={t('bubble.show.hide')}
       >
         {currentContent}
       </ShowMoreText>
-      {/* TODO: click img to enlarge show. */}
       {photo.map((item) => (
         <img
           key={item}
           src={item}
           onClick={() => showImage(item)}
           alt="img"
-          className="rounded-md max-h-[300px] max-w-[300px]"
+          className="rounded-md max-h-[300px] max-w-[300px] mb-[15px] cursor-pointer"
         />
       ))}
       <a
         href={`https://twitter.com/${twitter}/status/${tweets_id}`}
         target="_blank"
-        className="text-primary inline-block mt-3 w-fit"
+        className="text-primary inline-block w-fit"
       >
         {t('bubble.originlink')}
       </a>
 
-      <Dialog open={open} keepMounted onClose={() => setOpen(false)}>
+      <Dialog open={open} onClose={() => setOpen(false)}>
         <img src={image} alt="img" className="max-h-[600px] max-w-[600px]" />
       </Dialog>
     </MessageBubble>

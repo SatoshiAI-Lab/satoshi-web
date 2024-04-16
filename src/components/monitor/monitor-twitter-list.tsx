@@ -1,6 +1,7 @@
 import { TwitterList } from '@/api/monitor/type'
 import { MonitorConfig } from '@/config/monitor'
 import { useMonitorStore } from '@/stores/use-monitor-store'
+import { utilLang } from '@/utils/language'
 import { Switch } from '@mui/material'
 import clsx from 'clsx'
 
@@ -30,7 +31,7 @@ export const MonitorTwitterList = ({ list, className }: Props) => {
   return (
     <div
       className={clsx(
-        'inline-flex flex-col max-sm:mx-auto justify-start',
+        'inline-flex flex-col max-sm:mx-auto justify-start max-w-[300px]',
         className
       )}
     >
@@ -44,14 +45,14 @@ export const MonitorTwitterList = ({ list, className }: Props) => {
           >
             <div className="flex items-center">
               <img
-                key={item.name}
+                key={item.twitter_id}
                 src={item.logo}
                 alt="Logo"
                 width={20}
                 height={20}
                 className="w-[20px] h-[20px] object-cover"
               />
-              <span className="ml-5">{item.name}</span>
+              <span className="ml-5">{utilLang.getContent(item.name)}</span>
             </div>
             <Switch
               checked={item.subscribed}

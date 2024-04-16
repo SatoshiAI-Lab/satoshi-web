@@ -1,6 +1,5 @@
 import type { AnyObject } from '@/types/types'
 import type {
-  UseKLineFormat as UseKLineFormat,
   FormatExportedDataItem,
   FormatExportedData,
   ArrayToSeries,
@@ -9,10 +8,7 @@ import type {
   PriceToPricescale,
 } from './types'
 
-/**
- * TradingView chart data format hook
- */
-export const useKLineFormat: UseKLineFormat = () => {
+export const useKLineFormat = () => {
   const formatExportedData: FormatExportedData = (rawData, handler) => {
     return rawData.data.map((items, i) => {
       const result: AnyObject = {
@@ -82,11 +78,35 @@ export const useKLineFormat: UseKLineFormat = () => {
     return Number('1'.padEnd(len + 1, '0'))
   }
 
+  // About convert interval,
+  // only need to maintain `toTVInterval` & `toNormalInterval
+  const toTVInterval = (interval?: string) => {
+    if (!interval || !interval.trim()) return '1'
+    // TradingView's `minutes` do not have `m`
+    if (interval.endsWith('m')) return interval.replace('m', '')
+    if (interval === '1h') return '60'
+    if (interval === '4h') return '240'
+
+    return interval
+  }
+
+  const toNormalInterval = (tvInterval?: string) => {
+    if (!tvInterval || !tvInterval.trim()) return '1m'
+    const num = Number(tvInterval)
+    if (num < 60) return `${tvInterval}m`
+    if (num === 60) return '1h'
+    if (num === 240) return '4h'
+
+    return tvInterval.toLowerCase()
+  }
+
   return {
     formatExportedData,
     formatReceivedBars,
     arrayToSeries,
     fixMinute,
     priceToPricescale,
+    toTVInterval,
+    toNormalInterval,
   }
 }

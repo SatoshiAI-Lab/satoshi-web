@@ -10,8 +10,8 @@ import Live2DModel from '../live2d-model'
 import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
 import { MessageAlert } from './components/bubbles/message-alert'
-import CreateTokenBubble from './components/bubbles/create-token-bubble'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
+import NewPoolBubble from './components/monitor-message/new-pool-bubble'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props
