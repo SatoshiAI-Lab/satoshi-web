@@ -49,23 +49,28 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
 
   props.security?.content?.forEach((item) => {
     const desc = utilLang.getContent(item.content)
+
     switch (item.status) {
       case MonitorPoolStatus.normal: {
         normalList.push({ desc, status: t('normal'), icon: <></> })
+        break
       }
       case MonitorPoolStatus.risk: {
+        console.log('risk', item, item.status)
         riskList.push({
           desc,
-          status: <span className="text-red-500">{t('risk')}</span>,
+          status: <span className="text-red-500 ml-1">{t('risk')}</span>,
           icon: (
             <span className="text-red-500">
               <BiError />
             </span>
           ),
         })
+        break
       }
       case MonitorPoolStatus.unknown: {
         unknownList.push({ desc, status: t('unknown'), icon: <></> })
+        break
       }
     }
   })
@@ -181,7 +186,11 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
       {props.started ? (
         <div className="flex items-center mb-2">
           <span className="font-bold mr-1">{t('started')}:</span>{' '}
-          <span>{numeral(props.started).format('$0,0a.00')}</span>
+          <span>
+            {props.chain === WalletChain.SOL
+              ? props.started
+              : numeral(props.started).format('$0,0a.00')}
+          </span>
         </div>
       ) : null}
       <div className="flex items-center mb-2">
@@ -225,9 +234,9 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
               <span className="text-red-500">{t('hight.risk')}</span>
             )}
           </div>
-          {props.score?.detail?.map((item) => (
-            <div className="mt-2" key={item}>
-              {item}
+          {props.score?.detail?.map((str) => (
+            <div className="mt-2" key={str}>
+              {str}
             </div>
           ))}
         </div>
