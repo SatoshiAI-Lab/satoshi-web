@@ -11,7 +11,6 @@ import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
 import { MessageAlert } from './components/bubbles/message-alert'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
-import NewPoolBubble from './components/monitor-message/new-pool-bubble'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props
@@ -94,7 +93,6 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
         >
           <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
           <Messages messages={messages} />
-          {/* <CreateTokenBubble /> */}
         </div>
         <MessageInput onSend={onSend} onCancel={cancelAnswer} />
       </div>

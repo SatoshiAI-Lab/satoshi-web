@@ -1,30 +1,30 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, CircularProgress, OutlinedInput } from '@mui/material'
 import { IoFlash } from 'react-icons/io5'
 import { formatUnits } from 'viem'
 import { FaArrowRightLong } from 'react-icons/fa6'
+import { BigNumber } from 'bignumber.js'
 import clsx from 'clsx'
 import numeral from 'numeral'
-import { BigNumber } from 'bignumber.js'
+import toast from 'react-hot-toast'
 
-import MessageBubble from '../../message-bubble'
 import { CHAT_CONFIG } from '@/config/chat'
-
-import type {
-  ChatResponseAnswerMeta,
-  ChatResponseTxConfrim,
-} from '@/api/chat/types'
 import { useTxToken } from '@/hooks/use-tx-tokne'
 import { WalletList } from './wallet-list'
 import { SelectToken } from './select-token'
-import { useState } from 'react'
 import { WalletCardProps } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
 import { trandApi } from '@/api/trand'
 import { useChat } from '@/hooks/use-chat'
 import { useWallet } from '@/hooks/use-wallet'
 import { interactiveApi } from '@/api/interactive'
-import toast from 'react-hot-toast'
+import MessageBubble from '../../bubbles/message-bubble'
+
+import type {
+  ChatResponseAnswerMeta,
+  ChatResponseTxConfrim,
+} from '@/api/chat/types'
 
 interface Props {
   msg: ChatResponseAnswerMeta

@@ -8,11 +8,11 @@ import dayjs from 'dayjs'
 import { IoCopyOutline } from 'react-icons/io5'
 import { IconButton, Dialog } from '@mui/material'
 import { BiError } from 'react-icons/bi'
+import numeral from 'numeral'
 
 import MessageBubble from '../bubbles/message-bubble'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
-import { link } from '@/config/link'
 import { WalletChain } from '@/config/wallet'
 import { utilLang } from '@/utils/language'
 import { useShow } from '@/hooks/use-show'
@@ -20,7 +20,6 @@ import { DialogHeader } from '@/components/dialog-header'
 import { MonitorPoolStatus } from '@/config/monitor'
 
 import type { ChatResponseMetaNewPoolV2 } from '@/api/chat/types'
-import numeral from 'numeral'
 
 interface SecurityList {
   desc: string

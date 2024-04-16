@@ -6,9 +6,9 @@ import ShowMoreText from 'react-show-more-text'
 import { Avatar, IconButton } from '@mui/material'
 import { IoArrowDown, IoArrowUp, IoLogoTwitter } from 'react-icons/io5'
 
-import MessageBubble from '../message-bubble'
 import { utilFmt } from '@/utils/format'
 import { link } from '@/config/link'
+import { MessageBubble } from '../bubbles/message-bubble'
 
 import type {
   ChatResponseAnswerMeta,

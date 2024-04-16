@@ -1,11 +1,7 @@
-import { utilFmt } from '@/utils/format'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
-import { IoCopyOutline } from 'react-icons/io5'
-import MessageBubble from '../../bubbles/message-bubble'
+
+import { MessageBubble } from '../../bubbles/message-bubble'
 import { ChatResponseAnswerMeta } from '@/api/chat/types'
-import { WalletList } from './wallet-list'
 
 interface Props {
   msg: ChatResponseAnswerMeta

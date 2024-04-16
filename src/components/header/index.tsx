@@ -35,7 +35,7 @@ function Header() {
   const { show, open, hidden } = useShow()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openLogoutWallet = Boolean(anchorEl)
-  const { setMessage } = useChatStore()
+  const { socket, setMessage } = useChatStore()
 
   const langs = useMemo(() => {
     return Object.entries(i18n.options.resources ?? {}).map(([key, value]) => ({
@@ -53,7 +53,6 @@ function Header() {
 
   const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
   const { isDark } = useThemeStore()
-  const { socket } = useChatStore()
 
   const items: HeaderItem[] = []
 

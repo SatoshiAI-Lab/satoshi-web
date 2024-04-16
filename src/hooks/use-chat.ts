@@ -1,3 +1,6 @@
+import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { nanoid } from 'nanoid'
 import toast from 'react-hot-toast'
 
 import { chatApi } from '@/api/chat'
@@ -6,13 +9,10 @@ import { useLive2DStore } from '@/stores/use-live2d-store'
 import { utilParse } from '@/utils/parse'
 import { CHAT_CONFIG } from '@/config/chat'
 import { ChatParams, ChatResponseAnswer } from '@/api/chat/types'
-import { useTranslation } from 'react-i18next'
 import { useNeedLoginStore } from '@/stores/use-need-login-store'
-import { useRef } from 'react'
 import { useHyperTextParser } from './use-hyper-text-parser'
 import { utilDom } from '@/utils/dom'
 import i18n from '@/i18n'
-import { nanoid } from 'nanoid'
 
 import type {
   InteractiveMessageOptions,
@@ -22,12 +22,10 @@ import type {
 export const useChat = () => {
   const { t } = useTranslation()
   const { setShow } = useNeedLoginStore()
-
   const isReceiving = useRef(false)
   const thinkTimer = useRef<NodeJS.Timeout>()
   const hasSmooth = useRef(false)
   const controller = useRef<AbortController>()
-
   const chatStore = useChatStore()
   const {
     setQuestion,

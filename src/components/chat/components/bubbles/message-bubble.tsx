@@ -12,7 +12,7 @@ interface MessageBubbleProps {
   disableAnime?: boolean
 }
 
-function MessageBubble(props: MessageBubbleProps) {
+export const MessageBubble = (props: MessageBubbleProps) => {
   const {
     children,
     position = 'left',

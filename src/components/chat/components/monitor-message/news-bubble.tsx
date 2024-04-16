@@ -1,13 +1,14 @@
 import React from 'react'
 import clsx from 'clsx'
-
-import MessageBubble from '../bubbles/message-bubble'
-import { ChatResponseMetaNewsInfo } from '@/api/chat/types'
+import { t } from 'i18next'
 import dayjs from 'dayjs'
 import toast from 'react-hot-toast'
-import { t } from 'i18next'
 import ShowMoreText from 'react-show-more-text'
+
+import MessageBubble from '../bubbles/message-bubble'
 import { utilLang } from '@/utils/language'
+
+import type { ChatResponseMetaNewsInfo } from '@/api/chat/types'
 
 interface Props {
   data: ChatResponseMetaNewsInfo
