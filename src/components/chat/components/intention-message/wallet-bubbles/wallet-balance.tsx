@@ -1,16 +1,18 @@
-import {
+import { useTranslation } from 'react-i18next'
+import { formatUnits } from 'viem'
+import clsx from 'clsx'
+import numeral from 'numeral'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import toast from 'react-hot-toast'
+
+import { utilFmt } from '@/utils/format'
+import { MessageBubble } from '../../message-bubble'
+
+import type {
   ChatResponseAnswerMeta,
   ChatResponseMetaBalance,
   ChatResponseWalletBalance,
 } from '@/api/chat/types'
-import MessageBubble from '../../bubbles/message-bubble'
-import clsx from 'clsx'
-import { useTranslation } from 'react-i18next'
-import { utilFmt } from '@/utils/format'
-import numeral from 'numeral'
-import { formatUnits } from 'viem'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import toast from 'react-hot-toast'
 
 interface Props {
   msg: ChatResponseAnswerMeta
@@ -75,9 +77,9 @@ export const WalletBalance = (props: Props) => {
               </div>
               <div>${numeral(token.valueUsd).format('0,0.0')}</div>
               <div className="ml-2">
-                {numeral(
-                  formatUnits(BigInt(token.amount!), token.decimals!)
-                ).format('0a.00').toUpperCase()}
+                {numeral(formatUnits(BigInt(token.amount!), token.decimals!))
+                  .format('0a.00')
+                  .toUpperCase()}
               </div>
             </div>
           )

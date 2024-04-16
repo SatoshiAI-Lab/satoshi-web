@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 import { interactiveApi } from '@/api/interactive'
 import { useWaitingStatus } from './use-waiting'
 
-import type { CreateTokenInfo } from '@/components/chat/components/bubbles/create-token-bubble/types'
+import type { CreateTokenInfo } from '@/components/chat/components/create-token-message/types'
 
 export const useCreateOpToken = (chain?: string) => {
   const [opHash, setOpHash] = useState('')

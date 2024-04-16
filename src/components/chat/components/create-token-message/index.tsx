@@ -24,7 +24,7 @@ interface CreateTokenBubbleProps extends React.ComponentProps<'div'> {
   chain?: string
 }
 
-const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
+const CreateTokenMessage = (props: CreateTokenBubbleProps) => {
   const { hasWallet, chain } = props
   const { t } = useTranslation()
   const [symbol, setSymbol] = useState('')
@@ -261,4 +261,4 @@ const CreateTokenBubble = (props: CreateTokenBubbleProps) => {
   )
 }
 
-export default CreateTokenBubble
+export default CreateTokenMessage

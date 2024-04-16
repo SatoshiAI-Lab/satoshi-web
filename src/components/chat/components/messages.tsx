@@ -1,9 +1,9 @@
 import React, { memo } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
 
-import MessageBubble from './bubbles/message-bubble'
+import MessageBubble from './message-bubble'
 import InteractiveMessage from './interactive-message'
-import MarkdownParser from '@/components/markdown-parser'
+import TokenMarkdown from '@/components/token-markdown'
 import { useTranslation } from 'react-i18next'
 import { IntentMessage } from './intention-message/intention-message'
 import { MonitorConfigBubble } from './monitor-message/monitor-config-bubble'
@@ -52,7 +52,7 @@ const Messages = memo((props: MessagesProps) => {
 
     return (
       <MessageBubble key={i} position={msg.position} className={className}>
-        <MarkdownParser children={msg.msg} {...props} />
+        <TokenMarkdown children={msg.msg} {...props} />
       </MessageBubble>
     )
   })

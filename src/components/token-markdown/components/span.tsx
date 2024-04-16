@@ -4,21 +4,10 @@ import PercentTag from '@/components/percent-tag'
 
 import type { ReactMarkdownProps } from 'react-markdown/lib/complex-types'
 
-interface SpanParserProps {
-  spanProps: Omit<
-    React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLSpanElement>,
-      HTMLSpanElement
-    >,
-    'ref'
-  > &
-    ReactMarkdownProps
-}
+interface Props extends ReactMarkdownProps {}
 
-function SpanParser(props: SpanParserProps) {
-  const {
-    spanProps: { node, children },
-  } = props
+export const Span = (props: Props) => {
+  const { node, children } = props
   const isPercentTag = node.properties?.hasOwnProperty('dataPercentTag')
   const { dataPercentTag } = node.properties ?? {}
 
@@ -29,4 +18,4 @@ function SpanParser(props: SpanParserProps) {
   return <span>{children}</span>
 }
 
-export default SpanParser
+export default Span

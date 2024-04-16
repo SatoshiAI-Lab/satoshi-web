@@ -2,14 +2,15 @@ import React from 'react'
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
-
-import MessageBubble from '../bubbles/message-bubble'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { ChatResponseMetaWallet } from '@/api/chat/types'
 import dayjs from 'dayjs'
-import { link } from '@/config/link'
 import { IoCopyOutline } from 'react-icons/io5'
+
+import { MessageBubble } from '../message-bubble'
+import { link } from '@/config/link'
 import { utilFmt } from '@/utils/format'
+
+import type { ChatResponseMetaWallet } from '@/api/chat/types'
 
 interface Props {
   data: ChatResponseMetaWallet

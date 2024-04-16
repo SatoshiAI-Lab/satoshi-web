@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import clsx from 'clsx'
-
-import MessageBubble from '../bubbles/message-bubble'
-import { ChatResponseMetaTwitter } from '@/api/chat/types'
 import dayjs from 'dayjs'
 import { t } from 'i18next'
 import ShowMoreText from 'react-show-more-text'
 import { Dialog } from '@mui/material'
+
+import { MessageBubble } from '../message-bubble'
 import { utilLang } from '@/utils/language'
+
+import type { ChatResponseMetaTwitter } from '@/api/chat/types'
 
 interface Props {
   data: ChatResponseMetaTwitter

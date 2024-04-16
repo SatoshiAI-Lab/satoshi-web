@@ -2,7 +2,7 @@ import type {
   Bar,
   ResolutionString,
 } from '../../../../../public/tradingview/charting_library/charting_library'
-import type { EmptyFn, Pair } from '@/types/types'
+import type { VoidFn, Pair } from '@/types/types'
 import type { TagString } from '../use-kline-api/types'
 
 export type ResetCacheMap<T = Function> = Map<string, T>
@@ -10,7 +10,7 @@ export type ResetCacheMap<T = Function> = Map<string, T>
 /** Unified manage datafeed caches. */
 export const useDatafeedCache = () => {
   const cachedMap = new Map<string, any>()
-  const subscribeCacheMap = new Map<string, EmptyFn>()
+  const subscribeCacheMap = new Map<string, VoidFn>()
 
   return {
     // `resolveSymbol` cached bars's last one.
@@ -36,7 +36,7 @@ export const useDatafeedCache = () => {
     // Subscribe update cache.
     getSubscribe: (uId: string) => subscribeCacheMap.get(uId),
     getSubscribes: () => subscribeCacheMap,
-    setSubscribe: (uId: string, fn: EmptyFn) => subscribeCacheMap.set(uId, fn),
+    setSubscribe: (uId: string, fn: VoidFn) => subscribeCacheMap.set(uId, fn),
     removeSubscribe: (uId: string) => subscribeCacheMap.delete(uId),
     clearSubscribe: () => subscribeCacheMap.clear(),
   }

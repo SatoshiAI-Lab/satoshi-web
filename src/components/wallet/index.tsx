@@ -58,7 +58,6 @@ const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
 
 export const Wallet: FC<WalletDialogProps> = memo((props) => {
   const {
-    finish,
     showButtons = true,
     // Used for show a wallet details.
     onlyWallet,

@@ -6,8 +6,8 @@ import { WalletBalance } from './wallet-bubbles/wallet-balance'
 import { TwitterListBubble } from './twitter-list-bubble'
 import { TxTokenBubbles } from './tx-token-bubble/tx-token-bubbles'
 import { MonitorAddressBubble } from './monitor-address-bubble'
-import MyWalletsBubble from '../bubbles/my-wallets-bubble'
-import CreateTokenBubble from '../bubbles/create-token-bubble'
+import BalanceMessage from '../balance-message'
+import CreateTokenMessage from '../create-token-message'
 import { TokenDetailBubble } from './token-detail-bubble'
 import { ExMonitorBubble } from './ex-monitor-bubble'
 import { PoolMonitorBubble } from './pool-monitor-bubble'
@@ -41,7 +41,7 @@ export const IntentMessage = ({ msg }: Props) => {
 
   // Balances(Wallet list)
   if (msg.type == walletList || metaType == walletList) {
-    return <MyWalletsBubble meta={msg.msgs} />
+    return <BalanceMessage meta={msg.msgs} />
   }
 
   // Change name wallet list
@@ -77,7 +77,7 @@ export const IntentMessage = ({ msg }: Props) => {
   // Create token
   if (metaType === createTokenNoWallet || metaType == createTokenHaveWallet) {
     return (
-      <CreateTokenBubble
+      <CreateTokenMessage
         hasWallet={metaType === createTokenHaveWallet}
         chain={msg.msgs?.chain}
       />
