@@ -2,12 +2,10 @@ import React, { useEffect } from 'react'
 
 import type { OrderedListProps } from 'react-markdown/lib/ast-to-react'
 
-interface OlParserProps {
-  olProps: OrderedListProps
-}
+interface Props extends OrderedListProps {}
 
-function OlParser(props: OlParserProps) {
-  const { olProps } = props
+export const Ol = (props: Props) => {
+  const { children } = props
 
   useEffect(() => {
     // Change ul/ol previous element to inline-block,
@@ -19,9 +17,9 @@ function OlParser(props: OlParserProps) {
 
   return (
     <ol className="pl-4 whitespace-normal" data-change-parent>
-      {olProps.children}
+      {children}
     </ol>
   )
 }
 
-export default OlParser
+export default Ol

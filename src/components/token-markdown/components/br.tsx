@@ -2,15 +2,9 @@ import React, { useEffect } from 'react'
 
 import type { ReactMarkdownProps } from 'react-markdown/lib/complex-types'
 
-interface Props {
-  brProps: Omit<
-    React.DetailedHTMLProps<React.HTMLAttributes<HTMLBRElement>, HTMLBRElement>,
-    'ref'
-  > &
-    ReactMarkdownProps
-}
+interface Props extends ReactMarkdownProps {}
 
-function BrParser(props: Props) {
+export const Br = (props: Props) => {
   useEffect(() => {
     // Select contains `data-should-remove` prop element,
     // if don't have next sibling, remove it.
@@ -25,4 +19,4 @@ function BrParser(props: Props) {
   return <br data-should-remove />
 }
 
-export default BrParser
+export default Br

@@ -1,7 +1,7 @@
-import { Button, Dialog, IconButton } from '@mui/material'
+import { IoCloseOutline } from 'react-icons/io5'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
-import { IoCloseOutline } from 'react-icons/io5'
+import { Button, Dialog, IconButton } from '@mui/material'
 
 import { Routes } from '@/routes'
 
@@ -10,7 +10,7 @@ interface Props {
   onClose: () => void
 }
 
-export const NeedLoginDialog = (props: Props) => {
+export const LoginAuthDialog = (props: Props) => {
   const { show, onClose } = props
   const { t } = useTranslation()
   const { push } = useRouter()
@@ -68,3 +68,5 @@ export const NeedLoginDialog = (props: Props) => {
     </Dialog>
   )
 }
+
+export default LoginAuthDialog

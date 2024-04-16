@@ -12,11 +12,12 @@ interface MessageBubbleProps {
   disableAnime?: boolean
 }
 
-function MessageBubble(props: MessageBubbleProps) {
+export const MessageBubble = (props: MessageBubbleProps) => {
   const {
     children,
     position = 'left',
     isLoading,
+    showNull = false,
     className = '',
     disableAnime = false,
   } = props
@@ -29,7 +30,7 @@ function MessageBubble(props: MessageBubbleProps) {
       className={clsx(
         'px-4 py-[0.55rem] mr-10 bg-slate-100 rounded max-w-lg',
         'my-1 break-all shadow-bubble hover:bg-white transition-all',
-        'max-lg:max-w-4xl md:max-w-bubble max-sm:mr-4 max-sm:max-w-[14rem]',
+        'max-lg:max-w-4xl md:max-w-xl max-sm:mr-4 max-sm:max-w-[14rem]',
         '2xl:max-w-4xl items-cneter gap-0 whitespace-pre-line',
         !children || children.toString().trim() === '' ? 'hidden' : '',
         position === 'right' ? 'self-end' : '',

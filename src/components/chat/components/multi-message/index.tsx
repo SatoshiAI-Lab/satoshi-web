@@ -3,12 +3,12 @@ import { Divider, FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import { BsChevronRight } from 'react-icons/bs'
 import clsx from 'clsx'
 
-import MessageBubble from '../bubbles/message-bubble'
+import MessageBubble from '../message-bubble'
 import { utilArr } from '@/utils/array'
+import { useChat } from '@/hooks/use-chat'
 
 import type { IMultiMessage, MultiMessageProps } from './types'
 import type { ChatResponseAnswerMetaCoin } from '@/api/chat/types'
-import { useChat } from '@/hooks/use-chat'
 
 function MultiMessage(props: MultiMessageProps) {
   const { id, title, msgs: rawMsgs } = props

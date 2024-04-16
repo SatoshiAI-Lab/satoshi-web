@@ -5,12 +5,15 @@ import toast from 'react-hot-toast'
 
 import { CHAT_CONFIG } from '@/config/chat'
 
-import type { LiProps } from 'react-markdown/lib/ast-to-react'
-import type { PPraserProps } from './p-parser'
+import type {
+  LiProps,
+  ReactMarkdownProps,
+} from 'react-markdown/lib/ast-to-react'
 import type { Element as HElement } from 'hast'
 
-export interface LiParserProps {
-  liProps: LiProps | PPraserProps['pProps']
+interface Props
+  extends ReactMarkdownProps,
+    Omit<LiProps, 'checked' | 'ordered' | 'children' | 'index'> {
   isListItem?: boolean
 }
 
@@ -24,13 +27,13 @@ export interface ReferenceProps {
   datetime_str: string
 }
 
-function LiParser(props: LiParserProps) {
-  const { isListItem = true, liProps } = props
+export const Li = (props: Props) => {
+  const { isListItem = true, node, className, children } = props
   const {
     answerType: { reference },
     refRule: { refNumber, refElement },
   } = CHAT_CONFIG
-  const strChildren = (liProps.node.children as any[])
+  const strChildren = (node.children as any[])
     .filter((e) => e.tagName !== reference)
     .map((e) => e.value)
     .join('')
@@ -40,7 +43,7 @@ function LiParser(props: LiParserProps) {
     .replace(refElement, '')
     .trim()
   const matchRefTag = strChildren.match(refElement)?.[0] ?? ''
-  const refList = (liProps.node.children as HElement[]).filter(
+  const refList = (node.children as HElement[]).filter(
     (e) => e.tagName?.toLowerCase() === reference
   ) ?? [{ properties: strToObject(matchRefTag) }]
   const refClass = clsx(
@@ -146,8 +149,8 @@ function LiParser(props: LiParserProps) {
       )}
     </Tooltip>
   ) : (
-    <li className={`${liProps.className} leading-7`}>{liProps.children}</li>
+    <li className={clsx('leading-7', className)}>{children}</li>
   )
 }
 
-export default LiParser
+export default Li

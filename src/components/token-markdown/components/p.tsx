@@ -1,27 +1,15 @@
 import React from 'react'
 
-import LiParser from './li-parser'
+import Li from './li'
 import { CHAT_CONFIG } from '@/config/chat'
 
 import type { ReactMarkdownProps } from 'react-markdown/lib/complex-types'
 import type { Element as HElement } from 'hast'
 
-export interface PPraserProps {
-  pProps: Omit<
-    React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLParagraphElement>,
-      HTMLParagraphElement
-    >,
-    'ref'
-  > &
-    ReactMarkdownProps
-}
+export interface Props extends ReactMarkdownProps {}
 
-function PParser(props: PPraserProps) {
-  const {
-    pProps,
-    pProps: { children, node },
-  } = props
+export const P = (props: Props) => {
+  const { children, node } = props
   const { refNumber } = CHAT_CONFIG.refRule
 
   if (children === undefined) return <></>
@@ -39,10 +27,10 @@ function PParser(props: PPraserProps) {
 
   // Origin reference
   if (matchRef) {
-    return <LiParser liProps={pProps} isListItem={false} />
+    return <Li {...props} isListItem={false} />
   }
 
   return <p>{children}</p>
 }
 
-export default PParser
+export default P

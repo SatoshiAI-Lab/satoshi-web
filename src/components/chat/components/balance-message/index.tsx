@@ -33,7 +33,7 @@ interface Props {
   meta?: ChatResponseAnswerMeta
 }
 
-const MyWalletsBubble = (props: Props) => {
+const BalanceMessage = (props: Props) => {
   const { meta } = props
   const [folds, setFolds] = useState<string[]>([])
   const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
@@ -179,4 +179,4 @@ const MyWalletsBubble = (props: Props) => {
   )
 }
 
-export default MyWalletsBubble
+export default BalanceMessage

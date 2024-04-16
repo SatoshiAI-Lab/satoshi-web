@@ -9,16 +9,12 @@ import { useClipboard } from '@/hooks/use-clipboard'
 
 import type { CodeProps } from 'react-markdown/lib/ast-to-react'
 
-interface CodeParserProps {
-  codeProps: CodeProps
+interface Props extends CodeProps {
   clearCodeBreak?: boolean
 }
 
-function CodeParser(props: CodeParserProps) {
-  const {
-    codeProps: { className, children, inline },
-    clearCodeBreak = true,
-  } = props
+export const Code = (props: Props) => {
+  const { className, children, inline, clearCodeBreak = true } = props
   const lang = className?.match(/language-(\w+)/)?.[1] ?? ''
   const parserChildren = clearCodeBreak
     ? String(children).replace(/\n+$/, '')
@@ -60,4 +56,4 @@ function CodeParser(props: CodeParserProps) {
   )
 }
 
-export default CodeParser
+export default Code

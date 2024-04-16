@@ -25,7 +25,7 @@ export const WalletList = (props: Props) => {
   const { type } = props
   const { t } = useTranslation()
   const { addMessageAndLoading, sendMsg } = useChat()
-  const { wallets, refetchWallets } = useWallet({
+  const { wallets, refetchWallets, removeWallet } = useWallet({
     enabled: true,
     refetchInterval: 15_000,
   })
@@ -41,6 +41,18 @@ export const WalletList = (props: Props) => {
   const isDelete = type == deleteNameWalletList
   const isExport = type == exportWalletList
 
+  const onRemoveWallet = async (id: string) => {
+    const loadingId = toast.loading(t('deleting'))
+    try {
+      await removeWallet(id)
+      toast.success(t('delete-success'))
+    } catch (error) {
+      toast.error(t('deleting-error'))
+    } finally {
+      toast.dismiss(loadingId)
+    }
+  }
+
   const handleSelect = (wallet: ChatResponseWalletList) => {
     let question = ''
 
@@ -49,7 +61,9 @@ export const WalletList = (props: Props) => {
     }
 
     if (isDelete) {
-      question = t('delete.wallet.intent.text')
+      onRemoveWallet(wallet.id)
+      return
+      // question = t('delete.wallet.intent.text')
     }
 
     if (isExport) {

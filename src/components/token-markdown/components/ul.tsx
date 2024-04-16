@@ -2,12 +2,10 @@ import React, { useEffect } from 'react'
 
 import type { UnorderedListProps } from 'react-markdown/lib/ast-to-react'
 
-interface UlParserProps {
-  ulProps: UnorderedListProps
-}
+interface Props extends UnorderedListProps {}
 
-export const UlParser: React.FC<UlParserProps> = (props) => {
-  const { ulProps } = props
+export const Ul = (props: Props) => {
+  const { children } = props
 
   useEffect(() => {
     // Change ul/ol previous element to inline-block,
@@ -19,9 +17,9 @@ export const UlParser: React.FC<UlParserProps> = (props) => {
 
   return (
     <ul className="pl-4 whitespace-normal" data-change-parent>
-      {ulProps.children}
+      {children}
     </ul>
   )
 }
 
-export default UlParser
+export default Ul

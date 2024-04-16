@@ -1,14 +1,17 @@
-import { useChat } from '@/hooks/use-chat'
-import { useChatStore } from '@/stores/use-chat-store'
 import { MdOutlineFlashOn } from 'react-icons/md'
 
-const MessageAlert: React.FC = () => {
-  const { unreadMessages, setMessage, setUnreadMessage } = useChatStore()
+import { useChat } from '@/hooks/use-chat'
+import { useChatStore } from '@/stores/use-chat-store'
+
+export const MessageAlert: React.FC = () => {
+  const { unreadMessages, setUnreadMessage } = useChatStore()
   const { addMonitorMessage } = useChat()
+
   const expandMessage = () => {
     addMonitorMessage(unreadMessages)
     setUnreadMessage([])
   }
+
   return (
     <div
       className="absolute border-2 border-blue-500
@@ -27,4 +30,4 @@ const MessageAlert: React.FC = () => {
   )
 }
 
-export { MessageAlert }
+export default MessageAlert

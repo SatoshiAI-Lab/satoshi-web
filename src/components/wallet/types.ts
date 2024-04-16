@@ -5,7 +5,6 @@ export interface WalletDialogProps {
   onClose?(): void
   title?: string
   address?: string
-  finish?: boolean
   showButtons?: boolean
   // If not null & find same wallet, only show this wallet
   onlyWallet?: UserCreateWalletResp
