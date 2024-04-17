@@ -1,17 +1,15 @@
 import { CHAT_CONFIG } from '@/config/chat'
 import { WalletChoiceBubble } from './wallet-bubbles/wallet-choice-bubbles'
-import { WalletListBubbles } from './wallet-bubbles/wallet-list-bubble'
 import { Message } from '@/stores/use-chat-store/types'
 import { WalletBalance } from './wallet-bubbles/wallet-balance'
 import { TwitterListBubble } from './twitter-list-bubble'
 import { TxTokenBubbles } from './tx-token-bubble/tx-token-bubbles'
 import { MonitorAddressBubble } from './monitor-address-bubble'
-import BalanceMessage from '../balance-message'
-import CreateTokenMessage from '../create-token-message'
+import { BalanceMessage } from '../balance-message'
+import { CreateTokenMessage } from '../create-token-message'
 import { TokenDetailBubble } from './token-detail-bubble'
 import { ExMonitorBubble } from './ex-monitor-bubble'
 import { PoolMonitorBubble } from './pool-monitor-bubble'
-import { MonitorWalletList } from '@/components/monitor/monitor-wallet-list'
 import { MonitorWalletListBubble } from './monitor-wallet-list-bubble'
 
 interface Props {
@@ -40,7 +38,7 @@ export const IntentMessage = ({ msg }: Props) => {
   const metaType = msg?.msgs?.type!
 
   // Balances(Wallet list)
-  if (msg.type == walletList || metaType == walletList) {
+  if (walletList.startsWith(metaType)) {
     return <BalanceMessage meta={msg.msgs} />
   }
 
