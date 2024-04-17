@@ -230,13 +230,13 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         <div className="my-2">
           <div className="font-bold mt-2">
             🧠 {t('score')}:{' '}
-            {props.score.score ?? (
+            {props.score?.score ?? (
               <span className="text-red-500">{t('hight.risk')}</span>
             )}
           </div>
-          {props.score?.detail?.map((str) => (
-            <div className="mt-2" key={str}>
-              {str}
+          {props.score?.detail?.map((str, i) => (
+            <div className="mt-2" key={i}>
+              {typeof str === 'string' ? str : str.ring}
             </div>
           ))}
         </div>

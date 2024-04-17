@@ -1,4 +1,4 @@
-import { WalletChain, WalletPlatform } from "@/config/wallet"
+import { WalletChain, WalletPlatform } from '@/config/wallet'
 
 export interface ChatResponse {
   status: number
@@ -316,7 +316,7 @@ export interface ChatResponseMetaNewPoolV2 {
 
 export interface Score {
   score: number
-  detail: { type: string; ring: string }[]
+  detail: string[]
 }
 
 export interface Security {

@@ -269,5 +269,6 @@
   "export-wallet": "Hover to show private key(Attention private key security)",
   "deleting": "Wallet deleting...",
   "deleting-error": "Delete failed",
-  "delete-success": "Delete success"
+  "delete-success": "Delete success",
+  "all.on.or.off": "All on or off: "
 }

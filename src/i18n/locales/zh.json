@@ -266,5 +266,6 @@
   "export-wallet": "悬浮显示私钥（请注意您的私钥安全）",
   "deleting": "删除钱包中...",
   "deleting-error": "删除失败",
-  "delete-success": "删除成功"
+  "delete-success": "删除成功",
+  "all.on.or.off": "全部开启或关闭"
 }
