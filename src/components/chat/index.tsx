@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import { nanoid } from 'nanoid'
 
 import MessageBubble from './components/message-bubble'
 import MessageInput from './components/message-input'
@@ -12,7 +13,7 @@ import { useChat } from '@/hooks/use-chat'
 import { MessageAlert } from './components/message-alert'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 
-function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
+export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const { className = '' } = props
   const chatRef = useRef<HTMLDivElement | null>(null)
   const { t } = useTranslation()
@@ -26,8 +27,8 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     unreadMessages,
     setWaitAnswer,
     cancelAnswer,
+    setQuestion,
   } = useChat()
-
   const waitMonitor = useThrottledCallback(function () {
     setWaitAnswer(true)
     console.log('user start waiting answer now!!!')
@@ -36,6 +37,23 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
       console.log('user stop waiting answer now!!!')
     }, 10000)
   }, 10000)
+  const defaultChatOptions = [
+    {
+      id: nanoid(),
+      title: t('create-wallet'),
+      details: t('create-wallet-details'),
+    },
+    {
+      id: nanoid(),
+      title: t('view-wallets'),
+      details: t('view-wallets-details'),
+    },
+    {
+      id: nanoid(),
+      title: t('create-token'),
+      details: t('create-token-details'),
+    },
+  ]
 
   // Handle send.
   const onSend = async () => {
@@ -47,7 +65,19 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     }
     if (isLoading) return
 
-    addMessageAndLoading({ msg: question, position: 'right' })
+    addMessageAndLoading({
+      msg: question,
+      position: 'right',
+    })
+    await sendMsg()
+  }
+
+  const onHelpClick = async (option: (typeof defaultChatOptions)[number]) => {
+    setQuestion(option.details)
+    addMessageAndLoading({
+      msg: option.details,
+      position: 'right',
+    })
     await sendMsg()
   }
 
@@ -91,7 +121,23 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
           )}
           ref={chatRef}
         >
-          <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
+          <MessageBubble className="mt-6">
+            <div className="mb-1">{t('message-default')}</div>
+            <div className="flex items-center text-gray-500">
+              {t('help-me')}:{' '}
+              {defaultChatOptions.map((o) => (
+                <div
+                  className={clsx(
+                    'ml-2 cursor-pointer hover:text-black',
+                    'transition-all duration-300'
+                  )}
+                  onClick={() => onHelpClick(o)}
+                >
+                  {o.title}
+                </div>
+              ))}
+            </div>
+          </MessageBubble>
           <Messages messages={messages} />
         </div>
         <MessageInput onSend={onSend} onCancel={cancelAnswer} />
