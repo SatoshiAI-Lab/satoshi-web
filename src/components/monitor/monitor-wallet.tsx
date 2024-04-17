@@ -30,7 +30,7 @@ export const MonitorWallet = ({ data }: Props) => {
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [validateError, setValidateError] = useState<string[]>([])
-  const [selectedChain, setSelectedChain] = useState<string>(op)
+  // const [selectedChain, setSelectedChain] = useState<string>(op)
 
   const { t } = useTranslation()
   const { configData, setConfig } = useMonitorStore()
@@ -50,9 +50,9 @@ export const MonitorWallet = ({ data }: Props) => {
       error.push(t('address.invaild'))
     }
 
-    if (selectedChain === op && !isAddress(address)) {
-      error.push(t('address.invaild'))
-    }
+    // if (selectedChain === op && !isAddress(address)) {
+    //   error.push(t('address.invaild'))
+    // }
 
     const isSome = addressList.some((item) => item.address == address)
 
@@ -74,7 +74,7 @@ export const MonitorWallet = ({ data }: Props) => {
     addressList.unshift({
       address,
       name: name || address.slice(-4),
-      chain: selectedChain,
+      // chain: selectedChain,
     })
 
     setLoading(true)
@@ -125,7 +125,7 @@ export const MonitorWallet = ({ data }: Props) => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div>
+          {/* <div>
             <div className='mb-2'>{t('select-chain')}</div>
             <Select
               classes={{ select: '!flex !items-center' }}
@@ -142,7 +142,7 @@ export const MonitorWallet = ({ data }: Props) => {
                 </MenuItem>
               ))}
             </Select>
-          </div>
+          </div> */}
         </div>
 
         {validateError.map((msg) => {
