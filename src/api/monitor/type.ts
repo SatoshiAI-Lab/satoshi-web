@@ -48,7 +48,7 @@ export interface AnnouncementList {
 export interface AddressData {
   address: string
   name: string
-  chain: string
+  chain?: string
 }
 
 export interface PoolData {

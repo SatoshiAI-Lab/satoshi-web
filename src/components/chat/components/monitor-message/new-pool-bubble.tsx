@@ -114,7 +114,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
       <div className="flex justify-between">
         <div className="flex items-stretch gap-[8px]">
           {/* <img
-            src="/images/i1.png"
+            src={}
             alt="avatar"
             className="w-[40px] h-[40px] rounded-full"
           /> */}
@@ -186,11 +186,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
       {props.started ? (
         <div className="flex items-center mb-2">
           <span className="font-bold mr-1">{t('started')}:</span>{' '}
-          <span>
-            {props.chain === WalletChain.SOL
-              ? props.started
-              : numeral(props.started).format('$0,0a.00')}
-          </span>
+          <span>{props.started}</span>
         </div>
       ) : null}
       <div className="flex items-center mb-2">
@@ -230,7 +226,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         <div className="my-2">
           <div className="font-bold mt-2">
             🧠 {t('score')}:{' '}
-            {props.score.score ?? (
+            {props.score?.score ?? (
               <span className="text-red-500">{t('hight.risk')}</span>
             )}
           </div>
