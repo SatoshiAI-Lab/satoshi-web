@@ -270,9 +270,9 @@
   "deleting": "Wallet deleting...",
   "deleting-error": "Delete failed",
   "delete-success": "Delete success",
-  "all.on.or.off": "All on or off: ",
   "sol-wallet": "Solana Wallet",
   "evm-wallet": "EVM Wallet",
   "evm-support": "Support: Full EVM Layer2(BSC/OP etc)",
-  "bear-wallet": "Berachain Wallet"
+  "bear-wallet": "Berachain Wallet",
+  "all.on.or.off": "All on or off: "
 }
