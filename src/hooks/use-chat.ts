@@ -261,7 +261,7 @@ export const useChat = () => {
       isIntention ||
       intention.includes(metaType ?? '') // create token message
     ) {
-      if (data.text && !hiddenIntentText.includes(data?.meta.type!)) {
+      if (data.text && !hiddenIntentText.includes(metaType!)) {
         addStreamMessage(data.text, { msgs: data.meta })
       }
 

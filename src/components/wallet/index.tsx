@@ -3,7 +3,7 @@ import { Button, Dialog, IconButton, Menu, MenuItem } from '@mui/material'
 import { AiOutlineSafety, AiOutlineWallet } from 'react-icons/ai'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
-import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 import { WalletCard } from './components/wallet-card'
 import { WalletExportKeyPop } from './components/walletpop-exportkey'
@@ -16,38 +16,11 @@ import { useWallet } from '@/hooks/use-wallet'
 import { CustomSuspense } from '../custom-suspense'
 import { WalletPlatform } from '@/config/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
-import WalletSkeleton from './components/skeleton'
+import { WalletSkeleton } from './components/skeleton'
 import { useChainsPlatforms } from './hooks/use-chains-platforms'
 import { WalletSearch } from './components/wallet-search'
 
 import type { WalletDialogProps } from './types'
-
-const walletMenu = [
-  {
-    id: WalletPlatform.SOL,
-    title: 'Solana Wallet',
-    content: '',
-    disable: false,
-  },
-  {
-    id: WalletPlatform.EVM,
-    title: 'EVM Wallet',
-    content: 'Support: ETH/BSC/OP/BLAST/ARB/BASE',
-    disable: false,
-  },
-  {
-    id: WalletPlatform.BEAR,
-    title: 'Berachain Wallet',
-    content: '',
-    disable: true,
-  },
-  // {
-  //   id: 'icp',
-  //   title: 'ICP Wallet',
-  //   content: '',
-  //   disable: true,
-  // },
-]
 
 const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
   0: WalletExportKeyPop,
@@ -72,18 +45,45 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
   const { copy } = useClipboard()
   // Used for search.
   const [filteredWallets, setFilteredWallets] = useState<typeof wallets>([])
-
-  const handleCreateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-  const handleCreatClose = () => {
-    setAnchorEl(null)
-  }
-
   // Both set current pop & pop title
   const [currentPopTitle, setCurrentPopTitle] = useState<string>()
   const [currentPop, setCurrentPop] = useState<number>(0)
   const [popOpen, setPopOpen] = useState(false)
+  const { t } = useTranslation()
+  const walletMenu = [
+    {
+      id: WalletPlatform.SOL,
+      title: t('sol-wallet'),
+      content: '',
+      disable: false,
+    },
+    {
+      id: WalletPlatform.EVM,
+      title: t('evm-wallet'),
+      content: t('evm-support'),
+      disable: false,
+    },
+    {
+      id: WalletPlatform.BEAR,
+      title: t('bear-wallet'),
+      content: '',
+      disable: true,
+    },
+    // {
+    //   id: 'icp',
+    //   title: 'ICP Wallet',
+    //   content: '',
+    //   disable: true,
+    // },
+  ]
+
+  const handleCreateClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleCreatClose = () => {
+    setAnchorEl(null)
+  }
 
   const onCreateWallet = async (walletType: WalletPlatform) => {
     const id = toast.loading(t('wallet.creating'))
