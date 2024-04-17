@@ -33,7 +33,7 @@ interface Props {
   meta?: ChatResponseAnswerMeta
 }
 
-const BalanceMessage = (props: Props) => {
+export const BalanceMessage = (props: Props) => {
   const { meta } = props
   const [folds, setFolds] = useState<string[]>([])
   const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])

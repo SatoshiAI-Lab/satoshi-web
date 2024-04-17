@@ -16,7 +16,7 @@ import { useWallet } from '@/hooks/use-wallet'
 import { CustomSuspense } from '../custom-suspense'
 import { WalletPlatform } from '@/config/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
-import WalletSkeleton from './components/skeleton'
+import { WalletSkeleton } from './components/skeleton'
 import { useChainsPlatforms } from './hooks/use-chains-platforms'
 import { WalletSearch } from './components/wallet-search'
 
