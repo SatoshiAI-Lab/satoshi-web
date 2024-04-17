@@ -19,6 +19,11 @@ import type {
   Message,
 } from '@/stores/use-chat-store/types'
 
+interface StreamOptions extends Omit<Message, 'msg'> {
+  // Use new content to override old content, instead of append.
+  overrideMode?: boolean
+}
+
 export const useChat = () => {
   const { t } = useTranslation()
   const { setShow } = useNeedLoginStore()
@@ -28,6 +33,7 @@ export const useChat = () => {
   const controller = useRef<AbortController>()
   const chatStore = useChatStore()
   const {
+    messages,
     setQuestion,
     setIsLoading,
     setMessage,
@@ -69,24 +75,20 @@ export const useChat = () => {
     })
   }
 
-  /**
-   * Add general Q&A information
-   * @param content User or AI text
-   * @param ops Configure the text rendering form
-   * @returns
-   */
-  const addStreamMessage = (content: string, ops?: Omit<Message, 'msg'>) => {
+  const addStreamMessage = (content: string, ops?: StreamOptions) => {
     const { messages } = useChatStore.getState()
     const lastMessage = messages[messages.length - 1]
+    const msg = ops?.overrideMode ? content : lastMessage.msg + content
     const newMsg: Message = {
       ...ops,
       ...lastMessage,
-      msg: lastMessage.msg + content,
+      msg,
       isLoadingMsg: false,
       msgId: nanoid(),
     }
     const { reference } = CHAT_CONFIG.answerType
 
+    // Is reference message.
     if (ops?.rawData?.answer_type === reference) {
       const { type, content, published_at, url } = ops.rawData.meta
       const parsedContent = content?.replaceAll('\n', '<br />')
@@ -102,12 +104,14 @@ export const useChat = () => {
       newMsg.msg = newMsg.msg + refTag
     }
 
-    if (!lastMessage) return { messages: [...messages] }
+    if (!lastMessage) return newMsg
 
     setMessage([...messages.slice(0, messages.length - 1), newMsg])
     const { chatEl } = useChatStore.getState()
 
     utilDom.scrollToBottom(chatEl!)
+
+    return newMsg
   }
 
   const addMessageAndLoading = (msg: Message) => {
@@ -209,9 +213,8 @@ export const useChat = () => {
       end,
       intentStream,
       intention,
+      process,
     } = CHAT_CONFIG.answerType
-
-    console.log('Chat Data: ', data)
 
     if (data.answer_type === 'end') {
       setReadAnswer(true)
@@ -243,6 +246,15 @@ export const useChat = () => {
       messages.pop()
       return
     }
+
+    // Is processing.
+    if (answerType === process) {
+      addStreamMessage(data.text, { overrideMode: true })
+      return
+    }
+
+    // Override `process_stream` message.
+    addStreamMessage('', { overrideMode: true })
 
     if (
       intention.includes(answerType) ||
