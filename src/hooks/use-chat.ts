@@ -33,7 +33,7 @@ export const useChat = () => {
   const controller = useRef<AbortController>()
   const chatStore = useChatStore()
   const {
-    messages,
+    chatEl,
     setQuestion,
     setIsLoading,
     setMessage,
@@ -42,10 +42,10 @@ export const useChat = () => {
     setIntention,
   } = chatStore
 
-  /**
-   * Adds a new message to the message data
-   * @param msgs New Message
-   */
+  const scrollToChatBottom = () => {
+    if (chatEl) utilDom.scrollToBottom(chatEl)
+  }
+
   const addMessage = (msgs: Message | Message[]) => {
     if (!Array.isArray(msgs)) msgs = [msgs]
 
@@ -421,5 +421,6 @@ export const useChat = () => {
     addMessage,
     addMessageAndLoading,
     addMonitorMessage,
+    scrollToChatBottom,
   }
 }

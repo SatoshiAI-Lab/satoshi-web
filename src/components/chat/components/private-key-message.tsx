@@ -15,7 +15,14 @@ export const PrivateKeyMessage = (props: Props) => {
   return (
     <MessageBubble>
       <p>{t('export-wallet')}:</p>
-      <p className={clsx('font-bold blur-sm hover:blur-none')}>{privateKey}</p>
+      <p
+        className={clsx(
+          'font-bold blur-sm hover:blur-none',
+          'transition-all duration-300'
+        )}
+      >
+        {privateKey}
+      </p>
     </MessageBubble>
   )
 }
