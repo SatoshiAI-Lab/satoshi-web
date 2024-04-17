@@ -9,7 +9,7 @@ import { IntentMessage } from './intention-message/intention-message'
 import { MonitorConfigBubble } from './monitor-message/monitor-config-bubble'
 import { PrivateKeyMessage } from './private-key-message'
 
-import { type Message } from '@/stores/use-chat-store/types'
+import type { Message } from '@/stores/use-chat-store/types'
 
 interface MessagesProps {
   messages: Message[]
@@ -18,12 +18,13 @@ interface MessagesProps {
 }
 
 // Cache component, only update when props change.
-const Messages = memo((props: MessagesProps) => {
+export const Messages = memo((props: MessagesProps) => {
   const { messages, className = '' } = props
   const { t } = useTranslation()
 
   return messages.map((msg, i) => {
-    if (msg.isLoadingMsg) {
+    // console.log('message', msg)
+    if (msg?.isLoading) {
       return (
         <MessageBubble key={i} className={`flex items-center ${className}`}>
           {t('thinking')}
@@ -32,27 +33,27 @@ const Messages = memo((props: MessagesProps) => {
       )
     }
 
-    if (msg.isMonitor) {
+    if (msg?.isMonitor) {
       return <MonitorConfigBubble key={i} msg={msg} />
     }
 
-    if (msg.isIntention) {
-      return <IntentMessage key={i} msg={msg!}></IntentMessage>
+    if (msg?.isIntention) {
+      return <IntentMessage key={i} msg={msg!} />
     }
 
-    if (msg.isInteractive) {
-      return <InteractiveMessage key={i} msgs={msg.msgs!} />
+    if (msg?.isInteractive) {
+      return <InteractiveMessage key={i} message={msg} />
     }
 
-    const privKeyData = msg.msgs?.data as unknown as { private_key?: string }
+    const privKeyData = msg.meta?.data as unknown as { private_key?: string }
     const privateKey = privKeyData?.private_key
     if (privateKey) {
       return <PrivateKeyMessage privateKey={privateKey} />
     }
 
     return (
-      <MessageBubble key={i} position={msg.position} className={className}>
-        <TokenMarkdown children={msg.msg} {...props} />
+      <MessageBubble key={i} role={msg.role} className={className}>
+        <TokenMarkdown children={msg.text} {...props} />
       </MessageBubble>
     )
   })

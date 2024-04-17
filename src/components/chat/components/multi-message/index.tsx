@@ -5,14 +5,19 @@ import clsx from 'clsx'
 
 import MessageBubble from '../message-bubble'
 import { utilArr } from '@/utils/array'
-import { useChat } from '@/hooks/use-chat'
+import { useChatMigrating } from '@/hooks/use-chat-migrating'
 
 import type { IMultiMessage, MultiMessageProps } from './types'
 import type { ChatResponseAnswerMetaCoin } from '@/api/chat/types'
+import { useChat } from '@/hooks/use-chat'
+import { useMessages } from '@/hooks/use-messages'
 
 function MultiMessage(props: MultiMessageProps) {
   const { id, title, msgs: rawMsgs } = props
-  const { addMessageAndLoading, findPrevInteractive, sendMsg } = useChat()
+  // const { addMessageAndLoading, findPrevInteractive, sendMsg } =
+  //   useChatMigrating()
+  const { findPrevInteractive } = useMessages()
+  const { sendChat } = useChat()
   const [objMsgs, mapMsgs] = utilArr.categorize(rawMsgs, {
     key: 'key',
     assignProps: { checked: false, disabled: false },
@@ -34,17 +39,14 @@ function MultiMessage(props: MultiMessageProps) {
   }
 
   const handleSelected = (arr: IMultiMessage[]) => {
-    const { msg } = findPrevInteractive(id) ?? { msg: '' }
+    const { text: question } = findPrevInteractive(id) ?? { text: '' }
+    const selected_entities = arr.map(({ type, id }) => ({ type, id }))
 
-    addMessageAndLoading({
-      msg,
-      position: 'right',
-    })
-
-    sendMsg({
-      question: msg,
-      selected_entities: arr.map(({ type, id }) => ({ type, id })),
-    })
+    // addMessageAndLoading({
+    //   msg,
+    //   position: 'right',
+    // })
+    sendChat({ question, selected_entities })
   }
 
   const handleChange = () => {

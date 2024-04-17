@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 
-interface NeedLoginStoreType {
+interface LoginAuthStore {
   show: boolean
   setShow: (show: boolean) => void
 }
 
-export const useNeedLoginStore = create<NeedLoginStoreType>((set, get) => ({
+export const useLoginAuthStore = create<LoginAuthStore>((set, get) => ({
   show: false,
   setShow: (show: boolean) => set({ show }),
 }))

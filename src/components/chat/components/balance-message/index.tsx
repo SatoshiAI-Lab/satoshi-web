@@ -15,22 +15,23 @@ import { IoIosArrowDown } from 'react-icons/io'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
 
-import { useChat } from '@/hooks/use-chat'
+import { useChatMigrating } from '@/hooks/use-chat-migrating'
 import TokenRow from './token-row'
 import MessageBubble from '../message-bubble'
 import CustomSuspense from '@/components/custom-suspense'
 import { utilArr } from '@/utils/array'
 import { walletApi } from '@/api/wallet'
+import { useChat } from '@/hooks/use-chat'
 
 import type {
-  ChatResponseAnswerMeta,
+  ChatResponseMeta,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
 import type { WalletCardProps } from '@/components/wallet/types'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 interface Props {
-  meta?: ChatResponseAnswerMeta
+  meta?: ChatResponseMeta
 }
 
 const BalanceMessage = (props: Props) => {
@@ -38,7 +39,8 @@ const BalanceMessage = (props: Props) => {
   const [folds, setFolds] = useState<string[]>([])
   const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
   const { t } = useTranslation()
-  const { sendMsg, addMessageAndLoading } = useChat()
+  // const { sendMsg, addMessageAndLoading } = useChatMigrating()
+  const { sendChat } = useChat()
 
   // Don't use `useWallet`, here is independent.
   const { data: walletData } = useQuery({
@@ -47,8 +49,9 @@ const BalanceMessage = (props: Props) => {
   })
 
   const sendQ = (question: string) => {
-    addMessageAndLoading({ msg: question, position: 'right' })
-    sendMsg({ question })
+    // addMessageAndLoading({ msg: question, position: 'right' })
+    // sendMsg({ question })
+    sendChat({ question })
   }
 
   const onDetails = (token: ChatResponseWalletListToken) => {
@@ -69,8 +72,9 @@ const BalanceMessage = (props: Props) => {
       .replace('$1', token.name)
       .replace('$2', token.address)
 
-    addMessageAndLoading({ msg: question, position: 'right' })
-    sendMsg({ question: question })
+    // addMessageAndLoading({ msg: question, position: 'right' })
+    // sendMsg({ question: question })
+    sendChat({ question })
   }
 
   const onFold = (wallet: Partial<WalletCardProps>) => {

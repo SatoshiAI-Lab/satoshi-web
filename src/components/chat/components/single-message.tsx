@@ -9,16 +9,19 @@ import MessageBubble from './message-bubble'
 import { utilDom } from '@/utils/dom'
 
 import type {
-  ChatResponseAnswerMeta,
+  ChatResponseMeta,
   ChatResponseAnswerMetaCoin,
   ChatResponseMetaLabel,
 } from '@/api/chat/types'
+import { useChatMigrating } from '@/hooks/use-chat-migrating'
 import { useChat } from '@/hooks/use-chat'
+import { useChatStore } from '@/stores/use-chat-store'
+import { useMessages } from '@/hooks/use-messages'
 
 interface SingleMessageProps {
   id?: string
   msgs?: ChatResponseAnswerMetaCoin[] | ChatResponseMetaLabel[]
-  type?: keyof ChatResponseAnswerMeta
+  type?: keyof ChatResponseMeta
   classes?: string
   title?: string
   onClick?: (
@@ -30,8 +33,10 @@ interface SingleMessageProps {
 function SingleMessage(props: SingleMessageProps) {
   const [t] = useTranslation()
   const { msgs = [], title, id } = props
-  const { sendMsg, isLoading, addMessageAndLoading, findPrevInteractive } =
-    useChat()
+  // const { sendMsg, isLoading, addMessageAndLoading, findPrevInteractive } =
+  //   useChatMigrating()
+  const { findPrevInteractive } = useMessages()
+  const { isLoading, sendChat } = useChat()
 
   const formatMsg = (msg: ChatResponseAnswerMetaCoin) => {
     const { alias, name } = msg
@@ -57,19 +62,15 @@ function SingleMessage(props: SingleMessageProps) {
 
     const { targetEl } = utilDom.eventProxy(e.target as HTMLElement, 'div')
     const tokenName = targetEl.firstChild?.textContent ?? ''
-    const prevMsg = findPrevInteractive(id) ?? { msg: msg.name }
+    const prevMessage = findPrevInteractive(id) ?? { text: msg.name }
     const interactiveOps = {
       id: msg.id,
       type: msg.type,
       name: tokenName,
-      question: prevMsg.msg,
+      question: prevMessage.text,
     }
 
-    addMessageAndLoading({
-      msg: prevMsg.msg,
-      position: 'right',
-    })
-    sendMsg(interactiveOps)
+    sendChat(interactiveOps)
   }
 
   if (!msgs.length) return <></>

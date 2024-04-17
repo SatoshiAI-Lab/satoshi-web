@@ -41,6 +41,10 @@ export const utilArr = {
 
   sameLen: <T, V>(arr1: T[], arr2: V[]) => arr1.length === arr2.length,
 
+  removeLast: <T>(arr: T[]) => arr.slice(0, -1),
+
+  removeFirst: <T>(arr: T[]) => arr.slice(1),
+
   /**
    * Categorize an array to Object and Map based on specified key.
    * @param arr origin array

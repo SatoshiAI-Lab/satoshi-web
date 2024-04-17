@@ -8,25 +8,26 @@ import MessageInput from './components/message-input'
 import Messages from './components/messages'
 import Live2DModel from '../live2d-model'
 import { utilDom } from '@/utils/dom'
-import { useChat } from '@/hooks/use-chat'
 import { MessageAlert } from './components/message-alert'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
+import { useChat } from '@/hooks/use-chat'
+import { useChatStore } from '@/stores/use-chat-store'
+import { useChatMigrating } from '@/hooks/use-chat-migrating'
 
 function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
   const { className = '' } = props
   const chatRef = useRef<HTMLDivElement | null>(null)
   const { t } = useTranslation()
+  // const {} = useChatMigrating()
   const {
     question,
     messages,
     isLoading,
-    addMessageAndLoading,
-    setChatEl,
-    sendMsg,
     unreadMessages,
+    setChatEl,
     setWaitAnswer,
-    cancelAnswer,
-  } = useChat()
+  } = useChatStore()
+  const { sendChat, stopChat } = useChat()
 
   const waitMonitor = useThrottledCallback(function () {
     setWaitAnswer(true)
@@ -47,8 +48,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
     }
     if (isLoading) return
 
-    addMessageAndLoading({ msg: question, position: 'right' })
-    await sendMsg()
+    sendChat()
   }
 
   // setChatEl and scroll to latest message
@@ -94,7 +94,7 @@ function Chat(props: React.HTMLAttributes<HTMLDivElement>) {
           <MessageBubble className="mt-6">{t('message-default')}</MessageBubble>
           <Messages messages={messages} />
         </div>
-        <MessageInput onSend={onSend} onCancel={cancelAnswer} />
+        <MessageInput onSend={onSend} onCancel={stopChat} />
       </div>
     </div>
   )

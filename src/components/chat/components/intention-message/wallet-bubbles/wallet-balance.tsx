@@ -9,13 +9,13 @@ import { utilFmt } from '@/utils/format'
 import { MessageBubble } from '../../message-bubble'
 
 import type {
-  ChatResponseAnswerMeta,
+  ChatResponseMeta,
   ChatResponseMetaBalance,
   ChatResponseWalletBalance,
 } from '@/api/chat/types'
 
 interface Props {
-  msg: ChatResponseAnswerMeta
+  msg: ChatResponseMeta
 }
 
 export const WalletBalance = (props: Props) => {

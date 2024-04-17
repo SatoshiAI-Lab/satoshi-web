@@ -1,10 +1,14 @@
 import { create } from 'zustand'
+
 import type { States, Actions } from './types'
 
 export const useChatStore = create<States & Actions>((set, get) => ({
   intention: '',
   question: '',
   messages: [],
+  chatEl: null,
+  isLoading: false,
+
   // 1. If the question input is in the state of Focus
   // 2. Within 20 seconds after the latest question answer, read the answer
   // 3. Within 10 seconds after the user clicks Ask, wait for the answer
@@ -12,27 +16,26 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   readAnswer: false,
   waitAnswer: false,
   unreadMessages: [],
-  chatEl: null,
-  isLoading: false,
   socket: undefined,
-  // hasSmooth: true,
-  // controller: null,
-  // isReceiving: false,
-  // thinkTimer: undefined,
 
   setIntention: (intention) => set({ intention }),
-  setMessage: (messages) => set({ messages }),
+  setQuestion: (question) => set({ question }),
+  setMessages: (newMessages) => {
+    // If need current message, use function, such as `setState`.
+    if (typeof newMessages === 'function') {
+      return set(({ messages }) => ({
+        messages: newMessages(messages),
+      }))
+    }
+
+    set({ messages: newMessages })
+  },
+  setChatEl: (chatEl) => set({ chatEl }),
+  setIsLoading: (isLoading) => set({ isLoading }),
+
+  setInputKeyup: (inputKeyup) => set({ inputKeyup }),
+  setReadAnswer: (readAnswer) => set({ readAnswer }),
+  setWaitAnswer: (waitAnswer) => set({ waitAnswer }),
   setUnreadMessage: (unreadMessages) => set({ unreadMessages }),
-  // setHasSmooth: (bool) => set({ hasSmooth: bool }),
-  setQuestion: (value) => set({ question: value }),
-  // setThinkTimer: (value) => set({ thinkTimer: value }),
-  // setController: (value) => set({ controller: value }),
-  // setIsReceiving: (value) => set({ isLoading: value }),
-  setChatEl: (el) => set({ chatEl: el }),
-  setIsLoading: (bool) => set({ isLoading: bool }),
-  setInputKeyup: (bool) => set({ inputKeyup: bool }),
-  setReadAnswer: (bool) => set({ readAnswer: bool }),
-  setWaitAnswer: (bool) => set({ waitAnswer: bool }),
   setSocket: (socket) => set({ socket: socket }),
-  // removeAllMessage: () => set({ messages: [] }),
 }))

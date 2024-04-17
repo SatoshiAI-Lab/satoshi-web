@@ -6,14 +6,30 @@ import { useUserStore } from '@/stores/use-user-store'
 import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
-import { useChat } from './use-chat'
+import { useChatMigrating } from './use-chat-migrating'
+import { useMessages } from './use-messages'
+import { utilDom } from '@/utils/dom'
+
+interface MonitorOnEvents {
+  event: {
+    type: string
+    data: any
+  }
+}
+
+interface MonitorEmitEvents {
+  lang: {
+    lang: string
+  }
+}
 
 export const useChatMonitorMsg = () => {
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
-  const { setUnreadMessage } = useChatStore()
-  const { addMonitorMessage } = useChat()
-  const ws = useWebSocket({
+  const { chatEl, setUnreadMessage } = useChatStore()
+  // const { addMonitorMessage } = useChatMigrating()
+  const { addMonitorMessages } = useMessages()
+  const ws = useWebSocket<MonitorOnEvents, MonitorEmitEvents>({
     heartbeat: JSON.stringify({ type: 'ping' }),
   })
   const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
@@ -52,7 +68,8 @@ export const useChatMonitorMsg = () => {
           ...data.reverse(),
         ])
       } else {
-        addMonitorMessage(data.reverse())
+        addMonitorMessages(data.reverse())
+        chatEl && utilDom.scrollToBottom(chatEl)
       }
     })
   }

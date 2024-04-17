@@ -8,9 +8,10 @@ import { RiDeleteBin5Line } from 'react-icons/ri'
 
 import { UserCreateWalletResp } from '@/api/wallet/params'
 import { CHAT_CONFIG } from '@/config/chat'
-import { useChat } from '@/hooks/use-chat'
+import { useChatMigrating } from '@/hooks/use-chat-migrating'
 import { utilFmt } from '@/utils/format'
 import { useWallet } from '@/hooks/use-wallet'
+import { useChat } from '@/hooks/use-chat'
 
 import type {
   ChatResponseWalletList,
@@ -24,7 +25,8 @@ interface Props {
 export const WalletList = (props: Props) => {
   const { type } = props
   const { t } = useTranslation()
-  const { addMessageAndLoading, sendMsg } = useChat()
+  // const { addMessageAndLoading, sendMsg } = useChatMigrating()
+  const { sendChat } = useChat()
   const { wallets, refetchWallets, removeWallet } = useWallet({
     enabled: true,
     refetchInterval: 15_000,
@@ -71,9 +73,9 @@ export const WalletList = (props: Props) => {
     }
 
     question = question.replace('$1', wallet.name)
-    addMessageAndLoading({ msg: question, position: 'right' })
 
-    sendMsg({ question })
+    // addMessageAndLoading({ msg: question, position: 'right' })
+    sendChat({ question })
     // onClickIcon?.(wallet)
     setTimeout(refetchWallets, 2000)
   }

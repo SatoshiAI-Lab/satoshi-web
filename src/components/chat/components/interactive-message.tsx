@@ -4,22 +4,20 @@ import MultiMessage from './multi-message'
 import SingleMessage from './single-message'
 import { utilParse } from '@/utils/parse'
 
-import type {
-  ChatResponseAnswerMeta,
-  ChatResponseMetaInteractive,
-} from '@/api/chat/types'
+import type { ChatResponseMetaInteractive } from '@/api/chat/types'
 import type { Message } from '@/stores/use-chat-store/types'
 import type { MultiMessageProps } from './multi-message/types'
 
-interface InteractiveMessageProps extends Omit<Message, 'msg' | 'type'> {
-  msgs: ChatResponseAnswerMeta
-  id?: string
+interface InteractiveMessageProps {
+  message: Message
 }
 
 function InteractiveMessage(props: InteractiveMessageProps) {
-  const { msgs, id } = props
+  const {
+    message: { meta, id },
+  } = props
   const [t] = useTranslation()
-  const msgKeys = Object.keys(msgs) as (keyof ChatResponseMetaInteractive)[]
+  const msgKeys = Object.keys(meta!) as (keyof ChatResponseMetaInteractive)[]
 
   const isMultiple = (msgs: MultiMessageProps['msgs']) => {
     if (!msgs) return false
@@ -44,7 +42,7 @@ function InteractiveMessage(props: InteractiveMessageProps) {
       splitSymbol: '$',
     })
     const replaceMulti = t('multi-message').replace(/\${(.*?)}/, (_, text) => {
-      const len = msgs[key]?.length ?? 0
+      const len = meta[key]?.length ?? 0
       // if less than 1, exclude `Multiple` string
       return len > 1 ? text : ''
     })
@@ -57,7 +55,7 @@ function InteractiveMessage(props: InteractiveMessageProps) {
     renderMessages({
       id,
       key: index,
-      msgs: msgs[key],
+      meta: meta[key],
       title: formatTitle(key),
     })
   )

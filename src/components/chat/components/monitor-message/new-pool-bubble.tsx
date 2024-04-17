@@ -56,7 +56,6 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         break
       }
       case MonitorPoolStatus.risk: {
-        console.log('risk', item, item.status)
         riskList.push({
           desc,
           status: <span className="text-red-500 ml-1">{t('risk')}</span>,
@@ -230,7 +229,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         <div className="my-2">
           <div className="font-bold mt-2">
             🧠 {t('score')}:{' '}
-            {props.score.score ?? (
+            {props.score?.score ?? (
               <span className="text-red-500">{t('hight.risk')}</span>
             )}
           </div>
