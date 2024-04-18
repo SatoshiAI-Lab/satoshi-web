@@ -278,5 +278,6 @@
   "view-wallets": "查看钱包",
   "view-wallets-details": "查看我的以太坊钱包。",
   "create-token": "发布代币",
-  "create-token-details": "在OP链上发布一个代币。"
+  "create-token-details": "在OP链上发布一个代币。",
+  "create-token.success": "恭喜！我已成功为您创建代币"
 }

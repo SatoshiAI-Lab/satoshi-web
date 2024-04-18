@@ -110,9 +110,11 @@ export const WalletList = (props: Props) => {
       )
     }
 
+    console.log('item', item)
+
     return (
       <Radio
-        name={item.chain.name}
+        name={item.chain?.name}
         onClick={() => handleSelect(item)}
         size="small"
       />

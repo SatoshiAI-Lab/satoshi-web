@@ -34,11 +34,11 @@ export const IntentMessage = ({ msg }: Props) => {
     poolCancelList,
     walletCancelList,
   } = CHAT_CONFIG.metadataType
-
-  const metaType = msg?.msgs?.type!
+  const answerType = msg.type || '[no_type]'
+  const metaType = msg?.msgs?.type || '[no_type]'
 
   // Balances(Wallet list)
-  if (walletList.startsWith(metaType)) {
+  if (walletList.startsWith(answerType) || walletList.startsWith(metaType)) {
     return <BalanceMessage meta={msg.msgs} />
   }
 
