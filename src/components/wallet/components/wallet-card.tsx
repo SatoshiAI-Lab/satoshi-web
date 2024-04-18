@@ -10,15 +10,23 @@ import { utilFmt } from '@/utils/format'
 import { WalletPlatform } from '@/config/wallet'
 import { URL_CONFIG } from '@/config/url'
 
-import type { WalletCardProps as WalletRrops } from '@/stores/use-wallet-store'
+import type { WalletCardProps as WalletProps } from '@/stores/use-wallet-store'
 import type { WalletCardProps } from '../types'
 
 interface Props extends WalletCardProps {
-  wallet: WalletRrops
+  wallet: WalletProps
+  latestWallet: WalletProps | undefined
 }
 
 export const WalletCard = (props: Props) => {
-  const { wallet, exportKey, renameWallet, copyAddress, deleteWallet } = props
+  const {
+    wallet,
+    latestWallet,
+    exportKey,
+    renameWallet,
+    copyAddress,
+    deleteWallet,
+  } = props
   const { name, value, address, tokens } = wallet
   const { t } = useTranslation()
   const buttons = [
@@ -40,7 +48,8 @@ export const WalletCard = (props: Props) => {
     <div
       className={clsx(
         'relative border border-black rounded-md px-[30px] py-[17px]',
-        'flex justify-between items-center'
+        'flex justify-between items-center transition-all ',
+        latestWallet?.id === wallet?.id && 'bg-gray-200 border-gray-300'
       )}
     >
       <div>
@@ -59,7 +68,7 @@ export const WalletCard = (props: Props) => {
           <div>
             {t('balance')} ${numeral(value).format('0a')}
           </div>
-          {tokens?.length && (
+          {!!tokens?.length && (
             <div>
               {tokens?.length} {t('tokens').toLowerCase()}
             </div>

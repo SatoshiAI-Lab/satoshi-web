@@ -56,7 +56,6 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         break
       }
       case MonitorPoolStatus.risk: {
-        console.log('risk', item, item.status)
         riskList.push({
           desc,
           status: <span className="text-red-500 ml-1">{t('risk')}</span>,
@@ -232,7 +231,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
           </div>
           {props.score?.detail?.map((str, i) => (
             <div className="mt-2" key={i}>
-              {typeof str === 'string' ? str : str.ring}
+              {str}
             </div>
           ))}
         </div>
