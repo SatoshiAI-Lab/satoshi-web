@@ -263,7 +263,7 @@
   "trading.timeout": "交易超时",
   "trading.fail": "交易失败",
   "trading.success": "交易成功",
-  "export-wallet": "悬浮显示私钥（请注意您的私钥安全）",
+  "export-wallet": "导出{}钱包私钥成功！悬浮以显示私钥（请注意您的私钥安全）",
   "deleting": "删除钱包中...",
   "deleting-error": "删除失败",
   "delete-success": "删除成功",
