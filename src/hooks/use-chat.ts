@@ -84,7 +84,7 @@ export const useChat = () => {
       ...lastMessage,
       msg,
       isLoadingMsg: false,
-      msgId: nanoid(),
+      msgId: ops?.msgId ?? nanoid(),
     }
     const { reference } = CHAT_CONFIG.answerType
 
@@ -127,6 +127,13 @@ export const useChat = () => {
     const { messages } = useChatStore.getState()
     const nonLoading = messages.filter((e) => !e.isLoadingMsg)
     setMessage(nonLoading)
+  }
+
+  const removeMessage = (id: string) => {
+    const { messages } = useChatStore.getState()
+    const newMessages = messages.filter((m) => m.msgId !== id)
+
+    setMessage(newMessages)
   }
 
   const cancelAnswer = () => {
@@ -197,11 +204,7 @@ export const useChat = () => {
     })
   }
 
-  /**
-   * Processing presentation of different types of data
-   * @param data The data returned by AI
-   * @returns
-   */
+  let processId: string | undefined
   const messageHandler = (data: ChatResponseAnswer) => {
     const { hiddenIntentText } = CHAT_CONFIG
     const {
@@ -249,12 +252,16 @@ export const useChat = () => {
 
     // Is processing.
     if (answerType === process) {
-      addStreamMessage(data.text, { overrideMode: true })
+      if (!processId) processId = nanoid()
+
+      addStreamMessage(data.text, { overrideMode: true, msgId: processId })
       return
     }
 
-    // Override `process_stream` message.
-    addStreamMessage('', { overrideMode: true })
+    if (processId) {
+      removeMessage(processId)
+      processId = undefined
+    }
 
     if (
       intention.includes(answerType) ||
