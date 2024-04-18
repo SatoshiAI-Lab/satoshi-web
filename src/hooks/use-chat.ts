@@ -129,11 +129,21 @@ export const useChat = () => {
     setMessage(nonLoading)
   }
 
-  const removeMessage = (id: string) => {
+  const removeMessage = (id?: string) => {
     const { messages } = useChatStore.getState()
     const newMessages = messages.filter((m) => m.msgId !== id)
 
     setMessage(newMessages)
+  }
+
+  const clearMessage = (id?: string) => {
+    const { messages } = useChatStore.getState()
+    const target = messages.find((m) => m.msgId === id)
+
+    if (!target) return
+
+    target.msg = ''
+    setMessage(messages)
   }
 
   const cancelAnswer = () => {
@@ -252,14 +262,21 @@ export const useChat = () => {
 
     // Is processing.
     if (answerType === process) {
+      // If don't have processId, create a new one.
       if (!processId) processId = nanoid()
 
       addStreamMessage(data.text, { overrideMode: true, msgId: processId })
       return
     }
 
-    if (processId) {
+    // If have processId, remove it.
+    // but,
+    const isStream = streams.includes(answerType)
+    if (processId && !isStream) {
       removeMessage(processId)
+      processId = undefined
+    } else if (isStream) {
+      clearMessage(processId)
       processId = undefined
     }
 
