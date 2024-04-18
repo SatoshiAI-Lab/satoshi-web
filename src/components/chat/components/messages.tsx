@@ -17,16 +17,17 @@ interface MessagesProps {
   onClick?: React.MouseEventHandler<HTMLDivElement>
 }
 
-// Cache component, only update when props change.
+// Cache this component,
+// because possibly a tremendous amount of messages,
+// so only update when props change.
 export const Messages = memo((props: MessagesProps) => {
   const { messages, className = '' } = props
   const { t } = useTranslation()
 
   return messages.map((msg, i) => {
-    // console.log('message', msg)
     if (msg?.isLoading) {
       return (
-        <MessageBubble key={i} className={`flex items-center ${className}`}>
+        <MessageBubble key={i} className="flex items-center">
           {t('thinking')}
           <AiOutlineLoading className="animate-spin fill-blue-600 ml-2" />
         </MessageBubble>

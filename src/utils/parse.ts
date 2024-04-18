@@ -2,9 +2,7 @@ import toast from 'react-hot-toast'
 
 import { ChatResponse } from '@/api/chat/types'
 
-interface ParseStreamStringOnParsed {
-  (data: ChatResponse, result: string[], index: number): void
-}
+type OnParse = (data: ChatResponse, isFirst: boolean) => void
 
 interface QueryPaserOptions {
   splitSymbol: string
@@ -19,14 +17,16 @@ export const utilParse = {
    * @param onParsed Each parsing call, include this parsing result string.
    * @return Return string array.
    **/
-  streamStrToJson(str: string, onParsed: ParseStreamStringOnParsed) {
+  streamStrToJson(str: string, onParsed: OnParse) {
+    let isFirstCall = true
     const splited = str.trim().split('\n').filter(Boolean)
     const result = splited.map((m, i) => {
       try {
         const replaced = m.startsWith('data: ') ? m.replace('data: ', '') : m
         const parsed = JSON.parse(replaced) as ChatResponse
 
-        onParsed(parsed, splited, i)
+        onParsed(parsed, isFirstCall)
+        isFirstCall = false
         return parsed
       } catch (err) {
         toast.error(`[ParseStream Error]: ${err}`)

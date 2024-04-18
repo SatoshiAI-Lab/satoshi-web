@@ -10,7 +10,7 @@ import { utilParse } from '@/utils/parse'
 import { CHAT_CONFIG } from '@/config/chat'
 import { ChatParams, ChatResponse } from '@/api/chat/types'
 import { useLoginAuthStore } from '@/stores/use-need-login-store'
-import { useHyperTextParser } from './use-hyper-text-parser'
+import { useHypertext } from './use-hyper-text-parser'
 import { utilDom } from '@/utils/dom'
 import i18n from '@/i18n'
 
@@ -185,7 +185,7 @@ export const useChatMigrating = () => {
   }
 
   const handleNormalMessage = (data: ChatResponse) => {
-    const [toHTMLTag] = useHyperTextParser(CHAT_CONFIG.hyperTextRule)
+    const [toHTMLTag] = useHypertext(CHAT_CONFIG.hyperTextRule)
     removeLoadingMessage()
     addMessage({
       msg: toHTMLTag(data.hyper_text).trim() + '\n\n',

@@ -1,3 +1,4 @@
+import path from 'path'
 import type {
   ChatInteractiveParams,
   ChatResponseMeta,
@@ -30,9 +31,7 @@ export enum DataType {
 
 export type MessageRole = 'user' | 'assistant' | 'system'
 
-export type PartialMessage = Partial<
-  Pick<ChatResponse, 'answer_type' | 'hyper_text' | 'meta'>
->
+export type PartialMessage = Partial<Omit<ChatResponse, 'text'>>
 
 export type RequiredMessage = Pick<ChatResponse, 'text'>
 
@@ -40,14 +39,15 @@ export interface Message
   extends PartialMessage,
     RequiredMessage,
     Partial<ChatResponseMetaNewPoolV2> {
-  id?: string
+  id: string
   role?: MessageRole
   isLoading?: boolean
+  data_type?: DataType
+
   isInteractive?: boolean
   isIntention?: boolean
   isReference?: boolean
   isMonitor?: boolean
-  data_type?: DataType
 }
 
 export interface States {
@@ -66,6 +66,8 @@ export interface States {
 export interface Actions {
   setIntention(intention: string): void
   setQuestion(value: string): void
+  /** Use `getMessages` to get latest messages. */
+  getMessages(): Message[]
   setMessages(msg: Message[] | ((msgs: Message[]) => Message[])): void
   setUnreadMessage(unreadMessages: Message[]): void
   setChatEl(el: HTMLElement): void

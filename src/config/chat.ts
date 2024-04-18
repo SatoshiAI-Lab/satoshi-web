@@ -15,7 +15,6 @@ export const CHAT_CONFIG = {
       'data_insights_stream',
       'tech_analyze_stream',
       'tech_analyze_stream',
-      '',
       'tech_analyze_stream',
     ],
 

@@ -20,6 +20,7 @@ export const useChatStore = create<States & Actions>((set, get) => ({
 
   setIntention: (intention) => set({ intention }),
   setQuestion: (question) => set({ question }),
+  getMessages: () => get().messages,
   setMessages: (newMessages) => {
     // If need current message, use function, such as `setState`.
     if (typeof newMessages === 'function') {

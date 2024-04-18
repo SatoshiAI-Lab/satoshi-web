@@ -2,11 +2,12 @@ import { useRef } from 'react'
 
 import type { VoidFn } from '@/types/types'
 
-type OnRead = (data: string, isDone: boolean) => void
+type OnRead = (data: string, isFirstRead: boolean) => void
 
 export const useEventStream = () => {
   const streamRef = useRef<ReadableStream<Uint8Array>>()
   const readerRef = useRef<ReadableStreamDefaultReader<string>>()
+  const isFirstRef = useRef(true)
 
   // Q: Why recursion instead of a loop?
   // A: because loop will split the large data response,
@@ -19,11 +20,13 @@ export const useEventStream = () => {
     const { done, value } = await reader.read()
 
     if (done) {
+      isFirstRef.current = true
       onDone?.()
       return
     }
 
-    onRead(value, done)
+    onRead(value, isFirstRef.current)
+    isFirstRef.current = false
     recursionRead(reader, onRead, onDone)
   }
 
