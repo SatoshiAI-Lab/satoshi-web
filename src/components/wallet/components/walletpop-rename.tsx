@@ -52,9 +52,7 @@ export const WalletRenamePop: FC<WalletDialogProps> = (props) => {
         <div className="h-[66px] border-b-2 flex justify-center items-center text-xl">
           <div>{title}</div>
           <IconButton
-            classes={{
-              root: '!absolute !w-[35px] !h-[35px] !right-5',
-            }}
+            classes={{ root: '!absolute !w-[35px] !h-[35px] !right-5' }}
             onClick={onClose}
           >
             <TfiClose size={35} />

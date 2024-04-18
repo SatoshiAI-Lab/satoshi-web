@@ -61,7 +61,7 @@
   "wallet.rename-wallet.success": "Rename wallet success",
   "wallet.deletewallet": "Delete Wallet?",
   "wallet.delete-wallet.success": "Delete wallet success",
-  "wallet.error": "Something went wrong, please try again later",
+  "wallet.error": "Something went wrong, please check private key or try again later",
   "wallet.quickwallettitle": "My Quick Wallet",
   "wallet.createnewwallet": "Create Wallet",
   "wallet.importwallet": "Import Wallet",

@@ -61,7 +61,7 @@
   "wallet.rename-wallet.success": "重命名钱包成功",
   "wallet.deletewallet": "删除钱包?",
   "wallet.delete-wallet.success": "删除钱包成功",
-  "wallet.error": "出现了一点错误，请稍后重试",
+  "wallet.error": "出现问题，请检查私钥或稍后重试",
   "wallet.quickwallettitle": "我的Quick钱包",
   "wallet.createnewwallet": "创建钱包",
   "wallet.importwallet": "导入钱包",
