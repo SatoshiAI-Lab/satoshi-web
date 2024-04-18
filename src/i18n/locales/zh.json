@@ -279,5 +279,7 @@
   "view-wallets-details": "查看我的以太坊钱包。",
   "create-token": "发布代币",
   "create-token-details": "在OP链上发布一个代币。",
-  "create-token.success": "恭喜！我已成功为您创建代币"
+  "create-token.success": "恭喜！我已成功为您创建代币",
+  "tokens": "代币",
+  "evm-all-chain": "支持所有EVM兼容链"
 }

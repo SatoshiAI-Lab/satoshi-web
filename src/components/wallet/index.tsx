@@ -45,6 +45,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
   const { copy } = useClipboard()
   // Used for search.
   const [filteredWallets, setFilteredWallets] = useState<typeof wallets>([])
+
   // Both set current pop & pop title
   const [currentPopTitle, setCurrentPopTitle] = useState<string>()
   const [currentPop, setCurrentPop] = useState<number>(0)
@@ -225,16 +226,14 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
             fallback={<WalletSkeleton className="h-[440px] max-h-[440px]" />}
           >
             {filteredWallets.length ? (
-              (onlyWallet ? [onlyWallet] : filteredWallets).map((item) => (
+              (onlyWallet ? [onlyWallet] : filteredWallets).map((w) => (
                 <WalletCard
-                  {...item}
-                  platform={item.platform!}
-                  token={item.tokens?.length}
+                  key={w.address}
+                  wallet={w}
                   copyAddress={copyWalletAddress}
                   renameWallet={renameWallet}
                   exportKey={exportWalletPrivateKey}
                   deleteWallet={deleteWallet}
-                  key={item.address}
                 />
               ))
             ) : (
