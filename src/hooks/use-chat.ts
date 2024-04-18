@@ -84,7 +84,7 @@ export const useChat = () => {
       ...lastMessage,
       msg,
       isLoadingMsg: false,
-      msgId: nanoid(),
+      msgId: ops?.msgId ?? nanoid(),
     }
     const { reference } = CHAT_CONFIG.answerType
 
@@ -127,6 +127,23 @@ export const useChat = () => {
     const { messages } = useChatStore.getState()
     const nonLoading = messages.filter((e) => !e.isLoadingMsg)
     setMessage(nonLoading)
+  }
+
+  const removeMessage = (id?: string) => {
+    const { messages } = useChatStore.getState()
+    const newMessages = messages.filter((m) => m.msgId !== id)
+
+    setMessage(newMessages)
+  }
+
+  const clearMessage = (id?: string) => {
+    const { messages } = useChatStore.getState()
+    const target = messages.find((m) => m.msgId === id)
+
+    if (!target) return
+
+    target.msg = ''
+    setMessage(messages)
   }
 
   const cancelAnswer = () => {
@@ -197,11 +214,7 @@ export const useChat = () => {
     })
   }
 
-  /**
-   * Processing presentation of different types of data
-   * @param data The data returned by AI
-   * @returns
-   */
+  let processId: string | undefined
   const messageHandler = (data: ChatResponseAnswer) => {
     const { hiddenIntentText } = CHAT_CONFIG
     const {
@@ -249,12 +262,23 @@ export const useChat = () => {
 
     // Is processing.
     if (answerType === process) {
-      addStreamMessage(data.text, { overrideMode: true })
+      // If don't have processId, create a new one.
+      if (!processId) processId = nanoid()
+
+      addStreamMessage(data.text, { overrideMode: true, msgId: processId })
       return
     }
 
-    // Override `process_stream` message.
-    addStreamMessage('', { overrideMode: true })
+    // If have processId, remove it.
+    // but,
+    const isStream = streams.includes(answerType)
+    if (processId && !isStream) {
+      removeMessage(processId)
+      processId = undefined
+    } else if (isStream) {
+      clearMessage(processId)
+      processId = undefined
+    }
 
     if (
       intention.includes(answerType) ||

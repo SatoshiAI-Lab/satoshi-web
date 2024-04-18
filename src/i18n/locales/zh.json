@@ -271,5 +271,12 @@
   "evm-wallet": "EVM 钱包",
   "evm-support": "支持所有以太坊二层网络（BSC/OP等）",
   "bear-wallet": "Bearchain 钱包",
-  "all.on.or.off": "全部开启或关闭"
+  "all.on.or.off": "全部开启或关闭",
+  "help-me": "帮我",
+  "create-wallet": "创建钱包",
+  "create-wallet-details": "创建以太坊钱包。",
+  "view-wallets": "查看钱包",
+  "view-wallets-details": "查看我的以太坊钱包。",
+  "create-token": "发布代币",
+  "create-token-details": "在OP链上发布一个代币。"
 }

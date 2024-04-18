@@ -274,5 +274,12 @@
   "evm-wallet": "EVM Wallet",
   "evm-support": "Support: Full EVM Layer2(BSC/OP etc)",
   "bear-wallet": "Berachain Wallet",
-  "all.on.or.off": "All on or off: "
+  "all.on.or.off": "All on or off: ",
+  "help-me": "Help me",
+  "create-wallet": "Create wallet",
+  "create-wallet-details": "Create Ethereum wallet.",
+  "view-wallets": "View wallets",
+  "view-wallets-details": "View my Ethereum wallets.",
+  "create-token": "Create token",
+  "create-token-details": "Create a token on OP."
 }
