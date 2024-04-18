@@ -16,7 +16,7 @@ import { useWallet } from '@/hooks/use-wallet'
 
 import type { WalletDialogProps } from '../types'
 
-const WalletRenamePop: FC<WalletDialogProps> = (props) => {
+export const WalletRenamePop: FC<WalletDialogProps> = (props) => {
   const { open, onClose, title, onlyWalletRefetch } = props
   const [walletName, setWalletName] = useState('')
   const { currentWallet } = useWalletStore()
@@ -67,10 +67,9 @@ const WalletRenamePop: FC<WalletDialogProps> = (props) => {
               multiline
               rows={2}
               className="w-full"
+              autoFocus
               InputProps={{
-                classes: {
-                  root: 'w-full !rounded-xl !bg-white',
-                },
+                classes: { root: 'w-full !rounded-xl !bg-white !break-all' },
               }}
               value={walletName}
               onChange={(e) => setWalletName(e.target.value)}
@@ -106,4 +105,4 @@ const WalletRenamePop: FC<WalletDialogProps> = (props) => {
   )
 }
 
-export { WalletRenamePop }
+export default WalletRenamePop

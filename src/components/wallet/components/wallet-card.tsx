@@ -4,6 +4,7 @@ import { IoTrash } from 'react-icons/io5'
 import numeral from 'numeral'
 import { useTranslation } from 'react-i18next'
 import { t } from 'i18next'
+import clsx from 'clsx'
 
 import { utilFmt } from '@/utils/format'
 import { WalletPlatform } from '@/config/wallet'
@@ -18,7 +19,7 @@ interface Props extends WalletCardProps {
 
 export const WalletCard = (props: Props) => {
   const { wallet, exportKey, renameWallet, copyAddress, deleteWallet } = props
-  const { name, value, address, platform, tokens } = wallet
+  const { name, value, address, tokens } = wallet
   const { t } = useTranslation()
   const buttons = [
     {
@@ -36,10 +37,19 @@ export const WalletCard = (props: Props) => {
   ]
 
   return (
-    <div className="relative border border-black rounded-[6px] px-[30px] py-[17px] flex justify-between items-center">
+    <div
+      className={clsx(
+        'relative border border-black rounded-md px-[30px] py-[17px]',
+        'flex justify-between items-center'
+      )}
+    >
       <div>
         <div className="flex gap-2 items-center">
-          <div className="text-[#0F40F5] text-[22px]">{name}</div>
+          <Tooltip title={name}>
+            <div className="text-[#0F40F5] text-xl max-w-[240px] truncate">
+              {name}
+            </div>
+          </Tooltip>
           <div className="flex">
             <ChainLogos wallet={wallet} />
           </div>
