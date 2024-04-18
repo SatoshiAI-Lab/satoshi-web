@@ -96,7 +96,7 @@ const ChainLogos = (props: Pick<Props, 'wallet'>) => {
   const baseUrl = URL_CONFIG.cdn
   const evmLogos = [
     {
-      src: chain?.logo,
+      src: `${baseUrl}/chains/logo/Ethereum.png`,
       tooltip: 'Ethereum(ETH)',
     },
     {
