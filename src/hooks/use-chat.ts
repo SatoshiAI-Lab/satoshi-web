@@ -270,12 +270,11 @@ export const useChat = () => {
     }
 
     // If have processId, remove it.
-    // but,
     const isStream = streams.includes(answerType)
-    if (processId && !isStream) {
+    if (processId && !isStream && !isIntention) {
       removeMessage(processId)
       processId = undefined
-    } else if (isStream) {
+    } else if (isStream || isIntention) {
       clearMessage(processId)
       processId = undefined
     }
