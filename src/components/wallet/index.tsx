@@ -1,4 +1,4 @@
-import { FC, createElement, memo, useState } from 'react'
+import { FC, createElement, memo, useEffect, useState } from 'react'
 import { Button, Dialog, IconButton, Menu, MenuItem } from '@mui/material'
 import { AiOutlineSafety, AiOutlineWallet } from 'react-icons/ai'
 import { TfiClose } from 'react-icons/tfi'
@@ -45,7 +45,6 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
   const { copy } = useClipboard()
   // Used for search.
   const [filteredWallets, setFilteredWallets] = useState<typeof wallets>([])
-
   // Both set current pop & pop title
   const [currentPopTitle, setCurrentPopTitle] = useState<string>()
   const [currentPop, setCurrentPop] = useState<number>(0)
@@ -131,8 +130,26 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     setPopOpen(true)
   }
 
+  // Sort by date DESC
+  const sortWallets = () => {
+    wallets.sort((a, b) => {
+      const tsA = new Date(a.added_at ?? '').getTime()
+      const tsB = new Date(b.added_at ?? '').getTime()
+
+      return tsB - tsA
+    })
+  }
+
   // Request chains & platforms when mounted.
   useChainsPlatforms(true)
+
+  // Sort origin wallets.
+  useEffect(() => {
+    // If only one wallet, no need to sort.
+    if (wallets.length <= 1) return
+
+    sortWallets()
+  }, [wallets])
 
   return (
     <>
