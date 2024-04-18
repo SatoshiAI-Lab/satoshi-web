@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { walletApi } from '@/api/wallet'
@@ -15,6 +15,8 @@ export const useWallet = (options?: Options) => {
   const { enabled = false, refetchInterval = false } = options ?? {}
   const { wallets, allWallets, setAllWallets, selectedChain, setWallets } =
     useWalletStore()
+  // Latest created wallet, used for active hints.
+  const [latestWallet, setLatestWallet] = useState<(typeof wallets)[number]>()
 
   const getAllWallet = async () => {
     const allWallet: Promise<FetcherResponse<UserCreateWalletResp[]>>[] = []
@@ -97,7 +99,9 @@ export const useWallet = (options?: Options) => {
 
   // Create wallet API.
   const createWallet = async (platform: string) => {
-    await mutateCreateWallet({ platform })
+    const { data } = await mutateCreateWallet({ platform })
+
+    setLatestWallet(data)
     await refetchWallets()
     resetCreateWallet()
   }
@@ -135,6 +139,15 @@ export const useWallet = (options?: Options) => {
     }
   }, [walletsData, isFetched])
 
+  // Delay clear latest wallet.
+  useEffect(() => {
+    if (!latestWallet) return
+
+    setTimeout(() => {
+      setLatestWallet(undefined)
+    }, 4_000)
+  }, [latestWallet])
+
   return {
     wallets,
     privateKey: privateKey?.data.private_key ?? '',
@@ -146,6 +159,7 @@ export const useWallet = (options?: Options) => {
     isExporting,
     isRenaming,
     allWallets,
+    latestWallet,
     getAllWallet,
     refetchWallets,
     createWallet,

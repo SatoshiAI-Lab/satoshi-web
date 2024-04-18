@@ -1,9 +1,10 @@
-import { FC, createElement, memo, useState } from 'react'
+import { FC, createElement, memo, useEffect, useState } from 'react'
 import { Button, Dialog, IconButton, Menu, MenuItem } from '@mui/material'
 import { AiOutlineSafety, AiOutlineWallet } from 'react-icons/ai'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import clsx from 'clsx'
 
 import { WalletCard } from './components/wallet-card'
 import { WalletExportKeyPop } from './components/walletpop-exportkey'
@@ -39,7 +40,10 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     onClose,
   } = props
   const { wallets, selectedChain, setCurrentWallet } = useWalletStore()
-  const { isFirstFetchingWallets, createWallet } = useWallet({ enabled: true })
+  const { latestWallet, isCreating, isFirstFetchingWallets, createWallet } =
+    useWallet({
+      enabled: true,
+    })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openCreateWallet = Boolean(anchorEl)
   const { copy } = useClipboard()
@@ -130,8 +134,26 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     setPopOpen(true)
   }
 
+  // Sort by date DESC
+  const sortWallets = () => {
+    wallets.sort((a, b) => {
+      const tsA = new Date(a.added_at ?? '').getTime()
+      const tsB = new Date(b.added_at ?? '').getTime()
+
+      return tsB - tsA
+    })
+  }
+
   // Request chains & platforms when mounted.
   useChainsPlatforms(true)
+
+  // Sort origin wallets.
+  useEffect(() => {
+    // If only one wallet, no need to sort.
+    if (wallets.length <= 1) return
+
+    sortWallets()
+  }, [wallets])
 
   return (
     <>
@@ -159,9 +181,13 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                   <div>
                     <Button
                       onClick={handleCreateClick}
+                      disabled={isCreating}
                       startIcon={<AiOutlineWallet />}
                       classes={{
-                        root: '!bg-black !text-white !rounded-full !w-[182px]',
+                        root: clsx(
+                          '!bg-black !text-white !rounded-full !w-[182px]',
+                          'disabled:!bg-zinc-500'
+                        ),
                       }}
                     >
                       {t('wallet.createnewwallet')}
@@ -191,8 +217,12 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                   {/* Import Waller Menu */}
                   <Button
                     classes={{ root: '!text-black !rounded-full !w-[138px]' }}
-                    className="!border-gray-400 hover:!bg-gray-100"
+                    className={clsx(
+                      '!border-gray-400 hover:!bg-gray-100',
+                      'disabled:!border-gray-300 disabled:!text-gray-400'
+                    )}
                     variant="outlined"
+                    disabled={isCreating}
                     onClick={ImportWalletPrivateKey}
                   >
                     {t('wallet.importwallet')}
@@ -225,16 +255,15 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
             fallback={<WalletSkeleton className="h-[440px] max-h-[440px]" />}
           >
             {filteredWallets.length ? (
-              (onlyWallet ? [onlyWallet] : filteredWallets).map((item) => (
+              (onlyWallet ? [onlyWallet] : filteredWallets).map((w) => (
                 <WalletCard
-                  {...item}
-                  platform={item.platform!}
-                  token={item.tokens?.length}
+                  key={w.address}
+                  wallet={w}
+                  latestWallet={latestWallet}
                   copyAddress={copyWalletAddress}
                   renameWallet={renameWallet}
                   exportKey={exportWalletPrivateKey}
                   deleteWallet={deleteWallet}
-                  key={item.address}
                 />
               ))
             ) : (
