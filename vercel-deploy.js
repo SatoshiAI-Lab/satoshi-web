@@ -1,12 +1,12 @@
-console.log('Your deploy branch:', process.env.VERCEL_GIT_COMMIT_REF)
+console.log('---------- Start vercel deploy ----------')
+console.log('Deploy branch:', process.env.VERCEL_GIT_COMMIT_REF)
 
-// Only main & dev allowed deploy.
-const isMain = process.env.VERCEL_GIT_COMMIT_REF === 'main'
-const isDev = process.env.VERCEL_GIT_COMMIT_REF === 'dev'
-if (isMain || isDev) {
+const allows = ['main', 'dev']
+
+if (allows.includes(process.env.VERCEL_GIT_COMMIT_REF)) {
   console.log('✅ - Build can proceed')
   return 1
 } else {
-  console.log('❌ - Build cancelled')
+  console.log('❌ - Build cancelled, allowed branches:', allows.join(', '))
   return 0
 }
