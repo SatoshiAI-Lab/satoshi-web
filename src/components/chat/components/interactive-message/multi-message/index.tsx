@@ -1,24 +1,21 @@
 import React, { useState } from 'react'
 import { Divider, FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import { BsChevronRight } from 'react-icons/bs'
-import clsx from 'clsx'
-
-import MessageBubble from '../message-bubble'
-import { utilArr } from '@/utils/array'
-import { useChatMigrating } from '@/hooks/use-chat-migrating'
+import { clsx } from 'clsx'
 
 import type { IMultiMessage, MultiMessageProps } from './types'
 import type { ChatResponseAnswerMetaCoin } from '@/api/chat/types'
+
+import { MessageBubble } from '../../message-bubble'
+import { utilArr } from '@/utils/array'
 import { useChat } from '@/hooks/use-chat'
 import { useMessages } from '@/hooks/use-messages'
 
 function MultiMessage(props: MultiMessageProps) {
-  const { id, title, msgs: rawMsgs } = props
-  // const { addMessageAndLoading, findPrevInteractive, sendMsg } =
-  //   useChatMigrating()
+  const { id, title, meta } = props
   const { findPrevInteractive } = useMessages()
   const { sendChat } = useChat()
-  const [objMsgs, mapMsgs] = utilArr.categorize(rawMsgs, {
+  const [objMsgs, mapMsgs] = utilArr.categorize(meta, {
     key: 'key',
     assignProps: { checked: false, disabled: false },
   })
@@ -42,17 +39,13 @@ function MultiMessage(props: MultiMessageProps) {
     const { text: question } = findPrevInteractive(id) ?? { text: '' }
     const selected_entities = arr.map(({ type, id }) => ({ type, id }))
 
-    // addMessageAndLoading({
-    //   msg,
-    //   position: 'right',
-    // })
     sendChat({ question, selected_entities })
   }
 
   const handleChange = () => {
     if (checkedMap.size !== mapMsgs.size) return
 
-    const [newMsgs] = utilArr.categorize(rawMsgs, {
+    const [newMsgs] = utilArr.categorize(meta, {
       key: 'key',
       unique: true,
       assignProps: {

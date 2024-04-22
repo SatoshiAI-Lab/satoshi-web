@@ -26,7 +26,6 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     messages,
     isLoading,
     unreadMessages,
-    setQuestion,
     setChatEl,
     setWaitAnswer,
   } = useChatStore()

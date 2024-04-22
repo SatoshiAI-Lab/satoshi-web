@@ -12,14 +12,14 @@ interface InteractiveMessageProps {
   message: Message
 }
 
-function InteractiveMessage(props: InteractiveMessageProps) {
+export const InteractiveMessage = (props: InteractiveMessageProps) => {
   const {
     message: { meta, id },
   } = props
   const [t] = useTranslation()
   const msgKeys = Object.keys(meta!) as (keyof ChatResponseMetaInteractive)[]
 
-  const isMultiple = (msgs: MultiMessageProps['msgs']) => {
+  const isMultiple = (msgs: MultiMessageProps['meta']) => {
     if (!msgs) return false
 
     const keys = msgs.reduce((p, m) => (p.add(m.key), p), new Set())
@@ -28,9 +28,9 @@ function InteractiveMessage(props: InteractiveMessageProps) {
   }
 
   const renderMessages = (args: MultiMessageProps) => {
-    if (args.msgs?.length === 0) return
+    if (args.meta?.length === 0) return
 
-    return isMultiple(args.msgs) ? (
+    return isMultiple(args.meta) ? (
       <MultiMessage {...args} key={args.key} />
     ) : (
       <SingleMessage {...args} key={args.key} />
@@ -42,7 +42,7 @@ function InteractiveMessage(props: InteractiveMessageProps) {
       splitSymbol: '$',
     })
     const replaceMulti = t('multi-message').replace(/\${(.*?)}/, (_, text) => {
-      const len = meta[key]?.length ?? 0
+      const len = meta?.[key]?.length ?? 0
       // if less than 1, exclude `Multiple` string
       return len > 1 ? text : ''
     })
@@ -55,7 +55,7 @@ function InteractiveMessage(props: InteractiveMessageProps) {
     renderMessages({
       id,
       key: index,
-      meta: meta[key],
+      meta: meta?.[key],
       title: formatTitle(key),
     })
   )
