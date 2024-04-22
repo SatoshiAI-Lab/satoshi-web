@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { List, ListItemButton, Tooltip } from '@mui/material'
 import { HiOutlineChevronDown } from 'react-icons/hi'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 import type { CustomDropdownProps, CustomDropdownItem } from './types'
 
@@ -43,7 +43,10 @@ function CustomDropdown(props: CustomDropdownProps) {
             {items.map((item) => (
               <ListItemButton
                 key={item.key}
-                className={`!rounded-md !mt-1 first:!mt-0 !text-black`}
+                className={clsx(
+                  '!rounded-md !mt-1 first:!mt-0 !text-black',
+                  'dark:!text-gray-300'
+                )}
                 selected={item.key === active}
                 onClick={() => onClickClose(item)}
               >
