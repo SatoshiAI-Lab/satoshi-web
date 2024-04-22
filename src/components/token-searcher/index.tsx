@@ -10,17 +10,19 @@ import {
 } from '@mui/material'
 import { IoAddOutline, IoCloseOutline, IoSearch } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { useDebounce } from 'react-use'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
+import { useRouter } from 'next/router'
 
-import CustomSuspense from '../custom-suspense'
+import { CustomSuspense } from '../custom-suspense'
 import { DialogHeader } from '../dialog-header'
 import { useTokenSearcher } from './hooks/use-token-searcher'
 import { useUserStore } from '@/stores/use-user-store'
 import { useFavtokenStore } from '@/stores/use-favorites-store'
-
 import { TokenStatus, type TokenSearchCoin, TokenType } from '@/api/token/types'
+import { useTagParser } from '@/views/kline/hooks/use-tag-parser'
+import { Routes } from '@/routes'
 
 interface TokenSearcherProps extends React.ComponentProps<'div'> {
   open: boolean
@@ -28,7 +30,7 @@ interface TokenSearcherProps extends React.ComponentProps<'div'> {
   onClose?: () => void
 }
 
-const TokenSearcher = (props: TokenSearcherProps) => {
+export const TokenSearcher = (props: TokenSearcherProps) => {
   const { className = '', open, autofocus = true, onClose } = props
   const { tokenList } = useFavtokenStore()
   const { t } = useTranslation()
@@ -44,6 +46,8 @@ const TokenSearcher = (props: TokenSearcherProps) => {
   } = useTokenSearcher()
   const { isLogined } = useUserStore()
   const [loadingId, setLoadingId] = useState(-1)
+  const { cexParamsToCexTag } = useTagParser()
+  const router = useRouter()
 
   const isFavorited = (id: number) => tokenList.some((c) => c.id === id)
 
@@ -84,6 +88,19 @@ const TokenSearcher = (props: TokenSearcherProps) => {
     selectToken({
       ids: [idToken],
       status,
+    })
+  }
+
+  const onTokenClick = (token: TokenSearchCoin) => {
+    const tag = cexParamsToCexTag({
+      exchange: '*',
+      symbol: `${token.symbol}-USDT`,
+      interval: '15m',
+    })
+
+    router.push({
+      pathname: Routes.candle,
+      query: { tag },
     })
   }
 
@@ -158,6 +175,7 @@ const TokenSearcher = (props: TokenSearcherProps) => {
                     'hover:!bg-gray-100 cursor-pointer'
                   ),
                 }}
+                onClick={() => onTokenClick(c)}
               >
                 <div className="flex items-center py-1">
                   <Avatar
@@ -184,14 +202,20 @@ const TokenSearcher = (props: TokenSearcherProps) => {
                     {isFavorited(c.id) ? (
                       <IconButton
                         className="cursor-pointer"
-                        onClick={() => onSelectToken(c, TokenStatus.Cancel)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onSelectToken(c, TokenStatus.Cancel)
+                        }}
                       >
                         <IoCloseOutline size={20} className="text-black" />
                       </IconButton>
                     ) : (
                       <IconButton
                         className="cursor-pointer"
-                        onClick={() => onSelectToken(c, TokenStatus.Add)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onSelectToken(c, TokenStatus.Add)
+                        }}
                       >
                         <IoAddOutline size={20} color="blue" />
                       </IconButton>
