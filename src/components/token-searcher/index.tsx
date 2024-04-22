@@ -124,12 +124,17 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
       className={className}
       open={open}
       onClose={onClose}
-      classes={{ paper: '!h-[60vh] w-[60vw] !overflow-hidden' }}
+      classes={{
+        paper: clsx(
+          '!h-[60vh] w-[60vw] !overflow-hidden',
+          'dark:bg-zinc-900 dark:text-white'
+        ),
+      }}
     >
       <DialogHeader onClose={onClose} closeBtnClass="!right-3.5">
         <span>{t('search')}</span>
       </DialogHeader>
-      <div className="flex items-center border-y border-gray-200">
+      <div className="flex items-center border-y border-gray-200 dark:border-zinc-600">
         <InputBase
           startAdornment={
             <IconButton onClick={onSearch} classes={{ root: '!ml-2.5' }}>
@@ -143,7 +148,11 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
           }
           autoFocus={autofocus}
           autoComplete="off"
-          classes={{ root: 'w-full !py-1', input: '!pb-0' }}
+          classes={{
+            root: 'w-full !py-1',
+            input:
+              '!pb-0 dark:placeholder:text-white dark:caret-white dark:text-white',
+          }}
           placeholder={t('search.input.placeholder')}
           size="small"
           value={value}
@@ -171,8 +180,8 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
                 key={i}
                 classes={{
                   root: clsx(
-                    '!w-full !flex !justify-between !items-center',
-                    'hover:!bg-gray-100 cursor-pointer'
+                    '!w-full !flex !justify-between !items-center cursor-pointer',
+                    'hover:!bg-gray-100 dark:hover:!bg-zinc-800'
                   ),
                 }}
                 onClick={() => onTokenClick(c)}
@@ -207,7 +216,10 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
                           onSelectToken(c, TokenStatus.Cancel)
                         }}
                       >
-                        <IoCloseOutline size={20} className="text-black" />
+                        <IoCloseOutline
+                          size={20}
+                          className="text-black dark:text-white"
+                        />
                       </IconButton>
                     ) : (
                       <IconButton
@@ -217,7 +229,10 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
                           onSelectToken(c, TokenStatus.Add)
                         }}
                       >
-                        <IoAddOutline size={20} color="blue" />
+                        <IoAddOutline
+                          size={20}
+                          className="text-primary dark:text-secondary"
+                        />
                       </IconButton>
                     )}
                   </CustomSuspense>
