@@ -127,6 +127,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
               {t('help-me')}:{' '}
               {defaultChatOptions.map((o) => (
                 <div
+                  key={o.id}
                   className={clsx(
                     'ml-2 cursor-pointer hover:text-black',
                     'transition-all duration-300'
