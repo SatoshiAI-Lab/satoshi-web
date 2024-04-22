@@ -282,5 +282,6 @@
   "create-token-details": "在OP链上发布一个代币。",
   "create-token.success": "恭喜！我已成功为您创建代币",
   "tokens": "代币",
-  "evm-all-chain": "支持所有EVM兼容链"
+  "evm-all-chain": "支持所有EVM兼容链",
+  "click-to-show": "点击显示"
 }

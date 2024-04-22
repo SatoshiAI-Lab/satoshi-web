@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
 import Header from '@/components/header'
 import Favorites from '@/components/favorites'
@@ -8,7 +9,6 @@ import { LoginAuthDialog } from '@/components/login-auth-dialog'
 import { useLoginAuthStore } from '@/stores/use-need-login-store'
 import { useChatMonitorMsg } from '@/hooks/use-chat-monitor-msg'
 import { useMonitorStore } from '@/stores/use-monitor-store'
-import { useQuery } from '@tanstack/react-query'
 import { monitorApi } from '@/api/monitor'
 import { useUserStore } from '@/stores/use-user-store'
 import { useWallet } from '@/hooks/use-wallet'
@@ -24,22 +24,22 @@ export default function Home() {
 
   const { getAllWallet } = useWallet()
 
-  useChatMonitorMsg()
-
   const { data: walletsData } = useQuery({
     refetchInterval: 15_000,
     queryKey: [`${walletApi.getWallets.name}-refresh`, selectedChain],
     queryFn: () => walletApi.getWallets(selectedChain),
   })
 
+  useChatMonitorMsg()
+
   useQuery({
     queryKey: [monitorApi.getConfig.name, isLogined],
     queryFn: async () => {
-      if (!isLogined) {
-        return Promise.resolve()
-      }
+      if (!isLogined) return null
+
       const { data } = await monitorApi.getConfig()
       timerByUpdate(data)
+
       return data
     },
     refetchInterval: 15_000,

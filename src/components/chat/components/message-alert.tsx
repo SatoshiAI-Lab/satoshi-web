@@ -1,16 +1,16 @@
 import { MdOutlineFlashOn } from 'react-icons/md'
 import { useTranslation } from 'react-i18next'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
+import { Tooltip } from '@mui/material'
 
-import { useChatMigrating } from '@/hooks/use-chat-migrating'
 import { useChatStore } from '@/stores/use-chat-store'
-import { useMessages } from '@/hooks/use-messages'
+import { useChatMessages } from '@/hooks/use-chat-messages'
 
 export const MessageAlert: React.FC = () => {
   const { t } = useTranslation()
   const { unreadMessages, setUnreadMessage } = useChatStore()
   // const { addMonitorMessage } = useChatMigrating()
-  const { addMonitorMessages } = useMessages()
+  const { addMonitorMessages } = useChatMessages()
 
   const expandMessage = () => {
     addMonitorMessages(unreadMessages)
@@ -18,22 +18,20 @@ export const MessageAlert: React.FC = () => {
   }
 
   return (
-    <div
-      className={clsx(
-        'absolute border-2 border-blue-500 transition-all rounded-md',
-        'z-50 bg-[#ffffff] cursor-pointer px-10 left-[50%] top-[5%]',
-        'animate-shake animate-infinite animate-ease-linear animate-duration-[1000ms]'
-      )}
-    >
-      <button
-        className="py-2 flex justify-center items-center text-blue-500"
+    <Tooltip title={t('click-to-show')}>
+      <div
+        className={clsx(
+          'sticky top-0 border-2 border-slate-100 flex justify-center items-center',
+          'bg-slate-100 w-full py-2 rounded-md cursor-pointer text-primary',
+          'hover:bg-white'
+        )}
         onClick={expandMessage}
       >
         <MdOutlineFlashOn />{' '}
         <span className="mx-1">{unreadMessages.length}</span>{' '}
         {t('folded-message')}
-      </button>
-    </div>
+      </div>
+    </Tooltip>
   )
 }
 
