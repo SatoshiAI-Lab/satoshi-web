@@ -1,11 +1,12 @@
 console.log('---------- Start Vercel Deploy ----------')
+
+const allows = ['main', 'dev']
+
 console.log(
   'Deploy branch:',
   process.env.VERCEL_GIT_COMMIT_REF,
   allows.includes(process.env.VERCEL_GIT_COMMIT_REF)
 )
-
-const allows = ['main', 'dev']
 
 if (!allows.includes(process.env.VERCEL_GIT_COMMIT_REF)) {
   console.log('✅ - Build can proceed.')
