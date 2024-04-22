@@ -57,6 +57,7 @@ export const WalletList = (props: Props) => {
     const loadingId = toast.loading(t('deleting'))
     try {
       await removeWallet(id)
+      await refetchWallets()
       toast.success(t('delete-success'))
     } catch (error) {
       toast.error(t('deleting-error'))
@@ -109,8 +110,6 @@ export const WalletList = (props: Props) => {
         </IconButton>
       )
     }
-
-    console.log('item', item)
 
     return (
       <Radio

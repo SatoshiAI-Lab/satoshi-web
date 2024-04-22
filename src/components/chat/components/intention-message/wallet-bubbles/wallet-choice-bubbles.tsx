@@ -20,7 +20,6 @@ export const WalletChoiceBubble = ({ msg }: Props) => {
   //     question,
   //   })
   // }
-
   return (
     <MessageBubble>
       <WalletList type={msg.type ?? ''} chain={msg.chain ?? ''} />
