@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 import { chatApi } from '@/api/chat'
-import { URL_CONFIG } from '@/config/url'
 import { useUserStore } from '@/stores/use-user-store'
 import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
@@ -18,7 +17,7 @@ export const useChatMonitorMsg = () => {
   const ws = useWebSocket({
     heartbeat: JSON.stringify({ type: 'ping' }),
   })
-  const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
+  const baseURL = `${process.env.NEXT_PUBLIC_SATOSHI_MONITOR_API}/ws/chat/`
 
   const inithMonitorReq = async () => {
     if (!userInfo?.id) return
