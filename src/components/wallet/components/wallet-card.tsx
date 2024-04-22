@@ -4,7 +4,7 @@ import { IoTrash } from 'react-icons/io5'
 import numeral from 'numeral'
 import { useTranslation } from 'react-i18next'
 import { t } from 'i18next'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 import { utilFmt } from '@/utils/format'
 import { WalletPlatform } from '@/config/wallet'
@@ -126,7 +126,7 @@ const ChainLogos = (props: Pick<Props, 'wallet'>) => {
     return (
       <>
         {evmLogos.map((e, i) => (
-          <Tooltip title={e.tooltip}>
+          <Tooltip key={i} title={e.tooltip}>
             <img
               key={i}
               src={e.src}
