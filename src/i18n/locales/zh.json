@@ -213,7 +213,7 @@
   "balance-less-than": "您的钱包余额少于 {}",
   "insufficient.balance.terms": "你钱包里没有足够的$1",
   "total": "总量: ",
-  "successful.transaction": "交易哈希：",
+  "successful.transaction": "交易成功，这个是交易Hash：",
   "tx.token2": "你想要卖出多少$1？",
   "intent.sell": "帮我卖出$1，地址是: $2",
   "intent.detail": "帮我查询$1代币地址",
@@ -278,5 +278,8 @@
   "view-wallets": "查看钱包",
   "view-wallets-details": "查看我的以太坊钱包。",
   "create-token": "发布代币",
-  "create-token-details": "在OP链上发布一个代币。"
+  "create-token-details": "在OP链上发布一个代币。",
+  "select-token": "选择一个代币",
+  "search.token.name": "搜索名称或粘贴地址",
+  "my.token": "我的代币在"
 }

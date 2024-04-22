@@ -1,13 +1,8 @@
 import { ChatResponseTxConfrim, TokenInfo } from '@/api/chat/types'
-import { DialogHeader } from '@/components/dialog-header'
-import { useShow } from '@/hooks/use-show'
-import { Dialog, Menu, MenuItem, OutlinedInput } from '@mui/material'
+import { Menu, MenuItem } from '@mui/material'
 import clsx from 'clsx'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { IoIosArrowDown } from 'react-icons/io'
-import { IoScanCircle, IoSearchCircle, IoSearchOutline } from 'react-icons/io5'
-import { SelectTokenDialog } from './select-token-dialog'
 
 interface Props {
   tokenList?: TokenInfo[]
@@ -28,17 +23,58 @@ export const SelectToken: React.FC<Props> = ({
   isFrom,
   isFinalTx,
 }: Props) => {
-  const { t } = useTranslation()
-  const { show, open, hidden } = useShow(false)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+
+  console.log(anchorEl)
 
   const handleClick = (token: TokenInfo) => {
     switchToken(token)
-    hidden()
+    onCloseMenu()
   }
 
   const onSwitch = (event: any) => {
-    open()
+    setAnchorEl(event.currentTarget)
   }
+
+  const onCloseMenu = () => {
+    setAnchorEl(null)
+  }
+
+  const menu = () => (
+    <Menu
+      anchorEl={anchorEl}
+      open={open}
+      onClose={onCloseMenu}
+      MenuListProps={{
+        'aria-labelledby': 'basic-button',
+      }}
+    >
+      {tokenList?.map((item, i) => {
+        return (
+          <MenuItem
+            key={i}
+            onClick={() => handleClick(item)}
+            selected={selectToken?.chain == item.chain}
+          >
+            <div className="flex items-center">
+              <div className="mr-2 self-center">
+                <img
+                  src={item.chain_logo}
+                  alt="chain-logo"
+                  width={22}
+                  height={22}
+                  className="w-[22px] h-[22px]"
+                ></img>
+              </div>
+              {`${item.chain_symbol}_${item.token_name}`}
+            </div>
+          </MenuItem>
+        )
+      })}
+    </Menu>
+  )
+
   if (isFrom) {
     return (
       <>
@@ -60,9 +96,7 @@ export const SelectToken: React.FC<Props> = ({
           {`${selectToken?.token_name}`}
           <IoIosArrowDown className="ml-1 w-[34px]"></IoIosArrowDown>
         </div>
-        {isBuy ? (
-          <SelectTokenDialog show={show} open={open} hidden={hidden} />
-        ) : null}
+        {isBuy ? menu() : null}
       </>
     )
   }
@@ -96,9 +130,7 @@ export const SelectToken: React.FC<Props> = ({
           </>
         )}
       </div>
-      {!isBuy ? (
-        <SelectTokenDialog show={show} open={open} hidden={hidden} />
-      ) : null}
+      {!isBuy ? menu() : null}
     </>
   )
 }

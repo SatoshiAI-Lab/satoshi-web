@@ -153,7 +153,7 @@ export const TxTokenBubbles = (props: Props) => {
 
       await getStatus()
       addMessage({
-        msg: `${t('successful.transaction')}${data.hash_tx}`,
+        msg: `${t('successful.transaction')}${data.url}`,
       })
       setIsFinalTx(true)
       getAllWallet()
@@ -163,6 +163,8 @@ export const TxTokenBubbles = (props: Props) => {
       hiddenLoading()
     }
   }
+  
+  console.log('isBuy', isBuy)
 
   return (
     <MessageBubble className={`min-w-[350px]`}>

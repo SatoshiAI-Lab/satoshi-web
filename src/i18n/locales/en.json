@@ -215,7 +215,7 @@
   "balance-less-than": "Your wallet balance less than {}",
   "insufficient.balance.terms": "There is not enough $1 in your wallet",
   "total": "Total: ",
-  "successful.transaction": "TX: ",
+  "successful.transaction": "Trade successful, this is the trade Hash:",
   "tx.token2": "How many $1 do you need to process?",
   "intent.sell": "Help me sell $1, the address is: $2",
   "intent.detail": "Help me find the $1 token address",
@@ -281,5 +281,8 @@
   "view-wallets": "View wallets",
   "view-wallets-details": "View my Ethereum wallets.",
   "create-token": "Create token",
-  "create-token-details": "Create a token on OP."
+  "create-token-details": "Create a token on OP.",
+  "select-token": "Select a token",
+  "search.token.name": "Search name or paste address",
+  "my.token": "My tokens in"
 }
