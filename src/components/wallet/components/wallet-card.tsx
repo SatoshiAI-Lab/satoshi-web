@@ -8,7 +8,6 @@ import clsx from 'clsx'
 
 import { utilFmt } from '@/utils/format'
 import { WalletPlatform } from '@/config/wallet'
-import { URL_CONFIG } from '@/config/url'
 
 import type { WalletCardProps as WalletProps } from '@/stores/use-wallet-store'
 import type { WalletCardProps } from '../types'
@@ -102,22 +101,22 @@ export const WalletCard = (props: Props) => {
 
 const ChainLogos = (props: Pick<Props, 'wallet'>) => {
   const { chain, platform } = props.wallet
-  const baseUrl = URL_CONFIG.cdn
+  const baseURL = process.env.NEXT_PUBLIC_CDN_URL
   const evmLogos = [
     {
-      src: `${baseUrl}/chains/logo/Ethereum.png`,
+      src: `${baseURL}/chains/logo/Ethereum.png`,
       tooltip: 'Ethereum(ETH)',
     },
     {
-      src: `${baseUrl}/chains/logo/BSC.png`,
+      src: `${baseURL}/chains/logo/BSC.png`,
       tooltip: 'Binance Smart Chain(BSC)',
     },
     {
-      src: `${baseUrl}/chains/logo/Optimism.png`,
+      src: `${baseURL}/chains/logo/Optimism.png`,
       tooltip: 'Optimism(OP)',
     },
     {
-      src: `${baseUrl}/chains/logo/Arbitrum.png`,
+      src: `${baseURL}/chains/logo/Arbitrum.png`,
       tooltip: 'Arbitrum(ARB)',
     },
   ]

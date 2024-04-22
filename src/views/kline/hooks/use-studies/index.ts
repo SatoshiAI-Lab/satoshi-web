@@ -13,7 +13,7 @@ import type {
 export const useStudies = () => {
   const studies = Object.values(CHART_STUDIES) as Study[]
   const { chart } = useChartStore()
-  const { isProdMode } = useEnv()
+  const { isProd } = useEnv()
 
   /** Waiting for chart ready. */
   const waitingForReady = (newChart?: IChartingLibraryWidget | null) => {
@@ -68,7 +68,7 @@ export const useStudies = () => {
       const study = await activeChart.createStudy(
         studyParams.name,
         studyParams.isMain,
-        isProdMode ? studyParams.lock : false, // Unlock in dev mode.
+        isProd ? studyParams.lock : false, // Unlock in dev mode.
         studyParams.inputs,
         studyParams.overrides,
         studyParams.options
