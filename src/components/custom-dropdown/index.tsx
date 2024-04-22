@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { List, ListItemButton, Tooltip } from '@mui/material'
 import { HiOutlineChevronDown } from 'react-icons/hi'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 import type { CustomDropdownProps, CustomDropdownItem } from './types'
 
