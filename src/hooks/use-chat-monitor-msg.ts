@@ -7,7 +7,7 @@ import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
 import { utilDom } from '@/utils/dom'
-import { useChatMessages } from './use-chat-messages'
+import { useMessages } from './use-messages'
 
 interface MonitorOnEvents {
   event: {
@@ -28,7 +28,7 @@ export const useChatMonitorMsg = () => {
   const { userInfo, isLogined } = useUserStore()
   const { chatEl, setUnreadMessage } = useChatStore()
   // const { addMonitorMessage } = useChatMigrating()
-  const { addMonitorMessages } = useChatMessages()
+  const { addMonitorMessages } = useMessages()
   const ws = useWebSocket<MonitorOnEvents, MonitorEmitEvents>({
     heartbeat: JSON.stringify({ type: 'ping' }),
   })

@@ -1,10 +1,6 @@
-import path from 'path'
-import type {
-  ChatInteractiveParams,
-  ChatResponseMeta,
-  ChatResponseMetaNewPoolV2,
-} from './../../api/chat/types'
+import type { ChatResponseMetaNewPoolV2 } from './../../api/chat/types'
 import type { ChatResponse } from '@/api/chat/types'
+import type { PartialPick } from '@/types/types'
 
 export enum DataType {
   NewsInfo = 'news_info',
@@ -66,9 +62,14 @@ export interface States {
 export interface Actions {
   setIntention(intention: string): void
   setQuestion(value: string): void
-  /** Use `getMessages` to get latest messages. */
   getMessages(): Message[]
   setMessages(msg: Message[] | ((msgs: Message[]) => Message[])): void
+
+  addMessage(message: PartialPick<Message, 'id'>): void
+  removeMessage(id: string): void
+  updateMessage(id: string, message: PartialPick<Message, 'id' | 'text'>): void
+  getMessage(id: string): void
+
   setUnreadMessage(unreadMessages: Message[]): void
   setChatEl(el: HTMLElement): void
   setIsLoading(bool: boolean): void

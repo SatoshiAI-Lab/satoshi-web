@@ -55,8 +55,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
   }
 
   const onOptionClick = async (option: DefaultMessageOption) => {
-    setQuestion(option.details)
-    sendChat()
+    sendChat({ question: option.details })
   }
 
   // setChatEl and scroll to latest message

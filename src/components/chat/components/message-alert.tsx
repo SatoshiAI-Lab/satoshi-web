@@ -4,13 +4,13 @@ import { clsx } from 'clsx'
 import { Tooltip } from '@mui/material'
 
 import { useChatStore } from '@/stores/use-chat-store'
-import { useChatMessages } from '@/hooks/use-chat-messages'
+import { useMessages } from '@/hooks/use-messages'
 
 export const MessageAlert: React.FC = () => {
   const { t } = useTranslation()
   const { unreadMessages, setUnreadMessage } = useChatStore()
   // const { addMonitorMessage } = useChatMigrating()
-  const { addMonitorMessages } = useChatMessages()
+  const { addMonitorMessages } = useMessages()
 
   const expandMessage = () => {
     addMonitorMessages(unreadMessages)

@@ -1,16 +1,14 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
 import type { ChatInteractiveParams, ChatParams } from '@/api/chat/types'
-import type { Message } from '@/stores/use-chat-store/types'
 
 import { chatApi } from '@/api/chat'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useLive2D } from './use-live2d'
 import { useEventStream } from './use-event-stream'
 import { useMessages } from './use-messages'
-import { useChatMessages } from './use-chat-messages'
 import { utilParse } from '@/utils/parse'
 import { utilDom } from '@/utils/dom'
 
@@ -35,19 +33,20 @@ export const useChat = () => {
     setQuestion,
     setIntention,
     setIsLoading,
+    addMessage,
   } = useChatStore()
   const { startLoopMotion, stopLoopMotion, emitMotionSpeak } = useLive2D()
-  const { removeLastLoading, addLoading, addMessage } = useMessages()
-  const { parseChatMessage } = useChatMessages()
+  const { parseChatMessage, removeLastLoading, addLoading } = useMessages()
 
   const getChatParams = (options?: InteractiveOptions) => {
     const {
       id,
       type,
       selected_entities,
-      question: iQuestion = '', // interactive question
+      question: newQuestion = '', // interactive question
     } = options ?? {}
     const params: ChatParams = {
+      // question: newQuestion || question,
       question,
       user_info: {
         username: 'anonymous',
@@ -63,12 +62,12 @@ export const useChat = () => {
     // multi interactive
     if (selected_entities) {
       params.selected_entities = selected_entities
-      params.question = iQuestion
+      params.question = newQuestion
     } else if (options) {
       // normal interactive
       params.id = id
       params.type = type
-      params.question = iQuestion
+      params.question = newQuestion
     }
 
     return params

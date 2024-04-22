@@ -1,6 +1,7 @@
 import { create } from 'zustand'
+import { nanoid } from 'nanoid'
 
-import type { States, Actions } from './types'
+import type { States, Actions, Message } from './types'
 
 export const useChatStore = create<States & Actions>((set, get) => ({
   intention: '',
@@ -24,13 +25,26 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   setMessages: (newMessages) => {
     // If need current message, use function, such as `setState`.
     if (typeof newMessages === 'function') {
-      return set(({ messages }) => ({
-        messages: newMessages(messages),
-      }))
+      return set(({ messages }) => ({ messages: newMessages(messages) }))
     }
-
     set({ messages: newMessages })
   },
+  addMessage: (message) => {
+    const newMessage: Message = { id: nanoid(), ...message }
+    set({ messages: [...get().messages, newMessage] })
+  },
+  removeMessage: (id) => {
+    const newMessages = get().messages.filter((m) => m.id !== id)
+    set({ messages: newMessages })
+  },
+  updateMessage: (id, message) => {
+    const newMessages = get().messages.map((m) =>
+      m.id === id ? { ...m, ...message } : m
+    )
+    set({ messages: newMessages })
+  },
+  getMessage: (id) => get().messages.find((m) => m.id === id),
+
   setChatEl: (chatEl) => set({ chatEl }),
   setIsLoading: (isLoading) => set({ isLoading }),
 

@@ -16,11 +16,10 @@ import { SelectToken } from './select-token'
 import { WalletCardProps } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
 import { trandApi } from '@/api/trand'
-import { useChatMigrating } from '@/hooks/use-chat-migrating'
 import { useWallet } from '@/hooks/use-wallet'
 import { interactiveApi } from '@/api/interactive'
 import MessageBubble from '../../message-bubble'
-import { useMessages } from '@/hooks/use-messages'
+import { useChatStore } from '@/stores/use-chat-store'
 
 import type { ChatResponseMeta, ChatResponseTxConfrim } from '@/api/chat/types'
 
@@ -40,7 +39,7 @@ export const TxTokenBubbles = (props: Props) => {
   const { show: loading, open: showLoading, hidden: hiddenLoading } = useShow()
   const { getAllWallet } = useWallet()
   // const { addMessage } = useChatMigrating()
-  const { addMessage } = useMessages()
+  const { addMessage } = useChatStore()
 
   const { t } = useTranslation()
 
