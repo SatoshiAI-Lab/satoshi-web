@@ -11,4 +11,5 @@ export const themeLight = {
   dividerColor: '#d5d5d5',
   bgColor: '#ffffff',
   skeletonColor: '#c0c5ca',
+  textGray: '#000',
 }

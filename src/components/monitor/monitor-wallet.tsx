@@ -150,7 +150,7 @@ export const MonitorWallet = ({ data }: Props) => {
         })}
         <Button
           variant="contained"
-          className="!mt-5 !py-2 !rounded-full "
+          className="!mt-5 !py-2 !rounded-full"
           disableElevation
           onClick={onWatch}
           disabled={loading}
@@ -160,7 +160,6 @@ export const MonitorWallet = ({ data }: Props) => {
           ) : (
             <IoEyeOutline size={20} />
           )}
-
           <span className="ml-2 leading-none">{t('track')}</span>
         </Button>
       </div>
@@ -176,11 +175,8 @@ export const MonitorWallet = ({ data }: Props) => {
         {t('trace.address.list')}
       </div>
       <Dialog open={show} onClose={hidden}>
-        <DialogHeader
-          text={t('trace.address.list')}
-          onClose={hidden}
-        ></DialogHeader>
-        <MonitorWalletList></MonitorWalletList>
+        <DialogHeader text={t('trace.address.list')} onClose={hidden} />
+        <MonitorWalletList />
       </Dialog>
     </div>
   )
