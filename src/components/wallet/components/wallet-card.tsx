@@ -4,7 +4,7 @@ import { IoTrash } from 'react-icons/io5'
 import numeral from 'numeral'
 import { useTranslation } from 'react-i18next'
 import { t } from 'i18next'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 import { utilFmt } from '@/utils/format'
 import { WalletPlatform } from '@/config/wallet'
@@ -47,14 +47,14 @@ export const WalletCard = (props: Props) => {
     <div
       className={clsx(
         'relative border border-black rounded-md px-[30px] py-[17px]',
-        'flex justify-between items-center transition-all ',
+        'flex justify-between items-center transition-all dark:border-zinc-500',
         latestWallet?.id === wallet?.id && 'bg-gray-200 border-gray-300'
       )}
     >
       <div>
         <div className="flex gap-2 items-center">
           <Tooltip title={name}>
-            <div className="text-[#0F40F5] text-xl max-w-[240px] truncate">
+            <div className="text-primary text-xl max-w-[240px] truncate">
               {name}
             </div>
           </Tooltip>
@@ -62,7 +62,9 @@ export const WalletCard = (props: Props) => {
             <ChainLogos wallet={wallet} />
           </div>
         </div>
-        <div className="text-[#101010b2]">{utilFmt.addr(address, 4)}</div>
+        <div className="text-black dark:text-gray-300">
+          {utilFmt.addr(address, 4)}
+        </div>
         <div className="flex gap-8">
           <div>
             {t('balance')} ${numeral(value).format('0a')}
@@ -80,7 +82,7 @@ export const WalletCard = (props: Props) => {
             key={index}
             variant="outlined"
             classes={{ root: '!text-black !rounded-full' }}
-            className="!border-gray-400 hover:!bg-gray-100"
+            className="!border-gray-400 hover:!bg-gray-100 dark:!text-gray-300 dark:hover:!bg-zinc-800"
             onClick={() => item.onClick(address!)}
           >
             {item.title}
@@ -93,7 +95,7 @@ export const WalletCard = (props: Props) => {
         }}
         onClick={() => deleteWallet(address!)}
       >
-        <IoTrash size={30} />
+        <IoTrash size={30} className="dark:text-white" />
       </IconButton>
     </div>
   )
@@ -126,7 +128,7 @@ const ChainLogos = (props: Pick<Props, 'wallet'>) => {
     return (
       <>
         {evmLogos.map((e, i) => (
-          <Tooltip title={e.tooltip}>
+          <Tooltip key={i} title={e.tooltip}>
             <img
               key={i}
               src={e.src}

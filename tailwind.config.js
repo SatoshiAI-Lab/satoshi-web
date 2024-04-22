@@ -5,6 +5,8 @@ import { themeDark } from './src/theme/material-ui/dark'
 const baseColors = {
   ...themeDark,
 
+  'primary-deep': '#0047D4',
+
   header: 'rgba(255, 255, 255, 0.5)',
   favorite: 'rgba(255, 255, 255, 0.8)',
   'header-dark': 'rgba(0, 0, 0, 0.5)',

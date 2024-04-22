@@ -69,7 +69,11 @@ export default function App({ Component, pageProps }: AppProps) {
             ></meta>
           </Head>
           <Component {...pageProps} />
-          <Toaster />
+          <Toaster
+            toastOptions={{
+              className: 'dark:bg-zinc-800 dark:text-gray-200',
+            }}
+          />
         </QueryClientProvider>
       </I18nextProvider>
     </ThemeProvider>
