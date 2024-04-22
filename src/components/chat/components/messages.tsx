@@ -1,35 +1,25 @@
 import React, { memo } from 'react'
-import { AiOutlineLoading } from 'react-icons/ai'
+
+import { type Message } from '@/stores/use-chat-store/types'
 
 import MessageBubble from './message-bubble'
 import InteractiveMessage from './interactive-message'
 import TokenMarkdown from '@/components/token-markdown'
-import { useTranslation } from 'react-i18next'
 import { IntentMessage } from './intention-message/intention-message'
 import { MonitorConfigBubble } from './monitor-message/monitor-config-bubble'
 import { PrivateKeyMessage } from './private-key-message'
 
-import { type Message } from '@/stores/use-chat-store/types'
+import LoadingMessage from './loading-message'
 
-interface MessagesProps {
+interface Props {
   messages: Message[]
-  className?: string
-  onClick?: React.MouseEventHandler<HTMLDivElement>
 }
 
 // Cache component, only update when props change.
-const Messages = memo((props: MessagesProps) => {
-  const { messages, className = '' } = props
-  const { t } = useTranslation()
-
-  return messages.map((msg, i) => {
+const Messages = memo((props: Props) => {
+  return props.messages.map((msg, i) => {
     if (msg.isLoadingMsg) {
-      return (
-        <MessageBubble key={i} className={`flex items-center ${className}`}>
-          {t('thinking')}
-          <AiOutlineLoading className="animate-spin fill-blue-600 ml-2" />
-        </MessageBubble>
-      )
+      return <LoadingMessage key={i} />
     }
 
     if (msg.isMonitor) {
@@ -59,7 +49,7 @@ const Messages = memo((props: MessagesProps) => {
     }
 
     return (
-      <MessageBubble key={i} position={msg.position} className={className}>
+      <MessageBubble key={i} position={msg.position}>
         <TokenMarkdown children={msg.msg} {...props} />
       </MessageBubble>
     )
