@@ -1,14 +1,13 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { chatApi } from '@/api/chat'
-import { URL_CONFIG } from '@/config/url'
 import { useUserStore } from '@/stores/use-user-store'
 import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
-import { useChatMigrating } from './use-chat-migrating'
-import { useMessages } from './use-messages'
 import { utilDom } from '@/utils/dom'
+import { useChatMessages } from './use-chat-messages'
 
 interface MonitorOnEvents {
   event: {
@@ -24,15 +23,16 @@ interface MonitorEmitEvents {
 }
 
 export const useChatMonitorMsg = () => {
+  const { i18n } = useTranslation()
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
   const { chatEl, setUnreadMessage } = useChatStore()
   // const { addMonitorMessage } = useChatMigrating()
-  const { addMonitorMessages } = useMessages()
+  const { addMonitorMessages } = useChatMessages()
   const ws = useWebSocket<MonitorOnEvents, MonitorEmitEvents>({
     heartbeat: JSON.stringify({ type: 'ping' }),
   })
-  const baseURL = `${URL_CONFIG.satoshiMonitorApi}/ws/chat/`
+  const baseURL = `${process.env.NEXT_PUBLIC_SATOSHI_MONITOR_API}/ws/chat/`
 
   const inithMonitorReq = async () => {
     if (!userInfo?.id) return
@@ -73,6 +73,10 @@ export const useChatMonitorMsg = () => {
       }
     })
   }
+
+  useEffect(() => {
+    ws.emit('lang', i18n.language)
+  }, [i18n.language])
 
   useEffect(() => {
     if (isLogined) {

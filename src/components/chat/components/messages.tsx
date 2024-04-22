@@ -46,10 +46,18 @@ export const Messages = memo((props: MessagesProps) => {
       return <InteractiveMessage key={i} message={msg} />
     }
 
-    const privKeyData = msg.meta?.data as unknown as { private_key?: string }
+    const privKeyData = msg.meta?.data as unknown as {
+      private_key?: string
+      wallet_name?: string
+    }
     const privateKey = privKeyData?.private_key
     if (privateKey) {
-      return <PrivateKeyMessage privateKey={privateKey} />
+      return (
+        <PrivateKeyMessage
+          name={privKeyData.wallet_name ?? ''}
+          privateKey={privateKey}
+        />
+      )
     }
 
     return (

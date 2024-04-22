@@ -17,11 +17,8 @@ import ChainPlatformSelect from '../../chain-platform-select'
 
 import type { WalletDialogProps } from '../types'
 
-const WalletImportKeyPop: FC<WalletDialogProps> = ({
-  open,
-  onClose,
-  title,
-}) => {
+const WalletImportKeyPop: FC<WalletDialogProps> = (props) => {
+  const { open, onClose, title } = props
   const [privateKey, setPrivateKey] = useState('')
   const { selectedPlatform } = useWalletStore()
   const { importPrivateKey } = useWallet()
@@ -85,10 +82,9 @@ const WalletImportKeyPop: FC<WalletDialogProps> = ({
           />
           <Button
             variant="contained"
-            classes={{ root: '!rounded-full !px-8' }}
             disabled={show || privateKey.length == 0}
             onClick={onImportPrivateKey}
-            startIcon={show ? <CircularProgress size={16} /> : <></>}
+            startIcon={show && <CircularProgress size={16} />}
           >
             {t('wallet.import-wallet.confirm')}
           </Button>

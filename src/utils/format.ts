@@ -12,9 +12,9 @@ export const utilFmt = {
 
     return args.map((cls) => cls.trim()).join(' ')
   },
-  addr(address?: string) {
+  addr(address?: string, len = 5) {
     if (address) {
-      return `${address.slice(0, 5)}...${address.slice(-5, address.length)}`
+      return `${address.slice(0, len)}...${address.slice(-len, address.length)}`
     }
     return ''
   },

@@ -1,4 +1,4 @@
-import { WalletChain } from '@/config/wallet'
+import { WalletChain, WalletPlatform } from '@/config/wallet'
 
 import type { ModelMotions } from '@/stores/use-live2d-store/types'
 

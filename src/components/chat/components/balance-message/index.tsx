@@ -34,7 +34,7 @@ interface Props {
   meta?: ChatResponseMeta
 }
 
-const BalanceMessage = (props: Props) => {
+export const BalanceMessage = (props: Props) => {
   const { meta } = props
   const [folds, setFolds] = useState<string[]>([])
   const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
@@ -113,7 +113,7 @@ const BalanceMessage = (props: Props) => {
         </TableCell>
         <TableCell classes={{ root: '!text-gray-400' }}>{t('value')}</TableCell>
         <TableCell classes={{ root: '!text-gray-400' }}>
-          {t('balance')}
+          {t('balance').toUpperCase()}
         </TableCell>
         <TableCell classes={{ root: '!text-gray-400' }}>
           {t('price').toUpperCase()}

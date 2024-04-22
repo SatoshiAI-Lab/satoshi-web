@@ -43,6 +43,8 @@ export const WalletBalance = (props: Props) => {
     ).format('0,0.0')
   }
 
+  console.log('tokens', msg.data)
+
   return (
     <MessageBubble className="!px-0">
       <div className="pb-2 px-4 text-primary">
@@ -61,15 +63,12 @@ export const WalletBalance = (props: Props) => {
       </div>
       <div className="">
         {tokens?.map((token, i) => {
-          // if (!token.name) return <></>
           return (
             <div
               key={i}
               className={clsx(
                 'grid grid-cols-[60px_auto_80px] gap-x-4 py-2 pl-4 pr-10',
-                `${
-                  i !== tokens.length - 1 ? 'border-b border-gray-300' : '!pb-0'
-                }`
+                i !== tokens.length - 1 ? 'border-b border-gray-300' : '!pb-0'
               )}
             >
               <div className="text-primary truncate">

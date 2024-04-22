@@ -13,6 +13,9 @@ export const TwitterListBubble = () => {
 
   if (!list?.length) return <></>
 
+  console.log('list bubble', list)
+  
+
   return (
     <MessageBubble>
       <div className="flex flex-col">

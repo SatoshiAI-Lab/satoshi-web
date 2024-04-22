@@ -5,17 +5,25 @@ import clsx from 'clsx'
 import MessageBubble from './message-bubble'
 
 interface Props {
+  name: string
   privateKey: string
 }
 
 export const PrivateKeyMessage = (props: Props) => {
-  const { privateKey } = props
+  const { name, privateKey } = props
   const { t } = useTranslation()
 
   return (
     <MessageBubble>
-      <p>{t('export-wallet')}:</p>
-      <p className={clsx('font-bold blur-sm hover:blur-none')}>{privateKey}</p>
+      <p>{t('export-wallet').replace('{}', name)}:</p>
+      <p
+        className={clsx(
+          'font-bold blur-sm hover:blur-none',
+          'transition-all duration-300'
+        )}
+      >
+        {privateKey}
+      </p>
     </MessageBubble>
   )
 }

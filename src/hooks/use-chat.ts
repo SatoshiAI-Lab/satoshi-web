@@ -2,6 +2,9 @@ import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
 
+import type { ChatInteractiveParams, ChatParams } from '@/api/chat/types'
+import type { Message } from '@/stores/use-chat-store/types'
+
 import { chatApi } from '@/api/chat'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useLive2D } from './use-live2d'
@@ -10,8 +13,6 @@ import { useMessages } from './use-messages'
 import { useChatMessages } from './use-chat-messages'
 import { utilParse } from '@/utils/parse'
 import { utilDom } from '@/utils/dom'
-
-import type { ChatInteractiveParams, ChatParams } from '@/api/chat/types'
 
 export interface InteractiveOptions {
   question: string

@@ -14,8 +14,6 @@ export const useMonitorStore = create<States & Actions>((set, get) => ({
   setConfig: async (data) => {
     const { message_type: type, content: newData } = data
 
-    console.log(newData)
-
     // if (type != null) {
     const configData = {
       ...get().configData!,

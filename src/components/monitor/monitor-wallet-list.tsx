@@ -5,6 +5,7 @@ import { useMonitorStore } from '@/stores/use-monitor-store'
 import { utilFmt } from '@/utils/format'
 import { IconButton, CircularProgress } from '@mui/material'
 import clsx from 'clsx'
+import { useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
@@ -18,19 +19,14 @@ export const MonitorWalletList = ({ className }: Props) => {
   const { t } = useTranslation()
   const { configData, setConfig } = useMonitorStore()
   const addressList = configData?.trade?.content ?? []
-
-  const {
-    show: closeLoading,
-    open: openLoading,
-    hidden: hiddenLoading,
-  } = useShow()
+  const [loading, setLoading] = useState<string>()
 
   const onRemove = (data: AddressData) => {
     const newAddressList = addressList.filter(
       (item) => item.address !== data.address
     )
 
-    openLoading()
+    setLoading(`${data.address}`)
     setConfig({
       message_type: MonitorConfig.trade,
       content: newAddressList,
@@ -42,7 +38,7 @@ export const MonitorWalletList = ({ className }: Props) => {
         toast.error(t('remove.monitor.error'))
       })
       .finally(() => {
-        hiddenLoading()
+        setLoading('')
       })
   }
 
@@ -78,8 +74,8 @@ export const MonitorWalletList = ({ className }: Props) => {
                 </span>
               </CopyToClipboard>
               <div className="text-center">
-                <IconButton onClick={() => onRemove(data)}>
-                  {closeLoading ? (
+                <IconButton onClick={() => onRemove(data)} disabled={!!loading}>
+                  {loading == data.address ? (
                     <CircularProgress size={20} />
                   ) : (
                     <IoCloseOutline size={20} />

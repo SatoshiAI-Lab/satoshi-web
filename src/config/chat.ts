@@ -67,6 +67,8 @@ export const CHAT_CONFIG = {
     intentStream: 'intent_',
     walletList: 'wallet_list_stream',
     walletChangeName: 'change_name_wallet_list',
+
+    process: 'process_stream',
   },
   /** `hyper_text` parse RegExp */
   hyperTextRule:

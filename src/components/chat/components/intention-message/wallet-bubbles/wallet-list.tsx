@@ -1,10 +1,11 @@
-import { IconButton, Radio } from '@mui/material'
+import { IconButton, Radio, Skeleton } from '@mui/material'
 import clsx from 'clsx'
 import numeral from 'numeral'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { RiDeleteBin5Line } from 'react-icons/ri'
+import { useQuery } from '@tanstack/react-query'
 
 import { UserCreateWalletResp } from '@/api/wallet/params'
 import { CHAT_CONFIG } from '@/config/chat'
@@ -12,6 +13,8 @@ import { useChatMigrating } from '@/hooks/use-chat-migrating'
 import { utilFmt } from '@/utils/format'
 import { useWallet } from '@/hooks/use-wallet'
 import { useChat } from '@/hooks/use-chat'
+import { walletApi } from '@/api/wallet'
+import { CustomSuspense } from '@/components/custom-suspense'
 
 import type {
   ChatResponseWalletList,
@@ -20,18 +23,27 @@ import type {
 
 interface Props {
   type: string
+  chain: string
 }
 
+const gridCls = 'grid grid-cols-[175px_130px_130px_100px]'
+
 export const WalletList = (props: Props) => {
-  const { type } = props
+  const { type, chain } = props
   const { t } = useTranslation()
   // const { addMessageAndLoading, sendMsg } = useChatMigrating()
   const { sendChat } = useChat()
-  const { wallets, refetchWallets, removeWallet } = useWallet({
-    enabled: true,
-    refetchInterval: 15_000,
+  const {
+    data: walletsData,
+    isLoading,
+    refetch: refetchWallets,
+  } = useQuery({
+    queryKey: [walletApi.getWallets.name + chain, chain],
+    queryFn: () => walletApi.getWallets(chain),
   })
-  // const [active, setActive] = useState(false)
+
+  const { removeWallet } = useWallet()
+  const wallets = walletsData?.data ?? []
   const walletList = wallets.sort(
     (a, b) =>
       new Date(b.added_at ?? 0).getTime() - new Date(a.added_at ?? 0).getTime()
@@ -95,23 +107,29 @@ export const WalletList = (props: Props) => {
           size="small"
           className="!p-2"
         >
-          <RiDeleteBin5Line></RiDeleteBin5Line>
+          <RiDeleteBin5Line />
         </IconButton>
       )
     }
 
-    return <Radio onClick={() => handleSelect(item)} size="small" />
+    console.log('item', item)
+
+    return (
+      <Radio
+        name={item.chain?.name}
+        onClick={() => handleSelect(item)}
+        size="small"
+      />
+    )
   }
 
-  const gridCls = 'grid grid-cols-[175px_130px_130px_100px]'
-
-  const getWalllet = () => {
+  const WalletBody = () => {
     if (walletList?.length == 0) {
       return <div>{t('wallet.list.empty')}</div>
     }
     return (
       <div className="max-h-[260px] overflow-y-scroll">
-        {walletList?.map((item, i) => {
+        {walletList?.map((item) => {
           return (
             <div
               key={item.id}
@@ -121,20 +139,6 @@ export const WalletList = (props: Props) => {
                 'border-t border-gray-200'
               )}
             >
-              {/*<div className="">
-                   <img
-                    src={
-                      item.platform == 'SOL'
-                        ? '/images/chain-logo/Solana.png'
-                        : '/images/monitor/monitor.png'
-                    }
-                    alt="Logo"
-                    width={20}
-                    height={20}
-                    className="mx-auto"
-                  /> 
-                </div>*/}
-
               <div className={clsx('flex items-center justify-start')}>
                 <div className="ml-1 truncate">
                   {item.platform}_{item?.name}
@@ -142,7 +146,8 @@ export const WalletList = (props: Props) => {
               </div>
               <div
                 className={clsx(
-                  'flex items-center text-gray-500 hover:text-gray-600 justify-start'
+                  'flex items-center text-gray-500 justify-start',
+                  'hover:text-gray-600'
                 )}
               >
                 <CopyToClipboard
@@ -172,14 +177,22 @@ export const WalletList = (props: Props) => {
   return (
     <>
       <div className={clsx(gridCls, 'min-w-[320px] pb-2')}>
-        {/* <div className="grid grid-cols-[15px_30px_auto_120px] min-w-[350px] pb-2"> */}
-        {/* <div></div> */}
         <div className="ml-1">{t('wallet.name')}</div>
         <div className="">{t('address')}</div>
         <div className="ml-5">{t('total.balance')}</div>
         <div className="text-center">{t('operation')}</div>
       </div>
-      {getWalllet()}
+      <CustomSuspense isPendding={isLoading} fallback={<WalletBodySkeleton />}>
+        {WalletBody()}
+      </CustomSuspense>
     </>
   )
 }
+
+const WalletBodySkeleton = () => {
+  return Array.from({ length: 5 }).map((_, i) => (
+    <Skeleton key={i} height={40} />
+  ))
+}
+
+export default WalletList
