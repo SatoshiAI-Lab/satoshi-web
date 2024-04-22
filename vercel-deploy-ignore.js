@@ -1,4 +1,4 @@
-console.log(`VERCEL_GIT_COMMIT_REF: ${process.env.VERCEL_GIT_COMMIT_REF}`)
+console.log('VERCEL_GIT_COMMIT_REF:', process.env.VERCEL_GIT_COMMIT_REF)
 
 if (
   process.env.VERCEL_GIT_COMMIT_REF === 'main' ||
