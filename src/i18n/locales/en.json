@@ -283,5 +283,7 @@
   "create-token": "Create token",
   "create-token-details": "Create a token on OP.",
   "tokens": "Tokens",
-  "evm-all-chain": "Support all EVM compatibility chain"
+  "evm-all-chain": "Support all EVM compatibility chain",
+  "new-intelligence-alerts": "new intelligence alerts",
+  "click-to-show": "Click to show"
 }
