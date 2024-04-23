@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect } from 'react'
 import { Button, CircularProgress, Dialog, IconButton } from '@mui/material'
 import { TfiClose } from 'react-icons/tfi'
 import { t } from 'i18next'
@@ -9,16 +9,12 @@ import { useClipboard } from '@/hooks/use-clipboard'
 
 import type { WalletDialogProps } from '../types'
 
-const WalletExportKeyPop: FC<WalletDialogProps> = ({
-  open,
-  onClose,
-  title,
-}) => {
+const WalletExportKeyPop: FC<WalletDialogProps> = (props) => {
+  const { open, onClose, title } = props
   const { currentWallet } = useWalletStore()
   const { privateKey, isExporting, exportPrivateKey, resetExportPrivateKey } =
     useWallet()
-  const { copy } = useClipboard()
-  const [isCopied, setIsCopied] = useState(false)
+  const { isCopied, copy } = useClipboard()
 
   useEffect(() => {
     if (!currentWallet) return
@@ -26,14 +22,6 @@ const WalletExportKeyPop: FC<WalletDialogProps> = ({
 
     exportPrivateKey(currentWallet?.id ?? '')
   }, [currentWallet, open])
-
-  useEffect(() => {
-    if (isCopied) {
-      setTimeout(() => {
-        setIsCopied(false)
-      }, 1_000)
-    }
-  }, [isCopied])
 
   return (
     <Dialog
@@ -70,12 +58,9 @@ const WalletExportKeyPop: FC<WalletDialogProps> = ({
           </div>
           <Button
             variant="contained"
-            classes={{ root: '!rounded-full !px-8' }}
+            classes={{ root: '!px-6' }}
             disabled={isExporting || isCopied}
-            onClick={() => {
-              copy(privateKey)
-              setIsCopied(true)
-            }}
+            onClick={() => copy(privateKey)}
           >
             {isCopied ? t('copied') : t('wallet.copy-privatekey')}
           </Button>

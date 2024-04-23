@@ -2,9 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
-import { nanoid } from 'nanoid'
 
-import MessageBubble from './components/message-bubble'
 import MessageInput from './components/message-input'
 import Messages from './components/messages'
 import Live2DModel from '../live2d-model'
@@ -12,6 +10,10 @@ import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
 import { MessageAlert } from './components/message-alert'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
+import {
+  DefaultMessage,
+  type DefaultMessageOption,
+} from './components/default-message'
 
 export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const { className = '' } = props
@@ -37,23 +39,6 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
       console.log('user stop waiting answer now!!!')
     }, 10000)
   }, 10000)
-  const defaultChatOptions = [
-    {
-      id: nanoid(),
-      title: t('create-wallet'),
-      details: t('create-wallet-details'),
-    },
-    {
-      id: nanoid(),
-      title: t('view-wallets'),
-      details: t('view-wallets-details'),
-    },
-    {
-      id: nanoid(),
-      title: t('create-token'),
-      details: t('create-token-details'),
-    },
-  ]
 
   // Handle send.
   const onSend = async () => {
@@ -72,7 +57,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     await sendMsg()
   }
 
-  const onHelpClick = async (option: (typeof defaultChatOptions)[number]) => {
+  const onOptionClick = async (option: DefaultMessageOption) => {
     setQuestion(option.details)
     addMessageAndLoading({
       msg: option.details,
@@ -105,7 +90,6 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
         )}
       ></div>
       {/* Chat main element */}
-      {(unreadMessages.length && <MessageAlert />) || <></>}
       <div
         className={clsx(
           'grow-[8] overflow-auto pb-0 pr-0',
@@ -116,28 +100,13 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
         <Live2DModel />
         <div
           className={clsx(
-            'flex flex-col items-start grow',
-            'overflow-auto z-10 max-sm:ml-20'
+            'flex flex-col items-start grow overflow-auto z-10 max-sm:ml-20',
+            'relative'
           )}
           ref={chatRef}
         >
-          <MessageBubble className="mt-6">
-            <div className="mb-1">{t('message-default')}</div>
-            <div className="flex items-center text-gray-500">
-              {t('help-me')}:{' '}
-              {defaultChatOptions.map((o) => (
-                <div
-                  className={clsx(
-                    'ml-2 cursor-pointer hover:text-black',
-                    'transition-all duration-300'
-                  )}
-                  onClick={() => onHelpClick(o)}
-                >
-                  {o.title}
-                </div>
-              ))}
-            </div>
-          </MessageBubble>
+          {!!unreadMessages.length && <MessageAlert />}
+          <DefaultMessage onOptionClick={onOptionClick} />
           <Messages messages={messages} />
         </div>
         <MessageInput onSend={onSend} onCancel={cancelAnswer} />

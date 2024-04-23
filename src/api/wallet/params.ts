@@ -18,7 +18,7 @@ interface UserCreateWalletResp {
   user: string
   value: string
   tokens: ChatResponseWalletListToken[]
-  chain: {
+  chain?: {
     id: number
     logo: string
     name: string

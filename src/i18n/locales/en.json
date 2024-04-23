@@ -61,7 +61,7 @@
   "wallet.rename-wallet.success": "Rename wallet success",
   "wallet.deletewallet": "Delete Wallet?",
   "wallet.delete-wallet.success": "Delete wallet success",
-  "wallet.error": "Something went wrong, please try again later",
+  "wallet.error": "Something went wrong, please check private key or try again later",
   "wallet.quickwallettitle": "My Quick Wallet",
   "wallet.createnewwallet": "Create Wallet",
   "wallet.importwallet": "Import Wallet",
@@ -175,7 +175,7 @@
   "create": "Create",
   "asset": "ASSET",
   "value": "VALUE",
-  "balance": "BALANCE",
+  "balance": "Balance",
   "details": "Details",
   "buy": "Buy",
   "sell": "Sell",
@@ -266,7 +266,7 @@
   "trading.timeout": "Trading timeout",
   "trading.fail": "Trade failed",
   "trading.success": "Successful transaction",
-  "export-wallet": "Hover to show private key(Attention private key security)",
+  "export-wallet": "Export {} private key success! hover to show private key(Attention private key security)",
   "deleting": "Wallet deleting...",
   "deleting-error": "Delete failed",
   "delete-success": "Delete success",
@@ -284,5 +284,9 @@
   "create-token-details": "Create a token on OP.",
   "select-token": "Select a token",
   "search.token.name": "Search name or paste address",
-  "my.token": "My tokens in"
+  "my.token": "My tokens in",
+  "tokens": "Tokens",
+  "evm-all-chain": "Support all EVM compatibility chain",
+  "new-intelligence-alerts": "new intelligence alerts",
+  "click-to-show": "Click to show"
 }
