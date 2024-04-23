@@ -48,7 +48,7 @@
   "monitor.exinfo.title": "Track CEX Announcements",
   "paste": "Paste",
   "login.tosignup": "Sign up",
-  "login.successful": "'Sign in successful!'",
+  "login.successful": "Sign in successful!",
   "login.fail": "Invalid account or password!",
   "register.successful": "Congratulations, your registration is complete!",
   "register.fail": "Account already exists!",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineSetting } from 'react-icons/ai'
 import { BiSolidChess, BiSolidWalletAlt } from 'react-icons/bi'

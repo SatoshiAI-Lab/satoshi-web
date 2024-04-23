@@ -2,8 +2,10 @@ import { IoCloseOutline } from 'react-icons/io5'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { Button, Dialog, IconButton } from '@mui/material'
+import { clsx } from 'clsx'
 
 import { Routes } from '@/routes'
+import { useThemeStore } from '@/stores/use-theme-store'
 
 interface Props {
   show: boolean
@@ -14,6 +16,7 @@ export const LoginAuthDialog = (props: Props) => {
   const { show, onClose } = props
   const { t } = useTranslation()
   const { push } = useRouter()
+  const { isDark } = useThemeStore()
 
   const toSignup = () => {
     push(Routes.signup).then(() => {
@@ -31,11 +34,16 @@ export const LoginAuthDialog = (props: Props) => {
     <Dialog open={show}>
       <div className="flex justify-end">
         <IconButton onClick={onClose}>
-          <IoCloseOutline></IoCloseOutline>
+          <IoCloseOutline />
         </IconButton>
       </div>
       <div className="px-10 pb-10">
-        <img src="/images/logos/black.png" alt="Logo" width={230} height={30} />
+        <img
+          src={isDark ? '/images/logos/white.png' : '/images/logos/black.png'}
+          alt="Logo"
+          width={230}
+          height={30}
+        />
         <div className="pt-2 pb-5">{t('need.login.text1')}</div>
         <div className="flex flex-col items-center">
           <img
@@ -57,7 +65,10 @@ export const LoginAuthDialog = (props: Props) => {
           <Button
             variant="outlined"
             color="inherit"
-            className="w-[350px] !text-lg !border-black !rounded-full"
+            className={clsx(
+              'w-[350px] !text-lg !border-black !rounded-full',
+              'dark:!border-gray-400'
+            )}
             size="large"
             onClick={toLogin}
           >
