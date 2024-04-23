@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 import { Avatar, MenuItem, Select } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 import { useWalletStore } from '@/stores/use-wallet-store'
 
@@ -41,7 +41,9 @@ export const ChainPlatformSelect = memo((props: Props) => {
               >
                 {c.name}
               </Avatar>
-              <div className="ml-2 dark:text-gray-300">{c.name}</div>
+              <div className="ml-2 dark:text-gray-300 first-letter:uppercase">
+                {c.name}
+              </div>
             </MenuItem>
           ))}
         </Select>
