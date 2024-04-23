@@ -5,6 +5,7 @@ import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { UserCreateWalletResp } from '@/api/wallet/params'
 import { FetcherResponse } from '@/api/fetcher/types'
+import { WalletChain } from '@/config/wallet'
 
 interface Options {
   enabled?: boolean
@@ -20,7 +21,8 @@ export const useWallet = (options?: Options) => {
 
   const getAllWallet = async () => {
     const allWallet: Promise<FetcherResponse<UserCreateWalletResp[]>>[] = []
-    ;['Solana', 'Ethereum', 'Optimism', 'Arbitrum'].forEach((chain) => {
+
+    Object.values(WalletChain).forEach((chain) => {
       allWallet.push(walletApi.getWallets(chain))
     })
     const data = await Promise.all(allWallet)

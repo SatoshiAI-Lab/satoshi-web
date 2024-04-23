@@ -5,12 +5,12 @@ export enum WalletPlatform {
 }
 
 export enum WalletChain {
-  SOL = 'Solana',
-  ETH = 'Ethereum',
-  BSC = 'BSC',
-  OP = 'Optimism',
-  ARB = 'Arbitrum',
-  BASE = 'BASE',
+  SOL = 'solana',
+  ETH = 'ethereum',
+  BSC = 'bsc',
+  OP = 'optimism',
+  ARB = 'arbitrum',
+  BASE = 'base',
 }
 
 export type WalletChainSymbol = keyof typeof WalletChain
