@@ -109,7 +109,7 @@ export const BalanceMessage = (props: Props) => {
         </TableCell>
         <TableCell classes={{ root: '!text-gray-400' }}>{t('value')}</TableCell>
         <TableCell classes={{ root: '!text-gray-400' }}>
-          {t('balance')}
+          {t('balance').toUpperCase()}
         </TableCell>
         <TableCell classes={{ root: '!text-gray-400' }}>
           {t('price').toUpperCase()}

@@ -89,7 +89,7 @@ export const CHAT_CONFIG = {
     monitorWalletFail: 'subscript_wallet_address_fail',
     changeNameWalletList: 'change_name_wallet_list',
     exportWalletList: 'export_wallet_list',
-    deleteNameWalletList: 'delete_name_wallet_list',
+    deleteNameWalletList: 'delete_wallet_list',
     createTokenNoWallet: 'create_token_no_wallet',
     createTokenHaveWallet: 'create_token_have_wallet',
     transactionConfirmBuy: 'transaction_confirm_buy',
@@ -106,14 +106,13 @@ export const CHAT_CONFIG = {
   intentSelectWalletType: [
     'change_name_wallet_list',
     'export_wallet_list',
-    'delete_name_wallet_list',
+    'delete_wallet_list',
   ],
 
   hiddenIntentText: [
     'subscript_twitter_list',
     'pool_cancel_list',
     'twitter_cancel_list',
-    'delete_name_wallet_list',
     'subscript_wallet_address_success',
     'subscript_announcement_list',
     'subscript_pool_list',

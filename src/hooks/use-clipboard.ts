@@ -1,10 +1,20 @@
+import { useEffect, useRef, useState } from 'react'
 import { t } from 'i18next'
 import toast from 'react-hot-toast'
 
+interface Options {
+  // `isCopied` state reset delay.
+  delay?: number
+}
+
 /**
- * Clipboard hook. supported lower version browser.
+ * Clipboard hook, supported lower version browser.
  */
-export const useClipboard = () => {
+export const useClipboard = (options?: Options) => {
+  const { delay = 1000 } = options ?? {}
+  const [isCopied, setIsCopied] = useState(false)
+  const timerRef = useRef<number>()
+
   const deprecatedCopy = (content: string) => {
     try {
       const textarea = document.createElement('textarea')
@@ -19,6 +29,7 @@ export const useClipboard = () => {
       document.body.removeChild(textarea)
 
       toast.success(t('copy-success'))
+      setIsCopied(true)
       return Promise.resolve(true)
     } catch (error) {
       toast.error(t('copy-failed') + error)
@@ -34,6 +45,7 @@ export const useClipboard = () => {
 
       await navigator.clipboard.writeText(content)
       toast.success(tips ?? t('copy-success'))
+      setIsCopied(true)
       return true
     } catch (error) {
       toast.error(errTips ?? t('copy-failed') + error)
@@ -41,7 +53,22 @@ export const useClipboard = () => {
     }
   }
 
+  const resetIsCopied = () => setIsCopied(false)
+
+  useEffect(() => {
+    if (!delay) return
+    if (isCopied) {
+      timerRef.current = window.setTimeout(() => {
+        setIsCopied(false)
+      }, delay)
+    }
+
+    return () => clearTimeout(timerRef.current)
+  }, [isCopied])
+
   return {
+    isCopied,
+    resetIsCopied,
     copy,
   }
 }

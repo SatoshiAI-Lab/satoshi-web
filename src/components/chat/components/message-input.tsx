@@ -4,7 +4,7 @@ import { FaPaperPlane } from 'react-icons/fa'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { Button, IconButton, TextareaAutosize } from '@mui/material'
 import { useKey } from 'react-use'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { useAudioRecorder } from 'react-audio-voice-recorder'
 import { MdMic } from 'react-icons/md'
 

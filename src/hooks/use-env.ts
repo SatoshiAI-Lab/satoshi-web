@@ -1,6 +1,10 @@
+/**
+ * Management `.env*` file.
+ */
 export const useEnv = () => {
   return {
-    isDevMode: process.env.NODE_ENV === 'development',
-    isProdMode: process.env.NODE_ENV === 'production',
+    // env mode.
+    isDev: process.env.NODE_ENV === 'development',
+    isProd: process.env.NODE_ENV === 'production',
   }
 }

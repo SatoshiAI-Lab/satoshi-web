@@ -1,5 +1,4 @@
 import { useWebSocket } from '@/hooks/use-websocket'
-import { URL_CONFIG } from '@/config/url'
 
 import type {
   WithPromiseExecutor,
@@ -27,7 +26,7 @@ export const useKLineApi = () => {
   const waitingForConnect = async () => {
     if (ws.getInstance()?.readyState === WebSocket.OPEN) return
 
-    await ws.connect(URL_CONFIG.kline)
+    await ws.connect(process.env.NEXT_PUBLIC_CANDLE_API)
   }
 
   // Unified wrap API, waiting for connect, convert to sync API, handle error.

@@ -1,9 +1,7 @@
 import { Html, Head, Main, NextScript } from 'next/document'
 
-import { URL_CONFIG } from '@/config/url'
-
 export default function Document() {
-  const baseURL = `${URL_CONFIG.cdn}/live2d/js`
+  const baseURL = `${process.env.NEXT_PUBLIC_CDN_URL}/live2d/js`
 
   return (
     <Html lang="en" className="dark">
