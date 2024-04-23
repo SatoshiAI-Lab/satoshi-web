@@ -34,7 +34,7 @@ export const ChainPlatformSelect = memo((props: Props) => {
           onChange={({ target }) => setSelectedChain(target.value)}
         >
           {chains?.map((c, i) => (
-            <MenuItem key={i} value={c.name}>
+            <MenuItem key={i} value={c.name} className="dark:!text-gray-300">
               <Avatar
                 src={c.logo}
                 sx={{ width: avatarSize, height: avatarSize }}
