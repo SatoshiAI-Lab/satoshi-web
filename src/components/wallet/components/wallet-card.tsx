@@ -7,7 +7,7 @@ import { t } from 'i18next'
 import { clsx } from 'clsx'
 
 import { utilFmt } from '@/utils/format'
-import { WalletPlatform } from '@/config/wallet'
+import { WalletChain, WalletPlatform } from '@/config/wallet'
 
 import type { WalletCardProps as WalletProps } from '@/stores/use-wallet-store'
 import type { WalletCardProps } from '../types'
@@ -106,19 +106,19 @@ const ChainLogos = (props: Pick<Props, 'wallet'>) => {
   const baseURL = process.env.NEXT_PUBLIC_CDN_URL
   const evmLogos = [
     {
-      src: `${baseURL}/chains/logo/Ethereum.png`,
+      src: `${baseURL}/chains/logo/${WalletChain.ETH}.png`,
       tooltip: 'Ethereum(ETH)',
     },
     {
-      src: `${baseURL}/chains/logo/BSC.png`,
+      src: `${baseURL}/chains/logo/${WalletChain.BSC}.png`,
       tooltip: 'Binance Smart Chain(BSC)',
     },
     {
-      src: `${baseURL}/chains/logo/Optimism.png`,
+      src: `${baseURL}/chains/logo/${WalletChain.OP}.png`,
       tooltip: 'Optimism(OP)',
     },
     {
-      src: `${baseURL}/chains/logo/Arbitrum.png`,
+      src: `${baseURL}/chains/logo/${WalletChain.ARB}.png`,
       tooltip: 'Arbitrum(ARB)',
     },
   ]
