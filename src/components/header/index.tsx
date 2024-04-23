@@ -43,7 +43,7 @@ export const Header = () => {
   const openLogoutWallet = Boolean(anchorEl)
   const { socket, setMessages } = useChatStore()
   const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
-  const { isDark } = useThemeStore()
+  const { isDark, setIsDark } = useThemeStore()
 
   const items: HeaderItem[] = []
 
@@ -128,6 +128,9 @@ export const Header = () => {
             <DesktopHeader items={items} onItemClick={onItemClick} />
           )}
         </div>
+        <Button variant="contained" onClick={() => setIsDark(!isDark)}>
+          toggle theme
+        </Button>
         <div className="flex items-center">
           <div className="flex mr-2">
             {socialLink.map((item, index) => (

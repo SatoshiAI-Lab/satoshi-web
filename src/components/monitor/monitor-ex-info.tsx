@@ -1,16 +1,15 @@
+import React, { useState } from 'react'
+import { Switch } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import { clsx } from 'clsx'
+
+import type { AnnouncementList } from '@/api/monitor/type'
+
 import { MonitorLabelSwitch } from './monitor-label-switch'
 import { MonitorConfig } from '@/config/monitor'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 
-import type { AnnouncementList } from '@/api/monitor/type'
-import clsx from 'clsx'
-import { useState } from 'react'
-import { Switch } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-
-interface Props {
-  className?: string
-}
+interface Props extends React.ComponentProps<'div'> {}
 
 export const MonitorEXInfo = ({ className }: Props) => {
   const { t } = useTranslation()
@@ -79,7 +78,7 @@ export const MonitorEXInfo = ({ className }: Props) => {
               disabled={!!loadingId}
               logo={`https://img.mysatoshi.ai/exchange/logo/${item.name}.png`}
               onSwitch={(checked) => onSwitch(item, checked)}
-            ></MonitorLabelSwitch>
+            />
           )
         })}
       </div>
