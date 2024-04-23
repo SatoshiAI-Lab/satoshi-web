@@ -1,19 +1,19 @@
-import { ChatResponseTxConfrim, TokenInfo } from '@/api/chat/types'
-import { DialogHeader } from '@/components/dialog-header'
-import { useShow } from '@/hooks/use-show'
-import { Dialog, Menu, MenuItem, OutlinedInput } from '@mui/material'
 import clsx from 'clsx'
+
+import { ChatResponseTxConfrim, TokenInfo } from '@/api/chat/types'
+import { useShow } from '@/hooks/use-show'
+import { Menu, MenuItem } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IoIosArrowDown } from 'react-icons/io'
-import { IoScanCircle, IoSearchCircle, IoSearchOutline } from 'react-icons/io5'
 import { SelectTokenDialog } from './select-token-dialog'
 
 interface Props {
-  tokenList?: TokenInfo[]
-  selectToken?: TokenInfo
+  toTokenList?: TokenInfo[]
+  fromTokenList?: TokenInfo[]
+  selectFromToken?: TokenInfo
+  selectToToken?: TokenInfo
   isBuy: boolean
-  isFrom: boolean
   isFinalTx: boolean
   data: ChatResponseTxConfrim
   switchToken: (token: TokenInfo) => void
@@ -21,24 +21,76 @@ interface Props {
 
 export const SelectToken: React.FC<Props> = ({
   switchToken,
-  tokenList,
+  toTokenList,
+  fromTokenList,
   isBuy,
-  selectToken,
+  selectFromToken,
+  selectToToken,
   data,
-  isFrom,
   isFinalTx,
 }: Props) => {
+  const isFrom = selectFromToken != null
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const showMenu = Boolean(anchorEl)
+
   const { t } = useTranslation()
   const { show, open, hidden } = useShow(false)
 
   const handleClick = (token: TokenInfo) => {
     switchToken(token)
+    setAnchorEl(null)
     hidden()
   }
 
   const onSwitch = (event: any) => {
+    // open()
+
+    setAnchorEl(event.target)
+  }
+
+  const onCloseMenu = () => {
+    setAnchorEl(null)
+  }
+
+  const selectOtherToken = () => {
+    setAnchorEl(null)
     open()
   }
+
+  const tokenMenu = (tokenList: TokenInfo[]) => (
+    <Menu
+      anchorEl={anchorEl}
+      open={showMenu}
+      onClose={onCloseMenu}
+      MenuListProps={{
+        'aria-labelledby': 'basic-button',
+      }}
+    >
+      {tokenList?.map((item, i) => {
+        return (
+          <MenuItem
+            key={i}
+            onClick={() => handleClick(item)}
+            selected={
+              (isBuy ? selectFromToken : selectToToken)?.chain_name ==
+              item.chain_name
+            }
+          >
+            <div className="flex flex-col">
+              <span>{`${item.token_name}`}</span>
+              <div className="flex items-center">
+                <span className="text-gray-400 text-sm leading-none">
+                  {item.chain_name}
+                </span>
+              </div>
+            </div>
+          </MenuItem>
+        )
+      })}
+      <MenuItem onClick={selectOtherToken}>{t('select.token')}</MenuItem>
+    </Menu>
+  )
+
   if (isFrom) {
     return (
       <>
@@ -51,25 +103,26 @@ export const SelectToken: React.FC<Props> = ({
           onClick={onSwitch}
         >
           <img
-            src={selectToken?.chain_logo}
+            src={selectFromToken?.chain_logo!}
             alt="chain-slogo"
             width={18}
             height={18}
-            className="w-[18px] h-[18px] mr-1"
+            className="w-[18px] h-[18px] mr-1 pointer-events-none"
           ></img>
-          {`${selectToken?.token_name}`}
-          <IoIosArrowDown className="ml-1 w-[34px]"></IoIosArrowDown>
+          {`${selectFromToken?.token_name}`}
+          <IoIosArrowDown className="ml-1 w-[34px]  pointer-events-none"></IoIosArrowDown>
         </div>
         {isBuy ? (
           <SelectTokenDialog show={show} open={open} hidden={hidden} />
         ) : null}
+        {tokenMenu(fromTokenList!)}
       </>
     )
   }
 
-  const toToken = data.to_token_info.find(
-    (t) => t == selectToken
-  )
+ 
+  console.log('selectToToken', selectToToken)
+  
 
   return (
     <>
@@ -81,24 +134,12 @@ export const SelectToken: React.FC<Props> = ({
         )}
         onClick={onSwitch}
       >
-        {isBuy ? (
-          data.to_token_name?.toUpperCase()
-        ) : (
-          <>
-            <img
-              src={toToken?.chain_logo}
-              width={22}
-              height={22}
-              className="w-[20px] h-[20px] mr-1"
-            />
-            {toToken?.token_name}
-            <IoIosArrowDown className="ml-1"></IoIosArrowDown>
-          </>
-        )}
+        <>
+          {selectToToken?.token_name}
+          <IoIosArrowDown className="ml-1"></IoIosArrowDown>
+        </>
       </div>
-      {!isBuy ? (
-        <SelectTokenDialog show={show} open={open} hidden={hidden} />
-      ) : null}
+      <SelectTokenDialog show={show} open={open} hidden={hidden} />
     </>
   )
 }

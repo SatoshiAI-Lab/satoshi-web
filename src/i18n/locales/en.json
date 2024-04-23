@@ -288,5 +288,6 @@
   "my.token": "My tokens in",
   "tokens": "Tokens",
   "evm-all-chain": "Support all EVM compatibility chain",
-  "click-to-show": "Click to show"
+  "click-to-show": "Click to show",
+  "select.token": "Select a token"
 }

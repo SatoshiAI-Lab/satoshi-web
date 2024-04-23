@@ -70,23 +70,25 @@ export const TxTokenBubbles = (props: Props) => {
   const { t } = useTranslation()
 
   const {
-    selectToken,
+    selectFromToken,
+    selectToToken,
     sortedCheckedWalletList,
     walletList,
-    tokenList,
+    toTokenList,
+    fromTokenList,
     selectWallet,
     setSelectWallet,
-    setSelectToken,
+    setSelectFromToken,
   } = useTxToken({
     isBuy,
     data,
   })
 
-  const getSelectTokenInfo = (wallet?: WalletCardProps) => {
-    return wallet?.tokens?.find((t) => t.address == selectToken?.contract)
+  const getselectFromTokenInfo = (wallet?: WalletCardProps) => {
+    return wallet?.tokens?.find((t) => t.address == selectFromToken?.contract)
   }
 
-  const selectWalletToken = getSelectTokenInfo(selectWallet)
+  const selectWalletToken = getselectFromTokenInfo(selectWallet)
 
   const handleRateClick = (rate: number) => {
     if (!selectWalletToken) return
@@ -131,10 +133,10 @@ export const TxTokenBubbles = (props: Props) => {
 
     const getToken = (isFrom: boolean) => {
       if (isFrom) {
-        return selectToken
+        return selectFromToken
       } else {
         // return data.to_token_info.find(
-        //   (t) => t.platform_id == selectToken?.platform_id
+        //   (t) => t.platform_id == selectFromToken?.platform_id
         // )
       }
     }
@@ -144,7 +146,7 @@ export const TxTokenBubbles = (props: Props) => {
 
     try {
       const { data } = await trandApi.swapToken(selectWallet.id!, {
-        chain: inputToken?.chain,
+        chain: inputToken?.chain_name,
         amount: `${buyValue}`,
         input_token: `${inputToken?.contract}`,
         output_token: `${outputToken?.contract}`,
@@ -154,7 +156,7 @@ export const TxTokenBubbles = (props: Props) => {
       const getStatus = async () => {
         const { data: result } = await interactiveApi.getHashStatus({
           hash_tx: data.hash_tx,
-          chain: inputToken?.chain,
+          chain: inputToken?.chain_name,
         })
         if (result.status == 0) {
           await getStatus()
@@ -190,7 +192,7 @@ export const TxTokenBubbles = (props: Props) => {
       <div className="font-bold mt-1 mb-1">
         {(isBuy ? t('tx.token.text1') : t('tx.token2')).replace(
           '$1',
-          selectToken?.token_name ?? ''
+          selectFromToken?.token_name ?? ''
         )}
       </div>
       <div className="flex items-center">
@@ -208,25 +210,14 @@ export const TxTokenBubbles = (props: Props) => {
             size="small"
             placeholder={t('custom')}
             endAdornment={
-              isBuy ? (
-                <SelectToken
-                  isFrom
-                  isBuy
-                  tokenList={tokenList}
-                  selectToken={selectToken}
-                  switchToken={setSelectToken}
-                  data={data}
-                  isFinalTx={isFinalTx}
-                ></SelectToken>
-              ) : (
-                <div
-                  className={clsx(
-                    'h-full leading-none py-[14px] text-sm border-l-2 text-nowrap pl-3'
-                  )}
-                >
-                  {data.from_token_name}
-                </div>
-              )
+              <SelectToken
+                isBuy
+                fromTokenList={fromTokenList}
+                selectFromToken={selectFromToken}
+                switchToken={setSelectFromToken}
+                data={data}
+                isFinalTx={isFinalTx}
+              ></SelectToken>
             }
             value={buyValue}
             disabled={isFinalTx}
@@ -238,11 +229,10 @@ export const TxTokenBubbles = (props: Props) => {
           className="mx-5 text-gray-700"
         ></FaArrowRightLong>
         <SelectToken
-          isFrom={false}
           isBuy={isBuy}
-          tokenList={tokenList}
-          selectToken={selectToken}
-          switchToken={setSelectToken}
+          toTokenList={toTokenList}
+          selectToToken={selectToToken}
+          switchToken={setSelectFromToken}
           data={data}
           isFinalTx={isFinalTx}
         ></SelectToken>
@@ -312,7 +302,7 @@ export const TxTokenBubbles = (props: Props) => {
         isFinalTx={isFinalTx}
         walletList={sortedCheckedWalletList}
         onSelectWallet={(w) => setSelectWallet(w)}
-        getSelectTokenInfo={getSelectTokenInfo}
+        getSelectTokenInfo={getselectFromTokenInfo}
       ></WalletList>
 
       <div className="mt-5 flex">

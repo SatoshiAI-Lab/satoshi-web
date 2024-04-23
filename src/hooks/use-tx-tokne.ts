@@ -14,20 +14,25 @@ interface Options {
 export const useTxToken = ({ isBuy, data }: Options) => {
   const { currentWallet, allWallets } = useWalletStore()
 
-  let tokenList = data.from_token_info
+  let fromTokenList = data.from_token_info
+  let toTokenList = data.to_token_info
+
+  console.log('data', data)
+  
 
   let checkedWalletList: WalletCardProps[] = []
-  
-  tokenList = tokenList.filter((token) => {
+
+  fromTokenList = fromTokenList.filter((token) => {
     for (let i = 0; i < allWallets.length; i++) {
       const wallet = allWallets[i]
-      // if (wallet.platform !== token.platform) {
-      //   continue
-      // }
+
+      if (wallet.chain?.name !== token.chain_name) {
+        continue
+      }
 
       const result = wallet.tokens?.some((item) => {
         return (
-          item.chain_name == token.chain &&
+          item.chain_name == token.chain_name &&
           item.symbol == token.token_name &&
           item.valueUsd > 0
         )
@@ -41,13 +46,44 @@ export const useTxToken = ({ isBuy, data }: Options) => {
     return false
   })
 
-  const [selectToken, setSelectToken] = useState<TokenInfo | undefined>(
-    tokenList[0]
+  const selectFirstFromToken = fromTokenList[0]
+
+  toTokenList = toTokenList.filter((token) => {
+    for (let i = 0; i < allWallets.length; i++) {
+      const wallet = allWallets[i]
+      // if (wallet.platform !== token.platform) {
+      //   continue
+      // }
+
+      // const result = wallet.tokens?.some((item) => {
+      //   return (
+      //     item.chain_name == token.chain_name && item.symbol == token.token_name
+      //   )
+      // })
+
+      // if (result) {
+      //   checkedWalletList.push(wallet)
+      //   return result
+      // }
+    }
+    return false
+  })
+
+  console.log(toTokenList)
+
+  const selectFirstToToken = toTokenList[0]
+
+  const [selectFromToken, setSelectFromToken] = useState<TokenInfo | undefined>(
+    selectFirstFromToken
+  )
+
+  const [selectToToken, setSelectToToken] = useState<TokenInfo | undefined>(
+    selectFirstToToken
   )
 
   const sortedCheckedWalletList = checkedWalletList
     // Filter the wallet of the chain corresponding to the token
-    .filter((w) => w.chain?.name == selectToken?.chain)
+    .filter((w) => w.chain?.name == selectFromToken?.chain_name)
     // Filter wallets in descending order of balance size
     ?.sort((a, b) => {
       const x = new Date(b.added_at!).getTime()
@@ -67,7 +103,9 @@ export const useTxToken = ({ isBuy, data }: Options) => {
 
     return (
       data.from_token_info.findIndex((item) => {
-        return item.token_name == token.symbol && item.chain == token.chain_name
+        return (
+          item.token_name == token.symbol && item.chain_name == token.chain_name
+        )
       }) != -1
     )
   }
@@ -87,19 +125,22 @@ export const useTxToken = ({ isBuy, data }: Options) => {
 
   useEffect(() => {
     setSelectWallet(sortedCheckedWalletList[0])
-  }, [selectToken])
+  }, [selectFromToken])
 
   return {
     walletList,
     currentWallet,
     sortedCheckedWalletList,
-    selectToken,
-    tokenList,
+    selectFromToken,
+    selectToToken,
+    fromTokenList,
+    toTokenList,
     checkedWalletList,
     selectWallet,
     setSelectWallet,
     open,
     checkToken,
-    setSelectToken,
+    setSelectFromToken,
+    setSelectToToken,
   }
 }

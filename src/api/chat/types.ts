@@ -48,8 +48,9 @@ export interface ChatResponseTxConfrim {
 }
 
 export interface TokenInfo {
-  chain: WalletChain
+  chain_name: WalletChain
   token_name: null | string
+  token_logo: null | string
   contract: string
   chain_logo: string
   chain_id: string
