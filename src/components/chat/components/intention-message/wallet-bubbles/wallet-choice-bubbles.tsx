@@ -19,7 +19,6 @@ export const WalletChoiceBubble = ({ msg }: Props) => {
   //   const question = t('delete.wallet.intent.text').replace('$1', wallet.name)
   //   sendChat({ question })
   // }
-
   return (
     <MessageBubble>
       <WalletList type={msg.type ?? ''} chain={msg.chain ?? ''} />

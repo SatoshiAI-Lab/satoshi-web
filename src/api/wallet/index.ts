@@ -1,3 +1,4 @@
+import { useStorage } from '@/hooks/use-storage'
 import { fetchSatoshi } from '..'
 import {
   UserCreateWalletReq,
@@ -13,8 +14,12 @@ import {
   GetChainsRes,
 } from './params'
 
+const { getLoginToken } = useStorage()
 export const walletApi = {
   getWallets(chain?: string) {
+    if (!getLoginToken()) {
+      return Promise.reject()
+    }
     return fetchSatoshi.get<UserCreateWalletResp[]>('/api/v1/wallet/', {
       chain,
     })
@@ -49,6 +54,9 @@ export const walletApi = {
 
   // Get all supported chains.
   getChains() {
+    if (!getLoginToken()) {
+      return Promise.reject()
+    }
     return fetchSatoshi.get<GetChainsRes>('/api/v1/chain/')
   },
 
