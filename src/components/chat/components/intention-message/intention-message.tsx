@@ -16,7 +16,7 @@ interface Props {
   msg: Message
 }
 
-export const IntentMessage = ({ msg }: Props) => {
+export const IntentionMessage = ({ msg }: Props) => {
   const { intentSelectWalletType, intentTxToken } = CHAT_CONFIG
   const { walletList } = CHAT_CONFIG.answerType
   const {

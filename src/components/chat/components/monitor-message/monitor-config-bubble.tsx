@@ -17,7 +17,7 @@ interface Props {
   msg: Message
 }
 
-export const MonitorConfigBubble = ({ msg }: Props) => {
+export const MonitorMessages = ({ msg }: Props) => {
   if (msg.data_type === DataType.NewsInfo) {
     return <NewsBubble data={msg as unknown as ChatResponseMetaNewsInfo} />
   }
