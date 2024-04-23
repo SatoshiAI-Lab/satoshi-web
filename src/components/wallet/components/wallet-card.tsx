@@ -104,19 +104,19 @@ const ChainLogos = (props: Pick<Props, 'wallet'>) => {
   const baseURL = process.env.NEXT_PUBLIC_CDN_URL
   const evmLogos = [
     {
-      src: `${baseURL}/chains/logo/Ethereum.png`,
+      src: `${baseURL}/chains/logo/ethereum.png`,
       tooltip: 'Ethereum(ETH)',
     },
     {
-      src: `${baseURL}/chains/logo/BSC.png`,
+      src: `${baseURL}/chains/logo/bsc.png`,
       tooltip: 'Binance Smart Chain(BSC)',
     },
     {
-      src: `${baseURL}/chains/logo/Optimism.png`,
+      src: `${baseURL}/chains/logo/optimism.png`,
       tooltip: 'Optimism(OP)',
     },
     {
-      src: `${baseURL}/chains/logo/Arbitrum.png`,
+      src: `${baseURL}/chains/logo/arbitrum.png`,
       tooltip: 'Arbitrum(ARB)',
     },
   ]
