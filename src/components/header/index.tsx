@@ -41,14 +41,7 @@ export const Header = () => {
   const { show, open, hidden } = useShow()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openLogoutWallet = Boolean(anchorEl)
-  const { socket, setMessage } = useChatStore()
-  const activeLang = useMemo(() => {
-    const cachedLang = getLang()
-    const defaultLang = langs.find((l) => l.key === i18n.language)?.key
-    const fallbackLang = utilArr.first(langs).key
-
-    return cachedLang ?? defaultLang ?? fallbackLang
-  }, [i18n, t])
+  const { socket, setMessages } = useChatStore()
   const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
   const { isDark } = useThemeStore()
 
@@ -82,6 +75,8 @@ export const Header = () => {
   const onLangChange = (item: CustomDropdownItem) => {
     const lang = String(item.key)
 
+    if (i18n.language === lang) return
+
     i18n.changeLanguage(lang)
     setLang(lang)
   }
@@ -94,7 +89,7 @@ export const Header = () => {
     socket?.close(1000)
     // if (socket?.CLOSED == 3) {
     logout()
-    setMessage([])
+    setMessages([])
     handleCreatClose()
     toast.success(t('logout.success'))
     // }
@@ -148,7 +143,7 @@ export const Header = () => {
           {/* Language dropdown */}
           <CustomDropdown
             items={langs}
-            active={activeLang}
+            active={getLang() || 'en'}
             onItemClick={onLangChange}
           >
             <IoLanguageOutline
