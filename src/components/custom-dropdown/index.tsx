@@ -5,7 +5,7 @@ import { clsx } from 'clsx'
 
 import type { CustomDropdownProps, CustomDropdownItem } from './types'
 
-function CustomDropdown(props: CustomDropdownProps) {
+export const CustomDropdown = (props: CustomDropdownProps) => {
   const {
     children,
     items,

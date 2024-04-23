@@ -4,15 +4,18 @@ import { Button, Menu, MenuItem } from '@mui/material'
 import { IoLanguageOutline } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 import { IoLogOutOutline } from 'react-icons/io5'
-import clsx from 'clsx'
-import toast from 'react-hot-toast'
+import { clsx } from 'clsx'
+import { toast } from 'react-hot-toast'
 import { FaBloggerB, FaGithub } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 
-import MobileHeader from './components/mobile'
-import DesktopHeader from './components/desktop'
-import CustomDropdown from '../custom-dropdown'
-import LoginDialog from '../login-dialog'
+import type { CustomDropdownItem } from '../custom-dropdown/types'
+import type { HeaderItem } from './types'
+
+import { MobileHeader } from './components/mobile'
+import { DesktopHeader } from './components/desktop'
+import { CustomDropdown } from '../custom-dropdown'
+import { LoginDialog } from '../login-dialog'
 import { Routes } from '@/routes'
 import { useResponsive } from '@/hooks/use-responsive'
 import { utilArr } from '@/utils/array'
@@ -22,11 +25,14 @@ import { useUserStore } from '@/stores/use-user-store'
 import { useShow } from '@/hooks/use-show'
 import { utilFmt } from '@/utils/format'
 import { useChatStore } from '@/stores/use-chat-store'
+import { resources } from '@/i18n'
 
-import type { CustomDropdownItem } from '../custom-dropdown/types'
-import type { HeaderItem } from './types'
+const langs = Object.entries(resources).map(([key, val]) => ({
+  key: key,
+  label: val.name as string,
+}))
 
-function Header() {
+export const Header = () => {
   const router = useRouter()
   const { isMobile, isDesktop } = useResponsive()
   const { getLang, setLang } = useStorage()
@@ -36,13 +42,6 @@ function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openLogoutWallet = Boolean(anchorEl)
   const { socket, setMessage } = useChatStore()
-
-  const langs = useMemo(() => {
-    return Object.entries(i18n.options.resources ?? {}).map(([key, value]) => ({
-      key: key,
-      label: value.name as string,
-    }))
-  }, [])
   const activeLang = useMemo(() => {
     const cachedLang = getLang()
     const defaultLang = langs.find((l) => l.key === i18n.language)?.key
@@ -50,7 +49,6 @@ function Header() {
 
     return cachedLang ?? defaultLang ?? fallbackLang
   }, [i18n, t])
-
   const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
   const { isDark } = useThemeStore()
 
@@ -108,7 +106,6 @@ function Header() {
   }
 
   useEffect(() => {
-    console.log('utilArr.first(langs).key', activeLang, i18n.language)
     fetchUserInfo()
   }, [])
 
