@@ -99,7 +99,7 @@
   "login.register": "Sign in",
   "login": "Sign in",
   "register": "Sign up",
-  "need.login": "Need to Sign in",
+  "need.login": "Please sign in / sign up before",
   "need.login.text1": " Please create an account to use my services.",
   "need.login.text2": "Already have an account?",
   "login.2": "Sign in",
@@ -270,6 +270,7 @@
   "deleting": "Wallet deleting...",
   "deleting-error": "Delete failed",
   "delete-success": "Delete success",
+  "folded-message": "new intelligence alerts",
   "sol-wallet": "Solana Wallet",
   "evm-wallet": "EVM Wallet",
   "evm-support": "Support: Full EVM Layer2(BSC/OP etc)",
@@ -284,6 +285,5 @@
   "create-token-details": "Create a token on OP.",
   "tokens": "Tokens",
   "evm-all-chain": "Support all EVM compatibility chain",
-  "new-intelligence-alerts": "new intelligence alerts",
   "click-to-show": "Click to show"
 }

@@ -1,20 +1,35 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { chatApi } from '@/api/chat'
 import { useUserStore } from '@/stores/use-user-store'
 import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
-import { useChat } from './use-chat'
-import { useTranslation } from 'react-i18next'
+import { utilDom } from '@/utils/dom'
+import { useMessages } from './use-messages'
+
+interface MonitorOnEvents {
+  event: {
+    type: string
+    data: any
+  }
+}
+
+interface MonitorEmitEvents {
+  lang: {
+    lang: string
+  }
+}
 
 export const useChatMonitorMsg = () => {
   const { i18n } = useTranslation()
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
-  const { setUnreadMessage } = useChatStore()
-  const { addMonitorMessage } = useChat()
-  const ws = useWebSocket({
+  const { chatEl, setUnreadMessage } = useChatStore()
+  // const { addMonitorMessage } = useChatMigrating()
+  const { addMonitorMessages } = useMessages()
+  const ws = useWebSocket<MonitorOnEvents, MonitorEmitEvents>({
     heartbeat: JSON.stringify({ type: 'ping' }),
   })
   const baseURL = `${process.env.NEXT_PUBLIC_SATOSHI_MONITOR_API}/ws/chat/`
@@ -53,7 +68,8 @@ export const useChatMonitorMsg = () => {
           ...data.reverse(),
         ])
       } else {
-        addMonitorMessage(data.reverse())
+        addMonitorMessages(data.reverse())
+        chatEl && utilDom.scrollToBottom(chatEl)
       }
     })
   }

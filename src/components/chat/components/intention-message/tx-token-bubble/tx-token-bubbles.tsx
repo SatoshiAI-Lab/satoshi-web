@@ -16,18 +16,15 @@ import { SelectToken } from './select-token'
 import { WalletCardProps } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
 import { trandApi } from '@/api/trand'
-import { useChat } from '@/hooks/use-chat'
 import { useWallet } from '@/hooks/use-wallet'
 import { interactiveApi } from '@/api/interactive'
 import MessageBubble from '../../message-bubble'
+import { useChatStore } from '@/stores/use-chat-store'
 
-import type {
-  ChatResponseAnswerMeta,
-  ChatResponseTxConfrim,
-} from '@/api/chat/types'
+import type { ChatResponseMeta, ChatResponseTxConfrim } from '@/api/chat/types'
 
 interface Props {
-  msg: ChatResponseAnswerMeta
+  msg: ChatResponseMeta
 }
 
 const rates = [20, 50, 100]
@@ -40,9 +37,9 @@ export const TxTokenBubbles = (props: Props) => {
   const [validateErr, setValidateErr] = useState<string[]>([])
   const [isFinalTx, setIsFinalTx] = useState(false)
   const { show: loading, open: showLoading, hidden: hiddenLoading } = useShow()
-
-  const { addMessage } = useChat()
   const { getAllWallet } = useWallet()
+  // const { addMessage } = useChatMigrating()
+  const { addMessage } = useChatStore()
 
   const { t } = useTranslation()
 
@@ -152,9 +149,7 @@ export const TxTokenBubbles = (props: Props) => {
       }
 
       await getStatus()
-      addMessage({
-        msg: `${t('successful.transaction')}${data.hash_tx}`,
-      })
+      addMessage({ text: `${t('successful.transaction')}${data.hash_tx}` })
       setIsFinalTx(true)
       getAllWallet()
     } catch {

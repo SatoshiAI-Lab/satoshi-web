@@ -3,16 +3,17 @@ import { useTranslation } from 'react-i18next'
 import { clsx } from 'clsx'
 import { Tooltip } from '@mui/material'
 
-import { useChat } from '@/hooks/use-chat'
 import { useChatStore } from '@/stores/use-chat-store'
+import { useMessages } from '@/hooks/use-messages'
 
 export const MessageAlert: React.FC = () => {
-  const { unreadMessages, setUnreadMessage } = useChatStore()
-  const { addMonitorMessage } = useChat()
   const { t } = useTranslation()
+  const { unreadMessages, setUnreadMessage } = useChatStore()
+  // const { addMonitorMessage } = useChatMigrating()
+  const { addMonitorMessages } = useMessages()
 
   const expandMessage = () => {
-    addMonitorMessage(unreadMessages)
+    addMonitorMessages(unreadMessages)
     setUnreadMessage([])
   }
 
@@ -28,7 +29,7 @@ export const MessageAlert: React.FC = () => {
       >
         <MdOutlineFlashOn />{' '}
         <span className="mx-1">{unreadMessages.length}</span>{' '}
-        {t('new-intelligence-alerts')}
+        {t('folded-message')}
       </div>
     </Tooltip>
   )

@@ -6,7 +6,7 @@ import Favorites from '@/components/favorites'
 import Chat from '@/components/chat'
 import { useBackground } from '@/hooks/use-background'
 import { LoginAuthDialog } from '@/components/login-auth-dialog'
-import { useNeedLoginStore } from '@/stores/use-need-login-store'
+import { useLoginAuthStore } from '@/stores/use-need-login-store'
 import { useChatMonitorMsg } from '@/hooks/use-chat-monitor-msg'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { monitorApi } from '@/api/monitor'
@@ -17,7 +17,7 @@ import { useWalletStore } from '@/stores/use-wallet-store'
 
 export default function Home() {
   const { src, blurStyle } = useBackground(true)
-  const { show, setShow } = useNeedLoginStore()
+  const { show, setShow } = useLoginAuthStore()
   const { isLogined } = useUserStore()
   const { selectedChain, setWallets } = useWalletStore()
   const { timerByUpdate } = useMonitorStore()

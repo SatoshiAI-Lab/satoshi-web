@@ -99,7 +99,7 @@
   "login.register": "登录/注册",
   "login": "登录",
   "register": "注册",
-  "need.login": "需要登录",
+  "need.login": "请先登录/注册",
   "need.login.text1": "请先创建账号才能使用我的服务",
   "need.login.text2": "已拥有账号?",
   "login.2": "登录",
@@ -267,6 +267,7 @@
   "deleting": "删除钱包中...",
   "deleting-error": "删除失败",
   "delete-success": "删除成功",
+  "folded-message": "条新情报监控",
   "sol-wallet": "Solana 钱包",
   "evm-wallet": "EVM 钱包",
   "evm-support": "支持所有以太坊二层网络（BSC/OP等）",
@@ -282,6 +283,5 @@
   "create-token.success": "恭喜！我已成功为您创建代币",
   "tokens": "代币",
   "evm-all-chain": "支持所有EVM兼容链",
-  "new-intelligence-alerts": "条新的情报监控",
   "click-to-show": "点击显示"
 }

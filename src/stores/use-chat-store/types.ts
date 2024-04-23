@@ -1,9 +1,6 @@
-import type {
-  ChatInteractiveParams,
-  ChatParams,
-  ChatResponseAnswerMeta,
-} from './../../api/chat/types'
-import type { ChatResponseAnswer } from '@/api/chat/types'
+import type { ChatResponseMetaNewPoolV2 } from './../../api/chat/types'
+import type { ChatResponse } from '@/api/chat/types'
+import type { PartialPick } from '@/types/types'
 
 export enum DataType {
   NewsInfo = 'news_info',
@@ -13,27 +10,40 @@ export enum DataType {
   PoolInfo = 'pool_info',
 }
 
-export interface Message {
-  msg: string
-  msgs?: ChatResponseAnswerMeta
-  position?: 'left' | 'right'
-  className?: string
-  isLoadingMsg?: boolean
-  isInteractive?: boolean
-  isMonitor?: boolean
-  isIntention?: boolean
-  rawData?: ChatResponseAnswer
-  msgId?: string
-  type?: string
-  data_type?: DataType
-}
+// export interface Message {
+//   msg: string
+//   msgs?: ChatResponseMeta
+//   position?: 'left' | 'right'
+//   className?: string
+//   isLoadingMsg?: boolean
+//   isInteractive?: boolean
+//   isMonitor?: boolean
+//   isIntention?: boolean
+//   rawData?: ChatResponse
+//   msgId?: string
+//   type?: string
+//   data_type?: DataType
+// }
 
-export interface InteractiveMessageOptions {
-  question: string
-  id?: number
-  type?: number
-  name?: string
-  selected_entities?: ChatInteractiveParams[]
+export type MessageRole = 'user' | 'assistant' | 'system'
+
+export type PartialMessage = Partial<Omit<ChatResponse, 'text'>>
+
+export type RequiredMessage = Pick<ChatResponse, 'text'>
+
+export interface Message
+  extends PartialMessage,
+    RequiredMessage,
+    Partial<ChatResponseMetaNewPoolV2> {
+  id: string
+  role?: MessageRole
+  isLoading?: boolean
+  data_type?: DataType
+
+  isInteractive?: boolean
+  isIntention?: boolean
+  isReference?: boolean
+  isMonitor?: boolean
 }
 
 export interface States {
@@ -47,33 +57,24 @@ export interface States {
   readAnswer: boolean
   waitAnswer: boolean
   socket: WebSocket | undefined
-  // controller: AbortController | null
-  // isReceiving: boolean
-  // thinkTimer: NodeJS.Timeout | undefined
 }
 
 export interface Actions {
   setIntention(intention: string): void
   setQuestion(value: string): void
-  setMessage(msg: Message[]): void
+  getMessages(): Message[]
+  setMessages(msg: Message[] | ((msgs: Message[]) => Message[])): void
+
+  addMessage(message: PartialPick<Message, 'id'>): void
+  removeMessage(id: string): void
+  updateMessage(id: string, message: PartialPick<Message, 'id' | 'text'>): void
+  getMessage(id: string): void
+
   setUnreadMessage(unreadMessages: Message[]): void
-  // setThinkTimer(value: NodeJS.Timeout): void
-  // setController(value: AbortController): void
-  // setIsReceiving(value: boolean): void
-  // addMessage(message: Message | Message[]): void
-  // addMessageAndLoading(message: Message): void
-  // removeLoadingMessage(): void
-  // removeAllMessage(): void
   setChatEl(el: HTMLElement): void
-  // addStreamMessage(content: string, ops?: Omit<Message, 'msg'>): void
-  // getParams(opts?: InteractiveMessageOptions): ChatParams
   setIsLoading(bool: boolean): void
   setInputKeyup(bool: boolean): void
   setWaitAnswer(bool: boolean): void
   setReadAnswer(bool: boolean): void
   setSocket(socket: WebSocket): void
-  // resetSomeState(): void
-  // handleNormalMessage(data: ChatResponseAnswer): void
-  // cancelAnswer(text: string): void
-  // findPrevInteractive(id: string | undefined): Message | undefined
 }

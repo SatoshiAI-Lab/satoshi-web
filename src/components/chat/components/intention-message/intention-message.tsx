@@ -34,22 +34,22 @@ export const IntentMessage = ({ msg }: Props) => {
     poolCancelList,
     walletCancelList,
   } = CHAT_CONFIG.metadataType
-  const answerType = msg.type || '[no_type]'
-  const metaType = msg?.msgs?.type || '[no_type]'
+  const answerType = msg.answer_type || '[not_type]'
+  const metaType = msg.meta?.type || '[not_type]'
 
   // Balances(Wallet list)
   if (walletList.startsWith(answerType) || walletList.startsWith(metaType)) {
-    return <BalanceMessage meta={msg.msgs} />
+    return <BalanceMessage meta={msg.meta} />
   }
 
   // Change name wallet list
   if (intentSelectWalletType.includes(metaType)) {
-    return <WalletChoiceBubble msg={msg.msgs!}></WalletChoiceBubble>
+    return <WalletChoiceBubble msg={msg.meta!}></WalletChoiceBubble>
   }
 
   // Wallet token balance
   if (metaType == walletBalance) {
-    return <WalletBalance msg={msg.msgs!}></WalletBalance>
+    return <WalletBalance msg={msg.meta!}></WalletBalance>
   }
 
   // twitter list
@@ -59,12 +59,12 @@ export const IntentMessage = ({ msg }: Props) => {
 
   // Tx Token
   if (intentTxToken.includes(metaType)) {
-    return <TxTokenBubbles msg={msg.msgs!}></TxTokenBubbles>
+    return <TxTokenBubbles msg={msg.meta!}></TxTokenBubbles>
   }
 
   // Monitor wallet
   if (metaType == moniotrWallet) {
-    return <MonitorAddressBubble msg={msg.msgs!}></MonitorAddressBubble>
+    return <MonitorAddressBubble msg={msg.meta!}></MonitorAddressBubble>
   }
 
   // Unmonitor wallet
@@ -77,14 +77,14 @@ export const IntentMessage = ({ msg }: Props) => {
     return (
       <CreateTokenMessage
         hasWallet={metaType === createTokenHaveWallet}
-        chain={msg.msgs?.chain}
+        chain={msg.meta?.chain}
       />
     )
   }
 
   // token detail
   if (metaType == tokenDetail) {
-    return <TokenDetailBubble msg={msg.msgs!}></TokenDetailBubble>
+    return <TokenDetailBubble msg={msg.meta!}></TokenDetailBubble>
   }
 
   // monitor CEX

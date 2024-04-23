@@ -9,9 +9,10 @@ import { useQuery } from '@tanstack/react-query'
 
 import { UserCreateWalletResp } from '@/api/wallet/params'
 import { CHAT_CONFIG } from '@/config/chat'
-import { useChat } from '@/hooks/use-chat'
+import { useChatMigrating } from '@/hooks/use-chat-migrating'
 import { utilFmt } from '@/utils/format'
 import { useWallet } from '@/hooks/use-wallet'
+import { useChat } from '@/hooks/use-chat'
 import { walletApi } from '@/api/wallet'
 import { CustomSuspense } from '@/components/custom-suspense'
 
@@ -30,7 +31,8 @@ const gridCls = 'grid grid-cols-[175px_130px_130px_100px]'
 export const WalletList = (props: Props) => {
   const { type, chain } = props
   const { t } = useTranslation()
-  const { addMessageAndLoading, sendMsg } = useChat()
+  // const { addMessageAndLoading, sendMsg } = useChatMigrating()
+  const { sendChat } = useChat()
   const {
     data: walletsData,
     isLoading,
@@ -83,9 +85,9 @@ export const WalletList = (props: Props) => {
     }
 
     question = question.replace('$1', wallet.name)
-    addMessageAndLoading({ msg: question, position: 'right' })
 
-    sendMsg({ question })
+    // addMessageAndLoading({ msg: question, position: 'right' })
+    sendChat({ question })
     // onClickIcon?.(wallet)
     setTimeout(refetchWallets, 2000)
   }

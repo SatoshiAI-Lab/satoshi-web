@@ -14,3 +14,6 @@ export enum SortType {
 }
 
 export type VoidFn = () => void
+
+// Convert picked required props to partial.
+export type PartialPick<T, K extends keyof T> = Partial<Pick<T, K>> & Omit<T, K>

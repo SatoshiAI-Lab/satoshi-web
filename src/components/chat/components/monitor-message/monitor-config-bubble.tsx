@@ -4,6 +4,7 @@ import {
   ChatResponseMetaWallet,
   ChatResponseMetaTwitter,
   ChatResponseMetaNewPool,
+  ChatResponseMetaNewPoolV2,
 } from '@/api/chat/types'
 import { DataType, Message } from '@/stores/use-chat-store/types'
 import ExchangeAnnouncementBubble from './exchange-announcement-bubble'
@@ -17,7 +18,6 @@ interface Props {
 }
 
 export const MonitorConfigBubble = ({ msg }: Props) => {
-
   if (msg.data_type === DataType.NewsInfo) {
     return <NewsBubble data={msg as unknown as ChatResponseMetaNewsInfo} />
   }
@@ -40,7 +40,9 @@ export const MonitorConfigBubble = ({ msg }: Props) => {
 
   if (msg.data_type === DataType.PoolInfo) {
     return (
-      <NewPoolBubble {...{ ...(msg as unknown as ChatResponseMetaNewPool) }} />
+      <NewPoolBubble
+        {...{ ...(msg as unknown as ChatResponseMetaNewPoolV2) }}
+      />
     )
   }
 }
