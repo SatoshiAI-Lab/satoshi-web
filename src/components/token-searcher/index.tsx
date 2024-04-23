@@ -116,7 +116,7 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
 
   useEffect(() => {
     if (open) return
-    onClear() // clear search when closed
+    onClear() // clear search when closed.
   }, [open])
 
   return (
@@ -126,8 +126,8 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
       onClose={onClose}
       classes={{
         paper: clsx(
-          '!h-[60vh] w-[60vw] !overflow-hidden',
-          'dark:bg-zinc-900 dark:text-white'
+          '!h-[60vh] w-[60vw] !overflow-hidden dark:bg-zinc-900',
+          'dark:text-white'
         ),
       }}
     >
@@ -150,8 +150,10 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
           autoComplete="off"
           classes={{
             root: 'w-full !py-1',
-            input:
-              '!pb-0 dark:placeholder:text-white dark:caret-white dark:text-white',
+            input: clsx(
+              '!pb-0 dark:placeholder:text-white dark:caret-white',
+              'dark:text-white'
+            ),
           }}
           placeholder={t('search.input.placeholder')}
           size="small"
@@ -189,13 +191,15 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
                 <div className="flex items-center py-1">
                   <Avatar
                     src={c.logo}
-                    alt="Logo"
-                    sx={{
-                      width: 30,
-                      height: 30,
-                    }}
+                    alt="logo"
+                    sx={{ width: 30, height: 30 }}
                   />
-                  <span className="ml-2">{c.name}</span>
+                  <div className="flex flex-col justify-between ml-2">
+                    <span>{c.symbol}</span>
+                    <span className="text-sm leading-none text-gray-400">
+                      {c.name}
+                    </span>
+                  </div>
                 </div>
                 <div className="flex items-center">
                   <CustomSuspense
