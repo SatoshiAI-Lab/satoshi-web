@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Button, Menu, MenuItem } from '@mui/material'
 import { IoLanguageOutline } from 'react-icons/io5'
@@ -6,8 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { IoLogOutOutline } from 'react-icons/io5'
 import { clsx } from 'clsx'
 import { toast } from 'react-hot-toast'
-import { FaBloggerB, FaGithub } from 'react-icons/fa'
-import { FaXTwitter } from 'react-icons/fa6'
 
 import type { CustomDropdownItem } from '../custom-dropdown/types'
 import type { HeaderItem } from './types'
@@ -18,7 +16,6 @@ import { CustomDropdown } from '../custom-dropdown'
 import { LoginDialog } from '../login-dialog'
 import { Routes } from '@/routes'
 import { useResponsive } from '@/hooks/use-responsive'
-import { utilArr } from '@/utils/array'
 import { useStorage } from '@/hooks/use-storage'
 import { useThemeStore } from '@/stores/use-theme-store'
 import { useUserStore } from '@/stores/use-user-store'
@@ -26,6 +23,7 @@ import { useShow } from '@/hooks/use-show'
 import { utilFmt } from '@/utils/format'
 import { useChatStore } from '@/stores/use-chat-store'
 import { resources } from '@/i18n'
+import { SocialLinks } from '../social-links'
 
 const langs = Object.entries(resources).map(([key, val]) => ({
   key: key,
@@ -43,24 +41,9 @@ export const Header = () => {
   const openLogoutWallet = Boolean(anchorEl)
   const { socket, setMessages } = useChatStore()
   const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
-  const { isDark, setIsDark } = useThemeStore()
+  const { isDark } = useThemeStore()
 
   const items: HeaderItem[] = []
-
-  const socialLink = [
-    {
-      icon: <FaGithub size={22} />,
-      onclick: () => window.open('https://github.com/SatoshiAI-Lab', '_blank'),
-    },
-    {
-      icon: <FaBloggerB size={22} />,
-      onclick: () => window.open('https://blog.mysatoshi.ai/', '_blank'),
-    },
-    {
-      icon: <FaXTwitter size={22} />,
-      onclick: () => window.open('https://twitter.com/mysatoshiai', '_blank'),
-    },
-  ]
 
   const handleLogoutClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -128,22 +111,10 @@ export const Header = () => {
             <DesktopHeader items={items} onItemClick={onItemClick} />
           )}
         </div>
-        <Button variant="contained" onClick={() => setIsDark(!isDark)}>
-          toggle theme
-        </Button>
         <div className="flex items-center">
-          <div className="flex mr-2">
-            {socialLink.map((item, index) => (
-              <button
-                key={index}
-                onClick={item.onclick}
-                className="mx-2 cursor-pointer text-black dark:text-white"
-              >
-                {item.icon}
-              </button>
-            ))}
-          </div>
-          {/* Language dropdown */}
+          {/* Social links. */}
+          <SocialLinks />
+          {/* Language dropdown. */}
           <CustomDropdown
             items={langs}
             active={getLang() || 'en'}

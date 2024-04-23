@@ -1,17 +1,15 @@
 import { create } from 'zustand'
 
-interface States {
+interface ThemeStore {
   isDark: boolean
-}
-
-interface Actions {
   setIsDark: (isDark: boolean) => void
+  swtichTheme: () => void
 }
 
 /**
  * Theme store.
  */
-export const useThemeStore = create<States & Actions>((set) => ({
+export const useThemeStore = create<ThemeStore>((set, get) => ({
   isDark: false,
   setIsDark: (isDark) => {
     set({ isDark })
@@ -22,5 +20,10 @@ export const useThemeStore = create<States & Actions>((set) => ({
     } else {
       window.document.documentElement.classList.remove('dark')
     }
+  },
+  swtichTheme: () => {
+    const { isDark, setIsDark } = get()
+
+    setIsDark(!isDark)
   },
 }))

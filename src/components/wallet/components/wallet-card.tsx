@@ -6,11 +6,11 @@ import { useTranslation } from 'react-i18next'
 import { t } from 'i18next'
 import { clsx } from 'clsx'
 
-import { utilFmt } from '@/utils/format'
-import { WalletChain, WalletPlatform } from '@/config/wallet'
-
 import type { WalletCardProps as WalletProps } from '@/stores/use-wallet-store'
 import type { WalletCardProps } from '../types'
+
+import { utilFmt } from '@/utils/format'
+import { WalletChain, WalletPlatform } from '@/config/wallet'
 
 interface Props extends WalletCardProps {
   wallet: WalletProps
@@ -42,13 +42,14 @@ export const WalletCard = (props: Props) => {
       onClick: copyAddress,
     },
   ]
+  const isLatestCreated = latestWallet?.id === wallet?.id
 
   return (
     <div
       className={clsx(
         'relative border border-black rounded-md px-[30px] py-[17px]',
         'flex justify-between items-center transition-all dark:border-zinc-500',
-        latestWallet?.id === wallet?.id && 'bg-gray-200 border-gray-300'
+        isLatestCreated && 'bg-gray-200 border-gray-300 dark:bg-zinc-800'
       )}
     >
       <div>
