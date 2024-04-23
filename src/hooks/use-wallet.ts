@@ -5,6 +5,7 @@ import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { UserCreateWalletResp } from '@/api/wallet/params'
 import { FetcherResponse } from '@/api/fetcher/types'
+import { WalletChain } from '@/config/wallet'
 
 interface Options {
   enabled?: boolean
@@ -13,16 +14,24 @@ interface Options {
 
 export const useWallet = (options?: Options) => {
   const { enabled = false, refetchInterval = false } = options ?? {}
-  const { wallets, allWallets, setAllWallets, selectedChain, setWallets } =
-    useWalletStore()
+  const {
+    wallets,
+    allWallets,
+    selectedChain,
+    chains,
+    setAllWallets,
+    setWallets,
+  } = useWalletStore()
   // Latest created wallet, used for active hints.
   const [latestWallet, setLatestWallet] = useState<(typeof wallets)[number]>()
 
   const getAllWallet = async () => {
     const allWallet: Promise<FetcherResponse<UserCreateWalletResp[]>>[] = []
-    ;['Solana', 'Ethereum', 'Optimism', 'Arbitrum'].forEach((chain) => {
+
+    Object.values(WalletChain).forEach((chain) => {
       allWallet.push(walletApi.getWallets(chain))
     })
+
     const data = await Promise.all(allWallet)
     const ruslt: UserCreateWalletResp[] = []
     data.forEach((item) => {
