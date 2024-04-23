@@ -38,7 +38,7 @@ export const SocialLinks = (props: Props) => {
             <IconButton
               key={i}
               onClick={s.onClick}
-              className="mx-2 cursor-pointer text-black dark:text-white"
+              className="mx-2 cursor-pointer !text-black dark:!text-white"
             >
               {s.icon}
             </IconButton>
