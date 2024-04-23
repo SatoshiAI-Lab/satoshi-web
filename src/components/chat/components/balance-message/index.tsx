@@ -39,11 +39,10 @@ export const BalanceMessage = (props: Props) => {
   const [folds, setFolds] = useState<string[]>([])
   const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
   const { t } = useTranslation()
-  // const { sendMsg, addMessageAndLoading } = useChatMigrating()
   const { sendChat } = useChat()
 
   // Don't use `useWallet`, here is independent.
-  const { data: walletData } = useQuery({
+  const { data: walletData, isError } = useQuery({
     queryKey: [walletApi.getWallets.name, meta?.chain],
     queryFn: () => walletApi.getWallets(meta?.chain),
   })
@@ -123,7 +122,7 @@ export const BalanceMessage = (props: Props) => {
   )
 
   return (
-    <MessageBubble className="pt-4">
+    <MessageBubble className={clsx(!isError && 'pt-4')}>
       {wallets.map((w, i) => (
         <React.Fragment key={w.id}>
           <div
@@ -179,6 +178,7 @@ export const BalanceMessage = (props: Props) => {
           </Collapse>
         </React.Fragment>
       ))}
+      {isError && !wallets.length && <p>Error</p>}
     </MessageBubble>
   )
 }
