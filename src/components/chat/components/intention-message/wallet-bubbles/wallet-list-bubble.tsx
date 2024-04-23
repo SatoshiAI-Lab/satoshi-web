@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 
 import { MessageBubble } from '../../message-bubble'
-import { ChatResponseAnswerMeta } from '@/api/chat/types'
+import { ChatResponseMeta } from '@/api/chat/types'
 
 interface Props {
-  msg: ChatResponseAnswerMeta
+  msg: ChatResponseMeta
 }
 
 export const WalletListBubbles = ({ msg }: Props) => {

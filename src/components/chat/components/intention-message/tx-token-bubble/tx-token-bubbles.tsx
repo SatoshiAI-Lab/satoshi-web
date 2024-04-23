@@ -16,23 +16,46 @@ import { SelectToken } from './select-token'
 import { WalletCardProps } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
 import { trandApi } from '@/api/trand'
-import { useChat } from '@/hooks/use-chat'
 import { useWallet } from '@/hooks/use-wallet'
 import { interactiveApi } from '@/api/interactive'
 import MessageBubble from '../../message-bubble'
+import { useChatStore } from '@/stores/use-chat-store'
 
-import type {
-  ChatResponseAnswerMeta,
-  ChatResponseTxConfrim,
-} from '@/api/chat/types'
+import type { ChatResponseMeta, ChatResponseTxConfrim } from '@/api/chat/types'
+import { WalletChain } from '@/config/wallet'
 
 interface Props {
-  msg: ChatResponseAnswerMeta
+  msg: ChatResponseMeta
+}
+
+const reuslt = {
+  from_token_info: [
+    //用户选择用哪条链的主币来购买，只返回币种支持的链
+    {
+      chain_name: WalletChain.OP, //代币链名 如BSC
+      token_name: 'ETH', //代币名称 如BNB
+      contract: '0x0000000000000000000000000000000000000000', //代币合约地址
+      chain_id: 10, //平台ID
+      chain_logo: 'https://img.mysatoshi.ai/chains/logo/optimism.png', //链logo
+    },
+  ],
+  amount: 1, //想花多少主币来买
+  to_token_name: 'USDC', //想买的币的币种名称
+  to_token_info: [
+    //想买的币在各链上的信息
+    {
+      chain_name: WalletChain.OP, //代币链名 如BSC
+      token_name: 'USDC', //代币名称 如BNB
+      contract: '0x7f5c764cbc14f9669b88837ca1490cca17c31607', //代币合约地址
+      chain_id: 10, //平台ID
+      chain_logo: 'https://img.mysatoshi.ai/chains/logo/optimism.png', //链logo
+    },
+  ],
 }
 
 const rates = [20, 50, 100]
 export const TxTokenBubbles = (props: Props) => {
-  const data = props.msg.data as unknown as ChatResponseTxConfrim
+  const data = (reuslt || props.msg.data) as unknown as ChatResponseTxConfrim
   const isBuy = props.msg.type == CHAT_CONFIG.metadataType.transactionConfirmBuy
   const [buyValue, setBuyValue] = useState(data.amount)
   const [slippage, setSlippage] = useState(5)
@@ -40,9 +63,9 @@ export const TxTokenBubbles = (props: Props) => {
   const [validateErr, setValidateErr] = useState<string[]>([])
   const [isFinalTx, setIsFinalTx] = useState(false)
   const { show: loading, open: showLoading, hidden: hiddenLoading } = useShow()
-
-  const { addMessage } = useChat()
   const { getAllWallet } = useWallet()
+  // const { addMessage } = useChatMigrating()
+  const { addMessage } = useChatStore()
 
   const { t } = useTranslation()
 
@@ -110,9 +133,9 @@ export const TxTokenBubbles = (props: Props) => {
       if (isFrom) {
         return selectToken
       } else {
-        return data.to_token_info.find(
-          (t) => t.platform_id == selectToken?.platform_id
-        )
+        // return data.to_token_info.find(
+        //   (t) => t.platform_id == selectToken?.platform_id
+        // )
       }
     }
 
@@ -152,9 +175,7 @@ export const TxTokenBubbles = (props: Props) => {
       }
 
       await getStatus()
-      addMessage({
-        msg: `${t('successful.transaction')}${data.url}`,
-      })
+      addMessage({ text: `${t('successful.transaction')}${data.hash_tx}` })
       setIsFinalTx(true)
       getAllWallet()
     } catch {
@@ -163,8 +184,6 @@ export const TxTokenBubbles = (props: Props) => {
       hiddenLoading()
     }
   }
-  
-  console.log('isBuy', isBuy)
 
   return (
     <MessageBubble className={`min-w-[350px]`}>

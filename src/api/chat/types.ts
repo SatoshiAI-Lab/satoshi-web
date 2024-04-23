@@ -1,34 +1,29 @@
 import { WalletChain, WalletPlatform } from '@/config/wallet'
 
-export interface ChatResponse {
+import type { ModelMotions } from '@/stores/use-live2d-store/types'
+
+export interface ChatResponseBase {
   status: number
   message: string
   data: {
-    answer: ChatResponseAnswer[]
+    answer: ChatResponse[]
   }
 }
 
-export interface ChatResponseAnswer {
+export interface ChatResponse {
   answer_type: string
   text: string
   hyper_text: string
-  meta: ChatResponseAnswerMeta
+  meta: ChatResponseMeta
 }
 
-export interface ChatResponseAnswerMeta
+export interface ChatResponseMeta
   extends Partial<ChatResponseMetaInteractive>,
     Partial<ChatResponseMetaReference>,
     Partial<ChatResponseWalletListRaw>,
     Partial<ChatResponseMetaBalance>,
     Partial<ChatResponseTxConfrim> {
-  emotion?:
-    | 'natural'
-    | 'happy'
-    | 'sad'
-    | 'awkward'
-    | 'denial'
-    | 'angry'
-    | 'encouragement'
+  emotion?: ModelMotions
 }
 
 export interface ChatResponseMetaDynamic {
@@ -53,14 +48,11 @@ export interface ChatResponseTxConfrim {
 }
 
 export interface TokenInfo {
-  platform: string
   chain: WalletChain
   token_name: null | string
   contract: string
-  platform_id: number
   chain_logo: string
-  chain_symbol: string
-  token_logo: null | string
+  chain_id: string
 }
 
 export interface ChatResponseTokneName {

@@ -17,13 +17,13 @@ export const useTxToken = ({ isBuy, data }: Options) => {
   let tokenList = data.from_token_info
 
   let checkedWalletList: WalletCardProps[] = []
-
+  
   tokenList = tokenList.filter((token) => {
     for (let i = 0; i < allWallets.length; i++) {
       const wallet = allWallets[i]
-      if (wallet.platform !== token.platform) {
-        continue
-      }
+      // if (wallet.platform !== token.platform) {
+      //   continue
+      // }
 
       const result = wallet.tokens?.some((item) => {
         return (

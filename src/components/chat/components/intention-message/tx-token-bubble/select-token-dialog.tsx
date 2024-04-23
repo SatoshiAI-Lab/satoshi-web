@@ -1,6 +1,8 @@
 import { DialogHeader } from '@/components/dialog-header'
+import { useChainsPlatforms } from '@/components/wallet/hooks/use-chains-platforms'
 import { useShow } from '@/hooks/use-show'
 import { useTxTokenWallet } from '@/hooks/use-tx-token-wallet'
+import { useWallet } from '@/hooks/use-wallet'
 import { Dialog, Menu, MenuItem, OutlinedInput, Select } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,7 +14,7 @@ interface Props {
   hidden: () => void
 }
 
-export const SelectTokenDialog = ({ hidden, open, show }: Props) => {
+export const SelectTokenDialog = ({ hidden, show }: Props) => {
   const { t } = useTranslation()
   const { show: showSelect, open: openSelect, hidden: hiddenSelect } = useShow()
 
@@ -41,8 +43,10 @@ export const SelectTokenDialog = ({ hidden, open, show }: Props) => {
         <div className="pt-4 px-6 border-t border-gray-400">
           <div className="">
             <span className="mr-2">{t('my.token')}</span>
-            <Select open={showSelect} onClose={hiddenSelect} >
-              {<MenuItem onClick={() => {}}></MenuItem>}
+            <Select open={showSelect} onClose={hiddenSelect} size="small">
+              {/* {chains.map((chain) => {
+                return <MenuItem key={chain.name} onClick={() => {}}></MenuItem>
+              })} */}
             </Select>
           </div>
         </div>

@@ -8,14 +8,14 @@ import {
   SwipeableDrawer,
 } from '@mui/material'
 
-import { HeaderItem } from '../types'
+import type { HeaderItem } from '../types'
 
 export interface MobileHeaderProps {
   items: HeaderItem[]
   onItemClick?: (item: HeaderItem) => void
 }
 
-function MobileHeader(props: MobileHeaderProps) {
+export const MobileHeader = (props: MobileHeaderProps) => {
   const { items, onItemClick } = props
   const [open, setOpen] = useState(false)
 

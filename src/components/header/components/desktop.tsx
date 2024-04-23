@@ -1,14 +1,14 @@
 import React from 'react'
 import clsx from 'clsx'
 
-import { HeaderItem } from '../types'
+import type { HeaderItem } from '../types'
 
 interface DesktopHeaderProps {
   items: HeaderItem[]
   onItemClick?: (item: HeaderItem) => void
 }
 
-function DesktopHeader(props: DesktopHeaderProps) {
+export const DesktopHeader = (props: DesktopHeaderProps) => {
   const { items, onItemClick } = props
 
   return (

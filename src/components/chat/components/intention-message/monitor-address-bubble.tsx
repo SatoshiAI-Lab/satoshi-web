@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { nanoid } from 'nanoid'
 import { Dialog } from '@mui/material'
 
-import { ChatResponseAnswerMeta } from '@/api/chat/types'
+import { ChatResponseMeta } from '@/api/chat/types'
 import { useShow } from '@/hooks/use-show'
 import { DialogHeader } from '@/components/dialog-header'
 import { MonitorWallet } from '@/components/monitor/monitor-wallet'
 import MessageBubble from '../message-bubble'
 
 interface Props {
-  msg: ChatResponseAnswerMeta
+  msg: ChatResponseMeta
 }
 
 export const MonitorAddressBubble = ({ msg }: Props) => {

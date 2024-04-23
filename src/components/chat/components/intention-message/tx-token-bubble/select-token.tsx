@@ -68,7 +68,7 @@ export const SelectToken: React.FC<Props> = ({
   }
 
   const toToken = data.to_token_info.find(
-    (t) => t.platform_id == selectToken?.platform_id
+    (t) => t == selectToken
   )
 
   return (

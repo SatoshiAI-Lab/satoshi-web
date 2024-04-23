@@ -159,7 +159,10 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     <>
       <Dialog
         maxWidth="lg"
-        PaperProps={{ sx: { borderRadius: '10px' } }}
+        PaperProps={{
+          className: 'dark:bg-zinc-900 dark:text-gray-300',
+          sx: { borderRadius: '10px' },
+        }}
         open={open}
         onClose={onClose}
       >
@@ -202,7 +205,10 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                         <MenuItem
                           disabled={item.disable}
                           key={item.id}
-                          className="w-[295px] h-[65px] flex flex-col !items-start !justify-center"
+                          className={clsx(
+                            'w-[295px] h-[65px] flex flex-col !items-start !justify-center',
+                            'dark:!text-gray-300'
+                          )}
                           onClick={() => onCreateWallet(item.id)}
                         >
                           <div className="text-base">{item.title}</div>
@@ -219,7 +225,8 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                     classes={{ root: '!text-black !rounded-full !w-[138px]' }}
                     className={clsx(
                       '!border-gray-400 hover:!bg-gray-100',
-                      'disabled:!border-gray-300 disabled:!text-gray-400'
+                      'disabled:!border-gray-300 disabled:!text-gray-400',
+                      'dark:hover:!bg-zinc-800 dark:!text-gray-300'
                     )}
                     variant="outlined"
                     disabled={isCreating}

@@ -132,6 +132,7 @@ function MessageInput(props: MessageInputProps) {
         className={clsx(
           'flex rounded-md gap-2 border-2 border-solid items-center duration-500',
           'bg-slate-100 transition-all py-1 px-1 pl-2 hover:border-primary',
+          'dark:bg-zinc-800 dark:hover:border-secondary',
           isFocus ? 'border-primary' : 'border-transparent'
         )}
       >
@@ -139,7 +140,7 @@ function MessageInput(props: MessageInputProps) {
           className={clsx(
             'bg-transparent pl-1 text-lg transition-all text-black w-full',
             'resize-none placeholder:whitespace-nowrap placeholder:truncate',
-            'outline-none break-all'
+            'outline-none break-all dark:text-white dark:caret-white'
           )}
           value={question}
           placeholder={t('chat.placeholder')}
@@ -159,7 +160,7 @@ function MessageInput(props: MessageInputProps) {
           {recording ? (
             <img src="/svg/three-dots.svg" width={22} height={22}></img>
           ) : (
-            <MdMic size={22} />
+            <MdMic size={22} className="dark:text-gray-200" />
           )}
         </IconButton>
         <Button
@@ -168,7 +169,7 @@ function MessageInput(props: MessageInputProps) {
           disableElevation
           className={clsx(
             'shrink-0 !text-lg !rounded-md !px-4 !pr-3 self-end',
-            '!text-white'
+            '!text-white dark:bg-primary'
           )}
           startIcon={
             isLoading ? (

@@ -2,23 +2,24 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { BsChevronRight } from 'react-icons/bs'
 import { Divider } from '@mui/material'
-import clsx from 'clsx'
-import toast from 'react-hot-toast'
-
-import MessageBubble from './message-bubble'
-import { utilDom } from '@/utils/dom'
+import { clsx } from 'clsx'
+import { toast } from 'react-hot-toast'
 
 import type {
-  ChatResponseAnswerMeta,
+  ChatResponseMeta,
   ChatResponseAnswerMetaCoin,
   ChatResponseMetaLabel,
 } from '@/api/chat/types'
+
+import { MessageBubble } from '../message-bubble'
+import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
+import { useMessages } from '@/hooks/use-messages'
 
 interface SingleMessageProps {
   id?: string
-  msgs?: ChatResponseAnswerMetaCoin[] | ChatResponseMetaLabel[]
-  type?: keyof ChatResponseAnswerMeta
+  meta?: ChatResponseAnswerMetaCoin[] | ChatResponseMetaLabel[]
+  type?: keyof ChatResponseMeta
   classes?: string
   title?: string
   onClick?: (
@@ -29,9 +30,9 @@ interface SingleMessageProps {
 
 function SingleMessage(props: SingleMessageProps) {
   const [t] = useTranslation()
-  const { msgs = [], title, id } = props
-  const { sendMsg, isLoading, addMessageAndLoading, findPrevInteractive } =
-    useChat()
+  const { meta = [], title, id } = props
+  const { findPrevInteractive } = useMessages()
+  const { isLoading, sendChat } = useChat()
 
   const formatMsg = (msg: ChatResponseAnswerMetaCoin) => {
     const { alias, name } = msg
@@ -51,36 +52,30 @@ function SingleMessage(props: SingleMessageProps) {
     msg: ChatResponseAnswerMetaCoin
   ) => {
     if (isLoading) {
-      toast(t('chat.message-getting'))
+      toast.error(t('chat.asking'))
       return
     }
 
     const { targetEl } = utilDom.eventProxy(e.target as HTMLElement, 'div')
     const tokenName = targetEl.firstChild?.textContent ?? ''
-    const prevMsg = findPrevInteractive(id) ?? { msg: msg.name }
+    const prevMessage = findPrevInteractive(id) ?? { text: msg.name }
     const interactiveOps = {
       id: msg.id,
       type: msg.type,
       name: tokenName,
-      question: prevMsg.msg,
+      question: prevMessage.text,
     }
 
-    addMessageAndLoading({
-      msg: prevMsg.msg,
-      position: 'right',
-    })
-    sendMsg(interactiveOps)
+    sendChat(interactiveOps)
   }
 
-  if (!msgs.length) return <></>
-
-  console.log('msgs', msgs)
+  if (!meta.length) return <></>
 
   return (
     <>
       <MessageBubble>{title}</MessageBubble>
       <MessageBubble>
-        {msgs.map((msg, i) => (
+        {meta.map((msg, i) => (
           <React.Fragment key={i}>
             <div
               className={clsx(
@@ -92,7 +87,7 @@ function SingleMessage(props: SingleMessageProps) {
               <span className="mr-5">{formatMsg(msg)}</span>
               <BsChevronRight className="shrink-0" />
             </div>
-            {msgs.length - 1 !== i && (
+            {meta.length - 1 !== i && (
               <Divider className="!my-2 !border-[#c9c9c9]" />
             )}
           </React.Fragment>

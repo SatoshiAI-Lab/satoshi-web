@@ -11,12 +11,12 @@ import { link } from '@/config/link'
 import { MessageBubble } from '../message-bubble'
 
 import type {
-  ChatResponseAnswerMeta,
+  ChatResponseMeta,
   ChatResponseTokenDetail,
 } from '@/api/chat/types'
 
 interface Props {
-  msg?: ChatResponseAnswerMeta
+  msg?: ChatResponseMeta
   avatarSize?: number
 }
 

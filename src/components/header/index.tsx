@@ -4,15 +4,18 @@ import { Button, Menu, MenuItem } from '@mui/material'
 import { IoLanguageOutline } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 import { IoLogOutOutline } from 'react-icons/io5'
-import clsx from 'clsx'
-import toast from 'react-hot-toast'
+import { clsx } from 'clsx'
+import { toast } from 'react-hot-toast'
 import { FaBloggerB, FaGithub } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 
-import MobileHeader from './components/mobile'
-import DesktopHeader from './components/desktop'
-import CustomDropdown from '../custom-dropdown'
-import LoginDialog from '../login-dialog'
+import type { CustomDropdownItem } from '../custom-dropdown/types'
+import type { HeaderItem } from './types'
+
+import { MobileHeader } from './components/mobile'
+import { DesktopHeader } from './components/desktop'
+import { CustomDropdown } from '../custom-dropdown'
+import { LoginDialog } from '../login-dialog'
 import { Routes } from '@/routes'
 import { useResponsive } from '@/hooks/use-responsive'
 import { utilArr } from '@/utils/array'
@@ -22,11 +25,14 @@ import { useUserStore } from '@/stores/use-user-store'
 import { useShow } from '@/hooks/use-show'
 import { utilFmt } from '@/utils/format'
 import { useChatStore } from '@/stores/use-chat-store'
+import { resources } from '@/i18n'
 
-import type { CustomDropdownItem } from '../custom-dropdown/types'
-import type { HeaderItem } from './types'
+const langs = Object.entries(resources).map(([key, val]) => ({
+  key: key,
+  label: val.name as string,
+}))
 
-function Header() {
+export const Header = () => {
   const router = useRouter()
   const { isMobile, isDesktop } = useResponsive()
   const { getLang, setLang } = useStorage()
@@ -35,22 +41,7 @@ function Header() {
   const { show, open, hidden } = useShow()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openLogoutWallet = Boolean(anchorEl)
-  const { socket, setMessage } = useChatStore()
-
-  const langs = useMemo(() => {
-    return Object.entries(i18n.options.resources ?? {}).map(([key, value]) => ({
-      key: key,
-      label: value.name as string,
-    }))
-  }, [])
-  const activeLang = useMemo(() => {
-    const cachedLang = getLang()
-    const defaultLang = langs.find((l) => l.key === i18n.language)?.key
-    const fallbackLang = utilArr.first(langs).key
-
-    return cachedLang ?? defaultLang ?? fallbackLang
-  }, [i18n, t])
-
+  const { socket, setMessages } = useChatStore()
   const { isLogined, userInfo, logout, fetchUserInfo } = useUserStore()
   const { isDark } = useThemeStore()
 
@@ -84,6 +75,8 @@ function Header() {
   const onLangChange = (item: CustomDropdownItem) => {
     const lang = String(item.key)
 
+    if (i18n.language === lang) return
+
     i18n.changeLanguage(lang)
     setLang(lang)
   }
@@ -96,7 +89,7 @@ function Header() {
     socket?.close(1000)
     // if (socket?.CLOSED == 3) {
     logout()
-    setMessage([])
+    setMessages([])
     handleCreatClose()
     toast.success(t('logout.success'))
     // }
@@ -108,7 +101,6 @@ function Header() {
   }
 
   useEffect(() => {
-    console.log('utilArr.first(langs).key', activeLang, i18n.language)
     fetchUserInfo()
   }, [])
 
@@ -151,7 +143,7 @@ function Header() {
           {/* Language dropdown */}
           <CustomDropdown
             items={langs}
-            active={activeLang}
+            active={getLang() || 'en'}
             onItemClick={onLangChange}
           >
             <IoLanguageOutline
@@ -222,7 +214,7 @@ function Header() {
           onClick={onLogout}
           className={clsx(
             'flex flex-col !items-start !justify-center',
-            '!text-[#4b587cbc]'
+            '!text-zinc-600 dark:!text-gray-300'
           )}
         >
           <div className="w-full flex justify-between items-center text-[16px]">

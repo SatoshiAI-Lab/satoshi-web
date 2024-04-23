@@ -41,7 +41,7 @@ export const ChainPlatformSelect = memo((props: Props) => {
               >
                 {c.name}
               </Avatar>
-              <div className="ml-2">{c.name}</div>
+              <div className="ml-2 dark:text-gray-300">{c.name}</div>
             </MenuItem>
           ))}
         </Select>
@@ -60,7 +60,7 @@ export const ChainPlatformSelect = memo((props: Props) => {
           onChange={({ target }) => setSelectedPlatform(target.value)}
         >
           {platforms?.map((p, i) => (
-            <MenuItem key={i} value={p}>
+            <MenuItem key={i} value={p} className="dark:!text-gray-300">
               {p}
             </MenuItem>
           ))}
@@ -71,8 +71,8 @@ export const ChainPlatformSelect = memo((props: Props) => {
 
   return (
     <div className={clsx('flex items-center my-2', className)}>
-      {type === 'chain' && <ChainSelect />}
-      {type === 'platform' && <PlatformSelect />}
+      {type === 'chain' && ChainSelect()}
+      {type === 'platform' && PlatformSelect()}
     </div>
   )
 })

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineSetting } from 'react-icons/ai'
 import { BiSolidChess, BiSolidWalletAlt } from 'react-icons/bi'
@@ -14,7 +14,7 @@ import { useDebounce } from '@/hooks/use-debounce'
 import { useLive2DStore } from '@/stores/use-live2d-store'
 import { useStorage } from '@/hooks/use-storage'
 import { useUserStore } from '@/stores/use-user-store'
-import { useNeedLoginStore } from '@/stores/use-need-login-store'
+import { useLoginAuthStore } from '@/stores/use-need-login-store'
 import { useWallet } from '@/hooks/use-wallet'
 
 enum AnimateType {
@@ -37,7 +37,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
   const { isMute, setIsMute } = useLive2DStore()
   const { setIsMuted } = useStorage()
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
-  const { setShow } = useNeedLoginStore()
+  const { setShow } = useLoginAuthStore()
   const { refetchWallets } = useWallet()
   const { isLogined } = useUserStore()
 
@@ -123,7 +123,9 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
               >
                 {item.icon}
               </motion.div>
-              <span className="break-keep">{item.label}</span>
+              <span className="break-keep dark:text-gray-300">
+                {item.label}
+              </span>
             </motion.div>
           )
         })}

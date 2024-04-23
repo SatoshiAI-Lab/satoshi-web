@@ -3,6 +3,7 @@ import { useStorage } from '@/hooks/use-storage'
 
 import type { AnyObject } from '@/types/types'
 import type { FetcherResponse, FetcherOptions } from './types'
+import toast from 'react-hot-toast'
 
 const excludesAuthPath = [
   '/api/v1/subscription/list/',
@@ -52,7 +53,9 @@ export async function fetcher<T = ReadableStream<Uint8Array>>(
   const stringQuery = method === 'GET' ? utilParse.objToQs(query ?? {}) : ''
   const url = baseURL + path + stringQuery
   // We can use this hook, because it's not relying React hooks.
-  const token = useStorage().getLoginToken()
+  const { getLoginToken, setLoginToken, getLang } = useStorage()
+  const lang = getLang()
+  const token = getLoginToken()
 
   const hds: any = {
     'Content-Type': 'application/json',
@@ -75,6 +78,17 @@ export async function fetcher<T = ReadableStream<Uint8Array>>(
     // Handle server error.
     if (response.status >= 500) {
       console.error(`[Server Internal Error]: ${response.status}`)
+      return Promise.reject(response.body)
+    }
+
+    if (response.status == 401) {
+      const token = getLoginToken()
+      if (token) {
+        toast.error(
+          lang == 'en' ? 'Authentication failure' : '请重新登录'
+        )
+        setLoginToken('')
+      }
       return Promise.reject(response.body)
     }
 
