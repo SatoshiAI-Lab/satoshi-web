@@ -1,5 +1,5 @@
 import React from 'react'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { motion } from 'framer-motion'
 import { IconButton } from '@mui/material'
 import { IoIosArrowDown } from 'react-icons/io'
@@ -27,16 +27,25 @@ export const InputButtons = (props: Props) => {
   const ButtonGetter = () => {
     if (showToBottom) {
       return (
-        <IconButton onClick={onToBottomClick} className="!bg-slate-50">
-          <IoIosArrowDown size={20} className="" />
+        <IconButton
+          onClick={onToBottomClick}
+          className="!bg-slate-50 dark:!bg-zinc-800"
+        >
+          <IoIosArrowDown size={20} className="dark:text-white" />
         </IconButton>
       )
     }
 
     if (showPasuse) {
       return (
-        <IconButton onClick={onPasuseClick} className="!bg-slate-50">
-          <FaRegCirclePause size={20} className="text-red-500" />
+        <IconButton
+          onClick={onPasuseClick}
+          className="!bg-slate-50 dark:!bg-zinc-800"
+        >
+          <FaRegCirclePause
+            size={20}
+            className="text-red-500 dark:text-red-700"
+          />
         </IconButton>
       )
     }
@@ -44,7 +53,7 @@ export const InputButtons = (props: Props) => {
     // There must be an empty element,
     // otherwise will be no exit animation.
     return (
-      <IconButton className="!bg-slate-50">
+      <IconButton className="!bg-slate-50 dark:!bg-zinc-800">
         <FaCircle size={20} className="text-transparent bg-transparent" />
       </IconButton>
     )
@@ -58,7 +67,7 @@ export const InputButtons = (props: Props) => {
         y: isShow ? 0 : 56,
       }}
     >
-      <ButtonGetter />
+      {ButtonGetter()}
     </motion.div>
   )
 }

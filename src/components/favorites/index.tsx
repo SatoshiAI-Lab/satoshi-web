@@ -10,15 +10,15 @@ import {
   ListItemButton,
   Skeleton,
 } from '@mui/material'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { IoCloseOutline } from 'react-icons/io5'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
-import PercentTag from '../percent-tag'
-import TokenSearcher from '../token-searcher'
-import CustomSuspense from '../custom-suspense'
+import { PercentTag } from '../percent-tag'
+import { TokenSearcher } from '../token-searcher'
+import { CustomSuspense } from '../custom-suspense'
 import { useFavorites } from './hooks/use-favorites'
 import { ListToken, TokenId, TokenStatus, TokenType } from '@/api/token/types'
 import { useShow } from '@/hooks/use-show'
@@ -125,7 +125,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
                       src={t.logo}
                       sx={{ width: 24, height: 24 }}
                     />
-                    <span className="overflow-hidden mr-2 text-ellipsis ">
+                    <span className="overflow-hidden mr-2 text-ellipsis">
                       {utilFmt.ellipsis(t.symbol)}
                     </span>
                   </div>

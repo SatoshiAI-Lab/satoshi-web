@@ -54,30 +54,30 @@ export const WalletSearch = (props: Props) => {
   }, [wallets, chain])
 
   return (
-    <div>
-      <TextField
-        InputProps={{
-          classes: { root: '!px-0' },
-          startAdornment: (
-            <IconButton onClick={onSearch}>
-              <IoSearch className="text-gray-400" size={22} />
-            </IconButton>
-          ),
-          endAdornment: (
-            <IconButton onClick={onClear}>
-              <IoCloseOutline className="text-gray-400" size={22} />
-            </IconButton>
-          ),
-        }}
-        placeholder={t('search-wallet')}
-        autoComplete="off"
-        size="small"
-        autoFocus={autofocus}
-        value={kw}
-        onChange={({ target }) => setKw(target.value)}
-        onKeyUp={(e) => e.key === 'Enter' && onSearch()}
-      />
-    </div>
+    <TextField
+      InputProps={{
+        classes: {
+          root: '!px-0 dark:!text-gray-300',
+        },
+        startAdornment: (
+          <IconButton onClick={onSearch}>
+            <IoSearch className="text-gray-400" size={22} />
+          </IconButton>
+        ),
+        endAdornment: (
+          <IconButton onClick={onClear}>
+            <IoCloseOutline className="text-gray-400" size={22} />
+          </IconButton>
+        ),
+      }}
+      placeholder={t('search-wallet')}
+      autoComplete="off"
+      size="small"
+      autoFocus={autofocus}
+      value={kw}
+      onChange={({ target }) => setKw(target.value)}
+      onKeyUp={(e) => e.key === 'Enter' && onSearch()}
+    />
   )
 }
 

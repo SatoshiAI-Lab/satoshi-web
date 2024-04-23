@@ -33,6 +33,7 @@ export const MessageBubble = (props: MessageBubbleProps) => {
         'my-1 break-all shadow-bubble hover:bg-white transition-all',
         'max-lg:max-w-4xl md:max-w-xl max-sm:mr-4 max-sm:max-w-[14rem]',
         '2xl:max-w-4xl items-cneter gap-0 whitespace-pre-line',
+        'dark:bg-zinc-800 dark:text-gray-300 dark:hover:bg-zinc-900',
         !children || children.toString().trim() === '' ? 'hidden' : '',
         role === 'assistant' && 'self-start',
         role === 'system' && 'self-center',
