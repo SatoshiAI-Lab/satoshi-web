@@ -37,6 +37,7 @@ export const useUserStore = create<States & Actions>((set, get) => ({
     const data = await self.login(email, password, false)
 
     await walletApi.createWallet({ platform: WalletPlatform.SOL })
+    await walletApi.createWallet({ platform: WalletPlatform.EVM })
 
     return data
   },
