@@ -1,10 +1,9 @@
 import { DialogHeader } from '@/components/dialog-header'
 import { useChainsPlatforms } from '@/components/wallet/hooks/use-chains-platforms'
 import { useShow } from '@/hooks/use-show'
-import { useTxTokenWallet } from '@/hooks/use-tx-token-wallet'
-import { useWallet } from '@/hooks/use-wallet'
-import { Dialog, Menu, MenuItem, OutlinedInput, Select } from '@mui/material'
-import { useState } from 'react'
+import { useWalletList } from '@/hooks/use-wallet-list'
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { Dialog, MenuItem, OutlinedInput, Select } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { IoSearchOutline } from 'react-icons/io5'
 
@@ -17,6 +16,8 @@ interface Props {
 export const SelectTokenDialog = ({ hidden, show }: Props) => {
   const { t } = useTranslation()
   const { show: showSelect, open: openSelect, hidden: hiddenSelect } = useShow()
+
+  const walletStore = useWalletStore.getState()
 
   return (
     <Dialog open={show} onClose={hidden}>
@@ -43,10 +44,18 @@ export const SelectTokenDialog = ({ hidden, show }: Props) => {
         <div className="pt-4 px-6 border-t border-gray-400">
           <div className="">
             <span className="mr-2">{t('my.token')}</span>
-            <Select open={showSelect} onClose={hiddenSelect} size="small">
-              {/* {chains.map((chain) => {
-                return <MenuItem key={chain.name} onClick={() => {}}></MenuItem>
-              })} */}
+            <Select
+              value={walletStore?.currentWallet?.name! ?? ''}
+              onClose={hiddenSelect}
+              size="small"
+            >
+              {walletStore.allWalletList.map((wallet) => {
+                return (
+                  <MenuItem key={wallet.id} onClick={() => {}}>
+                    {wallet.name}
+                  </MenuItem>
+                )
+              })}
             </Select>
           </div>
         </div>

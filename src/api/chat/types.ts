@@ -76,7 +76,7 @@ export interface ChatResponseTokneName {
 export interface ChatResponseWalletListRaw {
   status: number
   data: ChatResponseWalletList[]
-  chain: string
+  chain: WalletChain
 }
 
 export interface ChatResponseWalletBalance {

@@ -1,25 +1,27 @@
 import { create } from 'zustand'
 
-import { WALLET_CONFIG } from '@/config/wallet'
+import { WALLET_CONFIG, WalletChain } from '@/config/wallet'
 
-import type { GetChainsRes } from '@/api/wallet/params'
+import type { GetChainsRes, GetWalletsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 export interface WalletCardProps extends Partial<UserCreateWalletResp> {}
 
 interface States {
   wallets: WalletCardProps[]
-  allWallets: WalletCardProps[]
+  allWallets: GetWalletsRes
+  allWalletList: UserCreateWalletResp[]
+  allPlatformWallet: UserCreateWalletResp[]
   chains: GetChainsRes['chains']
   platforms: GetChainsRes['platforms']
   currentWallet?: WalletCardProps
-  selectedChain: string
+  selectedChain: WalletChain
   selectedPlatform: string
 }
 
 interface Actions {
   setWallets(wallets: WalletCardProps[]): void
-  setAllWallets(wallets: WalletCardProps[]): void
+  setAllWallets(wallets: GetWalletsRes): void
   setChains(chains: GetChainsRes['chains']): void
   setPlatforms(platforms: GetChainsRes['platforms']): void
   setCurrentWallet(address?: string): void
@@ -29,7 +31,9 @@ interface Actions {
 
 export const useWalletStore = create<States & Actions>((set, get) => ({
   wallets: [],
-  allWallets: [],
+  allWallets: {} as GetWalletsRes,
+  allWalletList: [],
+  allPlatformWallet: [],
   chains: [],
   platforms: [],
   currentWallet: undefined,
@@ -37,7 +41,21 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   selectedPlatform: WALLET_CONFIG.defaultPlatform,
 
   setWallets: (wallets) => set({ wallets }),
-  setAllWallets: (allWallets) => set({ allWallets }),
+  setAllWallets: (allWallets) => {
+    const allWalletList: UserCreateWalletResp[] = []
+    const allPlatformWallet: UserCreateWalletResp[] = []
+
+    Object.keys(allWallets).forEach((key) => {
+      const wallet = allWallets[key as WalletChain]
+      allWalletList.push(...wallet)
+    })
+    
+    set({
+      allWallets,
+      allWalletList,
+      allPlatformWallet,
+    })
+  },
   setChains: (chains) => set({ chains }),
   setPlatforms: (platforms) => set({ platforms }),
   setCurrentWallet: (address) => {
@@ -46,6 +64,6 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
     // At the very least make sure it's `{}`
     set({ currentWallet: target ?? {} })
   },
-  setSelectedChain: (chain) => set({ selectedChain: chain }),
+  setSelectedChain: (chain) => set({ selectedChain: chain as WalletChain }),
   setSelectedPlatform: (platform) => set({ selectedPlatform: platform }),
 }))

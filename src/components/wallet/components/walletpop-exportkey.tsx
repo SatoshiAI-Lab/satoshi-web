@@ -4,16 +4,16 @@ import { TfiClose } from 'react-icons/tfi'
 import { t } from 'i18next'
 
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { useWallet } from '@/hooks/use-wallet'
+import { useWalletManage } from '@/hooks/use-wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
 
 import type { WalletDialogProps } from '../types'
 
-const WalletExportKeyPop: FC<WalletDialogProps> = (props) => {
+export const WalletExportKeyPop: FC<WalletDialogProps> = (props) => {
   const { open, onClose, title } = props
   const { currentWallet } = useWalletStore()
   const { privateKey, isExporting, exportPrivateKey, resetExportPrivateKey } =
-    useWallet()
+    useWalletManage()
   const { isCopied, copy } = useClipboard()
 
   useEffect(() => {
@@ -70,4 +70,4 @@ const WalletExportKeyPop: FC<WalletDialogProps> = (props) => {
   )
 }
 
-export { WalletExportKeyPop }
+export default WalletExportKeyPop

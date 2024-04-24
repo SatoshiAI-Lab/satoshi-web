@@ -5,11 +5,10 @@ import { type Message } from '@/stores/use-chat-store/types'
 import { MessageBubble } from './message-bubble'
 import { InteractiveMessage } from './interactive-message/interactive-message'
 import { TokenMarkdown } from '@/components/token-markdown'
-import { IntentMessage } from './intention-message/intention-message'
-import { MonitorConfigBubble } from './monitor-message/monitor-config-bubble'
+import { IntentionMessage } from './intention-message/intention-message'
+import { MonitorMessages } from './monitor-message/monitor-config-bubble'
 import { PrivateKeyMessage } from './private-key-message'
-
-import LoadingMessage from './loading-message'
+import { LoadingMessage } from './loading-message'
 
 interface Props {
   messages: Message[]
@@ -17,18 +16,22 @@ interface Props {
 
 const Messages = memo((props: Props) => {
   return props.messages.map((msg, i) => {
+    // Is loading message.
     if (msg.isLoading) {
       return <LoadingMessage key={i} />
     }
 
+    // Monitor message category.
     if (msg?.isMonitor) {
-      return <MonitorConfigBubble key={i} msg={msg} />
+      return <MonitorMessages key={i} msg={msg} />
     }
 
+    // Intention message category.
     if (msg?.isIntention) {
-      return <IntentMessage key={i} msg={msg!} />
+      return <IntentionMessage key={i} msg={msg!} />
     }
 
+    // Interactive message category.
     if (msg?.isInteractive) {
       return <InteractiveMessage key={i} message={msg} />
     }

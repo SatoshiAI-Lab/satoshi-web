@@ -2,8 +2,6 @@ import clsx from 'clsx'
 
 import { ChatResponseTxConfrim, TokenInfo } from '@/api/chat/types'
 import { useShow } from '@/hooks/use-show'
-import { Menu, MenuItem } from '@mui/material'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IoIosArrowDown } from 'react-icons/io'
 import { SelectTokenDialog } from './select-token-dialog'
@@ -14,6 +12,7 @@ interface Props {
   selectFromToken?: TokenInfo
   selectToToken?: TokenInfo
   isBuy: boolean
+  isFrom?: boolean
   isFinalTx: boolean
   data: ChatResponseTxConfrim
   switchToken: (token: TokenInfo) => void
@@ -27,69 +26,70 @@ export const SelectToken: React.FC<Props> = ({
   selectFromToken,
   selectToToken,
   data,
+  isFrom,
   isFinalTx,
 }: Props) => {
-  const isFrom = selectFromToken != null
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const showMenu = Boolean(anchorEl)
+  console.log(isFrom)
+
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const { t } = useTranslation()
   const { show, open, hidden } = useShow(false)
 
   const handleClick = (token: TokenInfo) => {
     switchToken(token)
-    setAnchorEl(null)
+    // setAnchorEl(null)
     hidden()
   }
 
   const onSwitch = (event: any) => {
-    // open()
-
-    setAnchorEl(event.target)
-  }
-
-  const onCloseMenu = () => {
-    setAnchorEl(null)
-  }
-
-  const selectOtherToken = () => {
-    setAnchorEl(null)
     open()
+
+    // setAnchorEl(event.target)
   }
 
-  const tokenMenu = (tokenList: TokenInfo[]) => (
-    <Menu
-      anchorEl={anchorEl}
-      open={showMenu}
-      onClose={onCloseMenu}
-      MenuListProps={{
-        'aria-labelledby': 'basic-button',
-      }}
-    >
-      {tokenList?.map((item, i) => {
-        return (
-          <MenuItem
-            key={i}
-            onClick={() => handleClick(item)}
-            selected={
-              (isBuy ? selectFromToken : selectToToken)?.chain_name ==
-              item.chain_name
-            }
-          >
-            <div className="flex flex-col">
-              <span>{`${item.token_name}`}</span>
-              <div className="flex items-center">
-                <span className="text-gray-400 text-sm leading-none">
-                  {item.chain_name}
-                </span>
-              </div>
-            </div>
-          </MenuItem>
-        )
-      })}
-      <MenuItem onClick={selectOtherToken}>{t('select.token')}</MenuItem>
-    </Menu>
-  )
+  // const onCloseMenu = () => {
+  //   setAnchorEl(null)
+  // }
+
+  // const selectOtherToken = () => {
+  //   setAnchorEl(null)
+  //   open()
+  // }
+
+  // const tokenMenu = (tokenList: TokenInfo[]) => (
+  //   <Menu
+  //     anchorEl={anchorEl}
+  //     open={showMenu}
+  //     onClose={onCloseMenu}
+  //     MenuListProps={{
+  //       'aria-labelledby': 'basic-button',
+  //     }}
+  //   >
+  //     {tokenList?.map((item, i) => {
+  //       return (
+  //         <MenuItem
+  //           key={i}
+  //           onClick={() => handleClick(item)}
+  //           selected={
+  //             (isBuy ? selectFromToken : selectToToken)?.chain_name ==
+  //             item.chain_name
+  //           }
+  //         >
+  //           <div className="flex flex-col">
+  //             <span>{`${item.token_name}`}</span>
+  //             <div className="flex items-center">
+  //               <span className="text-gray-400 text-sm leading-none">
+  //                 {item.chain_name}
+  //               </span>
+  //             </div>
+  //           </div>
+  //         </MenuItem>
+  //       )
+  //     })}
+  //     <MenuItem onClick={selectOtherToken}>{t('select.token')}</MenuItem>
+  //   </Menu>
+  // )
 
   if (isFrom) {
     return (
@@ -102,27 +102,18 @@ export const SelectToken: React.FC<Props> = ({
           )}
           onClick={onSwitch}
         >
-          <img
-            src={selectFromToken?.chain_logo!}
-            alt="chain-slogo"
-            width={18}
-            height={18}
-            className="w-[18px] h-[18px] mr-1 pointer-events-none"
-          ></img>
-          {`${selectFromToken?.token_name}`}
+          {selectFromToken?.token_name ?? (
+            <span className="text-gray-500">{t('select.token')}</span>
+          )}
           <IoIosArrowDown className="ml-1 w-[34px]  pointer-events-none"></IoIosArrowDown>
         </div>
         {isBuy ? (
           <SelectTokenDialog show={show} open={open} hidden={hidden} />
         ) : null}
-        {tokenMenu(fromTokenList!)}
+        {/* {tokenMenu(fromTokenList!)} */}
       </>
     )
   }
-
- 
-  console.log('selectToToken', selectToToken)
-  
 
   return (
     <>
@@ -135,7 +126,9 @@ export const SelectToken: React.FC<Props> = ({
         onClick={onSwitch}
       >
         <>
-          {selectToToken?.token_name}
+          {selectToToken?.token_name ?? (
+            <span className="text-gray-500">{t('select.token')}</span>
+          )}
           <IoIosArrowDown className="ml-1"></IoIosArrowDown>
         </>
       </div>

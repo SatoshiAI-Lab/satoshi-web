@@ -1,23 +1,37 @@
 import { Switch } from '@mui/material'
+import { clsx } from 'clsx'
 import { IoSettingsOutline } from 'react-icons/io5'
 
-interface Props {
-  data: any
-  disabled?: boolean
+interface Base {
+  subscribed: boolean
+  chain?: string
+  name?: string
   logo?: string
-  onSwitch: <T>(checked: boolean, data: any) => void
-  onSetting?: any
+  [k: string]: any
 }
 
-export const MonitorLabelSwitch = ({
+interface Props<T> {
+  data: T
+  disabled?: boolean
+  logo?: string
+  onSwitch: (checked: boolean, data: T) => void
+  onSetting?: ((data: T) => void) | null
+}
+
+export const MonitorLabelSwitch = <T extends Base>({
   data,
   logo,
   disabled,
   onSwitch,
   onSetting,
-}: Props) => {
+}: Props<T>) => {
   return (
-    <div className="flex justify-between rounded-lg border border-black pl-2 pr-1 min-w-[220px]">
+    <div
+      className={clsx(
+        'flex justify-between rounded-lg border border-black',
+        'pl-2 pr-1 min-w-[220px] dark:border-zinc-500'
+      )}
+    >
       <div className="flex items-center">
         <img
           src={data.logo || logo}

@@ -9,6 +9,8 @@ import clsx from 'clsx'
 import numeral from 'numeral'
 import toast from 'react-hot-toast'
 
+import type { ChatResponseMeta, ChatResponseTxConfrim } from '@/api/chat/types'
+
 import { CHAT_CONFIG } from '@/config/chat'
 import { useTxToken } from '@/hooks/use-tx-tokne'
 import { WalletList } from './wallet-list'
@@ -16,12 +18,10 @@ import { SelectToken } from './select-token'
 import { WalletCardProps } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
 import { trandApi } from '@/api/trand'
-import { useWallet } from '@/hooks/use-wallet'
 import { interactiveApi } from '@/api/interactive'
 import MessageBubble from '../../message-bubble'
 import { useChatStore } from '@/stores/use-chat-store'
-
-import type { ChatResponseMeta, ChatResponseTxConfrim } from '@/api/chat/types'
+import { useWalletList } from '@/hooks/use-wallet-list'
 import { WalletChain } from '@/config/wallet'
 
 interface Props {
@@ -63,10 +63,8 @@ export const TxTokenBubbles = (props: Props) => {
   const [validateErr, setValidateErr] = useState<string[]>([])
   const [isFinalTx, setIsFinalTx] = useState(false)
   const { show: loading, open: showLoading, hidden: hiddenLoading } = useShow()
-  const { getAllWallet } = useWallet()
-  // const { addMessage } = useChatMigrating()
+  const { getAllWallet } = useWalletList()
   const { addMessage } = useChatStore()
-
   const { t } = useTranslation()
 
   const {
@@ -188,7 +186,7 @@ export const TxTokenBubbles = (props: Props) => {
   }
 
   return (
-    <MessageBubble className={`min-w-[350px]`}>
+    <MessageBubble className={`min-w-[450px]`}>
       <div className="font-bold mt-1 mb-1">
         {(isBuy ? t('tx.token.text1') : t('tx.token2')).replace(
           '$1',
@@ -199,7 +197,7 @@ export const TxTokenBubbles = (props: Props) => {
         <div>
           <OutlinedInput
             className={clsx(
-              '!rounded-xl max-w-[150px]',
+              '!rounded-xl max-w-[200px]',
               `${isBuy ? 'max-w-[180px]' : ''}`
             )}
             classes={{
@@ -212,6 +210,7 @@ export const TxTokenBubbles = (props: Props) => {
             endAdornment={
               <SelectToken
                 isBuy
+                isFrom
                 fromTokenList={fromTokenList}
                 selectFromToken={selectFromToken}
                 switchToken={setSelectFromToken}

@@ -12,7 +12,7 @@ import { t } from 'i18next'
 
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
-import { useWallet } from '@/hooks/use-wallet'
+import { useWalletManage } from '@/hooks/use-wallet'
 
 import type { WalletDialogProps } from '../types'
 
@@ -20,7 +20,7 @@ export const WalletRenamePop: FC<WalletDialogProps> = (props) => {
   const { open, onClose, title, onlyWalletRefetch } = props
   const [walletName, setWalletName] = useState('')
   const { currentWallet } = useWalletStore()
-  const { renameWallet } = useWallet()
+  const { renameWallet } = useWalletManage()
   const { open: openLoading, show, hidden: hiddenLoading } = useShow()
 
   const onRenameWallet = async (walletName: string) => {

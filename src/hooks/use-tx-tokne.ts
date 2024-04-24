@@ -12,19 +12,15 @@ interface Options {
 }
 
 export const useTxToken = ({ isBuy, data }: Options) => {
-  const { currentWallet, allWallets } = useWalletStore()
+  const { currentWallet, allWalletList } = useWalletStore()
 
   let fromTokenList = data.from_token_info
   let toTokenList = data.to_token_info
 
-  console.log('data', data)
-  
-
   let checkedWalletList: WalletCardProps[] = []
-
   fromTokenList = fromTokenList.filter((token) => {
-    for (let i = 0; i < allWallets.length; i++) {
-      const wallet = allWallets[i]
+    for (let i = 0; i < allWalletList.length; i++) {
+      const wallet = allWalletList[i]
 
       if (wallet.chain?.name !== token.chain_name) {
         continue
@@ -49,8 +45,8 @@ export const useTxToken = ({ isBuy, data }: Options) => {
   const selectFirstFromToken = fromTokenList[0]
 
   toTokenList = toTokenList.filter((token) => {
-    for (let i = 0; i < allWallets.length; i++) {
-      const wallet = allWallets[i]
+    for (let i = 0; i < allWalletList.length; i++) {
+      const wallet = allWalletList[i]
       // if (wallet.platform !== token.platform) {
       //   continue
       // }
@@ -68,8 +64,6 @@ export const useTxToken = ({ isBuy, data }: Options) => {
     }
     return false
   })
-
-  console.log(toTokenList)
 
   const selectFirstToToken = toTokenList[0]
 
