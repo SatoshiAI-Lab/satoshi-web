@@ -10,7 +10,7 @@ interface Props {
   wallets: WalletCardProps[]
   chain: string
   autofocus?: boolean
-  searchBy?: keyof Omit<WalletCardProps, 'chain' | 'tokens'>
+  searchBy?: (keyof Omit<WalletCardProps, 'chain' | 'tokens'>)[]
   onResult: (wallets: WalletCardProps[]) => void
 }
 
@@ -19,7 +19,7 @@ export const WalletSearch = (props: Props) => {
     wallets,
     chain,
     autofocus = false,
-    searchBy = 'name',
+    searchBy = ['name', 'address'],
     onResult,
   } = props
   const { t } = useTranslation()
@@ -28,10 +28,18 @@ export const WalletSearch = (props: Props) => {
   const onSearch = () => {
     if (!kw.trim()) return
 
-    const filtered = wallets.filter((w) =>
-      w[searchBy]?.toLowerCase().includes(kw.toLowerCase())
+    // Match search keyword.
+    const filtered = searchBy.map((s) =>
+      wallets.filter((w) => w[s]?.toLowerCase().includes(kw.toLowerCase()))
     )
-    onResult(filtered)
+    // Remove duplicate.
+    const unique = filtered.flat().reduce((acc, cur) => {
+      acc[cur.id ?? ''] = cur
+      return acc
+    }, {} as Record<string, WalletCardProps>)
+    const result = Object.values(unique)
+
+    onResult(result)
   }
 
   const onClear = () => {
