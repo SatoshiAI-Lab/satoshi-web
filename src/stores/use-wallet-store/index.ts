@@ -1,25 +1,25 @@
 import { create } from 'zustand'
 
-import { WALLET_CONFIG } from '@/config/wallet'
+import { WALLET_CONFIG, WalletChain } from '@/config/wallet'
 
-import type { GetChainsRes } from '@/api/wallet/params'
+import type { GetChainsRes, GetWalletsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 export interface WalletCardProps extends Partial<UserCreateWalletResp> {}
 
 interface States {
   wallets: WalletCardProps[]
-  allWallets: WalletCardProps[]
+  allWallets: GetWalletsRes
   chains: GetChainsRes['chains']
   platforms: GetChainsRes['platforms']
   currentWallet?: WalletCardProps
-  selectedChain: string
+  selectedChain: WalletChain
   selectedPlatform: string
 }
 
 interface Actions {
   setWallets(wallets: WalletCardProps[]): void
-  setAllWallets(wallets: WalletCardProps[]): void
+  setAllWallets(wallets: GetWalletsRes): void
   setChains(chains: GetChainsRes['chains']): void
   setPlatforms(platforms: GetChainsRes['platforms']): void
   setCurrentWallet(address?: string): void
@@ -29,7 +29,7 @@ interface Actions {
 
 export const useWalletStore = create<States & Actions>((set, get) => ({
   wallets: [],
-  allWallets: [],
+  allWallets: {} as GetWalletsRes,
   chains: [],
   platforms: [],
   currentWallet: undefined,
@@ -46,6 +46,6 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
     // At the very least make sure it's `{}`
     set({ currentWallet: target ?? {} })
   },
-  setSelectedChain: (chain) => set({ selectedChain: chain }),
+  setSelectedChain: (chain) => set({ selectedChain: chain as WalletChain }),
   setSelectedPlatform: (platform) => set({ selectedPlatform: platform }),
 }))

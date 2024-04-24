@@ -7,19 +7,20 @@ import { useTranslation } from 'react-i18next'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { useQuery } from '@tanstack/react-query'
 
-import { UserCreateWalletResp } from '@/api/wallet/params'
-import { CHAT_CONFIG } from '@/config/chat'
-import { useChatMigrating } from '@/hooks/use-chat-migrating'
-import { utilFmt } from '@/utils/format'
-import { useWallet } from '@/hooks/use-wallet'
-import { useChat } from '@/hooks/use-chat'
-import { walletApi } from '@/api/wallet'
-import { CustomSuspense } from '@/components/custom-suspense'
-
 import type {
   ChatResponseWalletList,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
+
+import { UserCreateWalletResp } from '@/api/wallet/params'
+import { CHAT_CONFIG } from '@/config/chat'
+import { utilFmt } from '@/utils/format'
+import { useWalletManage } from '@/hooks/use-wallet'
+import { useChat } from '@/hooks/use-chat'
+import { walletApi } from '@/api/wallet'
+import { CustomSuspense } from '@/components/custom-suspense'
+
+import { WalletChain } from '@/config/wallet'
 
 interface Props {
   type: string
@@ -31,7 +32,6 @@ const gridCls = 'grid grid-cols-[175px_130px_130px_100px]'
 export const WalletList = (props: Props) => {
   const { type, chain } = props
   const { t } = useTranslation()
-  // const { addMessageAndLoading, sendMsg } = useChatMigrating()
   const { sendChat } = useChat()
   const {
     data: walletsData,
@@ -42,8 +42,8 @@ export const WalletList = (props: Props) => {
     queryFn: () => walletApi.getWallets(chain),
   })
 
-  const { removeWallet } = useWallet()
-  const wallets = walletsData?.data ?? []
+  const { removeWallet } = useWalletManage()
+  const wallets = walletsData?.data[chain as WalletChain] ?? []
   const walletList = wallets.sort(
     (a, b) =>
       new Date(b.added_at ?? 0).getTime() - new Date(a.added_at ?? 0).getTime()

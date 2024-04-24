@@ -6,14 +6,14 @@ import { t } from 'i18next'
 
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
-import { useWallet } from '@/hooks/use-wallet'
+import { useWalletManage } from '@/hooks/use-wallet'
 
 import type { WalletDialogProps } from '../types'
 
 const WalletDeletePop: FC<WalletDialogProps> = (props) => {
   const { open, onClose, title, onlyWalletRefetch } = props
   const { currentWallet } = useWalletStore()
-  const { removeWallet } = useWallet()
+  const { removeWallet } = useWalletManage()
   const { show, open: openLoading, hidden: hiddenLoading } = useShow()
 
   const onRemoveWallet = async () => {

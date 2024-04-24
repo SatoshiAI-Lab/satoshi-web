@@ -12,7 +12,7 @@ import toast from 'react-hot-toast'
 
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
-import { useWallet } from '@/hooks/use-wallet'
+import { useWalletManage } from '@/hooks/use-wallet'
 import ChainPlatformSelect from '../../chain-platform-select'
 
 import type { WalletDialogProps } from '../types'
@@ -21,7 +21,7 @@ const WalletImportKeyPop: FC<WalletDialogProps> = (props) => {
   const { open, onClose, title } = props
   const [privateKey, setPrivateKey] = useState('')
   const { selectedPlatform } = useWalletStore()
-  const { importPrivateKey } = useWallet()
+  const { importPrivateKey } = useWalletManage()
   const { open: openLoading, hidden: hiddenLoading, show } = useShow()
 
   const onImportPrivateKey = async () => {
