@@ -51,16 +51,13 @@ export interface ChatResponseTxConfrim {
   to_token_name: string
   to_token_info: TokenInfo[]
 }
-
 export interface TokenInfo {
-  platform: string
-  chain: WalletChain
-  token_name: null | string
-  contract: string
-  platform_id: number
+  chain_name: WalletChain
   chain_logo: string
-  chain_symbol: string
-  token_logo: null | string
+  token_name: string
+  token_logo: string
+  contract: string
+  chain_id: number
 }
 
 export interface ChatResponseTokneName {

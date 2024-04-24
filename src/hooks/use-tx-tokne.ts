@@ -21,20 +21,26 @@ export const useTxToken = ({ isBuy, data }: Options) => {
   tokenList = tokenList.filter((token) => {
     for (let i = 0; i < allWallets.length; i++) {
       const wallet = allWallets[i]
-      if (wallet.platform !== token.platform) {
+
+      if (
+        data.to_token_name == token.token_name
+      ) {
         continue
       }
 
       const result = wallet.tokens?.some((item) => {
         return (
-          item.chain_name == token.chain &&
+          item.chain_name == token.chain_name &&
           item.symbol == token.token_name &&
           item.valueUsd > 0
         )
       })
 
+
       if (result) {
-        checkedWalletList.push(wallet)
+        if (!checkedWalletList.includes(wallet)) {
+          checkedWalletList.push(wallet)
+        }
         return result
       }
     }
@@ -47,7 +53,7 @@ export const useTxToken = ({ isBuy, data }: Options) => {
 
   const sortedCheckedWalletList = checkedWalletList
     // Filter the wallet of the chain corresponding to the token
-    .filter((w) => w.chain?.name == selectToken?.chain)
+    .filter((w) => w.chain?.id == selectToken?.chain_id)
     // Filter wallets in descending order of balance size
     ?.sort((a, b) => {
       const x = new Date(b.added_at!).getTime()
@@ -67,7 +73,9 @@ export const useTxToken = ({ isBuy, data }: Options) => {
 
     return (
       data.from_token_info.findIndex((item) => {
-        return item.token_name == token.symbol && item.chain == token.chain_name
+        return (
+          item.token_name == token.symbol && item.chain_name == token.chain_name
+        )
       }) != -1
     )
   }
@@ -84,6 +92,7 @@ export const useTxToken = ({ isBuy, data }: Options) => {
     },
     []
   )
+
 
   useEffect(() => {
     setSelectWallet(sortedCheckedWalletList[0])

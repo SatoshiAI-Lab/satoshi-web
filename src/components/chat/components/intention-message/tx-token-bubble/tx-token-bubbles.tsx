@@ -30,6 +30,7 @@ interface Props {
   msg: ChatResponseAnswerMeta
 }
 
+
 const rates = [20, 50, 100]
 export const TxTokenBubbles = (props: Props) => {
   const data = props.msg.data as unknown as ChatResponseTxConfrim
@@ -111,7 +112,7 @@ export const TxTokenBubbles = (props: Props) => {
         return selectToken
       } else {
         return data.to_token_info.find(
-          (t) => t.platform_id == selectToken?.platform_id
+          (t) => t.chain_id == selectToken?.chain_id
         )
       }
     }
@@ -121,7 +122,7 @@ export const TxTokenBubbles = (props: Props) => {
 
     try {
       const { data } = await trandApi.swapToken(selectWallet.id!, {
-        chain: inputToken?.chain,
+        chain: inputToken!.chain_name!,
         amount: `${buyValue}`,
         input_token: `${inputToken?.contract}`,
         output_token: `${outputToken?.contract}`,
@@ -131,7 +132,7 @@ export const TxTokenBubbles = (props: Props) => {
       const getStatus = async () => {
         const { data: result } = await interactiveApi.getHashStatus({
           hash_tx: data.hash_tx,
-          chain: inputToken?.chain,
+          chain: inputToken?.chain_name!,
         })
         if (result.status == 0) {
           await getStatus()
@@ -153,7 +154,7 @@ export const TxTokenBubbles = (props: Props) => {
 
       await getStatus()
       addMessage({
-        msg: `${t('successful.transaction')}${data.hash_tx}`,
+        msg: `${t('successful.transaction')}${data.url}`,
       })
       setIsFinalTx(true)
       getAllWallet()

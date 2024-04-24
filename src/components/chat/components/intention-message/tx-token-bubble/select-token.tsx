@@ -56,7 +56,10 @@ export const SelectToken: React.FC<Props> = ({
           <MenuItem
             key={i}
             onClick={() => handleClick(item)}
-            selected={selectToken?.chain == item.chain}
+            selected={
+              selectToken?.token_name == item.token_name &&
+              selectToken?.chain_id == item.chain_id
+            }
           >
             <div className="flex items-center">
               <div className="mr-2 self-center">
@@ -68,7 +71,7 @@ export const SelectToken: React.FC<Props> = ({
                   className="w-[22px] h-[22px]"
                 ></img>
               </div>
-              {`${item.chain_symbol}_${item.token_name}`}
+              {`${item.token_name}`}
             </div>
           </MenuItem>
         )
@@ -103,7 +106,7 @@ export const SelectToken: React.FC<Props> = ({
   }
 
   const toToken = data.to_token_info.find(
-    (t) => t.platform_id == selectToken?.platform_id
+    (t) => t.chain_id == selectToken?.chain_id
   )
 
   return (
