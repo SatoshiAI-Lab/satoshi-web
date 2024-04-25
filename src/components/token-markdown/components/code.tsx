@@ -39,7 +39,7 @@ export const Code = (props: Props) => {
         className={clsx(
           'absolute right-3 top-[1.2rem] transition-all items-center',
           'cursor-pointer hidden group-hover:flex gap-1 text-sm',
-          'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
+          'hover:drop-shadow-bold not-used-dark:hover:drop-shadow-bold-dark'
         )}
         onClick={() => onCopy(children)}
       >

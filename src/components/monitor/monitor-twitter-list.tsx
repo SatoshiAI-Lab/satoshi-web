@@ -75,7 +75,7 @@ export const MonitorTwitterList = ({ className }: Props) => {
               key={i}
               className={clsx(
                 'flex justify-between pl-3 pr-2 border border-black',
-                'rounded-lg dark:border-zinc-400',
+                'rounded-lg not-used-dark:border-zinc-400',
                 i !== list.length ? '!mb-3' : ''
               )}
             >

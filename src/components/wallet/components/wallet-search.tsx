@@ -65,7 +65,7 @@ export const WalletSearch = (props: Props) => {
     <TextField
       InputProps={{
         classes: {
-          root: '!px-0 dark:!text-gray-300',
+          root: '!px-0 not-used-dark:!text-gray-300',
         },
         startAdornment: (
           <IconButton onClick={onSearch}>

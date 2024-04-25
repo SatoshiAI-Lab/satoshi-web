@@ -15,7 +15,7 @@ export const DesktopHeader = (props: DesktopHeaderProps) => {
     <ul
       className={clsx(
         'flex text-black max-lg:hidden list-none ml-10',
-        'dark:text-white'
+        'not-used-dark:text-white'
       )}
     >
       {items.map((item, i) => (

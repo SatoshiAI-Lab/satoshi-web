@@ -123,7 +123,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
               >
                 {item.icon}
               </motion.div>
-              <span className="break-keep dark:text-gray-300">
+              <span className="break-keep not-used-dark:text-gray-300">
                 {item.label}
               </span>
             </motion.div>

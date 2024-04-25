@@ -195,9 +195,9 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                       <div>{t('password')}</div>
                       <Link
                         classes={{
-                          root: '!text-[18px] !text-black !decoration-black dark:!decoration-gray-300',
+                          root: '!text-[18px] !text-black !decoration-black not-used-dark:!decoration-gray-300',
                         }}
-                        className="cursor-pointer dark:!text-gray-300"
+                        className="cursor-pointer not-used-dark:!text-gray-300"
                         onClick={forgotPassword}
                       >
                         {t('forgot')}?
@@ -250,9 +250,9 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                 </span>
                 <Link
                   classes={{
-                    root: '!text-black !decoration-black dark:!decoration-gray-300',
+                    root: '!text-black !decoration-black not-used-dark:!decoration-gray-300',
                   }}
-                  className="cursor-pointer dark:!text-gray-300"
+                  className="cursor-pointer not-used-dark:!text-gray-300"
                   onClick={() => setSignIn(!isSignIn)}
                 >
                   {isSignIn ? t('login.tosignup') : t('login.tosignin')}

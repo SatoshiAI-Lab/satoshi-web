@@ -101,7 +101,7 @@ const CreateTokenWallets = (props: Props) => {
               <MenuItem
                 key={w.id}
                 value={w?.address ?? ''}
-                className="dark:!text-gray-300"
+                className="not-used-dark:!text-gray-300"
               >
                 {w.name}
               </MenuItem>

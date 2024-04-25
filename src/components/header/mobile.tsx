@@ -22,7 +22,7 @@ export const MobileHeader = (props: MobileHeaderProps) => {
   return (
     <>
       <IconButton className="!ml-2" onClick={() => setOpen((open) => !open)}>
-        <AiOutlineMenu className="text-black dark:text-white text-2xl" />
+        <AiOutlineMenu className="text-black not-used-dark:text-white text-2xl" />
       </IconButton>
       <SwipeableDrawer
         anchor="left"

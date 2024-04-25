@@ -159,7 +159,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
       <Dialog
         maxWidth="lg"
         PaperProps={{
-          className: 'dark:bg-zinc-900 dark:text-gray-300',
+          className: 'not-used-dark:bg-zinc-900 not-used-dark:text-gray-300',
           sx: { borderRadius: '10px' },
         }}
         open={open}
@@ -206,7 +206,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                           key={item.id}
                           className={clsx(
                             'w-[295px] h-[65px] flex flex-col !items-start !justify-center',
-                            'dark:!text-gray-300'
+                            'not-used-dark:!text-gray-300'
                           )}
                           onClick={() => onCreateWallet(item.id)}
                         >
@@ -225,7 +225,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                     className={clsx(
                       '!border-gray-400 hover:!bg-gray-100',
                       'disabled:!border-gray-300 disabled:!text-gray-400',
-                      'dark:hover:!bg-zinc-800 dark:!text-gray-300'
+                      'not-used-dark:hover:!bg-zinc-800 not-used-dark:!text-gray-300'
                     )}
                     variant="outlined"
                     disabled={isCreating}

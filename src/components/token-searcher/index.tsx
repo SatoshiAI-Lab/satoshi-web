@@ -68,15 +68,15 @@ export const TokenSearcher = (props: TokenSearcherProps) => {
       onClose={onClose}
       classes={{
         paper: clsx(
-          '!h-[60vh] w-[60vw] !overflow-hidden dark:bg-zinc-900',
-          'dark:text-white'
+          '!h-[60vh] w-[60vw] !overflow-hidden not-used-dark:bg-zinc-900',
+          'not-used-dark:text-white'
         ),
       }}
     >
       <DialogHeader onClose={onClose} closeBtnClass="!right-3.5">
         <span>{t('search')}</span>
       </DialogHeader>
-      <div className="flex items-center border-y border-gray-200 dark:border-zinc-600">
+      <div className="flex items-center border-y border-gray-200 not-used-dark:border-zinc-600">
         {/* Search input. */}
         <TokenSearcherInput
           value={value}

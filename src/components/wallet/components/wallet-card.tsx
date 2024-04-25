@@ -47,8 +47,9 @@ export const WalletCard = (props: Props) => {
     <div
       className={clsx(
         'relative border border-black rounded-md px-[30px] py-[17px]',
-        'flex justify-between items-center transition-all dark:border-zinc-500',
-        isLatestCreated && 'bg-gray-200 border-gray-300 dark:bg-zinc-800'
+        'flex justify-between items-center transition-all not-used-dark:border-zinc-500',
+        isLatestCreated &&
+          'bg-gray-200 border-gray-300 not-used-dark:bg-zinc-800'
       )}
     >
       <div>
@@ -62,7 +63,7 @@ export const WalletCard = (props: Props) => {
             <ChainLogos wallet={wallet} />
           </div>
         </div>
-        <div className="text-black dark:text-gray-300">
+        <div className="text-black not-used-dark:text-gray-300">
           {utilFmt.addr(address, 4)}
         </div>
         <div className="flex gap-8">
@@ -82,7 +83,7 @@ export const WalletCard = (props: Props) => {
             key={index}
             variant="outlined"
             classes={{ root: '!text-black !rounded-full' }}
-            className="!border-gray-400 hover:!bg-gray-100 dark:!text-gray-300 dark:hover:!bg-zinc-800"
+            className="!border-gray-400 hover:!bg-gray-100 not-used-dark:!text-gray-300 not-used-dark:hover:!bg-zinc-800"
             onClick={() => item.onClick(address!)}
           >
             {item.title}
@@ -95,7 +96,7 @@ export const WalletCard = (props: Props) => {
         }}
         onClick={() => deleteWallet(address!)}
       >
-        <IoTrash size={30} className="dark:text-white" />
+        <IoTrash size={30} className="not-used-dark:text-white" />
       </IconButton>
     </div>
   )

@@ -46,7 +46,7 @@ export const DefaultMessage = (props: Props) => {
             key={o.id}
             className={clsx(
               'ml-2 cursor-pointer hover:text-black transition-all duration-300',
-              'dark:hover:text-gray-300'
+              'not-used-dark:hover:text-gray-300'
             )}
             onClick={() => onOptionClick(o)}
           >

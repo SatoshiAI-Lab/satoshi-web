@@ -34,14 +34,18 @@ export const ChainPlatformSelect = memo((props: Props) => {
           onChange={({ target }) => setSelectedChain(target.value)}
         >
           {chains?.map((c, i) => (
-            <MenuItem key={i} value={c.name} className="dark:!text-gray-300">
+            <MenuItem
+              key={i}
+              value={c.name}
+              className="not-used-dark:!text-gray-300"
+            >
               <Avatar
                 src={c.logo}
                 sx={{ width: avatarSize, height: avatarSize }}
               >
                 {c.name}
               </Avatar>
-              <div className="ml-2 dark:text-gray-300 first-letter:uppercase">
+              <div className="ml-2 not-used-dark:text-gray-300 first-letter:uppercase">
                 {c.name}
               </div>
             </MenuItem>
@@ -62,7 +66,11 @@ export const ChainPlatformSelect = memo((props: Props) => {
           onChange={({ target }) => setSelectedPlatform(target.value)}
         >
           {platforms?.map((p, i) => (
-            <MenuItem key={i} value={p} className="dark:!text-gray-300">
+            <MenuItem
+              key={i}
+              value={p}
+              className="not-used-dark:!text-gray-300"
+            >
               {p}
             </MenuItem>
           ))}

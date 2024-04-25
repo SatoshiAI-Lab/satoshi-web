@@ -105,8 +105,8 @@ export const CreateTokenForm = (props: Props) => {
               'w-full !border !border-gray-400 !rounded !px-2 !py-2 !text-base',
               'hover:!border-black focus-within:outline focus-within:outline-1',
               'focus-within:outline-primary focus-within:!border-primary',
-              'focus-within:hover:!border-primary dark:hover:!border-white',
-              'dark:!border-gray-600 dark:hover:focus-within:!border-primary'
+              'focus-within:hover:!border-primary not-used-dark:hover:!border-white',
+              'not-used-dark:!border-gray-600 not-used-dark:hover:focus-within:!border-primary'
             ),
           }}
           multiline

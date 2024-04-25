@@ -67,7 +67,7 @@ export const TokenSearcherItem = (props: Props) => {
       classes={{
         root: clsx(
           '!w-full !flex !justify-between !items-center cursor-pointer',
-          'hover:!bg-gray-100 dark:hover:!bg-zinc-800'
+          'hover:!bg-gray-100 not-used-dark:hover:!bg-zinc-800'
         ),
       }}
       onClick={() => onTokenClick(token)}
@@ -100,7 +100,7 @@ export const TokenSearcherItem = (props: Props) => {
             >
               <IoCloseOutline
                 size={20}
-                className="text-black dark:text-white"
+                className="text-black not-used-dark:text-white"
               />
             </IconButton>
           ) : (
@@ -113,7 +113,7 @@ export const TokenSearcherItem = (props: Props) => {
             >
               <IoAddOutline
                 size={20}
-                className="text-primary dark:text-secondary"
+                className="text-primary not-used-dark:text-secondary"
               />
             </IconButton>
           )}

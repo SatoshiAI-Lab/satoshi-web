@@ -48,7 +48,7 @@ export const Li = (props: Props) => {
   ) ?? [{ properties: strToObject(matchRefTag) }]
   const refClass = clsx(
     'underline decoration-dotted cursor-pointer underline-offset-4',
-    'hover:!text-primary text-black leading-7 dark:text-gray-300'
+    'hover:!text-primary text-black leading-7 not-used-dark:text-gray-300'
   )
 
   const refTags = matchRef?.map((e) => Number(e.replace(/\[|\]/g, ''))) ?? []
