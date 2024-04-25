@@ -3,9 +3,9 @@ import clsx from 'clsx'
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineCopy } from 'react-icons/ai'
+import { first } from 'lodash'
 
 import { Wallet } from '@/components/wallet'
-import { utilArr } from '@/utils/array'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { useQuery } from '@tanstack/react-query'
 import { walletApi } from '@/api/wallet'
@@ -47,9 +47,9 @@ const CreateTokenWallets = (props: Props) => {
 
     // If not select, select first.
     if (!selected) {
-      const first = utilArr.first(list)
-      setSelectedWallet(first)
-      onSelectWallet?.(first)
+      const firstWallet = first(list)
+      setSelectedWallet(firstWallet)
+      onSelectWallet?.(firstWallet)
       return
     }
     setSelectedWallet(selected)

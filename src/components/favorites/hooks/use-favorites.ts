@@ -2,12 +2,12 @@ import { useEffect } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import { isEmpty } from 'lodash'
 
 import { tokenApi } from '@/api/token'
 import { useFavtokenStore } from '@/stores/use-favorites-store'
 import { ListToken, SelectParams, TokenType } from '@/api/token/types'
 import { SortType } from '@/types/types'
-import { utilArr } from '@/utils/array'
 
 const defaultTokens = {
   ids: [
@@ -79,7 +79,7 @@ export const useFavorites = (opts?: Options) => {
   }
 
   const sortTokens = (list: ListToken[]) => {
-    if (utilArr.isEmpty(list)) return list
+    if (isEmpty(list)) return list
     if (sortBy === FavoritesSort.Default) return list
 
     if (sortBy === FavoritesSort.Price) {

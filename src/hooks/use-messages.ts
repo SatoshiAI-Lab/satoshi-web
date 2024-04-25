@@ -1,12 +1,12 @@
 import { nanoid } from 'nanoid'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
+import { last } from 'lodash'
 
 import type { Message } from '@/stores/use-chat-store/types'
 import type { ChatResponse } from '@/api/chat/types'
 
 import { useChatStore } from '@/stores/use-chat-store'
-import { utilArr } from '@/utils/array'
 import { CHAT_CONFIG } from '@/config/chat'
 import { useLoginAuthStore } from '@/stores/use-need-login-store'
 import { useLive2D } from './use-live2d'
@@ -32,7 +32,7 @@ export const useMessages = () => {
 
   // Remove latest message.
   const removeLast = () => {
-    const lastId = utilArr.last(getMessages())?.id
+    const lastId = last(getMessages())?.id
 
     if (!lastId) return
     removeMessage(lastId)
@@ -50,7 +50,7 @@ export const useMessages = () => {
   // Remove latest loading message.
   const removeLastLoading = () => {
     const loadings = getMessages().filter((m) => m.isLoading)
-    const lastId = utilArr.last(loadings)?.id
+    const lastId = last(loadings)?.id
 
     if (!lastId) return
     removeMessage(lastId)
@@ -77,18 +77,18 @@ export const useMessages = () => {
     m?: Partial<Message>,
     overrideText = false
   ) => {
-    const last = utilArr.last(getMessages())
+    const lastMessage = last(getMessages())
 
-    if (!last) return
+    if (!lastMessage) return
     const newMessage: Message = {
       ...data,
-      ...last,
+      ...lastMessage,
       ...m,
       role: 'assistant',
-      text: overrideText ? data.text : last.text + data.text,
+      text: overrideText ? data.text : lastMessage.text + data.text,
     }
 
-    updateMessage(last.id, newMessage)
+    updateMessage(lastMessage.id, newMessage)
   }
 
   // Normal message.
@@ -263,7 +263,7 @@ export const useMessages = () => {
     }
 
     // Answer ended & include emotion & is not interactive message.
-    const isNotInteractive = !utilArr.last(messages)?.isInteractive
+    const isNotInteractive = !last(messages)?.isInteractive
     if (answerType === end && data.meta.emotion && isNotInteractive) {
       emitMotionWithWisdom(data.meta.emotion)
     }

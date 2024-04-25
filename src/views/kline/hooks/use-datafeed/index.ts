@@ -1,4 +1,5 @@
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
+import { isEmpty, last } from 'lodash'
 
 import { TV_DATAFEED_CONFIG, TV_SYMBOL_INFO_CONFIG } from '@/config/tradingview'
 import { useKLineFormat } from '@/views/kline/hooks/use-kline-format'
@@ -69,12 +70,12 @@ export const useDatafeed = () => {
           const bars = await handleInitBars(symbolInfo, params, resolution)
 
           datafeedCacheApi.setLastResolution(resolution)
-          onHistory(bars, { noData: utilArr.isEmpty(bars) })
+          onHistory(bars, { noData: isEmpty(bars) })
           return
         }
 
         const bars = await getHistoryBars(periodParams)
-        onHistory(bars, { noData: utilArr.isEmpty(bars) })
+        onHistory(bars, { noData: isEmpty(bars) })
       },
       // Real-time update bar & reset last one subscribe cache.
       subscribeBars(_, resolution, onTick, uId, cacheRestter) {
@@ -101,7 +102,8 @@ export const useDatafeed = () => {
             })
           }
 
-          onTick(utilArr.last(bars))
+          const lastBar = last(bars)
+          lastBar && onTick(lastBar)
         })
       },
       // Don't disconnect here. because switch interval will be call.

@@ -1,17 +1,11 @@
-import numeral, { NumeralJSFormat, NumeralJSLocale } from 'numeral'
-import { utilArr } from './array'
+import numeral from 'numeral'
+
 import { utilParse } from './parse'
 
 /**
  * Utilities functions for formatting
  */
 export const utilFmt = {
-  /** For Tailwind CSS */
-  classes(...args: string[]) {
-    if (!args || utilArr.isEmpty(args)) return ''
-
-    return args.map((cls) => cls.trim()).join(' ')
-  },
   addr(address?: string, len = 5) {
     if (address) {
       return `${address.slice(0, len)}...${address.slice(-len, address.length)}`
