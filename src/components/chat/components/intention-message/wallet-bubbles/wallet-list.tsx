@@ -19,8 +19,7 @@ import { useWalletManage } from '@/hooks/use-wallet'
 import { useChat } from '@/hooks/use-chat'
 import { walletApi } from '@/api/wallet'
 import { CustomSuspense } from '@/components/custom-suspense'
-
-import { WalletChain } from '@/config/wallet'
+import { Chain } from '@/config/wallet'
 
 interface Props {
   type: string
@@ -43,7 +42,7 @@ export const WalletList = (props: Props) => {
   })
 
   const { removeWallet } = useWalletManage()
-  const wallets = walletsData?.data[chain as WalletChain] ?? []
+  const wallets = walletsData?.data[chain as Chain] ?? []
   const walletList = wallets.sort(
     (a, b) =>
       new Date(b.added_at ?? 0).getTime() - new Date(a.added_at ?? 0).getTime()

@@ -1,4 +1,4 @@
-import { WalletChain } from '@/config/wallet'
+import { Chain } from '@/config/wallet'
 
 import type { ChatResponseWalletListToken } from '../chat/types'
 
@@ -9,7 +9,7 @@ interface UserCreateWalletReq {
   platform?: string
 }
 
-export type GetWalletsRes = Record<WalletChain, UserCreateWalletResp[]>
+export type GetWalletsRes = Record<Chain, UserCreateWalletResp[]>
 
 interface UserCreateWalletResp {
   id: string

@@ -13,7 +13,7 @@ import numeral from 'numeral'
 import MessageBubble from '../message-bubble'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
-import { WalletChain } from '@/config/wallet'
+import { Chain } from '@/config/wallet'
 import { utilLang } from '@/utils/language'
 import { useShow } from '@/hooks/use-show'
 import { DialogHeader } from '@/components/dialog-header'
@@ -210,8 +210,8 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
             <div className="font-bold mt-2">🏦 {t('top-holders')}</div>
             {Object.keys(props.top_holders).map((key) => (
               <div className="mt-2" key={key}>
-                {props.chain == WalletChain.SOL ? key : utilFmt.addr(key)}:{' '}
-                {props.chain == WalletChain.SOL
+                {props.chain == Chain.Sol ? key : utilFmt.addr(key)}:{' '}
+                {props.chain == Chain.Sol
                   ? `${
                       `${parseFloat(props.top_holders[key])}%` ||
                       props.top_holders[key]

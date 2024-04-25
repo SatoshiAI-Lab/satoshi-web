@@ -1,4 +1,4 @@
-import { WalletChain, WalletPlatform } from '@/config/wallet'
+import { Chain } from '@/config/wallet'
 
 import type { ModelMotions } from '@/stores/use-live2d-store/types'
 
@@ -15,6 +15,45 @@ export interface ChatResponse {
   text: string
   hyper_text: string
   meta: ChatResponseMeta
+}
+
+export enum AnswerType {
+  ProcessStream = 'process_stream',
+  IntentionStrea = 'intention_stream',
+  ChatStream = 'chat_stream',
+  TokenBasic = 'token_basic',
+  News = 'news',
+  NewsStream = 'news_stream',
+  RiskAnalysis = 'risk_analysis',
+  RiskAnalysisStream = 'risk_analysis_stream',
+  RiskAnalysisHide = 'risk_analysis_hide',
+  Review = 'review',
+  DataInsights = 'data_insights',
+  DataInsightsStream = 'data_insights_stream',
+  TechAnalyze = 'tech_analyze',
+  TechAnalyzeStream = 'tech_analyze_stream',
+  Interactive = 'interactive',
+  Reference = 'reference',
+  End = 'end',
+}
+
+export enum MetaType {
+  TransactionBuy = 'transaction_buy',
+  TransactionSell = 'transaction_sell',
+  WalletCreate = 'wallet_create',
+  WalletDelete = 'wallet_delete',
+  WalletChangeName = 'wallet_change',
+  WalletCheck = 'wallet_check',
+  WalletImport = 'wallet_import',
+  WalletExport = 'wallet_export',
+  WalletCheckAddr = 'wallet_check_address',
+  SubscriptNews = 'subscript_news',
+  SubscriptTwitter = 'subscript_twitter',
+  SubscriptAnn = 'subscript_announcement',
+  SubscriptWallet = 'subscript_wallet',
+  SubscriptPool = 'subscript_pool',
+  TokenCreate = 'token_create',
+  TokenCheck = 'token_check',
 }
 
 export interface ChatResponseMeta
@@ -49,7 +88,7 @@ export interface ChatResponseTxConfrim {
 
 export interface TokenInfo {
   platform: string
-  chain: WalletChain
+  chain: Chain
   token_name: null | string
   contract: string
   platform_id: number
@@ -78,7 +117,7 @@ export interface ChatResponseTokneName {
 export interface ChatResponseWalletListRaw {
   status: number
   data: ChatResponseWalletList[]
-  chain: WalletChain
+  chain: Chain
 }
 
 export interface ChatResponseWalletBalance {
@@ -291,7 +330,7 @@ export interface ChatResponseMetaNewPool {
 }
 export interface ChatResponseMetaNewPoolV2 {
   id: string
-  chain: string
+  chain: Chain
   address: string
   name: string
   symbol: string

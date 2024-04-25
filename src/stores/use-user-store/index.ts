@@ -5,7 +5,7 @@ import { UserEmailVerifyParams } from '@/api/user/params'
 import { useStorage } from '@/hooks/use-storage'
 import { useTokenRefresh } from '@/hooks/use-token-refresh'
 import { walletApi } from '@/api/wallet'
-import { WalletPlatform } from '@/config/wallet'
+import { Platform } from '@/config/wallet'
 
 import type { States, Actions } from './types'
 
@@ -36,8 +36,8 @@ export const useUserStore = create<States & Actions>((set, get) => ({
 
     const data = await self.login(email, password, false)
 
-    await walletApi.createWallet({ platform: WalletPlatform.SOL })
-    await walletApi.createWallet({ platform: WalletPlatform.EVM })
+    await walletApi.createWallet({ platform: Platform.Sol })
+    await walletApi.createWallet({ platform: Platform.Evm })
 
     return data
   },

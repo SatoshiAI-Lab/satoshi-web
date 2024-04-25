@@ -10,7 +10,7 @@ import CreateTokenLoading from './loading'
 import CreateTokenSuccess from './success'
 import { useCreateSolToken } from '@/hooks/use-create-sol-token'
 import { DialogHeader } from '@/components/dialog-header'
-import { WalletChain } from '@/config/wallet'
+import { Chain } from '@/config/wallet'
 import { useCreateOpToken } from '@/hooks/use-create-op-token'
 import { useCreateTokenConfig } from '@/hooks/use-create-token-config'
 import { CreateTokenForm } from './form'
@@ -88,11 +88,11 @@ export const CreateTokenMessage = (props: CreateTokenBubbleProps) => {
       total,
     }
 
-    if (chain === WalletChain.SOL) {
+    if (chain === Chain.Sol) {
       createSolToken(params)
       return
     }
-    if (chain === WalletChain.OP) {
+    if (chain === Chain.Op) {
       createOpToken(params)
       return
     }

@@ -117,8 +117,12 @@ export const useChat = () => {
     // Must be get params here.
     const chatParams = getChatParams(options)
 
+    // If question is custom static question, don't send request.
+    // const isCustom = parseCustomMessage(chatParams)
+    // if (isCustom) return
+
+    sendChatBefore(chatParams)
     try {
-      sendChatBefore(chatParams)
       controllerRef.current = new AbortController()
       const stream = await chatApi.chat(
         chatParams,

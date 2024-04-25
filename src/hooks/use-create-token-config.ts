@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react'
 
-import { WalletChain, WalletChainSymbol } from '@/config/wallet'
+import { Chain, ChainSymbol } from '@/config/wallet'
 
 type ConfigKey = keyof typeof configs
 
 interface Config {
-  symbol: WalletChainSymbol
-  nativeToken: WalletChainSymbol
+  symbol: ChainSymbol
+  nativeToken: ChainSymbol
   minBalance: number
   decimals: number
 }
 
 const configs: Record<string, Config> = {
-  [WalletChain.SOL]: {
+  [Chain.Sol]: {
     symbol: 'SOL', // The token symbol.
     nativeToken: 'SOL', // The chain native token.
     minBalance: 0.2, // Wallet min balance.
     decimals: 9, // The chain decimals.
   },
-  [WalletChain.OP]: {
+  [Chain.Op]: {
     symbol: 'OP',
     nativeToken: 'ETH',
     minBalance: 0.005,
