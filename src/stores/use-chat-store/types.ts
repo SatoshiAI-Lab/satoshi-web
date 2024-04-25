@@ -44,6 +44,7 @@ export interface Message
   isIntention?: boolean
   isReference?: boolean
   isMonitor?: boolean
+  isPrivateKey?: boolean
 }
 
 export interface States {

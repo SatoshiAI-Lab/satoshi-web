@@ -9,7 +9,7 @@ import { IntentionMessage } from './intention-message/intention-message'
 import { MonitorMessages } from './monitor-message/monitor-config-bubble'
 import { PrivateKeyMessage } from './private-key-message'
 import { LoadingMessage } from './loading-message'
-import { CustomMessages } from './custom-messages'
+// import { CustomMessages } from './custom-messages'
 import { MessagesContext } from '@/contexts/messages'
 
 export const Messages = memo(({ messages }: { messages: Message[] }) => {
@@ -32,7 +32,7 @@ const MessagesCategory = ({ m }: { m: Message }) => {
 
   if (m.isPrivateKey) return <PrivateKeyMessage />
 
-  if (m.isCustom) return <CustomMessages />
+  // if (m.isCustom) return <CustomMessages />
 
   return (
     <MessageBubble role={m.role}>
