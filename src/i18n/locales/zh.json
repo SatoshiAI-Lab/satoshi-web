@@ -287,5 +287,10 @@
   "select-token.failed": "选择币种失败，请重试",
   "check-name.loading": "正在检查名称...",
   "check-name.failed": "名称检查失败，请重试。",
-  "check-name.existed": "该名称已存在，换一个吧"
+  "check-name.existed": "该名称已存在，换一个吧",
+  "select-addr-type.title": "您想通过这个地址查询什么？",
+  "token": "代币",
+  "account": "账户",
+  "token.intro": "查询代币/合约地址",
+  "account.intro": "查询钱包地址"
 }

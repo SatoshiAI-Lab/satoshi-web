@@ -289,5 +289,10 @@
   "select-token.failed": "Token select failed, please try again",
   "check-name.loading": "Check for the name...",
   "check-name.failed": "Failed to check the name, please try again.",
-  "check-name.existed": "Name already exists, please choose another one."
+  "check-name.existed": "Name already exists, please choose another one.",
+  "select-addr-type.title": "What would you like to query with this address?",
+  "token": "Token",
+  "account": "Account",
+  "token.intro": "Query coin/contract address",
+  "account.intro": "Query wallet address"
 }
