@@ -62,6 +62,15 @@ export const useWalletManage = () => {
     mutationFn: walletApi.renameWallet,
   })
 
+  const {
+    isPending: isCheckingName,
+    mutateAsync: checkName,
+    reset: resetCheckName,
+  } = useMutation({
+    mutationKey: [walletApi.checkName.name],
+    mutationFn: walletApi.checkName,
+  })
+
   // Create wallet API.
   const createWallet = async (platform: string) => {
     const { data } = await mutateCreateWallet({ platform })
@@ -113,6 +122,7 @@ export const useWalletManage = () => {
     isImporting,
     isExporting,
     isRenaming,
+    isCheckingName,
     latestWallet,
     refetchWallets,
     createWallet,
@@ -121,5 +131,7 @@ export const useWalletManage = () => {
     exportPrivateKey,
     resetExportPrivateKey,
     renameWallet,
+    checkName,
+    resetCheckName,
   }
 }

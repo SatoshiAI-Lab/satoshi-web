@@ -284,5 +284,8 @@
   "tokens": "代币",
   "evm-all-chain": "支持所有EVM兼容链",
   "click-to-show": "点击显示",
-  "select-token.failed": "选择币种失败，请重试"
+  "select-token.failed": "选择币种失败，请重试",
+  "check-name.loading": "正在检查名称...",
+  "check-name.failed": "名称检查失败，请重试。",
+  "check-name.existed": "该名称已存在，换一个吧"
 }

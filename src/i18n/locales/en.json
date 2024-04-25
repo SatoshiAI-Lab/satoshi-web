@@ -286,5 +286,8 @@
   "tokens": "Tokens",
   "evm-all-chain": "Support all EVM compatibility chain",
   "click-to-show": "Click to show",
-  "select-token.failed": "Token select failed, please try again"
+  "select-token.failed": "Token select failed, please try again",
+  "check-name.loading": "Check for the name...",
+  "check-name.failed": "Failed to check the name, please try again.",
+  "check-name.existed": "Name already exists, please choose another one."
 }
