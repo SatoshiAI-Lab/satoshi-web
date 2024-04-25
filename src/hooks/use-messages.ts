@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
 
 import type { Message } from '@/stores/use-chat-store/types'
+import type { ChatResponse } from '@/api/chat/types'
 
 import { useChatStore } from '@/stores/use-chat-store'
 import { utilArr } from '@/utils/array'
 import { CHAT_CONFIG } from '@/config/chat'
-import { ChatResponse } from '@/api/chat/types'
 import { useLoginAuthStore } from '@/stores/use-need-login-store'
 import { useLive2D } from './use-live2d'
 import { useHypertext } from './use-hyper-text-parser'
@@ -141,8 +141,8 @@ export const useMessages = () => {
   // Parseing & render message, by chat `answer_type` or `meta.type`.
   const parseChatMessage = (
     data: ChatResponse,
-    isFirstRead: boolean,
-    isFirstParse: boolean
+    isFirstRead?: boolean,
+    isFirstParse?: boolean
   ) => {
     const {
       answer_type: answerType,
@@ -270,6 +270,7 @@ export const useMessages = () => {
   }
 
   return {
+    addMessage,
     addStreamMessage,
     addNormalMessage,
     addTokenMessage,

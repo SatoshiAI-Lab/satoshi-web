@@ -1,4 +1,7 @@
-import type { ChatResponseMetaNewPoolV2 } from './../../api/chat/types'
+import type {
+  ChatParams,
+  ChatResponseMetaNewPoolV2,
+} from './../../api/chat/types'
 import type { ChatResponse } from '@/api/chat/types'
 import type { PartialPick } from '@/types/types'
 
@@ -12,14 +15,22 @@ export enum DataType {
 
 export type MessageRole = 'user' | 'assistant' | 'system'
 
-export type PartialMessage = Partial<Omit<ChatResponse, 'text'>>
+export type ChatParial = Partial<Omit<ChatResponse, 'text'>>
 
-export type RequiredMessage = Pick<ChatResponse, 'text'>
+export type ChatRequired = Pick<ChatResponse, 'text'>
+
+export type ChatNewPool = Partial<ChatResponseMetaNewPoolV2>
+
+// When role is not 'user', maybe have 'userParams'
+export interface ChatUserParams {
+  userParams?: ChatParams
+}
 
 export interface Message
-  extends PartialMessage,
-    RequiredMessage,
-    Partial<ChatResponseMetaNewPoolV2> {
+  extends ChatParial,
+    ChatRequired,
+    ChatNewPool,
+    ChatUserParams {
   id: string
   role?: MessageRole
   isLoading?: boolean
