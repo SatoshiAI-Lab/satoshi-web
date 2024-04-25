@@ -1,3 +1,5 @@
+import { Chain } from '@/config/wallet'
+
 export interface TokenListParams {
   ids: TokenId[]
   /** default USD */
@@ -119,4 +121,77 @@ export enum TokenType {
   Label,
   Event,
   Indicator,
+}
+
+export interface QueryAddrReq {
+  address: string
+  type?: QueryAddrType
+}
+
+export enum QueryAddrType {
+  Token = 'token',
+  Account = 'account',
+}
+
+export interface QueryAddrToken {
+  is_supported: boolean
+  chain: {
+    name: string
+    id: string
+    logo: string
+  }
+  logo: string
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  price_usd: number
+  price_change: number
+}
+
+export interface QueryAddrAccount {
+  address: string
+  value: string
+  chain: {
+    id: string
+    name: string
+    logo: string
+  }
+  tokens: {
+    symbol: string
+    name: string
+    address: string
+    decimals: number
+    amount: string
+    priceUsd: string
+    valueUsd: string
+    logoUrl: string
+  }[]
+}
+
+export interface QueryAddrRes {
+  tokens: Record<Chain, QueryAddrToken>
+  accounts: Record<Chain, QueryAddrAccount>
+}
+
+export interface TokenInfoReq {
+  chain: Chain
+  address: string
+}
+
+export interface TokenInfoRes {
+  address: string
+  logo: string
+  name: string
+  symbol: string
+  description: string
+  price: string
+  liquidity: string
+  market_cap: string | null
+  volume: string
+  twitter: string
+  telegram: string | null
+  websites: string[]
+  price_change: string
+  holders: number
 }
