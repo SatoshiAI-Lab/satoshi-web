@@ -1,21 +1,18 @@
+import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import MultiMessage from './multi-message'
-import SingleMessage from './single-message'
-import { utilParse } from '@/utils/parse'
-
 import type { ChatResponseMetaInteractive } from '@/api/chat/types'
-import type { Message } from '@/stores/use-chat-store/types'
 import type { MultiMessageProps } from './multi-message/types'
 
-interface InteractiveMessageProps {
-  message: Message
-}
+import { MultiMessage } from './multi-message'
+import { SingleMessage } from './single-message'
+import { utilParse } from '@/utils/parse'
+import { MessagesContext } from '@/contexts/messages'
 
-export const InteractiveMessage = (props: InteractiveMessageProps) => {
+export const InteractiveMessage = () => {
   const {
-    message: { meta, id },
-  } = props
+    message: { id, meta },
+  } = useContext(MessagesContext)!
   const [t] = useTranslation()
   const msgKeys = Object.keys(meta!) as (keyof ChatResponseMetaInteractive)[]
 

@@ -9,53 +9,36 @@ import { IntentionMessage } from './intention-message/intention-message'
 import { MonitorMessages } from './monitor-message/monitor-config-bubble'
 import { PrivateKeyMessage } from './private-key-message'
 import { LoadingMessage } from './loading-message'
+import { CustomMessages } from './custom-messages'
+import { MessagesContext } from '@/contexts/messages'
 
-interface Props {
-  messages: Message[]
-}
-
-const Messages = memo((props: Props) => {
-  return props.messages.map((msg, i) => {
-    // Is loading message.
-    if (msg.isLoading) {
-      return <LoadingMessage key={i} />
-    }
-
-    // Monitor message category.
-    if (msg?.isMonitor) {
-      return <MonitorMessages key={i} msg={msg} />
-    }
-
-    // Intention message category.
-    if (msg?.isIntention) {
-      return <IntentionMessage key={i} msg={msg!} />
-    }
-
-    // Interactive message category.
-    if (msg?.isInteractive) {
-      return <InteractiveMessage key={i} message={msg} />
-    }
-
-    const privKeyData = msg.meta?.data as unknown as {
-      private_key?: string
-      wallet_name?: string
-    }
-    const privateKey = privKeyData?.private_key
-    if (privateKey) {
-      return (
-        <PrivateKeyMessage
-          name={privKeyData.wallet_name ?? ''}
-          privateKey={privateKey}
-        />
-      )
-    }
-
-    return (
-      <MessageBubble key={i} role={msg.role}>
-        <TokenMarkdown children={msg.text} {...props} />
-      </MessageBubble>
-    )
-  })
+export const Messages = memo(({ messages }: { messages: Message[] }) => {
+  return messages.map((message, i) => (
+    <MessagesContext.Provider key={i} value={{ message }}>
+      <MessagesCategory m={message} />
+    </MessagesContext.Provider>
+  ))
 })
+
+// Categorize each message.
+const MessagesCategory = ({ m }: { m: Message }) => {
+  if (m.isLoading) return <LoadingMessage />
+
+  if (m.isMonitor) return <MonitorMessages />
+
+  if (m.isIntention) return <IntentionMessage />
+
+  if (m.isInteractive) return <InteractiveMessage />
+
+  if (m.isPrivateKey) return <PrivateKeyMessage />
+
+  if (m.isCustom) return <CustomMessages />
+
+  return (
+    <MessageBubble role={m.role}>
+      <TokenMarkdown children={m.text} />
+    </MessageBubble>
+  )
+}
 
 export default Messages

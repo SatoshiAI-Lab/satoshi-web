@@ -1,6 +1,7 @@
+import { useContext } from 'react'
+
 import { CHAT_CONFIG } from '@/config/chat'
 import { WalletChoiceBubble } from './wallet-bubbles/wallet-choice-bubbles'
-import { Message } from '@/stores/use-chat-store/types'
 import { WalletBalance } from './wallet-bubbles/wallet-balance'
 import { TwitterListBubble } from './twitter-list-bubble'
 import { TxTokenBubbles } from './tx-token-bubble/tx-token-bubbles'
@@ -11,12 +12,10 @@ import { TokenDetailBubble } from './token-detail-bubble'
 import { ExMonitorBubble } from './ex-monitor-bubble'
 import { PoolMonitorBubble } from './pool-monitor-bubble'
 import { MonitorWalletListBubble } from './monitor-wallet-list-bubble'
+import { MessagesContext } from '@/contexts/messages'
 
-interface Props {
-  msg: Message
-}
-
-export const IntentionMessage = ({ msg }: Props) => {
+export const IntentionMessage = () => {
+  const { message: msg } = useContext(MessagesContext)!
   const { intentSelectWalletType, intentTxToken } = CHAT_CONFIG
   const { walletList } = CHAT_CONFIG.answerType
   const {

@@ -28,7 +28,7 @@ interface SingleMessageProps {
   ) => void
 }
 
-function SingleMessage(props: SingleMessageProps) {
+export const SingleMessage = (props: SingleMessageProps) => {
   const [t] = useTranslation()
   const { meta = [], title, id } = props
   const { findPrevInteractive } = useMessages()
