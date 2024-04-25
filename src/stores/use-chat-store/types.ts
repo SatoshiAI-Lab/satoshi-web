@@ -10,21 +10,6 @@ export enum DataType {
   PoolInfo = 'pool_info',
 }
 
-// export interface Message {
-//   msg: string
-//   msgs?: ChatResponseMeta
-//   position?: 'left' | 'right'
-//   className?: string
-//   isLoadingMsg?: boolean
-//   isInteractive?: boolean
-//   isMonitor?: boolean
-//   isIntention?: boolean
-//   rawData?: ChatResponse
-//   msgId?: string
-//   type?: string
-//   data_type?: DataType
-// }
-
 export type MessageRole = 'user' | 'assistant' | 'system'
 
 export type PartialMessage = Partial<Omit<ChatResponse, 'text'>>
@@ -40,6 +25,7 @@ export interface Message
   isLoading?: boolean
   data_type?: DataType
 
+  // Here is `answer_type` alias props.
   isInteractive?: boolean
   isIntention?: boolean
   isReference?: boolean
