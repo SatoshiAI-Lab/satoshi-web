@@ -4,7 +4,10 @@ import { BsFillLightningFill } from 'react-icons/bs'
 import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
 
-import MessageBubble from '../message-bubble'
+import type { UserCreateWalletResp } from '@/api/wallet/params'
+import type { CreateTokenInfo } from './types'
+
+import MessageBubble from '../../../message-bubble'
 import CreateTokenWallets from './wallets'
 import CreateTokenLoading from './loading'
 import CreateTokenSuccess from './success'
@@ -15,17 +18,11 @@ import { useCreateOpToken } from '@/hooks/use-create-op-token'
 import { useCreateTokenConfig } from '@/hooks/use-create-token-config'
 import { CreateTokenForm } from './form'
 import { CreateTokenHints } from './hints'
+import { useMessagesContext } from '@/contexts/messages'
 
-import type { UserCreateWalletResp } from '@/api/wallet/params'
-import type { CreateTokenInfo } from './types'
-
-interface CreateTokenBubbleProps extends React.ComponentProps<'div'> {
-  hasWallet: boolean
-  chain?: string
-}
-
-export const CreateTokenMessage = (props: CreateTokenBubbleProps) => {
-  const { hasWallet, chain } = props
+export const TokenCreateMessage = () => {
+  const { message } = useMessagesContext()
+  const { chain } = message.meta ?? {}
   const { t } = useTranslation()
   const [symbol, setSymbol] = useState('')
   const [name, setName] = useState('')
@@ -261,4 +258,4 @@ export const CreateTokenMessage = (props: CreateTokenBubbleProps) => {
   )
 }
 
-export default CreateTokenMessage
+export default TokenCreateMessage

@@ -1,7 +1,14 @@
-import { ChatMeta, AnswerType, MetaType } from '@/api/chat/types'
+import {
+  ChatMeta,
+  AnswerType,
+  MetaType,
+  MetaTypeCategory,
+} from '@/api/chat/types'
 
 export const useChatType = () => {
-  const parseAnswerType = (type: AnswerType) => {
+  const identifyAnswerType = (type?: `${AnswerType}`) => {
+    if (!type) return {}
+
     return {
       isNormal: !type.endsWith('stream'),
       isStream: type.endsWith('stream'),
@@ -16,10 +23,14 @@ export const useChatType = () => {
     }
   }
 
-  const parseMetaType = (type: MetaType) => {
+  const identifyMetaType = (type?: `${MetaType}`) => {
+    if (!type) return {}
+
     return {
+      isTx: type.startsWith(MetaTypeCategory.TxPrefix),
       isTxConfirm: type === MetaType.TxConfirm,
 
+      isWallet: type.startsWith(MetaTypeCategory.WalletPrefix),
       isWalletCreate: type === MetaType.WalletCreate,
       isWalletDelete: type === MetaType.WalletDelete,
       isWalletChange: type === MetaType.WalletChange,
@@ -27,14 +38,17 @@ export const useChatType = () => {
       isWalletImport: type === MetaType.WalletImport,
       isWalletExport: type === MetaType.WalletExport,
 
+      isSub: type.startsWith(MetaTypeCategory.SubPrefix),
       isSubNews: type === MetaType.SubNews,
       isSubTwitter: type === MetaType.SubTwitter,
       isSubAnn: type === MetaType.SubAnn,
       isSubWallet: type === MetaType.SubWallet,
       isSubPool: type === MetaType.SubPool,
 
+      isToken: type.startsWith(MetaTypeCategory.TokenPrefix),
       isTokenCreate: type === MetaType.TokenCreate,
 
+      isCheck: type.startsWith(MetaTypeCategory.CheckPrefix),
       isCheckAddr: type === MetaType.CheckAddr,
     }
   }
@@ -42,8 +56,8 @@ export const useChatType = () => {
   const hasEmotion = (meta: ChatMeta) => !!meta.emotion
 
   return {
-    parseAnswerType,
-    parseMetaType,
+    identifyAnswerType,
+    identifyMetaType,
     hasEmotion,
   }
 }

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { MonitorWalletList } from '@/components/monitor/monitor-wallet-list'
-import MessageBubble from '../message-bubble'
+import MessageBubble from '../../message-bubble'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 
 export const MonitorWalletListBubble = () => {

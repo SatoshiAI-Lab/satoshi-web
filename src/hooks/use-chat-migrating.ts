@@ -256,7 +256,7 @@ export const useChatMigrating = () => {
       addMessage({
         msg: '[should be intention]',
         msgs: data.meta,
-        isIntention: true,
+        isIntent: true,
         type: answerType,
       })
       return

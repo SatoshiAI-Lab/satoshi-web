@@ -2,17 +2,24 @@ import React, { memo } from 'react'
 
 import { type Message } from '@/stores/use-chat-store/types'
 
-import { InteractiveMessage } from './interactive-message/interactive-message'
-import { IntentMessages } from './intention-message/intention-message'
+import { InteractiveMessage } from './interactive-message'
+import { IntentMessages } from './intention-message'
 import { MonitorMessages } from './monitor-message/monitor-config-bubble'
-import { PrivateKeyMessage } from './private-key-message'
 import { LoadingMessage } from './loading-message'
-import { MessagesProvider, useMessagesContext } from '@/contexts/messages'
 import { TokenMessage } from './token-message'
+import { useChatType } from '@/hooks/use-chat-type'
+import { MessagesProvider, useMessagesContext } from '@/contexts/messages'
 
 export const Messages = memo(({ messages }: { messages: Message[] }) => {
+  const { identifyAnswerType, identifyMetaType } = useChatType()
+
   return messages.map((message, i) => (
-    <MessagesProvider key={i} message={message}>
+    <MessagesProvider
+      key={i}
+      message={message}
+      answerType={identifyAnswerType(message.answer_type)}
+      metaType={identifyMetaType(message.meta?.type)}
+    >
       <MessagesCategory />
     </MessagesProvider>
   ))
@@ -22,16 +29,19 @@ export const Messages = memo(({ messages }: { messages: Message[] }) => {
 const MessagesCategory = () => {
   const { message: m } = useMessagesContext()
 
+  // Loading message.
   if (m.isLoading) return <LoadingMessage />
 
+  // Monitor/Subscript related messages.
   if (m.isMonitor) return <MonitorMessages />
 
-  if (m.isIntention) return <IntentMessages />
+  // Intent related messages.
+  if (m.isIntent) return <IntentMessages />
 
+  // Interactive related messages.
   if (m.isInteractive) return <InteractiveMessage />
 
-  if (m.isPrivateKey) return <PrivateKeyMessage />
-
+  // By default is token message.
   return <TokenMessage />
 }
 

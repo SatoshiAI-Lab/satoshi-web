@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { AiOutlineCopy } from 'react-icons/ai'
 import { useTranslation } from 'react-i18next'
 
-import MessageBubble from '../message-bubble'
+import MessageBubble from '../../../message-bubble'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { Wallet } from '@/components/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'

@@ -50,9 +50,9 @@ type ChatMetaParital = ChatMetaInteractive &
   ChatResponseMetaNewPoolV2
 
 export interface ChatMeta extends Partial<ChatMetaParital> {
-  type: MetaType
+  type: `${MetaType}`
   status?: number
-  data: MetaTypeWithData[MetaType]
+  data: MetaTypeData[MetaType]
   emotion?: Emotion
 }
 
@@ -86,7 +86,24 @@ export enum MetaType {
   CheckAddr = 'check_address',
 }
 
-export type MetaTypeWithData = {
+export enum MetaTypeCategory {
+  // Transaction related.
+  TxPrefix = 'transaction',
+
+  // Wallet related.
+  WalletPrefix = 'wallet',
+
+  // Subscription related.
+  SubPrefix = 'subscript',
+
+  // Token related.
+  TokenPrefix = 'token',
+
+  // Check related.
+  CheckPrefix = 'check',
+}
+
+export type MetaTypeData = {
   [MetaType.TxConfirm]: TxConfirmData
 
   [MetaType.WalletCreate]: WalletCreateData

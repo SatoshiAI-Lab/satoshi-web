@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { Button } from '@mui/material'
 
-import MessageBubble from '../message-bubble'
+import MessageBubble from '../../../message-bubble'
 
 interface Props {
   isMinting: boolean

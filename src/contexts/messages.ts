@@ -1,9 +1,16 @@
+import { useChatType } from '@/hooks/use-chat-type'
 import { ReactNode, createContext, createElement, useContext } from 'react'
 
 import type { Message } from '@/stores/use-chat-store/types'
 
+type AnswerTypeFn = ReturnType<typeof useChatType>['identifyAnswerType']
+
+type MetaTypeFn = ReturnType<typeof useChatType>['identifyMetaType']
+
 interface ContextValue {
   message: Message
+  answerType: ReturnType<AnswerTypeFn>
+  metaType: ReturnType<MetaTypeFn>
 }
 
 interface ProviderProps extends ContextValue {

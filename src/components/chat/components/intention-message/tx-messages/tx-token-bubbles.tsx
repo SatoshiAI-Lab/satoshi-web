@@ -23,14 +23,10 @@ import MessageBubble from '../../message-bubble'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useWalletList } from '@/hooks/use-wallet-list'
 
-interface Props {
-  msg: ChatMeta
-}
-
 const rates = [20, 50, 100]
-export const TxTokenBubbles = (props: Props) => {
-  const data = props.msg.data as unknown as ChatResponseTxConfrim
-  const isBuy = props.msg.type == CHAT_CONFIG.metadataType.transactionConfirmBuy
+export const TxTokenBubbles = () => {
+  const data = msg.data as unknown as ChatResponseTxConfrim
+  const isBuy = msg.type == CHAT_CONFIG.metadataType.transactionConfirmBuy
   const [buyValue, setBuyValue] = useState(data.amount)
   const [slippage, setSlippage] = useState(5)
   const [curRate, setCurRate] = useState(-1)

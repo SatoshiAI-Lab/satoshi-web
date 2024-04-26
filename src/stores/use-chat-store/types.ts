@@ -26,7 +26,7 @@ export interface Message extends Partial<ChatResponse> {
   // Categorilize for `answer_type` props.
   isInteractive?: boolean
   isReference?: boolean
-  isIntention?: boolean
+  isIntent?: boolean
   isMonitor?: boolean
   isPrivateKey?: boolean
 }

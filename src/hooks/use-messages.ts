@@ -27,7 +27,7 @@ export const useMessages = () => {
   const { setShow } = useLoginAuthStore()
   const { emitMotionWithWisdom } = useLive2D()
   const hypertextParser = useHypertext(CHAT_CONFIG.hyperTextRule)
-  const { parseAnswerType, hasEmotion } = useChatType()
+  const { identifyAnswerType, hasEmotion } = useChatType()
 
   // Remove latest message.
   const removeLast = () => {
@@ -153,7 +153,7 @@ export const useMessages = () => {
       isStream,
       isIntent,
       isProcess,
-    } = parseAnswerType(answer_type)
+    } = identifyAnswerType(answer_type)
 
     console.log('chat res', data)
 
@@ -196,17 +196,25 @@ export const useMessages = () => {
     }
 
     if (processId) {
-      // Is stream message, clear process message.
-      if (isStream) updateMessage(processId, { role: 'assistant', text: '' })
       // Is not stream message, remove process message.
-      else if (!isStream) removeMessage(processId)
+      if (!isStream || isIntent) removeMessage(processId)
+      // Is stream message, clear process message.
+      else if (isStream) {
+        updateMessage(processId, { role: 'assistant', text: '' })
+      }
+
+      console.log(
+        'should remove process message',
+        !isStream || isIntent,
+        processId
+      )
 
       processId = ''
     }
 
     if (isIntent) {
       // data.meta.data?.reverse?.()
-      addNormalMessage(data, { isIntention: true })
+      addNormalMessage(data, { isIntent })
       return
     }
 

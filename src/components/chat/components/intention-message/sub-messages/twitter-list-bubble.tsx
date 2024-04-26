@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { MonitorTwitterList } from '@/components/monitor/monitor-twitter-list'
-import { MessageBubble } from '../message-bubble'
+import { MessageBubble } from '../../message-bubble'
 
 export const TwitterListBubble = () => {
   const { t } = useTranslation()
@@ -14,7 +14,6 @@ export const TwitterListBubble = () => {
   if (!list?.length) return <></>
 
   console.log('list bubble', list)
-  
 
   return (
     <MessageBubble>
