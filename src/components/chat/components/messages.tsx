@@ -9,6 +9,7 @@ import { LoadingMessage } from './loading-message'
 import { TokenMessage } from './token-message'
 import { useChatType } from '@/hooks/use-chat-type'
 import { MessagesProvider, useMessagesContext } from '@/contexts/messages'
+import { MetaType, MetaTypeData } from '@/api/chat/types'
 
 export const Messages = memo(({ messages }: { messages: Message[] }) => {
   const { identifyAnswerType, identifyMetaType } = useChatType()
@@ -19,6 +20,9 @@ export const Messages = memo(({ messages }: { messages: Message[] }) => {
       message={message}
       answerType={identifyAnswerType(message.answer_type)}
       metaType={identifyMetaType(message.meta?.type)}
+      getMetaData={<T extends MetaType>() => {
+        return message.meta?.data as MetaTypeData[T]
+      }}
     >
       <MessagesCategory />
     </MessagesProvider>

@@ -294,5 +294,9 @@
   "token": "Token",
   "account": "Account",
   "token.intro": "Query coin/contract address",
-  "account.intro": "Query wallet address"
+  "account.intro": "Query wallet address",
+  "wallet.create.select-chain": "Which platform would you like to create a wallet on?",
+  "wallet.create.success": "Your {} wallet has been successfully created!",
+  "wallet.create.failed": "Wallet create failed, please try again.",
+  "default-name": "Default name:"
 }

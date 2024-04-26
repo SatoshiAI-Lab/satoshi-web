@@ -292,5 +292,9 @@
   "token": "代币",
   "account": "账户",
   "token.intro": "查询代币/合约地址",
-  "account.intro": "查询钱包地址"
+  "account.intro": "查询钱包地址",
+  "wallet.create.select-chain": "您想在哪个平台上创建钱包？",
+  "wallet.create.success": "您的 {} 钱包已成功创建！",
+  "wallet.create.failed": "创建钱包失败，请重试。",
+  "default-name": "默认名称："
 }
