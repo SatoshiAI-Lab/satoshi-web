@@ -9,11 +9,10 @@ import { utilArr } from '@/utils/array'
 export const useTokenSearcher = () => {
   const [keyword, search] = useState('')
   const [coins, setCoins] = useState<TokenSearchCoin[]>([])
-  const { tokenList, isRefetchingToken, isSelecting, selectToken } =
-    useFavorites({
-      intervalFetch: false,
-      enabled: false,
-    })
+  const { tokenList, isRefetchingToken, isSelecting } = useFavorites({
+    intervalFetch: false,
+    enabled: false,
+  })
   const { data: searchResult, isFetching: isSearching } = useQuery({
     enabled: !!keyword.trim(),
     queryKey: [tokenApi.search.name, keyword],
@@ -49,7 +48,6 @@ export const useTokenSearcher = () => {
     keyword,
     search,
     clearSearch,
-    selectToken,
     setCoins,
   }
 }

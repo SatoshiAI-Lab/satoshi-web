@@ -31,14 +31,12 @@ interface Config {
   title: string
 }
 
-export const MonitorEntryPointer = (props: Props) => {
+export const MonitorDialog = (props: Props) => {
   const { t } = useTranslation()
   const { show, hidden } = props
   const { show: showSub, open: openShub, hidden: hiddenSub } = useShow(false)
   const [config, setConfig] = useState<Config>()
-
   const { configData: data } = useMonitorStore()
-
   const menuConfig = {
     [MonitorMenuType.wallet]: {
       comp: <MonitorWallet data={data} />,

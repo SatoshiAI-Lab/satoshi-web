@@ -1,7 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 
-import type { HeaderItem } from '../types'
+import type { HeaderItem } from './types'
 
 interface DesktopHeaderProps {
   items: HeaderItem[]

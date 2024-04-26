@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { InputBase, TextField } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import numeral from 'numeral'
@@ -105,7 +105,8 @@ export const CreateTokenForm = (props: Props) => {
               'w-full !border !border-gray-400 !rounded !px-2 !py-2 !text-base',
               'hover:!border-black focus-within:outline focus-within:outline-1',
               'focus-within:outline-primary focus-within:!border-primary',
-              'focus-within:hover:!border-primary'
+              'focus-within:hover:!border-primary dark:hover:!border-white',
+              'dark:!border-gray-600 dark:hover:focus-within:!border-primary'
             ),
           }}
           multiline

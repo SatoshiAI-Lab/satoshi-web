@@ -73,16 +73,16 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
   return (
     <div
       className={clsx(
-        'bg-favorite dark:bg-favorite-dark py-2 text-sm max-lg:hidden',
-        'h-favorite flex flex-col',
+        'bg-favorite dark:bg-favorite-dark py-2 text-sm',
+        'h-favorite flex flex-col max-lg:hidden',
         className
       )}
     >
       <div
         className={clsx(
-          'flex justify-between items-center pl-4 pr-2 ',
-          'w-[300px] max-xl:max-w-[280px] pb-2',
-          'border-b border-gray-300 dark:border-gray-600'
+          'flex justify-between items-center pl-4 pr-2 pb-2',
+          'w-[300px] max-xl:max-w-[280px] border-b',
+          'border-gray-300 dark:border-gray-600'
         )}
       >
         <span className="font-semibold text-base mr-1 dark:text-white">
@@ -130,7 +130,7 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
                     </span>
                   </div>
                   <span className="text-end basis-20 mr-1">
-                    {utilFmt.token(t.price)}
+                    ${utilFmt.token(t.price)}
                   </span>
                 </div>
                 <PercentTag

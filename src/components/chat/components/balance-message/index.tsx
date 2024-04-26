@@ -15,20 +15,19 @@ import { IoIosArrowDown } from 'react-icons/io'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
 
-import { useChatMigrating } from '@/hooks/use-chat-migrating'
-import TokenRow from './token-row'
-import MessageBubble from '../message-bubble'
-import CustomSuspense from '@/components/custom-suspense'
-import { utilArr } from '@/utils/array'
-import { walletApi } from '@/api/wallet'
-import { useChat } from '@/hooks/use-chat'
-
 import type {
   ChatResponseMeta,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
 import type { WalletCardProps } from '@/components/wallet/types'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
+
+import { TokenRow } from './token-row'
+import { MessageBubble } from '../message-bubble'
+import { CustomSuspense } from '@/components/custom-suspense'
+import { utilArr } from '@/utils/array'
+import { walletApi } from '@/api/wallet'
+import { useChat } from '@/hooks/use-chat'
 
 interface Props {
   meta?: ChatResponseMeta
@@ -93,9 +92,11 @@ export const BalanceMessage = (props: Props) => {
   }, [])
 
   useEffect(() => {
-    const walletList = walletData?.data ?? []
+    if (!meta?.chain) return
 
-    // Optimize performance
+    const walletList = walletData?.data[meta.chain] ?? []
+
+    // If length is same, don't to sort, optimize performance.
     if (utilArr.sameLen(walletList, wallets)) return
 
     const sortedWalelts = walletList.sort(
@@ -121,6 +122,17 @@ export const BalanceMessage = (props: Props) => {
     </TableHead>
   )
 
+  const NullToken = () => (
+    <tr
+      className={clsx(
+        'text-gray-400 text-center w-full pt-2',
+        'text-sm inline-block'
+      )}
+    >
+      <td>{t('no-assets')}</td>
+    </tr>
+  )
+
   return (
     <MessageBubble className={clsx(!isError && 'pt-4')}>
       {wallets.map((w, i) => (
@@ -143,20 +155,9 @@ export const BalanceMessage = (props: Props) => {
           </div>
           <Collapse in={folds.includes(w.id!)}>
             <Table size="small">
-              <TableHeader />
+              {TableHeader()}
               <TableBody>
-                <CustomSuspense
-                  nullback={
-                    <tr
-                      className={clsx(
-                        'text-gray-400 text-center w-full pt-2',
-                        'text-sm inline-block'
-                      )}
-                    >
-                      <td>{t('no-assets')}</td>
-                    </tr>
-                  }
-                >
+                <CustomSuspense nullback={NullToken()}>
                   {w?.tokens
                     ?.sort((a, b) => Number(b.valueUsd) - Number(a.valueUsd))
                     .map((t, i) => (

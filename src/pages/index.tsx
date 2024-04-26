@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import Header from '@/components/header'
-import Favorites from '@/components/favorites'
-import Chat from '@/components/chat'
+import { Header } from '@/components/header'
+import { Favorites } from '@/components/favorites'
+import { Chat } from '@/components/chat'
 import { useBackground } from '@/hooks/use-background'
 import { LoginAuthDialog } from '@/components/login-auth-dialog'
 import { useLoginAuthStore } from '@/stores/use-need-login-store'
@@ -11,27 +11,22 @@ import { useChatMonitorMsg } from '@/hooks/use-chat-monitor-msg'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { monitorApi } from '@/api/monitor'
 import { useUserStore } from '@/stores/use-user-store'
-import { useWallet } from '@/hooks/use-wallet'
-import { walletApi } from '@/api/wallet'
-import { useWalletStore } from '@/stores/use-wallet-store'
+import { useWalletList } from '@/hooks/use-wallet-list'
 
 export default function Home() {
   const { src, blurStyle } = useBackground(true)
   const { show, setShow } = useLoginAuthStore()
   const { isLogined } = useUserStore()
-  const { selectedChain, setWallets } = useWalletStore()
   const { timerByUpdate } = useMonitorStore()
-
-  const { getAllWallet } = useWallet()
-
-  const { data: walletsData } = useQuery({
+  const { getAllWallet } = useWalletList({
+    enabled: true,
+    // Refresh wallet list every 15s.
     refetchInterval: 15_000,
-    queryKey: [`${walletApi.getWallets.name}-refresh`, selectedChain],
-    queryFn: () => walletApi.getWallets(selectedChain),
   })
 
   useChatMonitorMsg()
 
+  // Refresh monitor config every 15s.
   useQuery({
     queryKey: [monitorApi.getConfig.name, isLogined],
     queryFn: async () => {
@@ -45,10 +40,7 @@ export default function Home() {
     refetchInterval: 15_000,
   })
 
-  useEffect(() => {
-    if (walletsData?.data) setWallets(walletsData.data)
-  }, [walletsData])
-
+  // By default, get all wallets once on background.
   useEffect(() => {
     getAllWallet()
   }, [])
@@ -68,10 +60,7 @@ export default function Home() {
         {/* User Favorites panel */}
         <Favorites />
       </div>
-      <LoginAuthDialog
-        show={show}
-        onClose={() => setShow(false)}
-      ></LoginAuthDialog>
+      <LoginAuthDialog show={show} onClose={() => setShow(false)} />
     </main>
   )
 }

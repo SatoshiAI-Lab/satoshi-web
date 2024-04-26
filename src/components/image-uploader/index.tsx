@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { IoAddSharp } from 'react-icons/io5'
-import ReactCrop from 'react-image-crop'
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material'
+import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 import { t } from 'i18next'
 import { nanoid } from 'nanoid'
@@ -84,9 +84,9 @@ const ImageUploader = () => {
 
       <label
         className={clsx(
-          'w-32 h-32',
+          'w-32 h-32 overflow-hidden cursor-pointer',
           'border border-gray-400 rounded relative',
-          'flex justify-center items-center cursor-pointer'
+          'flex justify-center items-center'
         )}
         htmlFor={inputId.current}
         onClick={onUpload}

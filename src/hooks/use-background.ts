@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
 import { useBackgroundStore } from '@/stores/use-background-store'
 import { useRandom } from './use-random'
@@ -57,12 +57,6 @@ export const useBackground = (defaultLoad = false) => {
 
   useEffect(() => {
     const isDark = /black/.test(backgroundSrc)
-
-    if (isDark) {
-      window.document.documentElement.classList.add('dark')
-    } else {
-      window.document.documentElement.classList.remove('dark')
-    }
     setIsDark(isDark)
   }, [backgroundSrc])
 

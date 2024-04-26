@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineSetting } from 'react-icons/ai'
 import { BiSolidChess, BiSolidWalletAlt } from 'react-icons/bi'
 import { BsVolumeUp, BsVolumeMute } from 'react-icons/bs'
 import { motion } from 'framer-motion'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 
 import { useBackground } from '@/hooks/use-background'
 import { useShow } from '@/hooks/use-show'
-import { MonitorEntryPointer } from '@/components/monitor/monitor-entry-point'
+import { MonitorDialog } from '@/components/monitor/monitor-dialog'
 import { Wallet } from '@/components/wallet'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useLive2DStore } from '@/stores/use-live2d-store'
 import { useStorage } from '@/hooks/use-storage'
 import { useUserStore } from '@/stores/use-user-store'
 import { useLoginAuthStore } from '@/stores/use-need-login-store'
-import { useWallet } from '@/hooks/use-wallet'
+import { useWalletManage } from '@/hooks/use-wallet'
 
 enum AnimateType {
   None,
@@ -38,7 +38,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
   const { setIsMuted } = useStorage()
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
   const { setShow } = useLoginAuthStore()
-  const { refetchWallets } = useWallet()
+  const { refetchWallets } = useWalletManage()
   const { isLogined } = useUserStore()
 
   const items = [
@@ -130,11 +130,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
           )
         })}
       </div>
-      <MonitorEntryPointer
-        show={show}
-        open={open}
-        hidden={hidden}
-      ></MonitorEntryPointer>
+      <MonitorDialog show={show} open={open} hidden={hidden} />
       <Wallet open={walletOpen} onClose={() => setWalletOpen(false)} />
     </>
   )

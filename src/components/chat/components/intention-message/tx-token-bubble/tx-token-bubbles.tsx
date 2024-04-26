@@ -9,6 +9,8 @@ import clsx from 'clsx'
 import numeral from 'numeral'
 import toast from 'react-hot-toast'
 
+import type { ChatResponseMeta, ChatResponseTxConfrim } from '@/api/chat/types'
+
 import { CHAT_CONFIG } from '@/config/chat'
 import { useTxToken } from '@/hooks/use-tx-tokne'
 import { WalletList } from './wallet-list'
@@ -16,12 +18,10 @@ import { SelectToken } from './select-token'
 import { WalletCardProps } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
 import { trandApi } from '@/api/trand'
-import { useWallet } from '@/hooks/use-wallet'
 import { interactiveApi } from '@/api/interactive'
 import MessageBubble from '../../message-bubble'
 import { useChatStore } from '@/stores/use-chat-store'
-
-import type { ChatResponseMeta, ChatResponseTxConfrim } from '@/api/chat/types'
+import { useWalletList } from '@/hooks/use-wallet-list'
 
 interface Props {
   msg: ChatResponseMeta
@@ -37,10 +37,8 @@ export const TxTokenBubbles = (props: Props) => {
   const [validateErr, setValidateErr] = useState<string[]>([])
   const [isFinalTx, setIsFinalTx] = useState(false)
   const { show: loading, open: showLoading, hidden: hiddenLoading } = useShow()
-  const { getAllWallet } = useWallet()
-  // const { addMessage } = useChatMigrating()
+  const { getAllWallet } = useWalletList()
   const { addMessage } = useChatStore()
-
   const { t } = useTranslation()
 
   const {

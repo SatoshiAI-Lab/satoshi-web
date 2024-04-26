@@ -7,7 +7,7 @@ import { AiFillBank } from 'react-icons/ai'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 
-import { MonitorMenuType } from './monitor-entry-point'
+import { MonitorMenuType } from './monitor-dialog'
 
 interface Props {
   onOpenItem: (comp: MonitorMenuType) => void

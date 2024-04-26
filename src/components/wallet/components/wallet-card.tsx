@@ -3,14 +3,13 @@ import { Button, IconButton, Tooltip } from '@mui/material'
 import { IoTrash } from 'react-icons/io5'
 import numeral from 'numeral'
 import { useTranslation } from 'react-i18next'
-import { t } from 'i18next'
 import { clsx } from 'clsx'
-
-import { utilFmt } from '@/utils/format'
-import { WalletChain, WalletPlatform } from '@/config/wallet'
 
 import type { WalletCardProps as WalletProps } from '@/stores/use-wallet-store'
 import type { WalletCardProps } from '../types'
+
+import { utilFmt } from '@/utils/format'
+import { ChainLogos } from './chain-logos'
 
 interface Props extends WalletCardProps {
   wallet: WalletProps
@@ -42,13 +41,14 @@ export const WalletCard = (props: Props) => {
       onClick: copyAddress,
     },
   ]
+  const isLatestCreated = latestWallet?.id === wallet?.id
 
   return (
     <div
       className={clsx(
         'relative border border-black rounded-md px-[30px] py-[17px]',
         'flex justify-between items-center transition-all dark:border-zinc-500',
-        latestWallet?.id === wallet?.id && 'bg-gray-200 border-gray-300'
+        isLatestCreated && 'bg-gray-200 border-gray-300 dark:bg-zinc-800'
       )}
     >
       <div>
@@ -98,58 +98,6 @@ export const WalletCard = (props: Props) => {
         <IoTrash size={30} className="dark:text-white" />
       </IconButton>
     </div>
-  )
-}
-
-const ChainLogos = (props: Pick<Props, 'wallet'>) => {
-  const { chain, platform } = props.wallet
-  const baseURL = process.env.NEXT_PUBLIC_CDN_URL
-  const evmLogos = [
-    {
-      src: `${baseURL}/chains/logo/${WalletChain.ETH}.png`,
-      tooltip: 'Ethereum(ETH)',
-    },
-    {
-      src: `${baseURL}/chains/logo/${WalletChain.BSC}.png`,
-      tooltip: 'Binance Smart Chain(BSC)',
-    },
-    {
-      src: `${baseURL}/chains/logo/${WalletChain.OP}.png`,
-      tooltip: 'Optimism(OP)',
-    },
-    {
-      src: `${baseURL}/chains/logo/${WalletChain.ARB}.png`,
-      tooltip: 'Arbitrum(ARB)',
-    },
-  ]
-
-  // EVM compatibility chain.
-  if (platform === WalletPlatform.EVM) {
-    return (
-      <>
-        {evmLogos.map((e, i) => (
-          <Tooltip key={i} title={e.tooltip}>
-            <img
-              key={i}
-              src={e.src}
-              width={24}
-              height={24}
-              alt="Logo"
-              className="mr-1"
-            />
-          </Tooltip>
-        ))}
-        <Tooltip title={t('evm-all-chain')}>
-          <span>...</span>
-        </Tooltip>
-      </>
-    )
-  }
-
-  return (
-    <Tooltip title="Solana(SOL)">
-      <img src={chain?.logo ?? ''} width={24} height={24} alt="Logo" />
-    </Tooltip>
   )
 }
 

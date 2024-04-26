@@ -9,9 +9,6 @@ export const useEventStream = () => {
   const readerRef = useRef<ReadableStreamDefaultReader<string>>()
   const isFirstRef = useRef(true)
 
-  // Q: Why recursion instead of a loop?
-  // A: because loop will split the large data response,
-  // causing JSON.parse error.
   const recursionRead = async (
     reader: ReadableStreamDefaultReader<string>,
     onRead: OnRead,
@@ -46,12 +43,10 @@ export const useEventStream = () => {
     const stream = streamRef.current
     const reader = readerRef.current
 
-    if (!stream || !reader) return
-
     // reader is reading, so we must cancel & wait for it closed.
-    await reader.cancel()
-    await reader.closed
-    await stream.cancel()
+    await reader?.cancel()
+    await reader?.closed
+    await stream?.cancel()
   }
 
   return {

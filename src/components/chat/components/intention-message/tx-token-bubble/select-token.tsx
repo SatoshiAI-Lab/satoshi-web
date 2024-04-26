@@ -1,8 +1,9 @@
-import { ChatResponseTxConfrim, TokenInfo } from '@/api/chat/types'
-import { Menu, MenuItem, CircularProgress } from '@mui/material'
-import clsx from 'clsx'
+import { Menu, MenuItem } from '@mui/material'
+import { clsx } from 'clsx'
 import { useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
+
+import type { ChatResponseTxConfrim, TokenInfo } from '@/api/chat/types'
 
 interface Props {
   tokenList?: TokenInfo[]
@@ -26,8 +27,8 @@ export const SelectToken: React.FC<Props> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
-  console.log(open)
-  console.log('isFinalTx', isFinalTx)
+  // console.log(open)
+  // console.log('isFinalTx', isFinalTx)
 
   const handleClick = (token: TokenInfo) => {
     switchToken(token)
