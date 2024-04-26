@@ -10,13 +10,10 @@ import { utilFmt } from '@/utils/format'
 import { link } from '@/config/link'
 import { MessageBubble } from '../message-bubble'
 
-import type {
-  ChatResponseMeta,
-  ChatResponseTokenDetail,
-} from '@/api/chat/types'
+import type { ChatMeta, ChatResponseTokenDetail } from '@/api/chat/types'
 
 interface Props {
-  msg?: ChatResponseMeta
+  msg?: ChatMeta
   avatarSize?: number
 }
 

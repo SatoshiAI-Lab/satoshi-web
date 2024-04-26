@@ -2,20 +2,17 @@ import React from 'react'
 import clsx from 'clsx'
 import dayjs from 'dayjs'
 import { Avatar } from '@mui/material'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 import { t } from 'i18next'
 
 import { MessageBubble } from '../message-bubble'
 import { utilLang } from '@/utils/language'
+import { useMessagesContext } from '@/contexts/messages'
 
-import type { ChatResponseMetaAnnounceMent } from '@/api/chat/types'
-
-interface Props {
-  data: ChatResponseMetaAnnounceMent
-}
-
-const ExchangeAnnouncementBubble = ({ data }: Props) => {
-  const { title, created_at, source_logo, source_name, url } = data
+export const ExchangeAnnBubble = () => {
+  const { message } = useMessagesContext()
+  const { title, created_at, url, source_logo, source_name } =
+    message.meta || {}
   const currentTitle = utilLang.getContent(title)
 
   const originLinkButton = () => {
@@ -36,6 +33,7 @@ const ExchangeAnnouncementBubble = ({ data }: Props) => {
       </button>
     )
   }
+
   return (
     <MessageBubble
       className={clsx('!w-bubble pt-[12px] pr-[14px] pb-[15px] pl-[18px]')}
@@ -66,4 +64,4 @@ const ExchangeAnnouncementBubble = ({ data }: Props) => {
   )
 }
 
-export default ExchangeAnnouncementBubble
+export default ExchangeAnnBubble

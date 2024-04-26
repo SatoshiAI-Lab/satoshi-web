@@ -1,16 +1,16 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 
 import { MessageBubble } from './message-bubble'
-import { MessagesContext } from '@/contexts/messages'
+import { useMessagesContext } from '@/contexts/messages'
 
 export const PrivateKeyMessage = () => {
-  const { message } = useContext(MessagesContext)!
+  const { message } = useMessagesContext()
   const { t } = useTranslation()
   // TODO: Waiting for implementation.
 
-  console.log('message', message)
+  console.log('private key message', message)
 
   return (
     <MessageBubble>

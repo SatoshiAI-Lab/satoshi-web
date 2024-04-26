@@ -15,10 +15,7 @@ import { IoIosArrowDown } from 'react-icons/io'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
 
-import type {
-  ChatResponseMeta,
-  ChatResponseWalletListToken,
-} from '@/api/chat/types'
+import type { ChatMeta, ChatResponseWalletListToken } from '@/api/chat/types'
 import type { WalletCardProps } from '@/components/wallet/types'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
@@ -30,7 +27,7 @@ import { walletApi } from '@/api/wallet'
 import { useChat } from '@/hooks/use-chat'
 
 interface Props {
-  meta?: ChatResponseMeta
+  meta?: ChatMeta
 }
 
 export const BalanceMessage = (props: Props) => {

@@ -14,13 +14,14 @@ export const utilParse = {
   /**
    * parse event-stream response to string.
    * @param str Stream string.
-   * @param onParsed Each parsing call, include this parsing result string.
-   * @return Return string array.
+   * @param onParsed Each parsed callback.
+   * @return Result string array.
    **/
   streamStrToJson(str: string, onParsed: OnParse) {
     let isFirstCall = true
     const splited = str.trim().split('\n').filter(Boolean)
-    const result = splited.map((m, i) => {
+
+    const result = splited.map((m) => {
       try {
         const replaced = m.startsWith('data: ') ? m.replace('data: ', '') : m
         const parsed = JSON.parse(replaced) as ChatResponse
@@ -33,10 +34,7 @@ export const utilParse = {
         console.error('[ParseStream Error]:', err)
         console.error('[ParseStream Error m]:', m)
 
-        return {
-          answer_type: 'parsed_error',
-          text: err,
-        } as ChatResponse
+        return { text: err }
       }
     })
 

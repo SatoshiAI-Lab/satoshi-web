@@ -9,7 +9,7 @@ import clsx from 'clsx'
 import numeral from 'numeral'
 import toast from 'react-hot-toast'
 
-import type { ChatResponseMeta, ChatResponseTxConfrim } from '@/api/chat/types'
+import type { ChatMeta, ChatResponseTxConfrim } from '@/api/chat/types'
 
 import { CHAT_CONFIG } from '@/config/chat'
 import { useTxToken } from '@/hooks/use-tx-tokne'
@@ -24,7 +24,7 @@ import { useChatStore } from '@/stores/use-chat-store'
 import { useWalletList } from '@/hooks/use-wallet-list'
 
 interface Props {
-  msg: ChatResponseMeta
+  msg: ChatMeta
 }
 
 const rates = [20, 50, 100]
@@ -147,7 +147,10 @@ export const TxTokenBubbles = (props: Props) => {
       }
 
       await getStatus()
-      addMessage({ text: `${t('successful.transaction')}${data.hash_tx}` })
+      addMessage({
+        role: 'assistant',
+        text: `${t('successful.transaction')}${data.hash_tx}`,
+      })
       setIsFinalTx(true)
       getAllWallet()
     } catch {

@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import { nanoid } from 'nanoid'
 
-import type { States, Actions, Message } from './types'
+import type { ChatStore, Message } from './types'
 
-export const useChatStore = create<States & Actions>((set, get) => ({
+export const useChatStore = create<ChatStore>((set, get) => ({
   intention: '',
   question: '',
   messages: [],
@@ -31,17 +31,23 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   },
   addMessage: (message) => {
     const newMessage: Message = { id: nanoid(), ...message }
+
     set({ messages: [...get().messages, newMessage] })
+    return newMessage
   },
   removeMessage: (id) => {
     const newMessages = get().messages.filter((m) => m.id !== id)
+
     set({ messages: newMessages })
+    return newMessages
   },
   updateMessage: (id, message) => {
     const newMessages = get().messages.map((m) =>
       m.id === id ? { ...m, ...message } : m
     )
+
     set({ messages: newMessages })
+    return newMessages
   },
   getMessage: (id) => get().messages.find((m) => m.id === id),
 

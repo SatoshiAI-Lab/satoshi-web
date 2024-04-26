@@ -9,16 +9,12 @@ import { IoCopyOutline } from 'react-icons/io5'
 import { MessageBubble } from '../message-bubble'
 import { link } from '@/config/link'
 import { utilFmt } from '@/utils/format'
+import { useMessagesContext } from '@/contexts/messages'
 
-import type { ChatResponseMetaWallet } from '@/api/chat/types'
-
-interface Props {
-  data: ChatResponseMetaWallet
-}
-
-const WalletBubble = ({ data }: Props) => {
+export const WalletBubble = () => {
+  const { t } = useTranslation()
+  const { message } = useMessagesContext()
   const {
-    type,
     created_at,
     name,
     sender,
@@ -26,8 +22,7 @@ const WalletBubble = ({ data }: Props) => {
     side_amount,
     side_symbol,
     hash,
-  } = data
-  const { t } = useTranslation()
+  } = message.meta || {}
 
   return (
     <MessageBubble className={clsx('min-w-[400px] py-4')}>
@@ -40,7 +35,7 @@ const WalletBubble = ({ data }: Props) => {
         /> */}
         <div className="flex flex-col justify-between ">
           <span className="font-bold">
-            {t('walletbubble.title').replace('$1', name)}
+            {t('walletbubble.title').replace('$1', name ?? '')}
           </span>
           <span className="text-gray-400">
             {dayjs(created_at).format('H:mm M/D')}
@@ -66,7 +61,7 @@ const WalletBubble = ({ data }: Props) => {
           {utilFmt.addr(sender)}
         </div>
         <CopyToClipboard
-          text={sender}
+          text={sender ?? ''}
           onCopy={() => {
             toast.success(t('copy-success'))
           }}

@@ -1,11 +1,11 @@
-import React, { useContext } from 'react'
+import React from 'react'
 
 import { MessageBubble } from './message-bubble'
 import { TokenMarkdown } from '@/components/token-markdown'
-import { MessagesContext } from '@/contexts/messages'
+import { useMessagesContext } from '@/contexts/messages'
 
 export const TokenMessage = () => {
-  const { message } = useContext(MessagesContext)!
+  const { message } = useMessagesContext()
 
   return (
     <MessageBubble role={message.role}>

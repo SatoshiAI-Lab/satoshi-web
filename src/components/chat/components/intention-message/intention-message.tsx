@@ -1,5 +1,3 @@
-import { useContext } from 'react'
-
 import { CHAT_CONFIG } from '@/config/chat'
 import { WalletChoiceBubble } from './wallet-bubbles/wallet-choice-bubbles'
 import { WalletBalance } from './wallet-bubbles/wallet-balance'
@@ -12,10 +10,11 @@ import { TokenDetailBubble } from './token-detail-bubble'
 import { ExMonitorBubble } from './ex-monitor-bubble'
 import { PoolMonitorBubble } from './pool-monitor-bubble'
 import { MonitorWalletListBubble } from './monitor-wallet-list-bubble'
-import { MessagesContext } from '@/contexts/messages'
+import { useMessagesContext } from '@/contexts/messages'
+import { MessageMatchError } from '@/components/errors/message-match'
 
-export const IntentionMessage = () => {
-  const { message: msg } = useContext(MessagesContext)!
+export const IntentMessages = () => {
+  const { message: msg } = useMessagesContext()
   const { intentSelectWalletType, intentTxToken } = CHAT_CONFIG
   const { walletList } = CHAT_CONFIG.answerType
   const {
@@ -96,7 +95,5 @@ export const IntentionMessage = () => {
     return <PoolMonitorBubble></PoolMonitorBubble>
   }
 
-  // console.log('type', msg.msgs)
-
-  return <></>
+  return <MessageMatchError reasonComponent={IntentMessages} />
 }

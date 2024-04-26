@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next'
 
-import { ChatResponseMeta } from '@/api/chat/types'
+import { ChatMeta } from '@/api/chat/types'
 import { MessageBubble } from '../../message-bubble'
 import { WalletList } from './wallet-list'
 import { useChatMigrating } from '@/hooks/use-chat-migrating'
 import { useChat } from '@/hooks/use-chat'
 
 interface Props {
-  msg: ChatResponseMeta
+  msg: ChatMeta
 }
 
 export const WalletChoiceBubble = ({ msg }: Props) => {

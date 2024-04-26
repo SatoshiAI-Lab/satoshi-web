@@ -1,7 +1,5 @@
 import { Chain } from '@/config/wallet'
 
-import type { ModelMotions } from '@/stores/use-live2d-store/types'
-
 export interface ChatResponseBase {
   status: number
   message: string
@@ -11,59 +9,145 @@ export interface ChatResponseBase {
 }
 
 export interface ChatResponse {
-  answer_type: string
+  answer_type: AnswerType
   text: string
   hyper_text: string
-  meta: ChatResponseMeta
+  meta: ChatMeta
 }
 
+/***********************  Intent type start. ***********************/
+
 export enum AnswerType {
-  ProcessStream = 'process_stream',
-  IntentionStrea = 'intention_stream',
-  ChatStream = 'chat_stream',
+  // Normal chat.
   TokenBasic = 'token_basic',
   News = 'news',
-  NewsStream = 'news_stream',
   RiskAnalysis = 'risk_analysis',
-  RiskAnalysisStream = 'risk_analysis_stream',
   RiskAnalysisHide = 'risk_analysis_hide',
   Review = 'review',
   DataInsights = 'data_insights',
-  DataInsightsStream = 'data_insights_stream',
   TechAnalyze = 'tech_analyze',
-  TechAnalyzeStream = 'tech_analyze_stream',
   Interactive = 'interactive',
   Reference = 'reference',
-  End = 'end',
+  Hide = 'hide',
+  End = 'end', // Special type.
+
+  // Stream chat.
+  ChatStream = 'chat_stream',
+  RiskAnalysisStream = 'risk_analysis_stream',
+  NewsStream = 'news_stream',
+  DataInsightsStream = 'data_insights_stream',
+  TechAnalyzeStream = 'tech_analyze_stream',
+  ProcessStream = 'process_stream', // Special type.
+  IntentStream = 'intent_stream', // Special type.
 }
 
+type ChatMetaParital = ChatMetaInteractive &
+  ChatMetaReference &
+  ChatResponseMetaNewsInfo &
+  ChatResponseMetaAnnounceMent &
+  ChatResponseMetaWallet &
+  ChatResponseMetaTwitter &
+  ChatResponseMetaNewPoolV2
+
+export interface ChatMeta extends Partial<ChatMetaParital> {
+  type: MetaType
+  status?: number
+  data: MetaTypeWithData[MetaType]
+  emotion?: Emotion
+}
+
+type Emotion =
+  | 'Neutral'
+  | 'Happy'
+  | 'Sad'
+  | 'Awkward'
+  | 'Negate'
+  | 'Angry'
+  | 'Encourage'
+
 export enum MetaType {
-  TransactionBuy = 'transaction_buy',
-  TransactionSell = 'transaction_sell',
+  TxConfirm = 'transaction_confirm',
+
   WalletCreate = 'wallet_create',
   WalletDelete = 'wallet_delete',
-  WalletChangeName = 'wallet_change',
+  WalletChange = 'wallet_change',
   WalletCheck = 'wallet_check',
   WalletImport = 'wallet_import',
   WalletExport = 'wallet_export',
-  WalletCheckAddr = 'wallet_check_address',
-  SubscriptNews = 'subscript_news',
-  SubscriptTwitter = 'subscript_twitter',
-  SubscriptAnn = 'subscript_announcement',
-  SubscriptWallet = 'subscript_wallet',
-  SubscriptPool = 'subscript_pool',
+
+  SubNews = 'subscript_news',
+  SubTwitter = 'subscript_twitter',
+  SubAnn = 'subscript_announcement',
+  SubWallet = 'subscript_wallet',
+  SubPool = 'subscript_pool',
+
   TokenCreate = 'token_create',
-  TokenCheck = 'token_check',
+
+  CheckAddr = 'check_address',
 }
 
-export interface ChatResponseMeta
-  extends Partial<ChatResponseMetaInteractive>,
-    Partial<ChatResponseMetaReference>,
-    Partial<ChatResponseWalletListRaw>,
-    Partial<ChatResponseMetaBalance>,
-    Partial<ChatResponseTxConfrim> {
-  emotion?: ModelMotions
+export type MetaTypeWithData = {
+  [MetaType.TxConfirm]: TxConfirmData
+
+  [MetaType.WalletCreate]: WalletCreateData
+  [MetaType.WalletDelete]: WalletDeleteData
+  [MetaType.WalletChange]: WalletChangeNameData
+  [MetaType.WalletCheck]: WalletCreateData
+  [MetaType.WalletImport]: WalletImportData
+  [MetaType.WalletExport]: WalletDeleteData
+
+  [MetaType.SubNews]: SubscriptData
+  [MetaType.SubTwitter]: SubscriptData
+  [MetaType.SubAnn]: SubscriptData
+  [MetaType.SubWallet]: SubscriptData
+  [MetaType.SubPool]: SubscriptData
+
+  [MetaType.TokenCreate]: {}
+
+  [MetaType.CheckAddr]: CheckAddrData
 }
+
+interface TxConfirmData {
+  from_token: {
+    type: string
+    content: string
+  }
+  to_token: {
+    type: string
+    content: string
+  }
+  amount: number
+}
+
+interface WalletCreateData {
+  chain_name: string
+}
+
+interface WalletDeleteData {
+  wallet_name: string
+}
+
+interface WalletChangeNameData {
+  from_wallet_name: string
+  to_wallet_name: string
+}
+
+interface WalletImportData {
+  private_key: string
+  platform_name: string
+}
+
+interface SubscriptData {
+  type: 'on' | 'off'
+  content: string | number
+}
+
+interface CheckAddrData {
+  type: string
+  address: string
+}
+
+/*********************** Intent type end. ***********************/
 
 export interface ChatResponseMetaDynamic {
   intro: string
@@ -176,8 +260,8 @@ export interface ChatResponseMetaLabel {
   dynamic: ChatResponseMetaDynamic
 }
 
-export interface ChatResponseMetaInteractive {
-  NFT: []
+export interface ChatMetaInteractive {
+  nft: []
   coin: ChatResponseAnswerMetaCoin[]
   exchange: []
   label: ChatResponseMetaLabel[]
@@ -185,9 +269,8 @@ export interface ChatResponseMetaInteractive {
   software: []
 }
 
-export interface ChatResponseMetaReference {
-  type: string
-  content: string
+export interface ChatMetaReference {
+  // content: string
   published_at: string
   url: string
 }
