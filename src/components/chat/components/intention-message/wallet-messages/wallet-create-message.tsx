@@ -39,20 +39,18 @@ export const WalletCreateMessage = () => {
 
   // Creating.
   if (isPending) {
-    return <LoadingMessage disableAnime>{t('wallet.creating')}</LoadingMessage>
+    return <LoadingMessage>{t('wallet.creating')}</LoadingMessage>
   }
 
   // Create error.
   if (isError) {
-    return (
-      <MessageBubble disableAnime>{t('wallet.create.failed')}</MessageBubble>
-    )
+    return <MessageBubble>{t('wallet.create.failed')}</MessageBubble>
   }
 
   // Create sucess.
   if (isSuccess && wallet) {
     return (
-      <MessageBubble disableAnime>
+      <MessageBubble>
         <p>{t('wallet.create.success').replace('{}', chain_name)}</p>
         <p>
           {t('name')}: <span className="font-bold">{wallet?.name}</span>

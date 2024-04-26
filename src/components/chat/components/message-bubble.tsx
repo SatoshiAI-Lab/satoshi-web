@@ -6,20 +6,15 @@ import type { MessageRole } from '@/stores/use-chat-store/types'
 
 interface Props extends React.ComponentProps<'div'> {
   role?: MessageRole
-  disableAnime?: boolean
+  enableAnime?: boolean
 }
 
 export const MessageBubble = (props: Props) => {
-  const {
-    children,
-    className,
-    role = 'assistant',
-    disableAnime = false,
-  } = props
+  const { children, className, role = 'assistant', enableAnime = false } = props
 
   return (
     <motion.div
-      initial={disableAnime ? {} : { y: 20, opacity: 1 }}
+      initial={enableAnime ? { y: 20, opacity: 1 } : {}}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.1 }}
       className={clsx(

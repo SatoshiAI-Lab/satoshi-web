@@ -55,13 +55,13 @@ export const WalletList = (props: Props) => {
   const isExport = type == exportWalletList
 
   const onRemoveWallet = async (id: string) => {
-    const loadingId = toast.loading(t('deleting'))
+    const loadingId = toast.loading(t('wallet.deleting'))
     try {
       await removeWallet(id)
       await refetchWallets()
       toast.success(t('delete-success'))
     } catch (error) {
-      toast.error(t('deleting-error'))
+      toast.error(t('wallet.delete.failed'))
     } finally {
       toast.dismiss(loadingId)
     }

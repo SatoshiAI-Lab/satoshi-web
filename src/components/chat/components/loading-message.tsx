@@ -7,18 +7,14 @@ import MessageBubble from './message-bubble'
 
 interface Props extends React.ComponentProps<'div'> {
   withProgress?: boolean
-  disableAnime?: boolean
 }
 
 export const LoadingMessage = (props: Props) => {
-  const { className, children, withProgress = true, disableAnime } = props
+  const { className, children, withProgress = true } = props
   const { t } = useTranslation()
 
   return (
-    <MessageBubble
-      className={clsx('flex items-center', className)}
-      disableAnime={disableAnime}
-    >
+    <MessageBubble className={clsx('flex items-center', className)}>
       {children || t('thinking')}
       {withProgress && <CircularProgress size={18} className="ml-2" />}
     </MessageBubble>

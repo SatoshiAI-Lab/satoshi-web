@@ -264,8 +264,6 @@
   "trading.fail": "交易失败",
   "trading.success": "交易成功",
   "export-wallet": "导出{}钱包私钥成功！悬浮以显示私钥（请注意您的私钥安全）",
-  "deleting": "删除钱包中...",
-  "deleting-error": "删除失败",
   "delete-success": "删除成功",
   "folded-message": "条新情报监控",
   "sol-wallet": "Solana 钱包",
@@ -296,5 +294,8 @@
   "wallet.create.select-chain": "您想在哪个平台上创建钱包？",
   "wallet.create.success": "您的 {} 钱包已成功创建！",
   "wallet.create.failed": "创建钱包失败，请重试。",
-  "default-name": "默认名称："
+  "default-name": "默认名称：",
+  "wallet.delete.title": "请选择您要删除的钱包。",
+  "walelt.delete.failed": "删除钱包失败，请重试",
+  "wallet.not-found": "找不到您的钱包"
 }

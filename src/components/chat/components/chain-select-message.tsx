@@ -16,7 +16,7 @@ export const ChainSelectMessage = (props: Props) => {
   const { t } = useTranslation()
 
   return (
-    <MessageBubble disableAnime>
+    <MessageBubble>
       <p>{t('wallet.create.select-chain')}</p>
       <ul className="grid grid-cols-3 gap-2 mt-2 ">
         {platforms.map((p) => (

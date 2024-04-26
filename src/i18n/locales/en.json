@@ -267,8 +267,6 @@
   "trading.fail": "Trade failed",
   "trading.success": "Successful transaction",
   "export-wallet": "Export {} private key success! hover to show private key(Attention private key security)",
-  "deleting": "Wallet deleting...",
-  "deleting-error": "Delete failed",
   "delete-success": "Delete success",
   "folded-message": "new intelligence alerts",
   "sol-wallet": "Solana Wallet",
@@ -298,5 +296,11 @@
   "wallet.create.select-chain": "Which platform would you like to create a wallet on?",
   "wallet.create.success": "Your {} wallet has been successfully created!",
   "wallet.create.failed": "Wallet create failed, please try again.",
-  "default-name": "Default name:"
+  "default-name": "Default name:",
+  "wallet.delete.title": "Please select the wallet you'd like to delete.",
+  "walelt.delete.failed": "Wallet delete failed, please try again.",
+  "wallet.delete.success": "Delete wallet successful!",
+  "wallet.deleting": "Wallet deleting...",
+  "wallet.delete.failed": "Delete failed, please try again.",
+  "wallet.not-found": "Your wallet cannot be found"
 }
