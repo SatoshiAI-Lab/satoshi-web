@@ -15,7 +15,7 @@ import { MessageBubble } from '../../message-bubble'
 import { utilFmt } from '@/utils/format'
 import { Chain, WALLET_CONFIG } from '@/config/wallet'
 import { ChainSelect } from '@/components/chain-select'
-import LoadingMessage from '../../loading-message'
+import { LoadingMessage } from '../../loading-message'
 
 export const WaleltDeleteMessage = memo(() => {
   const { t } = useTranslation()
@@ -31,7 +31,7 @@ export const WaleltDeleteMessage = memo(() => {
   })
   const wallets = data?.data[chain] ?? []
 
-  const { isPending, mutateAsync } = useMutation({
+  const { isPending, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.deleteWallet.name],
     mutationFn: walletApi.deleteWallet,
     onError() {
@@ -63,7 +63,7 @@ export const WaleltDeleteMessage = memo(() => {
   }, [])
 
   // Delete success.
-  if (disabled) {
+  if (isSuccess && disabled) {
     return (
       <MessageBubble>
         {t('wallet')} <span className="font-bold">{wallet_name}</span>{' '}
@@ -87,38 +87,44 @@ export const WaleltDeleteMessage = memo(() => {
     return <LoadingMessage>{t('wallet.deleting')}</LoadingMessage>
   }
 
-  return (
-    <MessageBubble>
-      <p>{t('wallet.delete.title')}</p>
-      <ChainSelect
-        value={chain}
-        onSelect={(c) => setChain(c as Chain)}
-        avatarSize={18}
-        classes={{ select: '!flex !items-center !py-2 !text-sm' }}
-        disabled={disabled}
-      />
-      <ul className="flex flex-col">
-        {wallets.map((w) => (
-          <li key={w.id} className="mt-2 last:mb-1">
-            <Button
-              variant="outlined"
-              size="small"
-              className="!flex-col !w-full !items-start"
-              disabled={disabled}
-              onClick={() => onDelete(w)}
-            >
-              <span>
-                {t('name')}: {w.name}
-              </span>
-              <span>
-                {t('address')}: {utilFmt.addr(w.address)}
-              </span>
-            </Button>
-          </li>
-        ))}
-      </ul>
-    </MessageBubble>
-  )
+  // `wallet_name` is empty, select wallet.
+  if (isEmpty(wallet_name)) {
+    return (
+      <MessageBubble>
+        <p>{t('wallet.delete.title')}</p>
+        <ChainSelect
+          value={chain}
+          onSelect={(c) => setChain(c as Chain)}
+          avatarSize={18}
+          classes={{ select: '!flex !items-center !py-2 !text-sm' }}
+          disabled={disabled}
+        />
+        <ul className="flex flex-col">
+          {wallets.map((w) => (
+            <li key={w.id} className="mt-2 last:mb-1">
+              <Button
+                variant="outlined"
+                size="small"
+                className="!flex-col !w-full !items-start"
+                disabled={disabled}
+                onClick={() => onDelete(w)}
+              >
+                <span>
+                  {t('name')}: {w.name}
+                </span>
+                <span>
+                  {t('address')}: {utilFmt.addr(w.address)}
+                </span>
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </MessageBubble>
+    )
+  }
+
+  // Ask user to wait.
+  return <LoadingMessage children={t('waiting-moment')} />
 })
 
 export default WaleltDeleteMessage

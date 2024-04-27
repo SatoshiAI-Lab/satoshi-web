@@ -69,8 +69,13 @@ export const WalletCreateMessage = () => {
     )
   }
 
-  // `platform` is empty, choose platform.
-  return <ChainSelectMessage onClick={onCreate} />
+  // `platform` is empty, select platform.
+  if (isEmpty(chain_name)) {
+    return <ChainSelectMessage onClick={onCreate} />
+  }
+
+  // Ask user to wait.
+  return <LoadingMessage children={t('waiting-moment')} />
 }
 
 export default WalletCreateMessage

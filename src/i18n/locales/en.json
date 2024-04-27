@@ -267,7 +267,7 @@
   "trading.fail": "Trade failed",
   "trading.success": "Successful transaction",
   "export-wallet": "Export {} private key success! hover to show private key(Attention private key security)",
-  "delete-success": "Delete success",
+  "delete-success": "Delete success!",
   "folded-message": "new intelligence alerts",
   "sol-wallet": "Solana Wallet",
   "evm-wallet": "EVM Wallet",
@@ -302,5 +302,6 @@
   "wallet.delete.success": "Delete wallet successful!",
   "wallet.deleting": "Wallet deleting...",
   "wallet.delete.failed": "Delete failed, please try again.",
-  "wallet.not-found": "Your wallet cannot be found"
+  "wallet.not-found": "Your wallet cannot be found",
+  "waiting-moment": "Please waiting a moment..."
 }
