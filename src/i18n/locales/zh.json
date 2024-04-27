@@ -311,5 +311,9 @@
   "wallet.import.select-platform": "请选择您要导入的平台。",
   "wallet.import.success": "导入钱包成功！",
   "wallet.import.failed": "导入钱包失败，请重试。",
-  "wallet.importing": "正在导入钱包..."
+  "wallet.importing": "正在导入钱包...",
+  "wallet.export.not-found": "请选择您要导出的钱包。",
+  "wallet.export.exporting": "正在导出钱包...",
+  "wallet.export.failed": "导出钱包失败，请重试。",
+  "wallet.export.success": "导出钱包成功！"
 }

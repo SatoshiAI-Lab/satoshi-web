@@ -316,5 +316,9 @@
   "wallet.import.select-platform": "Please select the platform you want to import.",
   "wallet.import.success": "Import the wallet successful!",
   "wallet.import.failed": "Import the wallet failed, please try again.",
-  "wallet.importing": "Importing the wallet..."
+  "wallet.importing": "Importing the wallet...",
+  "wallet.export.not-found": "Please select the wallet you want to export.",
+  "wallet.export.exporting": "Exporting the wallet...",
+  "wallet.export.failed": "Export the wallet failed, please try again.",
+  "wallet.export.success": "Export the wallet successful!"
 }
