@@ -60,6 +60,7 @@ export interface AnnouncementList {
 export interface AddressData {
   address: string
   name: string
+  /*** @depreacted **/
   chain?: string
 }
 
