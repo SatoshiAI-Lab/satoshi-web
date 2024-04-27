@@ -7,22 +7,23 @@ import toast from 'react-hot-toast'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 import type { CreateTokenInfo } from './types'
 
-import MessageBubble from '../../../message-bubble'
-import CreateTokenWallets from './wallets'
-import CreateTokenLoading from './loading'
-import CreateTokenSuccess from './success'
+import { MessageBubble } from '../../../message-bubble'
+import { CreateTokenWallets } from './wallets'
+import { CreateTokenLoading } from './loading'
+import { CreateTokenSuccess } from './success'
 import { useCreateSolToken } from '@/hooks/use-create-sol-token'
 import { DialogHeader } from '@/components/dialog-header'
 import { Chain } from '@/config/wallet'
 import { useCreateOpToken } from '@/hooks/use-create-op-token'
-import { useCreateTokenConfig } from '@/hooks/use-create-token-config'
+import { useTokenCreateConfig } from '@/hooks/use-token-create-config'
 import { CreateTokenForm } from './form'
 import { CreateTokenHints } from './hints'
 import { useMessagesContext } from '@/contexts/messages'
+import { MetaType } from '@/api/chat/types'
 
 export const TokenCreateMessage = () => {
-  const { message } = useMessagesContext()
-  const { chain } = message.meta ?? {}
+  const { getMetaData } = useMessagesContext()
+  const { chain_name } = getMetaData<MetaType.TokenCreate>()
   const { t } = useTranslation()
   const [symbol, setSymbol] = useState('')
   const [name, setName] = useState('')
@@ -45,8 +46,8 @@ export const TokenCreateMessage = () => {
     cancelSol,
   } = useCreateSolToken()
   const { opAddr, isOpLoading, isOpLongTime, isOpSuccess, createOpToken } =
-    useCreateOpToken(chain)
-  const { config, configs } = useCreateTokenConfig(chain)
+    useCreateOpToken(chain_name)
+  const { config, configs } = useTokenCreateConfig(chain_name)
   const [createTipOpen, setCreateTipOpen] = useState(false)
 
   // Form validate field.
@@ -63,7 +64,7 @@ export const TokenCreateMessage = () => {
   const showSuccess = (isSolCreateSuccess && isSolMintSuccess) || isOpSuccess
 
   const onCreate = () => {
-    if (!chain || !config) return
+    if (!chain_name || !config) return
     if (!selectedWallet?.id) {
       toast.error(t('no-wallet'))
       return
@@ -76,7 +77,7 @@ export const TokenCreateMessage = () => {
     }
 
     const params: CreateTokenInfo = {
-      chain,
+      chain: chain_name,
       id: selectedWallet.id,
       name: name.trim(),
       symbol: symbol.trim(),
@@ -85,14 +86,13 @@ export const TokenCreateMessage = () => {
       total,
     }
 
-    if (chain === Chain.Sol) {
+    if (chain_name === Chain.Sol) {
       createSolToken(params)
       return
     }
-    if (chain === Chain.Op) {
-      createOpToken(params)
-      return
-    }
+
+    // If everything goes as expected, this will be EVM.
+    createOpToken(params)
   }
 
   // If mint error, show tips.
@@ -157,7 +157,7 @@ export const TokenCreateMessage = () => {
                 )
                 .replace(
                   '{}',
-                  `<span class="font-bold">${config.minBalance} ${config.nativeToken}</span>`
+                  `<span class="font-bold">${config?.minBalance} ${config?.nativeToken}</span>`
                 ),
             }}
           ></div>
@@ -166,7 +166,7 @@ export const TokenCreateMessage = () => {
             dangerouslySetInnerHTML={{
               __html: t('create-token.confirm2').replace(
                 '{}',
-                `<span class="font-bold">${chain}</span>`
+                `<span class="font-bold">${chain_name}</span>`
               ),
             }}
           ></div>
@@ -232,8 +232,6 @@ export const TokenCreateMessage = () => {
 
       {/* Wallet list select. */}
       <CreateTokenWallets
-        hasWallet={hasWallet}
-        chain={chain}
         onSelectWallet={(wallet) => setSelectedWallet(wallet)}
       />
 

@@ -1,39 +1,43 @@
 import React, { useEffect, useState } from 'react'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineCopy } from 'react-icons/ai'
 import { first } from 'lodash'
+import { useQuery } from '@tanstack/react-query'
+
+import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 import { Wallet } from '@/components/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
-import { useQuery } from '@tanstack/react-query'
 import { walletApi } from '@/api/wallet'
-import { UserCreateWalletResp } from '@/api/wallet/params'
-import { useCreateTokenConfig } from '@/hooks/use-create-token-config'
+import { useTokenCreateConfig } from '@/hooks/use-token-create-config'
+import { useMessagesContext } from '@/contexts/messages'
+import { MetaType } from '@/api/chat/types'
+import { useWalletStore } from '@/stores/use-wallet-store'
 
 interface Props extends React.ComponentProps<'div'> {
-  hasWallet: boolean
-  chain?: string
   onSelectWallet?: (wallet: UserCreateWalletResp | undefined) => void
 }
 
-const CreateTokenWallets = (props: Props) => {
-  const { hasWallet, chain, onSelectWallet } = props
+export const CreateTokenWallets = (props: Props) => {
+  const { onSelectWallet } = props
   const { t } = useTranslation()
+  const { getMetaData } = useMessagesContext()
+  const { chain_name } = getMetaData<MetaType.TokenCreate>()
   const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
   const [selectedWallet, setSelectedWallet] = useState<UserCreateWalletResp>()
   const { copy } = useClipboard()
   const [walletOpen, setWalletOpen] = useState(false)
-  const { config } = useCreateTokenConfig(chain)
+  const { config } = useTokenCreateConfig(chain_name)
+  const { hasWallet } = useWalletStore()
 
   const nativeTokenTip = config?.nativeToken ?? ''
   const minBalanceTip = `${config?.minBalance ?? 0} ${nativeTokenTip}`
 
-  // Use independent request.
   const { data: walletData, refetch } = useQuery({
-    queryKey: [walletApi.getWallets.name, chain],
-    queryFn: () => walletApi.getWallets(chain),
+    queryKey: [walletApi.getWallets.name, chain_name],
+    queryFn: () => walletApi.getWallets(chain_name),
   })
 
   const onSelect = (event: SelectChangeEvent<string>) => {
@@ -56,7 +60,7 @@ const CreateTokenWallets = (props: Props) => {
   }
 
   useEffect(() => {
-    const walletList = walletData?.data ?? []
+    const walletList = walletData?.data[chain_name] ?? []
 
     setWallets(walletList)
     defualtSelect(walletList)
@@ -71,7 +75,7 @@ const CreateTokenWallets = (props: Props) => {
         onlyWallet={selectedWallet}
         onlyWalletRefetch={refetch}
       />
-      {!hasWallet && (
+      {!hasWallet(chain_name) && (
         <div
           className={clsx(
             'mt-4 border border-primary rounded-lg bg-sky',

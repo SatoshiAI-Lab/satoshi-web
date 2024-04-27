@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { AiOutlineCopy } from 'react-icons/ai'
 import { useTranslation } from 'react-i18next'
 
-import MessageBubble from '../../../message-bubble'
+import type { UserCreateWalletResp } from '@/api/wallet/params'
+
+import { MessageBubble } from '../../../message-bubble'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { Wallet } from '@/components/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
-
-import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 interface Props {
   tokenName?: string
@@ -15,7 +15,7 @@ interface Props {
   walletName?: string
 }
 
-const CreateTokenSuccess = (props: Props) => {
+export const CreateTokenSuccess = (props: Props) => {
   const { tokenName = '', tokenAddr = '', walletName = '' } = props
   const { t } = useTranslation()
   const { copy } = useClipboard()

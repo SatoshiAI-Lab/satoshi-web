@@ -28,6 +28,9 @@ interface Actions {
 
   // Find wallet by name among all wallets.
   findWallet(name: string): WalletCardProps | undefined
+
+  // Whether have wallet on any or specific chain.
+  hasWallet(chain?: Chain): boolean
 }
 
 export const useWalletStore = create<States & Actions>((set, get) => ({
@@ -56,5 +59,11 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
 
     const allWallets = Object.values(get().allWallets).flat()
     return allWallets.find((w) => w.name === name)
+  },
+  hasWallet(chain) {
+    const { allWallets } = get()
+
+    if (chain) return !!allWallets[chain].length
+    return !!Object.values(allWallets).length
   },
 }))

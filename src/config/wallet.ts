@@ -11,6 +11,13 @@ export enum Chain {
   Op = 'optimism',
   Arb = 'arbitrum',
   Base = 'base',
+  ZkSync = 'zkSync',
+  Linea = 'linea',
+  Blast = 'blast',
+  Fantom = 'fantom',
+  Merlin = 'merlin',
+  Bevm = 'bevm',
+  Scroll = 'scroll',
 }
 
 export type ChainSymbol = Uppercase<keyof typeof Chain>

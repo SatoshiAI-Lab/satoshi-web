@@ -119,7 +119,7 @@ export type MetaTypeData = {
   [MetaType.SubWallet]: SubscriptData
   [MetaType.SubPool]: SubscriptData
 
-  [MetaType.TokenCreate]: {}
+  [MetaType.TokenCreate]: WalletCreateData
 
   [MetaType.CheckAddr]: CheckAddrData
 }
@@ -137,7 +137,7 @@ interface TxConfirmData {
 }
 
 interface WalletCreateData {
-  chain_name: string
+  chain_name: Chain
 }
 
 interface WalletDeleteData {
@@ -242,7 +242,7 @@ export interface ChatResponseWalletListToken {
   amount: number
   chain_id: number
   chain_logo: string
-  chain_name: string
+  chain_name: Chain
   decimals: number
   logoUrl: string
   name: string

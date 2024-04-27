@@ -1,9 +1,9 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { Button } from '@mui/material'
 
-import MessageBubble from '../../../message-bubble'
+import { MessageBubble } from '../../../message-bubble'
 
 interface Props {
   isMinting: boolean
@@ -11,7 +11,7 @@ interface Props {
   onCancel?: () => void
 }
 
-const CreateTokenLoading = (props: Props) => {
+export const CreateTokenLoading = (props: Props) => {
   const { isMinting, isLongTime, onCancel } = props
   const { t } = useTranslation()
 

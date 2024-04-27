@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
 import { interactiveApi } from '@/api/interactive'
 import { useWaitingStatus } from './use-waiting'
 
-import type { CreateTokenInfo } from '@/components/chat/components/intention-message/token-messages/create-token/types'
+import type { CreateTokenInfo } from '@/components/chat/components/intention-message/token-messages/token-create/types'
 
 export const useCreateOpToken = (chain?: string) => {
   const [opHash, setOpHash] = useState('')
@@ -21,9 +21,8 @@ export const useCreateOpToken = (chain?: string) => {
   } = useMutation({
     mutationKey: [interactiveApi.createToken.name],
     mutationFn: interactiveApi.createToken,
-    onError: (err) => {
-      const e = err as unknown as { data: { error: string } }
-      toast.error(`[Create Error]: ${e?.data?.error}`)
+    onError: (e: { message: string }) => {
+      toast.error(`[Token Create Error]: ${e?.message}`)
     },
   })
 

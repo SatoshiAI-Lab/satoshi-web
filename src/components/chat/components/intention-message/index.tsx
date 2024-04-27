@@ -12,7 +12,7 @@ import { SubTwitterMessage } from './sub-messages/sub-twitter-message'
 import { SubExAnnMessage } from './sub-messages/sub-ann-message'
 import { SubWalletMessage } from './sub-messages/sub-wallet-message'
 import { SubPoolMessage } from './sub-messages/sub-pool-message'
-import { TokenCreateMessage } from './token-messages/create-token'
+import { TokenCreateMessage } from './token-messages/token-create'
 import { CheckAddrMessage } from './check-messages/check-addr-message'
 import { MessageBubble } from '../message-bubble'
 

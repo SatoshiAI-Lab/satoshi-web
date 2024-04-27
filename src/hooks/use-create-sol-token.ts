@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 import { interactiveApi } from '@/api/interactive'
 import { useWaitingStatus } from './use-waiting'
 
-import type { CreateTokenInfo } from '@/components/chat/components/intention-message/token-messages/create-token/types'
+import type { CreateTokenInfo } from '@/components/chat/components/intention-message/token-messages/token-create/types'
 
 export const useCreateSolToken = () => {
   const [total, setTotal] = useState(-1)

@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
-
-import { GetHashStatusRes, TokenCreateStatus } from './../api/interactive/types'
 import { useQuery } from '@tanstack/react-query'
+
+import {
+  type GetHashStatusRes,
+  TokenCreateStatus,
+} from './../api/interactive/types'
+
 import { interactiveApi } from '@/api/interactive'
 
 interface UseWaitingOptions {
