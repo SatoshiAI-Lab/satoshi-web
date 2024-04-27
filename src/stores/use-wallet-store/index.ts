@@ -25,6 +25,9 @@ interface Actions {
   setCurrentWallet(address?: string): void
   setSelectedChain(chain: string): void
   setSelectedPlatform(platform: string): void
+
+  // Find wallet by name among all wallets.
+  findWallet(name: string): WalletCardProps | undefined
 }
 
 export const useWalletStore = create<States & Actions>((set, get) => ({
@@ -48,4 +51,10 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   },
   setSelectedChain: (chain) => set({ selectedChain: chain as Chain }),
   setSelectedPlatform: (platform) => set({ selectedPlatform: platform }),
+  findWallet: (name) => {
+    if (!name.trim()) return
+
+    const allWallets = Object.values(get().allWallets).flat()
+    return allWallets.find((w) => w.name === name)
+  },
 }))
