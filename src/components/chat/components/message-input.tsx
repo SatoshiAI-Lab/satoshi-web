@@ -30,8 +30,14 @@ function MessageInput(props: MessageInputProps) {
   const [isFocus, setIsFocus] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const keyboardIsShow = useMobileKeyboard()
-  const { question, chatEl, isLoading, setQuestion, setInputKeyup } =
-    useChatStore()
+  const {
+    question,
+    chatEl,
+    isLoading,
+    setQuestion,
+    setInputKeyup,
+    setChatInputEl,
+  } = useChatStore()
   const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
   const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
   const [recording, setRecording] = useState(false)
@@ -111,6 +117,12 @@ function MessageInput(props: MessageInputProps) {
     }
     // recordingBlob will be present at this point after 'stopRecording' has been called
   }, [recordingBlob])
+
+  useEffect(() => {
+    if (inputRef.current) {
+      setChatInputEl(inputRef.current)
+    }
+  }, [inputRef.current])
 
   return (
     <div

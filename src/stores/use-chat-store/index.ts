@@ -8,6 +8,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   question: '',
   messages: [],
   chatEl: null,
+  chatInputEl: null,
   isLoading: false,
 
   // 1. If the question input is in the state of Focus
@@ -52,6 +53,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   getMessage: (id) => get().messages.find((m) => m.id === id),
 
   setChatEl: (chatEl) => set({ chatEl }),
+  setChatInputEl: (chatInputEl) => set({ chatInputEl }),
   setIsLoading: (isLoading) => set({ isLoading }),
 
   setInputKeyup: (inputKeyup) => set({ inputKeyup }),

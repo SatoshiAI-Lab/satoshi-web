@@ -36,6 +36,7 @@ export interface ChatStore {
   question: string
   messages: Message[]
   chatEl: HTMLElement | null
+  chatInputEl: HTMLInputElement | HTMLTextAreaElement | null
   isLoading: boolean
   unreadMessages: Message[]
   inputKeyup: boolean
@@ -55,6 +56,7 @@ export interface ChatStore {
 
   setUnreadMessage(unreadMessages: Message[]): void
   setChatEl(el: HTMLElement): void
+  setChatInputEl(el: HTMLInputElement | HTMLTextAreaElement): void
   setIsLoading(bool: boolean): void
   setInputKeyup(bool: boolean): void
   setWaitAnswer(bool: boolean): void
