@@ -311,5 +311,6 @@
   "wallet.renaming": "Renaming the wallet...",
   "wallet.rename.error": "Rename the wallet failed, please try again.",
   "wallet.rename.success": "Rename the wallet successful!",
-  "wallet.rename.message": "The wallet {} has been renamed to {}."
+  "wallet.rename.message": "The wallet {} has been renamed to {}.",
+  "wallet.check.list": "Here are all your wallets:"
 }

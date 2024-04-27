@@ -12,35 +12,39 @@ import {
 import { useTranslation } from 'react-i18next'
 import numeral from 'numeral'
 import { IoIosArrowDown } from 'react-icons/io'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { useQuery } from '@tanstack/react-query'
+import { isEmpty } from 'lodash'
 
-import type { ChatMeta, ChatResponseWalletListToken } from '@/api/chat/types'
+import type { ChatResponseWalletListToken, MetaType } from '@/api/chat/types'
 import type { WalletCardProps } from '@/components/wallet/types'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 import { TokenRow } from './token-row'
-import { MessageBubble } from '../message-bubble'
+import { MessageBubble } from '../../../message-bubble'
 import { CustomSuspense } from '@/components/custom-suspense'
 import { utilArr } from '@/utils/array'
 import { walletApi } from '@/api/wallet'
 import { useChat } from '@/hooks/use-chat'
+import { useMessagesContext } from '@/contexts/messages'
+import { Chain, WALLET_CONFIG } from '@/config/wallet'
+import { ChainSelect } from '@/components/chain-select'
 
-interface Props {
-  meta?: ChatMeta
-}
+const COLLAPSE_MAX = 3
 
-export const BalanceMessage = (props: Props) => {
-  const { meta } = props
+export const MyWalletsMessage = () => {
+  const { getMetaData } = useMessagesContext()
+  const { chain_name } = getMetaData<MetaType.WalletCheck>()
   const [folds, setFolds] = useState<string[]>([])
   const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
   const { t } = useTranslation()
   const { sendChat } = useChat()
+  const [chain, setChain] = useState(chain_name || WALLET_CONFIG.defaultChain)
+  const chainNameIsEmpty = isEmpty(chain_name)
 
-  // Don't use `useWallet`, here is independent.
-  const { data: walletData, isError } = useQuery({
-    queryKey: [walletApi.getWallets.name, meta?.chain],
-    queryFn: () => walletApi.getWallets(meta?.chain),
+  const { data: walletData } = useQuery({
+    queryKey: [walletApi.getWallets.name, chain],
+    queryFn: () => walletApi.getWallets(chain),
   })
 
   const sendQ = (question: string) => {
@@ -82,20 +86,19 @@ export const BalanceMessage = (props: Props) => {
 
   useEffect(() => {
     // If number of wallets >= 3, folded except the first one
-    if (wallets.length >= 3) {
+    if (wallets.length >= COLLAPSE_MAX) {
       const excludeFirst = wallets.filter((_, i) => i === 0)
       setFolds(excludeFirst.map((w) => w.id!))
     }
   }, [])
 
   useEffect(() => {
-    if (!meta?.chain) return
-
-    const walletList = walletData?.data[meta.chain] ?? []
+    const walletList = walletData?.data[chain as Chain] ?? []
 
     // If length is same, don't to sort, optimize performance.
     if (utilArr.sameLen(walletList, wallets)) return
 
+    // Sort by balance DESC.
     const sortedWalelts = walletList.sort(
       (a, b) => Number(b!.value)! - Number(a!.value)
     )
@@ -131,14 +134,25 @@ export const BalanceMessage = (props: Props) => {
   )
 
   return (
-    <MessageBubble className={clsx(!isError && 'pt-4')}>
+    <MessageBubble>
+      <div>{t('wallet.check.list')}</div>
+      {chainNameIsEmpty && (
+        <ChainSelect
+          value={chain}
+          onSelect={(c) => setChain(c as Chain)}
+          avatarSize={18}
+          classes={{ select: '!flex !items-center !py-1' }}
+          className="my-2"
+          showTitle={false}
+        />
+      )}
       {wallets.map((w, i) => (
         <React.Fragment key={w.id}>
           <div
             className="flex items-center mb-2 cursor-pointer"
             onClick={() => onFold(w)}
           >
-            <IoMdWallet size={28} className="text-primary" />
+            <IoMdWallet size={22} className="text-primary" />
             <div className="ml-2 font-bold text-lg">
               {w.name} · ${numeral(w.value).format('0,0.00')}
             </div>
@@ -150,7 +164,10 @@ export const BalanceMessage = (props: Props) => {
               )}
             />
           </div>
-          <Collapse in={folds.includes(w.id!)}>
+          <Collapse
+            // If less than MAX number, don't collapse.
+            in={wallets.length >= COLLAPSE_MAX ? folds.includes(w.id!) : true}
+          >
             <Table size="small">
               {TableHeader()}
               <TableBody>
@@ -176,9 +193,8 @@ export const BalanceMessage = (props: Props) => {
           </Collapse>
         </React.Fragment>
       ))}
-      {isError && !wallets.length && <p>Error</p>}
     </MessageBubble>
   )
 }
 
-export default BalanceMessage
+export default MyWalletsMessage

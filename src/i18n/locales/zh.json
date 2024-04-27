@@ -306,5 +306,6 @@
   "wallet.renaming": "正在重命名钱包...",
   "wallet.rename.error": "钱包重命名失败，请重试。",
   "wallet.rename.success": "钱包重命名成功！",
-  "wallet.rename.message": "钱包 {} 已重命名为 {}。"
+  "wallet.rename.message": "钱包 {} 已重命名为 {}。",
+  "wallet.check.list": "这是您所有的钱包："
 }

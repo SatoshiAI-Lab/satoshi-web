@@ -1,20 +1,10 @@
-import { WalletChoiceBubble } from './wallet-messages/wallet-choice-bubbles'
-import { WalletBalance } from './wallet-messages/wallet-balance'
-import { TwitterListBubble } from './sub-messages/twitter-list-bubble'
-import { TxTokenBubbles } from './tx-messages/tx-token-bubbles'
-import { MonitorAddressBubble } from './sub-messages/monitor-address-bubble'
-import { BalanceMessage } from '../balance-message'
-
-import { TokenDetailBubble } from './check-messages/token-detail-bubble'
-import { ExMonitorBubble } from './sub-messages/ex-monitor-bubble'
-import { PoolMonitorBubble } from './sub-messages/pool-monitor-bubble'
-import { MonitorWalletListBubble } from './sub-messages/monitor-wallet-list-bubble'
-
 import { useMessagesContext } from '@/contexts/messages'
 import { MessageMatchError } from '@/components/errors/message-match'
+import { TxTokenBubbles } from './tx-messages/tx-token-bubbles'
 import { WalletCreateMessage } from './wallet-messages/wallet-create-message'
 import { WaleltDeleteMessage } from './wallet-messages/wallet-delete-message'
 import { WalletChangeMessage } from './wallet-messages/wallet-change-message'
+import { WalletCheckMessage } from './wallet-messages/wallet-check-message'
 import { WalletImportMessage } from './wallet-messages/wallet-import-message'
 import { WalletExportMessage } from './wallet-messages/wallet-export-message'
 import { SubNewsMessage } from './sub-messages/sub-news-message'
@@ -37,6 +27,7 @@ export const IntentMessages = () => {
   // TODO: remove the temp.
   const temp = (message?.meta?.type ?? '') == 'change_name_wallet_list'
   if (metaType.isWalletChange || temp) return <WalletChangeMessage />
+  if (metaType.isWalletCheck) return <WalletCheckMessage />
   if (metaType.isWalletImport) return <WalletImportMessage />
   if (metaType.isWalletExport) return <WalletExportMessage />
 

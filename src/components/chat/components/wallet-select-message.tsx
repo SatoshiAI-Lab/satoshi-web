@@ -30,6 +30,7 @@ interface Props {
   onSelect?: (chain: Chain) => void
   onWalletClick?: (wallet: UserCreateWalletResp) => void
   onWalletsChange?: (wallets: UserCreateWalletResp[]) => void
+  itemBuilder?: (wallet: UserCreateWalletResp) => ReactNode
 }
 
 export interface WalletSelectMessageExport {
@@ -39,7 +40,14 @@ export interface WalletSelectMessageExport {
 }
 
 export const WalletSelectMessage = forwardRef((props: Props, ref) => {
-  const { title, disabled, onSelect, onWalletClick, onWalletsChange } = props
+  const {
+    title,
+    disabled,
+    onSelect,
+    onWalletClick,
+    onWalletsChange,
+    itemBuilder,
+  } = props
   const { t } = useTranslation()
   const idRef = useRef('')
   const [chain, setChain] = useState(WALLET_CONFIG.defaultChain)
@@ -55,7 +63,6 @@ export const WalletSelectMessage = forwardRef((props: Props, ref) => {
   }, [])
 
   useEffect(() => {
-    console.log('wallets change', wallets)
     onWalletsChange?.(wallets)
   }, [wallets])
 
@@ -63,7 +70,7 @@ export const WalletSelectMessage = forwardRef((props: Props, ref) => {
 
   return (
     <MessageBubble>
-      {title && <div>{title}</div>}
+      {title}
       <ChainSelect
         value={chain}
         onSelect={(c) => {
@@ -77,20 +84,24 @@ export const WalletSelectMessage = forwardRef((props: Props, ref) => {
       <ul className="flex flex-col">
         {wallets.map((w) => (
           <li key={w.id} className="mt-2 last:mb-1">
-            <Button
-              variant="outlined"
-              size="small"
-              className="!flex-col !w-full !items-start"
-              disabled={disabled || isRefetching}
-              onClick={() => onWalletClick?.(w)}
-            >
-              <span>
-                {t('name')}: {w.name}
-              </span>
-              <span>
-                {t('address')}: {utilFmt.addr(w.address)}
-              </span>
-            </Button>
+            {itemBuilder ? (
+              itemBuilder(w)
+            ) : (
+              <Button
+                variant="outlined"
+                size="small"
+                className="!flex-col !w-full !items-start"
+                disabled={disabled || isRefetching}
+                onClick={() => onWalletClick?.(w)}
+              >
+                <span>
+                  {t('name')}: {w.name}
+                </span>
+                <span>
+                  {t('address')}: {utilFmt.addr(w.address)}
+                </span>
+              </Button>
+            )}
           </li>
         ))}
       </ul>
