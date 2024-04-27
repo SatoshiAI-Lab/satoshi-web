@@ -26,7 +26,7 @@ import { TokenCreateMessage } from './token-messages/create-token'
 import { CheckAddrMessage } from './check-messages/check-addr-message'
 
 export const IntentMessages = () => {
-  const { metaType } = useMessagesContext()
+  const { metaType, message } = useMessagesContext()
 
   // Transaction category.
   if (metaType.isTxConfirm) return <TxTokenBubbles />
@@ -34,7 +34,9 @@ export const IntentMessages = () => {
   // Wallet category.
   if (metaType.isWalletCreate) return <WalletCreateMessage />
   if (metaType.isWalletDelete) return <WaleltDeleteMessage />
-  if (metaType.isWalletChange) return <WalletChangeMessage />
+  // TODO: remove the temp.
+  const temp = (message?.meta?.type ?? '') == 'change_name_wallet_list'
+  if (metaType.isWalletChange || temp) return <WalletChangeMessage />
   if (metaType.isWalletImport) return <WalletImportMessage />
   if (metaType.isWalletExport) return <WalletExportMessage />
 
@@ -111,5 +113,10 @@ export const IntentMessages = () => {
   //   return <PoolMonitorBubble></PoolMonitorBubble>
   // }
 
-  return <MessageMatchError reasonComponent={IntentMessages} />
+  return (
+    <MessageMatchError
+      reason={message.meta?.type}
+      reasonComponent={IntentMessages}
+    />
+  )
 }

@@ -52,7 +52,7 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   setSelectedChain: (chain) => set({ selectedChain: chain as Chain }),
   setSelectedPlatform: (platform) => set({ selectedPlatform: platform }),
   findWallet: (name) => {
-    if (!name.trim()) return
+    if (!name?.trim()) return
 
     const allWallets = Object.values(get().allWallets).flat()
     return allWallets.find((w) => w.name === name)

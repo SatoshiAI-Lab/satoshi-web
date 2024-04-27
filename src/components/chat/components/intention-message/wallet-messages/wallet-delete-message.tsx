@@ -77,6 +77,7 @@ export const WaleltDeleteMessage = () => {
     return (
       <WalletSelectMessage
         ref={walletSelectRef}
+        title={t('wallet.delete.title')}
         disabled={isPending || isClicked}
         onWalletClick={onDelete}
       />

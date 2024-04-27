@@ -303,5 +303,13 @@
   "wallet.deleting": "Wallet deleting...",
   "wallet.delete.failed": "Delete failed, please try again.",
   "wallet.not-found": "Your wallet cannot be found",
-  "waiting-moment": "Please waiting a moment..."
+  "waiting-moment": "Please waiting a moment...",
+  "wallet.change-name.title": "Please provide the current name of the wallet that needs to be renamed and the desired new name.",
+  "wallet.change-name.example": "Rename the wallet xxx to yyy",
+  "such-as": "Such as:",
+  "use-it": "Use it",
+  "wallet.renaming": "Renaming the wallet...",
+  "wallet.rename.error": "Rename the wallet failed, please try again.",
+  "wallet.rename.success": "Rename the wallet successful!",
+  "wallet.rename.message": "The wallet {} has been renamed to {}."
 }

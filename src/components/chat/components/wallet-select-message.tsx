@@ -1,4 +1,5 @@
 import React, {
+  type ReactNode,
   forwardRef,
   useEffect,
   useImperativeHandle,
@@ -24,6 +25,7 @@ import { walletApi } from '@/api/wallet'
 import { utilFmt } from '@/utils/format'
 
 interface Props {
+  title?: ReactNode
   disabled?: boolean
   onSelect?: (chain: Chain) => void
   onWalletClick?: (wallet: UserCreateWalletResp) => void
@@ -37,7 +39,7 @@ export interface WalletSelectMessageExport {
 }
 
 export const WalletSelectMessage = forwardRef((props: Props, ref) => {
-  const { disabled, onSelect, onWalletClick, onWalletsChange } = props
+  const { title, disabled, onSelect, onWalletClick, onWalletsChange } = props
   const { t } = useTranslation()
   const idRef = useRef('')
   const [chain, setChain] = useState(WALLET_CONFIG.defaultChain)
@@ -61,7 +63,7 @@ export const WalletSelectMessage = forwardRef((props: Props, ref) => {
 
   return (
     <MessageBubble>
-      <p>{t('wallet.delete.title')}</p>
+      {title && <div>{title}</div>}
       <ChainSelect
         value={chain}
         onSelect={(c) => {

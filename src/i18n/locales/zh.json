@@ -298,5 +298,13 @@
   "wallet.delete.title": "请选择您要删除的钱包。",
   "walelt.delete.failed": "删除钱包失败，请重试",
   "wallet.not-found": "找不到您的钱包",
-  "waiting-moment": "请稍等片刻..."
+  "waiting-moment": "请稍等片刻...",
+  "wallet.change-name.title": "请提供需要重命名的钱包的当前名称与新名称。",
+  "wallet.change-name.example": "将钱包 xxx 重命名为 yyy",
+  "such-as": "例如：",
+  "use-it": "使用它",
+  "wallet.renaming": "正在重命名钱包...",
+  "wallet.rename.error": "钱包重命名失败，请重试。",
+  "wallet.rename.success": "钱包重命名成功！",
+  "wallet.rename.message": "钱包 {} 已重命名为 {}。"
 }
