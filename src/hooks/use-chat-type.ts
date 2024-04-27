@@ -4,12 +4,15 @@ import {
   MetaType,
   MetaTypeCategory,
 } from '@/api/chat/types'
+import { isEmpty } from 'lodash'
 
 export const useChatType = () => {
   const identifyAnswerType = (type?: `${AnswerType}`) => {
     if (!type) return {}
 
     return {
+      isEmpty: isEmpty(type),
+
       isNormal: !type.endsWith('stream'),
       isStream: type.endsWith('stream'),
       isEnd: type === AnswerType.End,
@@ -27,6 +30,8 @@ export const useChatType = () => {
     if (!type) return {}
 
     return {
+      isEmpty: isEmpty(type),
+
       isTx: type.startsWith(MetaTypeCategory.TxPrefix),
       isTxConfirm: type === MetaType.TxConfirm,
 

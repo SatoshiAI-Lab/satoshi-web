@@ -7,7 +7,7 @@ import { IoCopyOutline } from 'react-icons/io5'
 import { MessageBubble } from '../../message-bubble'
 import { useMessagesContext } from '@/contexts/messages'
 import { MetaType } from '@/api/chat/types'
-import { ChainSelectMessage } from '../../chain-select-message'
+import { PlatformSelectMessage } from '../../platform-select-message'
 import { Platform } from '@/config/wallet'
 import { LoadingMessage } from '../../loading-message'
 import { walletApi } from '@/api/wallet'
@@ -71,7 +71,12 @@ export const WalletCreateMessage = () => {
 
   // `platform` is empty, select platform.
   if (isEmpty(chain_name)) {
-    return <ChainSelectMessage onClick={onCreate} />
+    return (
+      <PlatformSelectMessage
+        title={t('wallet.create.select-chain')}
+        onClick={onCreate}
+      />
+    )
   }
 
   // Ask user to wait.

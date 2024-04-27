@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Tooltip } from '@mui/material'
 
@@ -7,18 +7,19 @@ import { useWalletStore } from '@/stores/use-wallet-store'
 import { Platform } from '@/config/wallet'
 
 interface Props {
+  title?: ReactNode
   onClick?: (p: Platform) => void
 }
 
-export const ChainSelectMessage = (props: Props) => {
-  const { onClick } = props
+export const PlatformSelectMessage = (props: Props) => {
+  const { title, onClick } = props
   const { platforms } = useWalletStore()
   const { t } = useTranslation()
 
   return (
     <MessageBubble>
-      <p>{t('wallet.create.select-chain')}</p>
-      <ul className="grid grid-cols-3 gap-2 mt-2 ">
+      {title}
+      <ul className="grid grid-cols-3 gap-2 mt-2">
         {platforms.map((p) => (
           <li key={p}>
             <Tooltip title={p === Platform.Evm && t('evm-support')}>
@@ -38,4 +39,4 @@ export const ChainSelectMessage = (props: Props) => {
   )
 }
 
-export default ChainSelectMessage
+export default PlatformSelectMessage

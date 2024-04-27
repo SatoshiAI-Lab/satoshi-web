@@ -36,7 +36,7 @@ interface UserImportPrivateKeyReq {
   /**
    * Wallet platform: SOL or EVM, default: SOL
    */
-  platform?: string
+  platform?: Platform
 }
 
 interface UserImportPrivateKeyResp extends UserCreateWalletResp {}

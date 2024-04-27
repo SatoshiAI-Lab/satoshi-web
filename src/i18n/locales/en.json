@@ -312,5 +312,9 @@
   "wallet.rename.error": "Rename the wallet failed, please try again.",
   "wallet.rename.success": "Rename the wallet successful!",
   "wallet.rename.message": "The wallet {} has been renamed to {}.",
-  "wallet.check.list": "Here are all your wallets:"
+  "wallet.check.list": "Here are all your wallets:",
+  "wallet.import.select-platform": "Please select the platform you want to import.",
+  "wallet.import.success": "Import the wallet successful!",
+  "wallet.import.failed": "Import the wallet failed, please try again.",
+  "wallet.importing": "Importing the wallet..."
 }

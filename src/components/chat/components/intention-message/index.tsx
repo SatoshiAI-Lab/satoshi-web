@@ -14,6 +14,7 @@ import { SubWalletMessage } from './sub-messages/sub-wallet-message'
 import { SubPoolMessage } from './sub-messages/sub-pool-message'
 import { TokenCreateMessage } from './token-messages/create-token'
 import { CheckAddrMessage } from './check-messages/check-addr-message'
+import { MessageBubble } from '../message-bubble'
 
 export const IntentMessages = () => {
   const { metaType, message } = useMessagesContext()
@@ -24,9 +25,7 @@ export const IntentMessages = () => {
   // Wallet category.
   if (metaType.isWalletCreate) return <WalletCreateMessage />
   if (metaType.isWalletDelete) return <WaleltDeleteMessage />
-  // TODO: remove the temp.
-  const temp = (message?.meta?.type ?? '') == 'change_name_wallet_list'
-  if (metaType.isWalletChange || temp) return <WalletChangeMessage />
+  if (metaType.isWalletChange) return <WalletChangeMessage />
   if (metaType.isWalletCheck) return <WalletCheckMessage />
   if (metaType.isWalletImport) return <WalletImportMessage />
   if (metaType.isWalletExport) return <WalletExportMessage />
@@ -43,6 +42,9 @@ export const IntentMessages = () => {
 
   // Check category.
   if (metaType.isCheckAddr) return <CheckAddrMessage />
+
+  // Meta is empty, show AI response hints.
+  if (metaType.isEmpty) return <MessageBubble children={message.text} />
 
   // // Balances(Wallet list)
   // if (walletList.startsWith(answerType) || walletList.startsWith(metaType)) {
