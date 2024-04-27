@@ -6,6 +6,11 @@ export enum MonitorConfig {
   Pool,
 }
 
+export const MONITOR_CONFIG = {
+  minPool: 1000,
+  maxPool: 1000000,
+}
+
 export enum MonitorPoolStatus {
   Normal,
   Risk,
