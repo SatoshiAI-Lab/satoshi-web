@@ -30,7 +30,7 @@ export const IntentMessages = () => {
   if (metaType.isWalletImport) return <WalletImportMessage />
   if (metaType.isWalletExport) return <WalletExportMessage />
 
-  // Subscript category.
+  // Subscription category.
   if (metaType.isSubNews) return <SubNewsMessage />
   if (metaType.isSubTwitter) return <SubTwitterMessage />
   if (metaType.isSubAnn) return <SubAnnMessage />
@@ -43,7 +43,7 @@ export const IntentMessages = () => {
   // Check category.
   if (metaType.isCheckAddr) return <CheckAddrMessage />
 
-  // Meta is empty, show AI response hints.
+  // If `meta.type` is empty, show AI hints.
   if (metaType.isEmpty) return <MessageBubble children={message.text} />
 
   // // Balances(Wallet list)

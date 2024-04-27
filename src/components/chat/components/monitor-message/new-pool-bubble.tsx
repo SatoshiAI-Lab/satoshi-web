@@ -65,11 +65,11 @@ export const NewPoolBubble = () => {
     const desc = utilLang.getContent(item.content)
 
     switch (item.status) {
-      case MonitorPoolStatus.normal: {
+      case MonitorPoolStatus.Normal: {
         normalList.push({ desc, status: t('normal'), icon: <></> })
         break
       }
-      case MonitorPoolStatus.risk: {
+      case MonitorPoolStatus.Risk: {
         riskList.push({
           desc,
           status: <span className="text-red-500 ml-1">{t('risk')}</span>,
@@ -81,7 +81,7 @@ export const NewPoolBubble = () => {
         })
         break
       }
-      case MonitorPoolStatus.unknown: {
+      case MonitorPoolStatus.Unknown: {
         unknownList.push({ desc, status: t('unknown'), icon: <></> })
         break
       }

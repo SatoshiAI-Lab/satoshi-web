@@ -28,7 +28,7 @@ export const MonitorWalletList = ({ className }: Props) => {
 
     setLoading(`${data.address}`)
     setConfig({
-      message_type: MonitorConfig.trade,
+      message_type: MonitorConfig.Trade,
       content: newAddressList,
     })
       .then(() => {

@@ -320,5 +320,10 @@
   "wallet.export.not-found": "Please select the wallet you want to export.",
   "wallet.export.exporting": "Exporting the wallet...",
   "wallet.export.failed": "Export the wallet failed, please try again.",
-  "wallet.export.success": "Export the wallet successful!"
+  "wallet.export.success": "Export the wallet successful!",
+  "monitor.off.failed": "Stop tracking failed, please try again.",
+  "monitor.on.failed": "Tracking failed, please try again.",
+  "monitor.on.success": "Tracking successful!",
+  "monitor.off.success": "Stop tracking successful!",
+  "monitor.setting": "Setting up monitoring..."
 }

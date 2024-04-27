@@ -19,7 +19,7 @@ export const MonitorNews = ({ data }: Props) => {
     data!.news.content.switch = checked ? 'on' : 'off'
 
     setConfig({
-      message_type: MonitorConfig.news,
+      message_type: MonitorConfig.News,
       content: data!.news.content,
     })
   }

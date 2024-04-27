@@ -1,15 +1,15 @@
 export enum MonitorConfig {
-  news,
-  twitter,
-  announcement,
-  trade,
-  pool,
+  News,
+  Twitter,
+  Announcement,
+  Trade,
+  Pool,
 }
 
 export enum MonitorPoolStatus {
-  normal,
-  risk,
-  unknown,
+  Normal,
+  Risk,
+  Unknown,
 }
 
 export const monitorWalletSupperChain = [

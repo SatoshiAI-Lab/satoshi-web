@@ -1,6 +1,16 @@
+import { MonitorConfig } from '@/config/monitor'
+
 export interface MonitorParam {
-  message_type: 0 | 1 | 2 | 3 | 4
-  content: any
+  message_type: MonitorConfig
+  content: MonitorContent[MonitorConfig]
+}
+
+export interface MonitorContent {
+  [MonitorConfig.News]: News['content']
+  [MonitorConfig.Twitter]: string[]
+  [MonitorConfig.Announcement]: string[]
+  [MonitorConfig.Trade]: Trade['content']
+  [MonitorConfig.Pool]: Pool['content']
 }
 
 export interface MonitorConfigData {
@@ -19,9 +29,11 @@ export interface Announcement {
 export interface News {
   message_type: number
   content: {
-    switch: string
+    switch: Switch
   }
 }
+
+export type Switch = 'on' | 'off'
 
 export interface Pool {
   message_type: number

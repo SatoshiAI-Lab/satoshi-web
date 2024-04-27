@@ -25,7 +25,7 @@ export const MonitorTwitterList = ({ className }: Props) => {
       .map((item) => item.twitter_id)
 
     const data = {
-      message_type: MonitorConfig.twitter,
+      message_type: MonitorConfig.Twitter,
       content,
     }
 
@@ -41,7 +41,7 @@ export const MonitorTwitterList = ({ className }: Props) => {
   const handleAll = async (checked: boolean) => {
     const content = checked ? list?.map((item) => item.twitter_id) : []
     const data = {
-      message_type: MonitorConfig.twitter,
+      message_type: MonitorConfig.Twitter,
       content,
     }
     try {

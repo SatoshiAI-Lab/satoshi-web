@@ -315,5 +315,10 @@
   "wallet.export.not-found": "请选择您要导出的钱包。",
   "wallet.export.exporting": "正在导出钱包...",
   "wallet.export.failed": "导出钱包失败，请重试。",
-  "wallet.export.success": "导出钱包成功！"
+  "wallet.export.success": "导出钱包成功！",
+  "monitor.off.failed": "取消监控失败，请重试。",
+  "monitor.on.failed": "监控失败，请重试。",
+  "monitor.on.success": "监控成功！",
+  "monitor.off.success": "取消监控成功！",
+  "monitor.setting": "设置监控中..."
 }

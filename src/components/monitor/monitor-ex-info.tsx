@@ -27,7 +27,7 @@ export const MonitorEXInfo = ({ className }: Props) => {
       .map((item) => item.id)
 
     const data = {
-      message_type: MonitorConfig.announcement,
+      message_type: MonitorConfig.Announcement,
       content: content,
     }
     try {
@@ -50,7 +50,7 @@ export const MonitorEXInfo = ({ className }: Props) => {
     try {
       setLoadingId('all')
       await setConfig({
-        message_type: MonitorConfig.announcement,
+        message_type: MonitorConfig.Announcement,
         content: list,
       })
     } catch {

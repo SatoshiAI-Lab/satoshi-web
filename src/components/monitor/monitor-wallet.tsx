@@ -70,7 +70,7 @@ export const MonitorWallet = ({ data }: Props) => {
 
     setLoading(true)
     setConfig({
-      message_type: MonitorConfig.trade,
+      message_type: MonitorConfig.Trade,
       content: addressList,
     })
       .then(() => {
