@@ -77,7 +77,7 @@ export enum MetaType {
 
   SubNews = 'subscript_news',
   SubTwitter = 'subscript_twitter',
-  SubAnn = 'subscript_announcement',
+  SubExAnn = 'subscript_announcement',
   SubWallet = 'subscript_wallet',
   SubPool = 'subscript_pool',
 
@@ -115,7 +115,7 @@ export type MetaTypeData = {
 
   [MetaType.SubNews]: SubscriptData
   [MetaType.SubTwitter]: SubscriptData
-  [MetaType.SubAnn]: SubscriptData
+  [MetaType.SubExAnn]: SubscriptData<number>
   [MetaType.SubWallet]: SubscriptData
   [MetaType.SubPool]: SubscriptData
 
@@ -154,9 +154,9 @@ interface WalletImportData {
   platform_name: string
 }
 
-interface SubscriptData {
+interface SubscriptData<T = string> {
   type: 'on' | 'off'
-  content: string | number
+  content: T
 }
 
 interface CheckAddrData {

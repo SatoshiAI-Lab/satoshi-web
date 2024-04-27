@@ -16,7 +16,7 @@ export const SubTwitterMessage = () => {
   const { t } = useTranslation()
   const { getMetaData } = useMessagesContext()
   const { type, content } = getMetaData<MetaType.SubTwitter>()
-  const isZero = content == 0 // Use `==` to adaptation string zero.
+  const isZero = content == '0' // Use `==` to adaptation.
   const { configData, update } = useMonitorStore()
 
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
@@ -27,34 +27,29 @@ export const SubTwitterMessage = () => {
   const isErr = isError || (code && code !== ResponseCode.Success)
 
   const addMonitors = () => {
-    const monitored = configData?.twitter.content
-      .filter((t) => t.subscribed)
-      .map((t) => t.twitter_id)
-    const unique = new Set([...(monitored ?? []), content as string])
+    const monitored =
+      configData?.twitter.content
+        .filter((t) => t.subscribed)
+        .map((t) => t.twitter_id) ?? []
+    const unique = new Set([...monitored, content])
 
     return Array.from(unique)
   }
 
   const removeMonitors = () => {
-    const monitored = configData?.twitter.content
-      .filter((t) => t.subscribed)
-      .map((t) => t.twitter_id)
-    const unique = new Set(monitored)
-    unique.delete(content as string)
+    const monitored =
+      configData?.twitter.content
+        .filter((t) => t.subscribed)
+        .map((t) => t.twitter_id) ?? []
 
-    return Array.from(unique ?? [])
+    return monitored.filter((id) => id !== content)
   }
 
-  const onMonitor = async () => {
-    try {
-      await mutateAsync({
-        message_type: MonitorConfig.Twitter,
-        content: type === 'on' ? addMonitors() : removeMonitors(),
-      })
-    } catch (error) {
-    } finally {
-      update()
-    }
+  const onMonitor = () => {
+    mutateAsync({
+      message_type: MonitorConfig.Twitter,
+      content: type === 'on' ? addMonitors() : removeMonitors(),
+    }).finally(update)
   }
 
   useEffect(() => {

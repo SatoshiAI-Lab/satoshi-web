@@ -8,7 +8,7 @@ export interface MonitorParam {
 export interface MonitorContent {
   [MonitorConfig.News]: News['content']
   [MonitorConfig.Twitter]: string[]
-  [MonitorConfig.Announcement]: string[]
+  [MonitorConfig.Announcement]: number[]
   [MonitorConfig.Trade]: Trade['content']
   [MonitorConfig.Pool]: Pool['content']
 }

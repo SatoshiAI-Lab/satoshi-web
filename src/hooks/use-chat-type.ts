@@ -50,7 +50,7 @@ export const useChatType = () => {
       isSub: type.startsWith(MetaTypeCategory.SubPrefix),
       isSubNews: type === MetaType.SubNews,
       isSubTwitter: type === MetaType.SubTwitter,
-      isSubAnn: type === MetaType.SubAnn,
+      isSubAnn: type === MetaType.SubExAnn,
       isSubWallet: type === MetaType.SubWallet,
       isSubPool: type === MetaType.SubPool,
 

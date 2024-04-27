@@ -9,7 +9,7 @@ import { WalletImportMessage } from './wallet-messages/wallet-import-message'
 import { WalletExportMessage } from './wallet-messages/wallet-export-message'
 import { SubNewsMessage } from './sub-messages/sub-news-message'
 import { SubTwitterMessage } from './sub-messages/sub-twitter-message'
-import { SubAnnMessage } from './sub-messages/sub-ann-message'
+import { SubExAnnMessage } from './sub-messages/sub-ann-message'
 import { SubWalletMessage } from './sub-messages/sub-wallet-message'
 import { SubPoolMessage } from './sub-messages/sub-pool-message'
 import { TokenCreateMessage } from './token-messages/create-token'
@@ -33,7 +33,7 @@ export const IntentMessages = () => {
   // Subscription category.
   if (metaType.isSubNews) return <SubNewsMessage />
   if (metaType.isSubTwitter) return <SubTwitterMessage />
-  if (metaType.isSubAnn) return <SubAnnMessage />
+  if (metaType.isSubAnn) return <SubExAnnMessage />
   if (metaType.isSubWallet) return <SubWalletMessage />
   if (metaType.isSubPool) return <SubPoolMessage />
 
@@ -46,15 +46,12 @@ export const IntentMessages = () => {
   // If `meta.type` is empty, show AI hints.
   if (metaType.isEmpty) return <MessageBubble children={message.text} />
 
-  // // Balances(Wallet list)
-  // if (walletList.startsWith(answerType) || walletList.startsWith(metaType)) {
-  //   return <BalanceMessage meta={message.meta} />
-  // }
-
-  // // Change name wallet list
-  // if (intentSelectWalletType.includes(metaType)) {
-  //   return <WalletChoiceBubble msg={message.meta!}></WalletChoiceBubble>
-  // }
+  return (
+    <MessageMatchError
+      reason={message.meta?.type}
+      reasonComponent={IntentMessages}
+    />
+  )
 
   // // Wallet token balance
   // if (metaType == walletBalance) {
@@ -105,11 +102,4 @@ export const IntentMessages = () => {
   // if (metaType == monitorPoolList || metaType == poolCancelList) {
   //   return <PoolMonitorBubble></PoolMonitorBubble>
   // }
-
-  return (
-    <MessageMatchError
-      reason={message.meta?.type}
-      reasonComponent={IntentMessages}
-    />
-  )
 }
