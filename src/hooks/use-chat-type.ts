@@ -27,7 +27,11 @@ export const useChatType = () => {
   }
 
   const identifyMetaType = (type?: `${MetaType}`) => {
-    if (!type) return {}
+    if (!type) {
+      return {
+        isEmpty: true,
+      }
+    }
 
     return {
       isEmpty: isEmpty(type),

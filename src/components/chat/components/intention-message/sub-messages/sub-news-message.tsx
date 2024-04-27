@@ -10,6 +10,7 @@ import { MessageBubble } from '../../message-bubble'
 import { MonitorConfig } from '@/config/monitor'
 import { LoadingMessage } from '../../loading-message'
 import { useMonitorStore } from '@/stores/use-monitor-store'
+import { ResponseCode } from '@/api/fetcher/types'
 
 export const SubNewsMessage = () => {
   const { t } = useTranslation()
@@ -21,7 +22,8 @@ export const SubNewsMessage = () => {
     mutationKey: [monitorApi.update.name],
     mutationFn: monitorApi.update,
   })
-  const { data: subData, status = -1 } = data ?? {}
+  const { data: subData, code } = data ?? {}
+  const isErr = isError || (code && code !== ResponseCode.Success)
 
   useEffect(() => {
     if (isEmpty(type)) return
@@ -38,7 +40,7 @@ export const SubNewsMessage = () => {
   }
 
   // Subscription error.
-  if (isError && status !== 200) {
+  if (isErr) {
     return (
       <MessageBubble>
         {type === 'on' ? t('monitor.on.failed') : t('monitor.off.failed')}

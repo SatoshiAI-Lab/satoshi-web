@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 
 import { monitorApi } from '@/api/monitor'
-import { MonitorConfig } from '@/config/monitor'
 
 import type { Actions, States } from './type'
 

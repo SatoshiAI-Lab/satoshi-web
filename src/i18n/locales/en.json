@@ -321,9 +321,9 @@
   "wallet.export.exporting": "Exporting the wallet...",
   "wallet.export.failed": "Export the wallet failed, please try again.",
   "wallet.export.success": "Export the wallet successful!",
-  "monitor.off.failed": "Stop tracking failed, please try again.",
-  "monitor.on.failed": "Tracking failed, please try again.",
-  "monitor.on.success": "Tracking successful!",
-  "monitor.off.success": "Stop tracking successful!",
+  "monitor.off.failed": "Stop monitoring failed, please try again.",
+  "monitor.on.failed": "Monitoring failed, please try again.",
+  "monitor.on.success": "Monitoring successful!",
+  "monitor.off.success": "Stop monitoring successful!",
   "monitor.setting": "Setting up monitoring..."
 }
