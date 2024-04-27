@@ -15,6 +15,7 @@ import {
   type WalletSelectMessageExport,
 } from '../../wallet-select-message'
 import { WalletCardProps, useWalletStore } from '@/stores/use-wallet-store'
+import { ResponseCode } from '@/api/fetcher/types'
 
 export const WaleltDeleteMessage = () => {
   const { t } = useTranslation()
@@ -24,10 +25,12 @@ export const WaleltDeleteMessage = () => {
   const [isClicked, setIsClicked] = useState(false)
   const walletSelectRef = useRef<WalletSelectMessageExport | null>(null)
 
-  const { isPending, isError, isSuccess, mutateAsync } = useMutation({
+  const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.deleteWallet.name],
     mutationFn: walletApi.deleteWallet,
   })
+  const { code } = data ?? {}
+  const isErr = isError || (code && code !== ResponseCode.Success)
   const wallet = !isEmpty(wallet_name) && findWallet(wallet_name)
 
   const onDelete = async (w: UserCreateWalletResp | WalletCardProps) => {
@@ -48,7 +51,7 @@ export const WaleltDeleteMessage = () => {
   }
 
   // Delete error.
-  if (isError) {
+  if (isErr) {
     return <MessageBubble children={t('walelt.delete.failed')} />
   }
 

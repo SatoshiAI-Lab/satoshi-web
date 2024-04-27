@@ -13,6 +13,7 @@ import { LoadingMessage } from '../../loading-message'
 import { walletApi } from '@/api/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { utilFmt } from '@/utils/format'
+import { ResponseCode } from '@/api/fetcher/types'
 
 export const WalletCreateMessage = () => {
   const { t } = useTranslation()
@@ -24,7 +25,8 @@ export const WalletCreateMessage = () => {
     mutationKey: [walletApi.createWallet.name],
     mutationFn: walletApi.createWallet,
   })
-  const wallet = data?.data
+  const { data: wallet, code } = data ?? {}
+  const isErr = isError || (code && code !== ResponseCode.Success)
 
   const onCreate = async (platform: Platform) => {
     mutateAsync({ platform })
@@ -43,7 +45,7 @@ export const WalletCreateMessage = () => {
   }
 
   // Create error.
-  if (isError) {
+  if (isErr) {
     return <MessageBubble>{t('wallet.create.failed')}</MessageBubble>
   }
 

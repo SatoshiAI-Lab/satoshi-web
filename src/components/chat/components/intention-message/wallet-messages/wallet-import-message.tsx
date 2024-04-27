@@ -13,6 +13,7 @@ import { PlatformSelectMessage } from '../../platform-select-message'
 import { LoadingMessage } from '../../loading-message'
 import { utilFmt } from '@/utils/format'
 import { useClipboard } from '@/hooks/use-clipboard'
+import { ResponseCode } from '@/api/fetcher/types'
 
 export const WalletImportMessage = () => {
   const { t } = useTranslation()
@@ -26,7 +27,8 @@ export const WalletImportMessage = () => {
     mutationKey: [walletApi.importPrivateKey.name],
     mutationFn: walletApi.importPrivateKey,
   })
-  const { data: wallet, status = -1 } = data ?? {}
+  const { data: wallet, code } = data ?? {}
+  const isErr = isError || (code && code !== ResponseCode.Success)
 
   // Auto import if all is not empty.
   useEffect(() => {
@@ -44,7 +46,7 @@ export const WalletImportMessage = () => {
   }
 
   // Import error.
-  if (isError && status !== 200) {
+  if (isErr) {
     return <MessageBubble children={t('wallet.import.failed')} />
   }
 

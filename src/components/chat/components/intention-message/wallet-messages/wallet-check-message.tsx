@@ -10,6 +10,7 @@ export const WalletCheckMessage = () => {
 
   chain_name
 
+  // It's view my wallet list.
   return <MyWalletsMessage />
 }
 

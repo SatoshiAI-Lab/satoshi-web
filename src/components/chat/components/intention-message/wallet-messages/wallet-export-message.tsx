@@ -10,6 +10,7 @@ import { LoadingMessage } from '../../loading-message'
 import { WalletSelectMessage } from '../../wallet-select-message'
 import { walletApi } from '@/api/wallet'
 import { MessageBubble } from '../../message-bubble'
+import { ResponseCode } from '@/api/fetcher/types'
 
 export const WalletExportMessage = () => {
   const { t } = useTranslation()
@@ -22,7 +23,8 @@ export const WalletExportMessage = () => {
     mutationKey: [walletApi.exportPrivateKey.name],
     mutationFn: walletApi.exportPrivateKey,
   })
-  const { data: wallet, status = -1 } = data ?? {}
+  const { data: wallet, code } = data ?? {}
+  const isErr = isError || (code && code !== ResponseCode.Success)
 
   // Auto export if `wallet_name` & target wallet is not empty.
   useEffect(() => {
@@ -37,7 +39,7 @@ export const WalletExportMessage = () => {
   }
 
   // Export error.
-  if ((isError && status !== 200) || !foundWallet) {
+  if (isErr || !foundWallet) {
     return <MessageBubble children={t('wallet.export.failed')} />
   }
 
