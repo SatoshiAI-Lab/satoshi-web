@@ -160,8 +160,14 @@ interface SubscriptData<T = string> {
 }
 
 interface CheckAddrData {
-  type: string
+  type: CheckAddrType
   address: string
+  chain_name: Chain
+}
+
+export enum CheckAddrType {
+  Account = 'account',
+  Token = 'token',
 }
 
 /*********************** Intent type end. ***********************/

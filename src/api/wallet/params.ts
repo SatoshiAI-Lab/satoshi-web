@@ -63,11 +63,13 @@ interface UserDeleteWalletResp {
 }
 
 interface GetChainsRes {
-  chains: {
-    name: string
-    logo: string
-  }[]
+  chains: ChainResInfo[]
   platforms: Platform[]
+}
+
+export interface ChainResInfo {
+  name: Chain
+  logo: string
 }
 
 export type {

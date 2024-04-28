@@ -320,5 +320,14 @@
   "monitor.on.failed": "监控失败，请重试。",
   "monitor.on.success": "监控成功！",
   "monitor.off.success": "取消监控成功！",
-  "monitor.setting": "设置监控中..."
+  "monitor.setting": "设置监控中...",
+  "addr.query.failed": "查询失败，请重试。",
+  "addr.querying": "正在查询，请稍候...",
+  "query.title": "您想查询什么？",
+  "query.account.title": "我已经帮你检查过这个钱包了：",
+  "chain": "链",
+  "click-to-copy": "点击复制",
+  "query.select-chain": "请选择您要查询的链：",
+  "no.token-info": "没有找到有关此令牌的信息。",
+  "click-arrow-to-show": "点击箭头显示全部"
 }

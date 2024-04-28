@@ -155,7 +155,7 @@ export const useMessages = () => {
       isProcess,
     } = identifyAnswerType(answer_type)
 
-    console.log('chat res', data)
+    console.log('chat response', data)
 
     if (isFirstRead) {
       removeLastLoading()
@@ -202,12 +202,6 @@ export const useMessages = () => {
       else if (isStream) {
         updateMessage(processId, { role: 'assistant', text: '' })
       }
-
-      console.log(
-        'should remove process message',
-        !isStream || isIntent,
-        processId
-      )
 
       processId = ''
     }

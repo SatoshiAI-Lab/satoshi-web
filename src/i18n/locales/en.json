@@ -14,7 +14,7 @@
   "chat.asking": "Asking...",
   "message-default": "I am Satoshi. Is there anything I can help with?",
   "thinking": "I'm thinking...",
-  "copy-success": "Copy success!",
+  "copy-success": "Copy successful!",
   "copy-failed": "Copy failed",
   "copy": "Copy",
   "login.placeholder-email": " ",
@@ -106,7 +106,7 @@
   "wallet.changename.not.find": "The wallet name you said does not exist, please select the wallet you want to modify in the wallet list",
   "wallet.copy-name.success": "Copy wallet name successfully",
   "wallet.list.tips": "Only the first 10 wallets are shown",
-  "no.balance": "This wallet doesn't have any tokens",
+  "no.balance": "This wallet doesn't have any tokens.",
   "on": "On",
   "off": "Off",
   "tx.token.text1": "How much $1 do you want?",
@@ -325,5 +325,14 @@
   "monitor.on.failed": "Monitoring failed, please try again.",
   "monitor.on.success": "Monitoring successful!",
   "monitor.off.success": "Stop monitoring successful!",
-  "monitor.setting": "Setting up monitoring..."
+  "monitor.setting": "Setting up monitoring...",
+  "addr.query.failed": "Query failed, please try again.",
+  "addr.querying": "Querying, please waiting...",
+  "query.title": "What would you like to query?",
+  "query.account.title": "I have checked this wallet for you:",
+  "chain": "Chain",
+  "click-to-copy": "Click to copy",
+  "query.select-chain": "Please select the chain you would like to query:",
+  "no.token-info": "No information found about this token.",
+  "click-arrow-to-show": "Click the arrow to show all"
 }

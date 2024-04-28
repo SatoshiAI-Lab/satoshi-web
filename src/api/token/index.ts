@@ -27,7 +27,7 @@ export const tokenApi = {
     return fetchSatoshi.get<QueryAddrRes>('/api/v1/address/query/', params)
   },
   queryToken(kw: string) {
-    return fetchSatoshi.post<QueryAddrToken[]>('/api/v1/coin/query/', { kw })
+    return fetchSatoshi.get<QueryAddrToken[]>('/api/v1/coin/query/', { kw })
   },
   info(req: TokenInfoReq) {
     return fetchSatoshi.get<TokenInfoRes>('/api/v1/coin/info/', req)

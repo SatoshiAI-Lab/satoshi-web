@@ -46,6 +46,7 @@ export const IntentMessages = () => {
   // If `meta.type` is empty, show AI hints.
   if (metaType.isEmpty) return <MessageBubble children={message.text} />
 
+  // No type matched.
   return (
     <MessageMatchError
       reason={message.meta?.type}

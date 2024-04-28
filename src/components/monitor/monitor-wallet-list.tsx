@@ -57,6 +57,7 @@ export const MonitorWalletList = ({ className }: Props) => {
           </div>
           {addressList.map((data, i) => (
             <div
+              key={i}
               className={clsx(
                 'grid grid-cols-[80px_150px_80px] items-center py-1 border-t',
                 i === addressList.length - 1 ? '!pb-0' : '',

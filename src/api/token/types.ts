@@ -1,4 +1,5 @@
 import { Chain } from '@/config/wallet'
+import { CheckAddrType } from '../chat/types'
 
 export interface TokenListParams {
   ids: TokenId[]
@@ -125,21 +126,18 @@ export enum TokenType {
 
 export interface QueryAddrReq {
   address: string
-  type?: QueryAddrType
+  type?: CheckAddrType
 }
 
-export enum QueryAddrType {
-  Token = 'token',
-  Account = 'account',
+export interface ChainInfo {
+  id: string
+  name?: string
+  logo?: string
 }
 
 export interface QueryAddrToken {
   is_supported: boolean
-  chain: {
-    name: string
-    id: string
-    logo: string
-  }
+  chain: ChainInfo
   logo: string
   address: string
   name: string
@@ -152,21 +150,19 @@ export interface QueryAddrToken {
 export interface QueryAddrAccount {
   address: string
   value: string
-  chain: {
-    id: string
-    name: string
-    logo: string
-  }
-  tokens: {
-    symbol: string
-    name: string
-    address: string
-    decimals: number
-    amount: string
-    priceUsd: string
-    valueUsd: string
-    logoUrl: string
-  }[]
+  chain: ChainInfo
+  tokens: AccountToken[]
+}
+
+export interface AccountToken {
+  symbol: string
+  name: string
+  address: string
+  decimals: number
+  amount: string
+  priceUsd: string
+  valueUsd: string
+  logoUrl: string
 }
 
 export interface QueryAddrRes {

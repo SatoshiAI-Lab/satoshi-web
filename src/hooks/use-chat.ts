@@ -129,6 +129,7 @@ export const useChat = () => {
         controllerRef.current.signal
       )
 
+      console.log('-------------- new chat response --------------')
       parseStream(stream, onEachRead, resetChat)
     } catch (e: any | undefined) {
       throwChatError(e)
