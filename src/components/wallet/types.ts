@@ -16,8 +16,8 @@ export interface WalletCardProps {
   name?: string
   address?: string
   value?: string
-  copyAddress(address: string): void
-  renameWallet(address: string): void
-  exportKey(address: string): void
-  deleteWallet(address: string): void
+  copyAddress(wallet: WalletCardProps): void
+  renameWallet(wallet: WalletCardProps): void
+  exportKey(wallet: WalletCardProps): void
+  deleteWallet(wallet: WalletCardProps): void
 }

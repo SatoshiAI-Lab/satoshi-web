@@ -286,5 +286,10 @@
   "tokens": "Tokens",
   "evm-all-chain": "Support all EVM compatibility chain",
   "click-to-show": "Click to show",
-  "select-token.failed": "Token select failed, please try again"
+  "select-token.failed": "Token select failed, please try again",
+  "select.token": "Select another token",
+  "from.replace.token": "Since you don't have $1, I have already helped you exchange it for $2.",
+  "to.not.find.token": "No convertible token found.",
+  "from.not.find.token": "There is no $1 available in the wallet",
+  "no.wallets.available": "「Debugger」No wallets available"
 }

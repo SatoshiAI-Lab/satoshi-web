@@ -83,7 +83,7 @@ export const WalletCard = (props: Props) => {
             variant="outlined"
             classes={{ root: '!text-black !rounded-full' }}
             className="!border-gray-400 hover:!bg-gray-100 dark:!text-gray-300 dark:hover:!bg-zinc-800"
-            onClick={() => item.onClick(address!)}
+            onClick={() => item.onClick(wallet!)}
           >
             {item.title}
           </Button>
@@ -93,7 +93,7 @@ export const WalletCard = (props: Props) => {
         classes={{
           root: '!absolute !w-[30px] !h-[30px] right-2 top-2',
         }}
-        onClick={() => deleteWallet(address!)}
+        onClick={() => deleteWallet(wallet!)}
       >
         <IoTrash size={30} className="dark:text-white" />
       </IconButton>

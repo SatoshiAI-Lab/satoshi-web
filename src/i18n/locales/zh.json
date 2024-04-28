@@ -284,5 +284,10 @@
   "tokens": "代币",
   "evm-all-chain": "支持所有EVM兼容链",
   "click-to-show": "点击显示",
-  "select-token.failed": "选择币种失败，请重试"
+  "select-token.failed": "选择币种失败，请重试",
+  "select.token": "选择其他代币",
+  "from.replace.token": "由于你没有$1我已经帮你换成$2了",
+  "to.not.find.token": "没有找到可兑换的代币",
+  "from.not.find.token": "钱包中没有可用的$1",
+  "no.wallets.available": "「Debugger」没有可用的钱包"
 }

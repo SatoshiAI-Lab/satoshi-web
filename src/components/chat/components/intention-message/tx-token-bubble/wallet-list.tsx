@@ -1,30 +1,22 @@
-import { ChatResponseWalletListToken } from '@/api/chat/types'
+import { useSwapWallet } from '@/hooks/use-swap/use-swap-wallet'
+import { SwapContext, TxLogicContext } from '@/hooks/use-swap/context'
 import { WalletCardProps } from '@/stores/use-wallet-store'
 import clsx from 'clsx'
 import numeral from 'numeral'
+import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { formatUnits } from 'viem'
 
-interface Props {
-  isFinalTx: boolean
-  gridWalletList: WalletCardProps[][]
-  walletList: WalletCardProps[]
-  selectWallet?: WalletCardProps
-  onSelectWallet: (wallet: WalletCardProps) => void
-  getSelectTokenInfo: (
-    wallet: WalletCardProps
-  ) => ChatResponseWalletListToken | undefined
-}
-
-export const WalletList = ({
-  isFinalTx,
-  gridWalletList,
-  walletList,
-  selectWallet,
-  onSelectWallet,
-  getSelectTokenInfo,
-}: Props) => {
+export const WalletList = () => {
   const { t } = useTranslation()
+  const { isFinalTx } = useContext(TxLogicContext)
+  const {
+    gridWalletList,
+    walletList,
+    selectFromToken,
+    currentWallet,
+    setCurrentWallet,
+  } = useSwapWallet()
 
   const getCols = (count: number) => {
     if (count == 1) {
@@ -37,6 +29,10 @@ export const WalletList = ({
     return 'grid-cols-[120px_120px_120px]'
   }
 
+  const getSelectTokenInfo = (wallet: WalletCardProps) => {
+    return wallet?.tokens?.find((t) => selectFromToken?.address == t.address)
+  }
+
   return (
     <div className={clsx(isFinalTx && 'pointer-events-none')}>
       <div className="font-bold mt-5 mb-1 ">
@@ -45,7 +41,7 @@ export const WalletList = ({
           : t('tx.token.text2')}
       </div>
 
-      <div className={clsx('inline-block border rounded-2xl')}>
+      <div className={clsx('inline-block border rounded-2xl overflow-hidden')}>
         {gridWalletList.map((wallets, i) => {
           return (
             <div
@@ -63,12 +59,12 @@ export const WalletList = ({
                     key={i}
                     className={clsx(
                       'p-3 transition-all hover:text-gray-500 cursor-pointer',
-                      selectWallet?.id == wallet.id ? '!text-primary' : '',
+                      currentWallet?.id == wallet.id ? '!text-primary bg-slate-100' : '',
                       i === 1 ? 'border-x' : '',
                       i === wallets.length - 1 ? '!border-r-0' : ''
                     )}
                     onClick={() => {
-                      onSelectWallet(wallet)
+                      setCurrentWallet(wallet)
                     }}
                   >
                     <div className="truncate">{wallet.name}</div>

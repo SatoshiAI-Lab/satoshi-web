@@ -30,7 +30,7 @@ export const WalletBalance = (props: Props) => {
 
   tokens = tokens.filter((token) => {
     // if (token.name == null) return false;
-    return (token.valueUsd ?? 0) >= 1
+    return (token.value_usd ?? 0) >= 1
   })
 
   const msgData = msg.data as unknown as ChatResponseMetaBalance
@@ -38,7 +38,7 @@ export const WalletBalance = (props: Props) => {
   const getTotalUValue = () => {
     return numeral(
       tokens.reduce((value, next) => {
-        return value + (next?.valueUsd ?? 0)
+        return value + (next?.value_usd ?? 0)
       }, 0)
     ).format('0,0.0')
   }
@@ -74,7 +74,7 @@ export const WalletBalance = (props: Props) => {
               <div className="text-primary truncate">
                 {token.symbol || 'null'}
               </div>
-              <div>${numeral(token.valueUsd).format('0,0.0')}</div>
+              <div>${numeral(token.value_usd).format('0,0.0')}</div>
               <div className="ml-2">
                 {numeral(formatUnits(BigInt(token.amount!), token.decimals!))
                   .format('0a.00')

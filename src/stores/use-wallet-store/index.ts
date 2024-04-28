@@ -10,6 +10,7 @@ export interface WalletCardProps extends Partial<UserCreateWalletResp> {}
 interface States {
   wallets: WalletCardProps[]
   allWallets: GetWalletsRes
+  walletList: WalletCardProps[]
   chains: GetChainsRes['chains']
   platforms: GetChainsRes['platforms']
   currentWallet?: WalletCardProps
@@ -20,9 +21,10 @@ interface States {
 interface Actions {
   setWallets(wallets: WalletCardProps[]): void
   setAllWallets(wallets: GetWalletsRes): void
+  setWalletList(wallets: WalletCardProps[]): void
   setChains(chains: GetChainsRes['chains']): void
   setPlatforms(platforms: GetChainsRes['platforms']): void
-  setCurrentWallet(address?: string): void
+  setCurrentWallet(wallet: WalletCardProps): void
   setSelectedChain(chain: string): void
   setSelectedPlatform(platform: string): void
 }
@@ -30,6 +32,7 @@ interface Actions {
 export const useWalletStore = create<States & Actions>((set, get) => ({
   wallets: [],
   allWallets: {} as GetWalletsRes,
+  walletList: [],
   chains: [],
   platforms: [],
   currentWallet: undefined,
@@ -37,14 +40,24 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   selectedPlatform: WALLET_CONFIG.defaultPlatform,
 
   setWallets: (wallets) => set({ wallets }),
-  setAllWallets: (allWallets) => set({ allWallets }),
+  setAllWallets: (allWallets) => {
+    const walletList = []
+    for (const key in allWallets) {
+      walletList.push(...allWallets[key as WalletChain])
+    }
+
+    set({
+      allWallets,
+      walletList,
+    })
+  },
+  setWalletList: (walletList) => set({ walletList }),
   setChains: (chains) => set({ chains }),
   setPlatforms: (platforms) => set({ platforms }),
-  setCurrentWallet: (address) => {
-    const target = get().wallets.find((w) => w.address === address)
+  setCurrentWallet: (wallet) => {
     // Please do not set it to `undefined`,
     // At the very least make sure it's `{}`
-    set({ currentWallet: target ?? {} })
+    set({ currentWallet: wallet ?? {} })
   },
   setSelectedChain: (chain) => set({ selectedChain: chain as WalletChain }),
   setSelectedPlatform: (platform) => set({ selectedPlatform: platform }),

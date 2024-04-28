@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 
-import type { WalletDialogProps } from './types'
+import type { WalletCardProps, WalletDialogProps } from './types'
 
 import { WalletCard } from './components/wallet-card'
 import { WalletExportKeyPop } from './components/walletpop-exportkey'
@@ -108,26 +108,26 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     setPopOpen(true)
   }
 
-  const exportWalletPrivateKey = (address: string) => {
-    setCurrentWallet(address)
+  const exportWalletPrivateKey = (wallet: WalletCardProps) => {
+    setCurrentWallet(wallet)
     setCurrentPopTitle(t('wallet.title.export-privatekey'))
     setCurrentPop(0)
     setPopOpen(true)
   }
 
-  const renameWallet = (address: string) => {
-    setCurrentWallet(address)
+  const renameWallet = (wallet: WalletCardProps) => {
+    setCurrentWallet(wallet)
     setCurrentPopTitle(t('wallet.title.rename-wallet'))
     setCurrentPop(1)
     setPopOpen(true)
   }
 
-  const copyWalletAddress = (address: string) => {
-    copy(address, t('wallet.copy-address.success'))
+  const copyWalletAddress = (wallet: WalletCardProps) => {
+    copy(wallet.address!, t('wallet.copy-wallet.success'))
   }
 
-  const deleteWallet = (address: string) => {
-    setCurrentWallet(address)
+  const deleteWallet = (wallet: WalletCardProps) => {
+    setCurrentWallet(wallet)
     setCurrentPopTitle(t('wallet.title.delete-wallet'))
     setCurrentPop(3)
     setPopOpen(true)

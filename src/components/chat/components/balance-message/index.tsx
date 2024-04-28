@@ -159,7 +159,7 @@ export const BalanceMessage = (props: Props) => {
               <TableBody>
                 <CustomSuspense nullback={NullToken()}>
                   {w?.tokens
-                    ?.sort((a, b) => Number(b.valueUsd) - Number(a.valueUsd))
+                    ?.sort((a, b) => Number(b.value_usd) - Number(a.value_usd))
                     .map((t, i) => (
                       <TokenRow
                         key={i}

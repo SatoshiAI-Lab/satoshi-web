@@ -1,3 +1,4 @@
+import { MultiChainCoin } from '../chat/types'
 import { fetchSatoshi } from './../index'
 
 import type {
@@ -17,5 +18,8 @@ export const tokenApi = {
   },
   select(params: SelectParams) {
     return fetchSatoshi.post<TokenId[]>('/api/v1/coin/select/', params)
+  },
+  multiCoin(kw: string) {
+    return fetchSatoshi.get<MultiChainCoin[]>('/api/v1/coin/query/', { kw })
   },
 }

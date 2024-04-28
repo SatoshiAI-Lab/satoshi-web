@@ -37,30 +37,30 @@ export const IntentionMessage = ({ msg }: Props) => {
   const answerType = msg.answer_type || '[not_type]'
   const metaType = msg.meta?.type || '[not_type]'
 
-  // Balances(Wallet list)
-  if (walletList.startsWith(answerType) || walletList.startsWith(metaType)) {
-    return <BalanceMessage meta={msg.meta} />
-  }
+  // // Balances(Wallet list)
+  // if (walletList.startsWith(answerType) || walletList.startsWith(metaType)) {
+  //   return <BalanceMessage meta={msg.meta} />
+  // }
 
-  // Change name wallet list
-  if (intentSelectWalletType.includes(metaType)) {
-    return <WalletChoiceBubble msg={msg.meta!}></WalletChoiceBubble>
-  }
+  // // Change name wallet list
+  // if (intentSelectWalletType.includes(metaType)) {
+  //   return <WalletChoiceBubble msg={msg.meta!}></WalletChoiceBubble>
+  // }
 
-  // Wallet token balance
-  if (metaType == walletBalance) {
-    return <WalletBalance msg={msg.meta!}></WalletBalance>
-  }
+  // // Wallet token balance
+  // if (metaType == walletBalance) {
+  //   return <WalletBalance msg={msg.meta!}></WalletBalance>
+  // }
 
-  // twitter list
-  if (metaType == twitterList || metaType == twitterCancelList) {
-    return <TwitterListBubble></TwitterListBubble>
-  }
+  // // twitter list
+  // if (metaType == twitterList || metaType == twitterCancelList) {
+  //   return <TwitterListBubble></TwitterListBubble>
+  // }
 
   // Tx Token
-  if (intentTxToken.includes(metaType)) {
+  // if (intentTxToken.includes(metaType)) {
     return <TxTokenBubbles msg={msg.meta!}></TxTokenBubbles>
-  }
+  // }
 
   // Monitor wallet
   if (metaType == moniotrWallet) {
