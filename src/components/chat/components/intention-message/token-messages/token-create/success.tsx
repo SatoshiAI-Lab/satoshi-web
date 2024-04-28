@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
-import { AiOutlineCopy } from 'react-icons/ai'
 import { useTranslation } from 'react-i18next'
 
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 import { MessageBubble } from '../../../message-bubble'
-import { useClipboard } from '@/hooks/use-clipboard'
 import { Wallet } from '@/components/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
+import { CopyAddr } from '@/components/copy-addr'
 
 interface Props {
   tokenName?: string
@@ -18,7 +17,6 @@ interface Props {
 export const CreateTokenSuccess = (props: Props) => {
   const { tokenName = '', tokenAddr = '', walletName = '' } = props
   const { t } = useTranslation()
-  const { copy } = useClipboard()
   const [open, setOpen] = useState(false)
   const { currentWallet } = useWalletStore()
 
@@ -37,10 +35,7 @@ export const CreateTokenSuccess = (props: Props) => {
         <div>{t('token-addr')}:</div>
         <div className="flex items-center">
           {tokenAddr}
-          <AiOutlineCopy
-            className="ml-1 cursor-pointer"
-            onClick={() => copy(tokenAddr)}
-          />
+          <CopyAddr addr={tokenAddr} iconSize={16} />
         </div>
       </div>
       <div>

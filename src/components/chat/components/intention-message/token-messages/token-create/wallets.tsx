@@ -2,48 +2,44 @@ import React, { useEffect, useState } from 'react'
 import { clsx } from 'clsx'
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { AiOutlineCopy } from 'react-icons/ai'
 import { first } from 'lodash'
 import { useQuery } from '@tanstack/react-query'
 
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 import { Wallet } from '@/components/wallet'
-import { useClipboard } from '@/hooks/use-clipboard'
 import { walletApi } from '@/api/wallet'
 import { useTokenCreateConfig } from '@/hooks/use-token-create-config'
-import { useMessagesContext } from '@/contexts/messages'
-import { MetaType } from '@/api/chat/types'
 import { useWalletStore } from '@/stores/use-wallet-store'
+import { Chain } from '@/config/wallet'
+import { CopyAddr } from '@/components/copy-addr'
 
 interface Props extends React.ComponentProps<'div'> {
-  onSelectWallet?: (wallet: UserCreateWalletResp | undefined) => void
+  chain: Chain
+  onSelectWallet: (wallet: UserCreateWalletResp | undefined) => void
 }
 
-export const CreateTokenWallets = (props: Props) => {
-  const { onSelectWallet } = props
+export const TokenCreateWallets = (props: Props) => {
+  const { chain, onSelectWallet } = props
   const { t } = useTranslation()
-  const { getMetaData } = useMessagesContext()
-  const { chain_name } = getMetaData<MetaType.TokenCreate>()
   const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
   const [selectedWallet, setSelectedWallet] = useState<UserCreateWalletResp>()
-  const { copy } = useClipboard()
   const [walletOpen, setWalletOpen] = useState(false)
-  const { config } = useTokenCreateConfig(chain_name)
+  const { config } = useTokenCreateConfig(chain)
   const { hasWallet } = useWalletStore()
 
   const nativeTokenTip = config?.nativeToken ?? ''
   const minBalanceTip = `${config?.minBalance ?? 0} ${nativeTokenTip}`
 
   const { data: walletData, refetch } = useQuery({
-    queryKey: [walletApi.getWallets.name, chain_name],
-    queryFn: () => walletApi.getWallets(chain_name),
+    queryKey: [walletApi.getWallets.name, chain],
+    queryFn: () => walletApi.getWallets(chain),
   })
 
   const onSelect = (event: SelectChangeEvent<string>) => {
     const wallet = wallets.find((w) => w.address === event.target.value)
     setSelectedWallet(wallet)
-    onSelectWallet?.(wallet)
+    onSelectWallet(wallet)
   }
 
   const defualtSelect = (list: UserCreateWalletResp[]) => {
@@ -53,14 +49,14 @@ export const CreateTokenWallets = (props: Props) => {
     if (!selected) {
       const firstWallet = first(list)
       setSelectedWallet(firstWallet)
-      onSelectWallet?.(firstWallet)
+      onSelectWallet(firstWallet)
       return
     }
     setSelectedWallet(selected)
   }
 
   useEffect(() => {
-    const walletList = walletData?.data[chain_name] ?? []
+    const walletList = walletData?.data[chain] ?? []
 
     setWallets(walletList)
     defualtSelect(walletList)
@@ -75,7 +71,7 @@ export const CreateTokenWallets = (props: Props) => {
         onlyWallet={selectedWallet}
         onlyWalletRefetch={refetch}
       />
-      {!hasWallet(chain_name) && (
+      {!hasWallet(chain) && (
         <div
           className={clsx(
             'mt-4 border border-primary rounded-lg bg-sky',
@@ -128,17 +124,10 @@ export const CreateTokenWallets = (props: Props) => {
         <div>
           {selectedWallet?.name} {t('addr')}:
         </div>
-        <div className="flex items-center">
-          <span>{selectedWallet?.address}</span>
-          <AiOutlineCopy
-            className="ml-2 cursor-pointer"
-            size={18}
-            onClick={() => copy(selectedWallet?.address ?? '')}
-          />
-        </div>
+        <CopyAddr addr={selectedWallet?.address} fmt={false} />
       </div>
     </>
   )
 }
 
-export default CreateTokenWallets
+export default TokenCreateWallets

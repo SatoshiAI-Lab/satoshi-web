@@ -212,7 +212,7 @@
   "token-symbol": "Token symbol",
   "minting-token.loading": "Minting the token...",
   "no-wallet": "You have not wallet current.",
-  "balance-less-than": "Your wallet balance less than {}",
+  "balance-less-than": "Wallet balance less than {}",
   "insufficient.balance.terms": "There is not enough $1 in your wallet",
   "total": "Total: ",
   "successful.transaction": "TX: ",
@@ -334,5 +334,7 @@
   "click-to-copy": "Click to copy",
   "query.select-chain": "Please select the chain you would like to query:",
   "no.token-info": "No information found about this token.",
-  "click-arrow-to-show": "Click the arrow to show all"
+  "click-arrow-to-show": "Click the arrow to show all",
+  "token-create.chain-empty": "Please select the chain you'd like to create.",
+  "unsupport-current": "Currently not supported"
 }

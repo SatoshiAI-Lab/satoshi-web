@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Button, Dialog, DialogActions, DialogContent } from '@mui/material'
 import { BsFillLightningFill } from 'react-icons/bs'
 import { useTranslation } from 'react-i18next'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
+import { isEmpty } from 'lodash'
 
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 import type { CreateTokenInfo } from './types'
 
 import { MessageBubble } from '../../../message-bubble'
-import { CreateTokenWallets } from './wallets'
+import { TokenCreateWallets } from './wallets'
 import { CreateTokenLoading } from './loading'
 import { CreateTokenSuccess } from './success'
 import { useCreateSolToken } from '@/hooks/use-create-sol-token'
@@ -17,9 +18,10 @@ import { Chain } from '@/config/wallet'
 import { useCreateOpToken } from '@/hooks/use-create-op-token'
 import { useTokenCreateConfig } from '@/hooks/use-token-create-config'
 import { CreateTokenForm } from './form'
-import { CreateTokenHints } from './hints'
+import { TokenCreateHints } from './hints'
 import { useMessagesContext } from '@/contexts/messages'
 import { MetaType } from '@/api/chat/types'
+import { ChainSelectMessage } from '../../../chain-select-message'
 
 export const TokenCreateMessage = () => {
   const { getMetaData } = useMessagesContext()
@@ -32,6 +34,7 @@ export const TokenCreateMessage = () => {
   const [mintOpen, setMintOpen] = useState(false)
   // Use simplest method passed data, because just is parent-child component.
   const [selectedWallet, setSelectedWallet] = useState<UserCreateWalletResp>()
+  const [selectedChain, setSelectedChain] = useState(chain_name)
   const {
     solHash,
     solAddr,
@@ -46,8 +49,9 @@ export const TokenCreateMessage = () => {
     cancelSol,
   } = useCreateSolToken()
   const { opAddr, isOpLoading, isOpLongTime, isOpSuccess, createOpToken } =
-    useCreateOpToken(chain_name)
-  const { config, configs } = useTokenCreateConfig(chain_name)
+    useCreateOpToken(selectedChain)
+  const { config, supports, unsupports, isUnsupport } =
+    useTokenCreateConfig(selectedChain)
   const [createTipOpen, setCreateTipOpen] = useState(false)
 
   // Form validate field.
@@ -56,28 +60,29 @@ export const TokenCreateMessage = () => {
   const totalIsValid = total > 0
   const balance = Number(selectedWallet?.value || 0)
 
-  // Show unsupported component.
-  const showUnsupported = !config
-  // Show loading component.
-  const showLoading = isSolLoading || isOpLoading
-  // Show success component.
-  const showSuccess = (isSolCreateSuccess && isSolMintSuccess) || isOpSuccess
+  console.log('selectedWallet', selectedWallet)
+
+  const isLoading = isSolLoading || isOpLoading
+  const isSuccess = (isSolCreateSuccess && isSolMintSuccess) || isOpSuccess
 
   const onCreate = () => {
-    if (!chain_name || !config) return
+    if (isEmpty(selectedChain) || !config) return
     if (!selectedWallet?.id) {
       toast.error(t('no-wallet'))
       return
     }
     if (balance < config.minBalance) {
       toast.error(
-        t('balance-less-than').replace('{}', String(config.minBalance))
+        t('balance-less-than').replace(
+          '{}',
+          `${config.minBalance} ${config.nativeToken}`
+        )
       )
       return
     }
 
     const params: CreateTokenInfo = {
-      chain: chain_name,
+      chain: selectedChain,
       id: selectedWallet.id,
       name: name.trim(),
       symbol: symbol.trim(),
@@ -86,7 +91,11 @@ export const TokenCreateMessage = () => {
       total,
     }
 
-    if (chain_name === Chain.Sol) {
+    console.log('create token', params)
+
+    return
+
+    if (selectedChain === Chain.Sol) {
       createSolToken(params)
       return
     }
@@ -102,14 +111,25 @@ export const TokenCreateMessage = () => {
     }
   }, [isSolMintError])
 
+  // Chain is empty.
+  if (isEmpty(selectedChain)) {
+    return (
+      <ChainSelectMessage
+        title={t('token-create.chain-empty')}
+        unsupports={unsupports.map((c) => c.name)}
+        onClick={(c) => setSelectedChain(c.name)}
+      />
+    )
+  }
+
   // Unsupoorted chain.
-  if (showUnsupported) {
+  if (isUnsupport()) {
     return (
       <MessageBubble className="pb-4 w-bubble">
         <div>{t('unsupported-chain')}</div>
         <ul>
-          {Object.keys(configs).map((c) => (
-            <li>- {c}</li>
+          {Object.keys(supports).map((c) => (
+            <li key={c}>- {c}</li>
           ))}
         </ul>
       </MessageBubble>
@@ -117,7 +137,7 @@ export const TokenCreateMessage = () => {
   }
 
   // Loading state.
-  if (showLoading) {
+  if (isLoading) {
     return (
       <CreateTokenLoading
         isMinting={isSolMinting}
@@ -128,7 +148,7 @@ export const TokenCreateMessage = () => {
   }
 
   // Success state.
-  if (showSuccess) {
+  if (isSuccess) {
     return (
       <CreateTokenSuccess
         tokenName={name}
@@ -166,12 +186,12 @@ export const TokenCreateMessage = () => {
             dangerouslySetInnerHTML={{
               __html: t('create-token.confirm2').replace(
                 '{}',
-                `<span class="font-bold">${chain_name}</span>`
+                `<span class="font-bold">${selectedChain}</span>`
               ),
             }}
           ></div>
         </DialogContent>
-        <DialogActions>
+        <DialogActions classes={{ root: '!pb-4 !pr-6' }}>
           <Button variant="contained" onClick={onCreate}>
             {t('confirm-pure')}
           </Button>
@@ -231,12 +251,13 @@ export const TokenCreateMessage = () => {
       />
 
       {/* Wallet list select. */}
-      <CreateTokenWallets
+      <TokenCreateWallets
+        chain={selectedChain}
         onSelectWallet={(wallet) => setSelectedWallet(wallet)}
       />
 
       {/* Invalid hints. */}
-      <CreateTokenHints
+      <TokenCreateHints
         symbolIsValid={symbolIsValid}
         nameIsValid={nameIsValid}
         totalIsValid={totalIsValid}

@@ -7,7 +7,7 @@ interface Props extends React.ComponentProps<'div'> {
   totalIsValid: boolean
 }
 
-export const CreateTokenHints = (props: Props) => {
+export const TokenCreateHints = (props: Props) => {
   const { symbolIsValid, nameIsValid, totalIsValid } = props
   const { t } = useTranslation()
 
@@ -32,4 +32,4 @@ export const CreateTokenHints = (props: Props) => {
   )
 }
 
-export default CreateTokenHints
+export default TokenCreateHints

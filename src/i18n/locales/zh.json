@@ -210,7 +210,7 @@
   "token-symbol": "代币简称",
   "minting-token.loading": "铸造代币中...",
   "no-wallet": "您还没有钱包。",
-  "balance-less-than": "您的钱包余额少于 {}",
+  "balance-less-than": "钱包余额少于 {}",
   "insufficient.balance.terms": "你钱包里没有足够的$1",
   "total": "总量: ",
   "successful.transaction": "交易哈希：",
@@ -329,5 +329,7 @@
   "click-to-copy": "点击复制",
   "query.select-chain": "请选择您要查询的链：",
   "no.token-info": "没有找到有关此令牌的信息。",
-  "click-arrow-to-show": "点击箭头显示全部"
+  "click-arrow-to-show": "点击箭头显示全部",
+  "token-create.chain-empty": "请选择您想要创建的链。",
+  "unsupport-current": "目前暂不支持"
 }
