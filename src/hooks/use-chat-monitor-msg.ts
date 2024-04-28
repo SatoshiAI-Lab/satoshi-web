@@ -1,5 +1,8 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { nanoid } from 'nanoid'
+
+import { AnswerType, type MonitorData } from '@/api/chat/types'
 
 import { chatApi } from '@/api/chat'
 import { useUserStore } from '@/stores/use-user-store'
@@ -8,11 +11,12 @@ import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
 import { utilDom } from '@/utils/dom'
 import { useMessages } from './use-messages'
+import { Message } from '@/stores/use-chat-store/types'
 
 interface MonitorOnEvents {
   event: {
     type: string
-    data: any
+    data: MonitorData[]
   }
 }
 
@@ -20,6 +24,22 @@ interface MonitorEmitEvents {
   lang: {
     lang: string
   }
+}
+
+// TODO: Optimize this, unread message is also message,
+// Should be use likely `addMessage` methods.
+const makeUnreadMessage = (data: MonitorData) => {
+  return {
+    id: nanoid(),
+    role: 'assistant',
+    text: '',
+    answer_type: AnswerType.WsMonitor,
+    hyper_text: '',
+    meta: {
+      type: data.data_type,
+      data: data,
+    },
+  } as Message
 }
 
 export const useChatMonitorMsg = () => {
@@ -44,6 +64,8 @@ export const useChatMonitorMsg = () => {
     await ws.connect(wssUrl)
 
     ws.on('event', ({ data }) => {
+      data = data.reverse()
+
       console.log(`Keyup: ${useChatStore.getState().inputKeyup}`)
       console.log(`readAnswer: ${useChatStore.getState().readAnswer}`)
       console.log(`waitAnswer: ${useChatStore.getState().waitAnswer}`)
@@ -65,10 +87,10 @@ export const useChatMonitorMsg = () => {
       ) {
         setUnreadMessage([
           ...useChatStore.getState().unreadMessages,
-          ...data.reverse(),
+          ...data.map((d) => makeUnreadMessage(d)),
         ])
       } else {
-        addMonitorMessages(data.reverse())
+        addMonitorMessages(data)
         chatEl && utilDom.scrollToBottom(chatEl)
       }
     })

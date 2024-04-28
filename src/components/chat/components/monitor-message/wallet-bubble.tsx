@@ -8,10 +8,11 @@ import { link } from '@/config/link'
 import { utilFmt } from '@/utils/format'
 import { useMessagesContext } from '@/contexts/messages'
 import { CopyAddr } from '@/components/copy-addr'
+import { MetaType } from '@/api/chat/types'
 
 export const WalletBubble = () => {
   const { t } = useTranslation()
-  const { message } = useMessagesContext()
+  const { getMetaData } = useMessagesContext()
   const {
     created_at,
     name,
@@ -20,7 +21,7 @@ export const WalletBubble = () => {
     side_amount,
     side_symbol,
     hash,
-  } = message.meta || {}
+  } = getMetaData<MetaType.MonitorWallet>()
 
   return (
     <MessageBubble className={clsx('min-w-[400px] py-4')}>

@@ -18,6 +18,7 @@ import { DialogHeader } from '@/components/dialog-header'
 import { MonitorPoolStatus } from '@/config/monitor'
 import { useMessagesContext } from '@/contexts/messages'
 import { CopyAddr } from '@/components/copy-addr'
+import { MetaType } from '@/api/chat/types'
 
 interface SecurityList {
   desc: string
@@ -34,7 +35,7 @@ const SecurityItem = ({ desc, status, icon }: SecurityList) => {
 }
 
 export const NewPoolBubble = () => {
-  const { message } = useMessagesContext()
+  const { getMetaData } = useMessagesContext()
   const {
     security,
     chain,
@@ -51,7 +52,7 @@ export const NewPoolBubble = () => {
     name,
     symbol,
     outside_url,
-  } = message.meta ?? {}
+  } = getMetaData<MetaType.MonitorNewPool>()
   const { t } = useTranslation()
   const { show, open, hidden } = useShow()
 

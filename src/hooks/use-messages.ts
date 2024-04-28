@@ -4,7 +4,11 @@ import { toast } from 'react-hot-toast'
 import { last } from 'lodash'
 
 import type { Message } from '@/stores/use-chat-store/types'
-import type { ChatResponse } from '@/api/chat/types'
+import {
+  AnswerType,
+  type MonitorData,
+  type ChatResponse,
+} from '@/api/chat/types'
 
 import { useChatStore } from '@/stores/use-chat-store'
 import { CHAT_CONFIG } from '@/config/chat'
@@ -111,6 +115,7 @@ export const useMessages = () => {
   }
 
   // Reference message.
+  // TODO: Optimzie this method.
   const addReferenceMesssage = (data: ChatResponse) => {
     const { reference } = CHAT_CONFIG.answerType
     const { type, content, published_at, url } = data.meta
@@ -132,8 +137,21 @@ export const useMessages = () => {
   }
 
   // Monitor message.
-  const addMonitorMessages = (messages: Message[]) => {
-    messages.forEach((m) => addMessage({ ...m, isMonitor: true }))
+  const addMonitorMessages = (monitors: MonitorData[]) => {
+    monitors.forEach((m) => {
+      addMessage({
+        role: 'assistant',
+        text: '',
+        answer_type: AnswerType.WsMonitor,
+        hyper_text: '',
+        meta: {
+          type: m.data_type,
+          data: m,
+        },
+        data_type: m.data_type,
+        isMonitor: true,
+      })
+    })
   }
 
   let processId = ''

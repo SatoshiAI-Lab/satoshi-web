@@ -8,11 +8,12 @@ import { t } from 'i18next'
 import { MessageBubble } from '../message-bubble'
 import { utilLang } from '@/utils/language'
 import { useMessagesContext } from '@/contexts/messages'
+import { MetaType } from '@/api/chat/types'
 
 export const ExchangeAnnBubble = () => {
-  const { message } = useMessagesContext()
+  const { getMetaData } = useMessagesContext()
   const { title, created_at, url, source_logo, source_name } =
-    message.meta || {}
+    getMetaData<MetaType.MonitorExAnn>()
   const currentTitle = utilLang.getContent(title)
 
   const originLinkButton = () => {

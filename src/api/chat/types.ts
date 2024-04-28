@@ -1,4 +1,5 @@
 import { Chain, Platform } from '@/config/wallet'
+import { DataType } from '@/stores/use-chat-store/types'
 
 export interface ChatResponseBase {
   status: number
@@ -39,20 +40,15 @@ export enum AnswerType {
   TechAnalyzeStream = 'tech_analyze_stream',
   ProcessStream = 'process_stream', // Special type.
   IntentStream = 'intent_stream', // Special type.
+  WsMonitor = 'ws_monitor',
 }
 
-type ChatMetaParital = ChatMetaInteractive &
-  ChatMetaReference &
-  ChatResponseMetaNewsInfo &
-  ChatResponseMetaAnnounceMent &
-  ChatResponseMetaWallet &
-  ChatResponseMetaTwitter &
-  ChatResponseMetaNewPoolV2
+type ChatMetaParital = ChatMetaInteractive & ChatMetaReference
 
 export interface ChatMeta extends Partial<ChatMetaParital> {
   type: `${MetaType}`
-  status?: number
   data: MetaTypeData[MetaType]
+  status?: number
   emotion?: Emotion
 }
 
@@ -84,6 +80,13 @@ export enum MetaType {
   TokenCreate = 'token_create',
 
   CheckAddr = 'check_address',
+
+  // WebSocket message types, not AI types.
+  MonitorNews = DataType.NewsInfo,
+  MonitorExAnn = DataType.AnnInfo,
+  MonitorWallet = DataType.TradeInfo,
+  MonitorTwitter = DataType.TwitterInfo,
+  MonitorNewPool = DataType.PoolInfo,
 }
 
 export enum MetaTypeCategory {
@@ -152,7 +155,20 @@ export type MetaTypeData = {
     address: string
     chain_name: Chain
   }
+
+  [MetaType.MonitorNews]: ChatResponseMetaNewsInfo
+  [MetaType.MonitorExAnn]: ChatResponseMetaAnnounceMent
+  [MetaType.MonitorWallet]: ChatResponseMetaWallet
+  [MetaType.MonitorTwitter]: ChatResponseMetaTwitter
+  [MetaType.MonitorNewPool]: ChatResponseMetaNewPoolV2
 }
+
+export type MonitorData =
+  | ChatResponseMetaNewsInfo
+  | ChatResponseMetaAnnounceMent
+  | ChatResponseMetaWallet
+  | ChatResponseMetaTwitter
+  | ChatResponseMetaNewPoolV2
 
 interface SubscriptData<T = string> {
   type: 'on' | 'off'
@@ -348,7 +364,7 @@ export interface ChatMointorRoomRes {
 export interface ChatResponseMetaNewsInfo {
   content: I18
   created_at: string
-  data_type: string
+  data_type: DataType
   id: number
   logo: string
   title: I18
@@ -363,7 +379,7 @@ export interface I18 {
 export interface ChatResponseMetaAnnounceMent {
   content: I18
   created_at: string
-  data_type: string
+  data_type: DataType
   id: number
   seo: I18
   source_logo: string
@@ -384,7 +400,7 @@ export interface ChatResponseMetaTwitter {
   url: []
   photo: []
   twitter_logo: string
-  data_type: string
+  data_type: DataType
 }
 
 export interface ChatResponseMetaWallet {
@@ -399,7 +415,7 @@ export interface ChatResponseMetaWallet {
   name: string
   remark: string
   content: string
-  data_type: string
+  data_type: DataType
   hash: string
 }
 
@@ -426,7 +442,7 @@ export interface ChatResponseMetaNewPool {
     detail: []
   }
   created_at: string
-  data_type: string
+  data_type: DataType
 }
 export interface ChatResponseMetaNewPoolV2 {
   id: string
@@ -444,7 +460,7 @@ export interface ChatResponseMetaNewPoolV2 {
   top_holders: TopHolders
   score: Score
   created_at: string
-  data_type: string
+  data_type: DataType
   outside_url: string
 }
 

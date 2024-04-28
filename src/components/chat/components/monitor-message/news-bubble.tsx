@@ -8,10 +8,12 @@ import ShowMoreText from 'react-show-more-text'
 import { MessageBubble } from '../message-bubble'
 import { utilLang } from '@/utils/language'
 import { useMessagesContext } from '@/contexts/messages'
+import { MetaType } from '@/api/chat/types'
 
 export const NewsBubble = () => {
-  const { message } = useMessagesContext()
-  const { content, created_at, title, source } = message.meta || {}
+  const { getMetaData } = useMessagesContext()
+  const { content, created_at, title, source } =
+    getMetaData<MetaType.MonitorNews>()
   const currentContent = utilLang.getContent(content)
   const currentTitle = utilLang.getContent(title)
 

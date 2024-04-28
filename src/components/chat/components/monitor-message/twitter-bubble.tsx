@@ -8,11 +8,12 @@ import { Dialog } from '@mui/material'
 import { MessageBubble } from '../message-bubble'
 import { utilLang } from '@/utils/language'
 import { useMessagesContext } from '@/contexts/messages'
+import { MetaType } from '@/api/chat/types'
 
 export const TwitterBubble = () => {
-  const { message } = useMessagesContext()
+  const { getMetaData } = useMessagesContext()
   const { content, created_at, twitter, tweets_id, twitter_logo, photo } =
-    message.meta || {}
+    getMetaData<MetaType.MonitorTwitter>()
   const currentContent = utilLang.getContent(content)
 
   const [open, setOpen] = useState(false)
