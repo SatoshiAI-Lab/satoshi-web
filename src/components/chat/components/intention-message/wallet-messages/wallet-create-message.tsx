@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { isEmpty } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
-import { IoCopyOutline } from 'react-icons/io5'
 
 import { MessageBubble } from '../../message-bubble'
 import { useMessagesContext } from '@/contexts/messages'
@@ -11,15 +10,13 @@ import { PlatformSelectMessage } from '../../platform-select-message'
 import { Platform } from '@/config/wallet'
 import { LoadingMessage } from '../../loading-message'
 import { walletApi } from '@/api/wallet'
-import { useClipboard } from '@/hooks/use-clipboard'
-import { utilFmt } from '@/utils/format'
 import { ResponseCode } from '@/api/fetcher/types'
+import { CopyAddr } from '@/components/copy-addr'
 
 export const WalletCreateMessage = () => {
   const { t } = useTranslation()
   const { getMetaData } = useMessagesContext()
-  const { chain_name } = getMetaData<MetaType.WalletCreate>()
-  const { copy } = useClipboard()
+  const { platform_name } = getMetaData<MetaType.WalletCreate>()
 
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.createWallet.name],
@@ -33,38 +30,35 @@ export const WalletCreateMessage = () => {
   }
 
   useEffect(() => {
-    if (isEmpty(chain_name)) return
+    if (isEmpty(platform_name)) return
 
-    // TODO: dynamic platform from meta.
-    onCreate(Platform.Evm)
+    onCreate(platform_name)
   }, [])
 
   // Creating.
   if (isPending) {
-    return <LoadingMessage>{t('wallet.creating')}</LoadingMessage>
+    return <LoadingMessage children={t('wallet.creating')} />
   }
 
   // Create error.
   if (isErr) {
-    return <MessageBubble>{t('wallet.create.failed')}</MessageBubble>
+    return <MessageBubble children={t('wallet.create.failed')} />
   }
 
   // Create sucess.
   if (isSuccess && wallet) {
     return (
       <MessageBubble>
-        <p>{t('wallet.create.success').replace('{}', chain_name)}</p>
+        <p>{t('wallet.create.success').replace('{}', platform_name)}</p>
         <p>
           {t('name')}: <span className="font-bold">{wallet?.name}</span>
         </p>
         <div className="flex items-center">
-          <p className="mr-1">
-            {t('address')}:{' '}
-            <span className="font-bold">{utilFmt.addr(wallet?.address)}</span>
-          </p>
-          <IoCopyOutline
-            className="cursor-pointer"
-            onClick={() => copy(wallet?.address)}
+          <CopyAddr
+            prefix={<span className="mr-1">{t('address')}:</span>}
+            addr={wallet.address}
+            bold
+            iconSize={16}
           />
         </div>
       </MessageBubble>
@@ -72,7 +66,7 @@ export const WalletCreateMessage = () => {
   }
 
   // `platform` is empty, select platform.
-  if (isEmpty(chain_name)) {
+  if (isEmpty(platform_name)) {
     return (
       <PlatformSelectMessage
         title={t('wallet.create.select-chain')}

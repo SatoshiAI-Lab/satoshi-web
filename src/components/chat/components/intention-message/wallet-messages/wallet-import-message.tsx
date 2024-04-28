@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { IoCopyOutline } from 'react-icons/io5'
 
 import { MessageBubble } from '../../message-bubble'
 import { useMessagesContext } from '@/contexts/messages'
@@ -11,9 +10,8 @@ import { walletApi } from '@/api/wallet'
 import { Platform } from '@/config/wallet'
 import { PlatformSelectMessage } from '../../platform-select-message'
 import { LoadingMessage } from '../../loading-message'
-import { utilFmt } from '@/utils/format'
-import { useClipboard } from '@/hooks/use-clipboard'
 import { ResponseCode } from '@/api/fetcher/types'
+import { CopyAddr } from '@/components/copy-addr'
 
 export const WalletImportMessage = () => {
   const { t } = useTranslation()
@@ -21,7 +19,6 @@ export const WalletImportMessage = () => {
   const { platform_name, private_key } = getMetaData<MetaType.WalletImport>()
   const platformIsEmpty = isEmpty(platform_name)
   const privateKeyIsEmpty = isEmpty(private_key)
-  const { copy } = useClipboard()
 
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.importPrivateKey.name],
@@ -58,14 +55,12 @@ export const WalletImportMessage = () => {
         <div>
           {t('name')}: <span className="font-bold">{wallet.name}</span>
         </div>
-        <div className="flex items-center">
-          {t('address')}:
-          <span className="font-bold mx-1">{utilFmt.addr(wallet.address)}</span>
-          <IoCopyOutline
-            className="ml-1 cursor-pointer"
-            onClick={() => copy(wallet.address)}
-          />
-        </div>
+        <CopyAddr
+          addr={wallet.address}
+          prefix={<span className="mr-1">{t('address')}:</span>}
+          iconSize={16}
+          bold
+        />
       </MessageBubble>
     )
   }

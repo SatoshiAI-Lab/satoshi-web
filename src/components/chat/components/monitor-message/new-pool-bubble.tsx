@@ -5,20 +5,19 @@ import { FaTelegramPlane } from 'react-icons/fa'
 import { GrLanguage } from 'react-icons/gr'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
-import { IoCopyOutline } from 'react-icons/io5'
 import { IconButton, Dialog } from '@mui/material'
 import { BiError } from 'react-icons/bi'
 import numeral from 'numeral'
 
 import { MessageBubble } from '../message-bubble'
 import { utilFmt } from '@/utils/format'
-import { useClipboard } from '@/hooks/use-clipboard'
 import { Chain } from '@/config/wallet'
 import { utilLang } from '@/utils/language'
 import { useShow } from '@/hooks/use-show'
 import { DialogHeader } from '@/components/dialog-header'
 import { MonitorPoolStatus } from '@/config/monitor'
 import { useMessagesContext } from '@/contexts/messages'
+import { CopyAddr } from '@/components/copy-addr'
 
 interface SecurityList {
   desc: string
@@ -54,7 +53,6 @@ export const NewPoolBubble = () => {
     outside_url,
   } = message.meta ?? {}
   const { t } = useTranslation()
-  const { copy } = useClipboard()
   const { show, open, hidden } = useShow()
 
   const normalList: SecurityList[] = []
@@ -173,21 +171,14 @@ export const NewPoolBubble = () => {
       <div className="my-2 font-bold">
         {symbol ?? ''}({name})
       </div>
-
-      <div className="flex items-center mb-2">
-        <span className="font-bold">{t('ca')}:</span>{' '}
-        <a
-          href={outside_url}
-          target="_blank"
-          className="text-primary ml-1 underline"
-        >
-          {utilFmt.addr(address)}
-        </a>
-        <IoCopyOutline
-          className="ml-3 cursor-pointer"
-          onClick={() => copy(address ?? '')}
-        />
-      </div>
+      <CopyAddr
+        addr={address}
+        className="underline text-primary cursor-pointer"
+        containerClass="mb-1"
+        onClick={() => window.open(outside_url)}
+        iconSize={16}
+        prefix={<span className="font-bold mr-1">{t('ca')}:</span>}
+      />
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('liquidity')}:</span>
         <span>{numeral(liquidity).format('$0,0a.00')}</span>

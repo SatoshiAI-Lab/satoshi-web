@@ -1,4 +1,4 @@
-import { Chain } from '@/config/wallet'
+import { Chain, Platform } from '@/config/wallet'
 
 export interface ChatResponseBase {
   status: number
@@ -119,7 +119,7 @@ export type MetaTypeData = {
   [MetaType.SubWallet]: SubscriptData
   [MetaType.SubPool]: SubscriptData
 
-  [MetaType.TokenCreate]: WalletCreateData
+  [MetaType.TokenCreate]: TokenCreateData
 
   [MetaType.CheckAddr]: CheckAddrData
 }
@@ -137,7 +137,7 @@ interface TxConfirmData {
 }
 
 interface WalletCreateData {
-  chain_name: Chain
+  platform_name: Platform
 }
 
 interface WalletDeleteData {
@@ -151,12 +151,16 @@ interface WalletChangeNameData {
 
 interface WalletImportData {
   private_key: string
-  platform_name: string
+  platform_name: Platform
 }
 
 interface SubscriptData<T = string> {
   type: 'on' | 'off'
   content: T
+}
+
+interface TokenCreateData {
+  chain_name: Chain
 }
 
 interface CheckAddrData {

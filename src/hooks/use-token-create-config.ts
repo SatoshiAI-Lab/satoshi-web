@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { Chain, ChainSymbol } from '@/config/wallet'
-
-type ConfigKey = keyof typeof configs
+import { Chain, type ChainSymbol } from '@/config/wallet'
+import { useWalletStore } from '@/stores/use-wallet-store'
 
 interface Config {
   symbol: ChainSymbol
@@ -29,7 +28,7 @@ const makeEvmConfig = (chain: Chain, options?: Partial<Config>) => {
   }
 }
 
-const configs: Record<string, Config> = {
+const supports: Record<string, Config> = {
   [Chain.Sol]: {
     symbol: 'SOL', // The token symbol.
     nativeToken: 'SOL', // The chain native token.
@@ -46,19 +45,29 @@ const configs: Record<string, Config> = {
 
 // Unified management create token config.
 // If chain is not null, will be auto get config.
-export const useTokenCreateConfig = (chain?: string) => {
+export const useTokenCreateConfig = (chain?: Chain) => {
   const [config, setConfig] = useState<Config>()
+  const { chains } = useWalletStore()
+  const unsupports = useMemo(
+    () => chains.filter((c) => !supports[c.name]),
+    [chains]
+  )
+
+  const isSupport = (c?: Chain) => !!supports[c ?? chain ?? '']
+
+  const isUnsupport = (c?: Chain) => !isSupport(c)
 
   useEffect(() => {
     if (!chain) return
 
-    setConfig(configs[chain as ConfigKey])
+    setConfig(supports[chain])
   }, [chain])
 
   return {
     config,
-    configs,
-    // If you need, you can manually get config.
-    getConfig: (c?: string) => configs[c as ConfigKey],
+    supports,
+    unsupports,
+    isSupport,
+    isUnsupport,
   }
 }

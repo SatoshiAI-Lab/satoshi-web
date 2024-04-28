@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
+import { nanoid } from 'nanoid'
 
 import type { ChatInteractiveParams, ChatParams } from '@/api/chat/types'
 
@@ -88,7 +89,6 @@ export const useChat = () => {
   const onEachRead = (message: string, isFirstRead: boolean) => {
     utilParse.streamStrToJson(message, (data, isFirstParse) => {
       parseChatMessage(data, isFirstRead, isFirstParse)
-      // Each read scroll to bottom.
       chatEl && utilDom.scrollToBottom(chatEl)
     })
   }
@@ -110,12 +110,15 @@ export const useChat = () => {
       text: params.question,
     })
     addLoading()
+
+    chatEl && utilDom.scrollToBottom(chatEl)
   }
 
   // Send chat.
   const sendChat = async (options?: InteractiveOptions) => {
     // Must be get params here.
     const chatParams = getChatParams(options)
+    const debugId = nanoid()
 
     // If question is custom static question, don't send request.
     // const isCustom = parseCustomMessage(chatParams)
@@ -129,8 +132,11 @@ export const useChat = () => {
         controllerRef.current.signal
       )
 
-      console.log('-------------- new chat response --------------')
-      parseStream(stream, onEachRead, resetChat)
+      console.log(`-------------- chat ${debugId} start --------------`)
+      parseStream(stream, onEachRead, () => {
+        console.log(`-------------- chat ${debugId} end --------------`)
+        resetChat()
+      })
     } catch (e: any | undefined) {
       throwChatError(e)
       resetChat()
