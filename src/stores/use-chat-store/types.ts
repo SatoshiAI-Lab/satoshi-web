@@ -1,4 +1,4 @@
-import type { ChatResponse } from '@/api/chat/types'
+import type { ChatResponse, MonitorData } from '@/api/chat/types'
 import type { PartialPick } from '@/types/types'
 
 export enum DataType {
@@ -38,7 +38,7 @@ export interface ChatStore {
   chatEl: HTMLElement | null
   chatInputEl: HTMLInputElement | HTMLTextAreaElement | null
   isLoading: boolean
-  unreadMessages: Message[]
+  unreadMessages: MonitorData[]
   inputKeyup: boolean
   readAnswer: boolean
   waitAnswer: boolean
@@ -54,7 +54,7 @@ export interface ChatStore {
   updateMessage(id: string, message: PartialPick<Message, 'id' | 'text'>): void
   getMessage(id: string): void
 
-  setUnreadMessage(unreadMessages: Message[]): void
+  setUnreadMessage(unreadMessages: MonitorData[]): void
   setChatEl(el: HTMLElement): void
   setChatInputEl(el: HTMLInputElement | HTMLTextAreaElement): void
   setIsLoading(bool: boolean): void

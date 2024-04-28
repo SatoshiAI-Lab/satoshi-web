@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { nanoid } from 'nanoid'
 
-import { AnswerType, type MonitorData } from '@/api/chat/types'
+import type { MonitorData } from '@/api/chat/types'
 
 import { chatApi } from '@/api/chat'
 import { useUserStore } from '@/stores/use-user-store'
@@ -11,7 +10,6 @@ import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
 import { utilDom } from '@/utils/dom'
 import { useMessages } from './use-messages'
-import { Message } from '@/stores/use-chat-store/types'
 
 interface MonitorOnEvents {
   event: {
@@ -24,22 +22,6 @@ interface MonitorEmitEvents {
   lang: {
     lang: string
   }
-}
-
-// TODO: Optimize this, unread message is also message,
-// Should be use likely `addMessage` methods.
-const makeUnreadMessage = (data: MonitorData) => {
-  return {
-    id: nanoid(),
-    role: 'assistant',
-    text: '',
-    answer_type: AnswerType.WsMonitor,
-    hyper_text: '',
-    meta: {
-      type: data.data_type,
-      data: data,
-    },
-  } as Message
 }
 
 export const useChatMonitorMsg = () => {
@@ -85,10 +67,7 @@ export const useChatMonitorMsg = () => {
         useChatStore.getState().readAnswer ||
         useChatStore.getState().waitAnswer
       ) {
-        setUnreadMessage([
-          ...useChatStore.getState().unreadMessages,
-          ...data.map((d) => makeUnreadMessage(d)),
-        ])
+        setUnreadMessage([...useChatStore.getState().unreadMessages, ...data])
       } else {
         addMonitorMessages(data)
         chatEl && utilDom.scrollToBottom(chatEl)
