@@ -12,6 +12,7 @@ import { useChatStore } from '@/stores/use-chat-store'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { walletApi } from '@/api/wallet'
 import { WalletSelectMessage } from '../../wallet-select-message'
+import { useWalletList } from '@/hooks/use-wallet-list'
 
 export const WalletChangeMessage = () => {
   const { t } = useTranslation()
@@ -22,6 +23,7 @@ export const WalletChangeMessage = () => {
     getMetaData<MetaType.WalletChange>()
   const allIsEmpty = isEmpty(from_wallet_name) && isEmpty(to_wallet_name)
   const wallet = findWallet(from_wallet_name)
+  const { getAllWallet } = useWalletList()
 
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.renameWallet.name],
@@ -34,7 +36,7 @@ export const WalletChangeMessage = () => {
     mutateAsync({
       wallet_id,
       name: to_wallet_name,
-    })
+    }).finally(getAllWallet)
   }
 
   useEffect(() => {

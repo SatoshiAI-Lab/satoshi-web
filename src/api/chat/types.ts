@@ -104,14 +104,38 @@ export enum MetaTypeCategory {
 }
 
 export type MetaTypeData = {
-  [MetaType.TxConfirm]: TxConfirmData
+  [MetaType.TxConfirm]: {
+    from_token: {
+      type: string
+      content: string
+    }
+    to_token: {
+      type: string
+      content: string
+    }
+    amount: number
+  }
 
-  [MetaType.WalletCreate]: WalletCreateData
-  [MetaType.WalletDelete]: WalletDeleteData
-  [MetaType.WalletChange]: WalletChangeNameData
-  [MetaType.WalletCheck]: WalletCreateData
-  [MetaType.WalletImport]: WalletImportData
-  [MetaType.WalletExport]: WalletDeleteData
+  [MetaType.WalletCreate]: {
+    platform_name: Platform
+  }
+  [MetaType.WalletDelete]: {
+    wallet_name: string
+  }
+  [MetaType.WalletChange]: {
+    from_wallet_name: string
+    to_wallet_name: string
+  }
+  [MetaType.WalletCheck]: {
+    chain_name: Chain
+  }
+  [MetaType.WalletImport]: {
+    private_key: string
+    platform_name: Platform
+  }
+  [MetaType.WalletExport]: {
+    wallet_name: string
+  }
 
   [MetaType.SubNews]: SubscriptData
   [MetaType.SubTwitter]: SubscriptData
@@ -119,54 +143,20 @@ export type MetaTypeData = {
   [MetaType.SubWallet]: SubscriptData
   [MetaType.SubPool]: SubscriptData
 
-  [MetaType.TokenCreate]: TokenCreateData
-
-  [MetaType.CheckAddr]: CheckAddrData
-}
-
-interface TxConfirmData {
-  from_token: {
-    type: string
-    content: string
+  [MetaType.TokenCreate]: {
+    chain_name: Chain
   }
-  to_token: {
-    type: string
-    content: string
+
+  [MetaType.CheckAddr]: {
+    type: CheckAddrType
+    address: string
+    chain_name: Chain
   }
-  amount: number
-}
-
-interface WalletCreateData {
-  platform_name: Platform
-}
-
-interface WalletDeleteData {
-  wallet_name: string
-}
-
-interface WalletChangeNameData {
-  from_wallet_name: string
-  to_wallet_name: string
-}
-
-interface WalletImportData {
-  private_key: string
-  platform_name: Platform
 }
 
 interface SubscriptData<T = string> {
   type: 'on' | 'off'
   content: T
-}
-
-interface TokenCreateData {
-  chain_name: Chain
-}
-
-interface CheckAddrData {
-  type: CheckAddrType
-  address: string
-  chain_name: Chain
 }
 
 export enum CheckAddrType {

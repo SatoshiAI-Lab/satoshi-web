@@ -16,6 +16,7 @@ import {
 } from '../../wallet-select-message'
 import { WalletCardProps, useWalletStore } from '@/stores/use-wallet-store'
 import { ResponseCode } from '@/api/fetcher/types'
+import { useWalletList } from '@/hooks/use-wallet-list'
 
 export const WaleltDeleteMessage = () => {
   const { t } = useTranslation()
@@ -24,6 +25,7 @@ export const WaleltDeleteMessage = () => {
   const { wallet_name } = getMetaData<MetaType.WalletDelete>()
   const [isClicked, setIsClicked] = useState(false)
   const walletSelectRef = useRef<WalletSelectMessageExport | null>(null)
+  const { getAllWallet } = useWalletList()
 
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.deleteWallet.name],
@@ -37,7 +39,10 @@ export const WaleltDeleteMessage = () => {
     Promise.all([
       mutateAsync({ wallet_id: w.id ?? '' }),
       walletSelectRef.current?.refetch(),
-    ]).finally(() => setIsClicked(true))
+    ]).finally(() => {
+      getAllWallet()
+      setIsClicked(true)
+    })
   }
 
   useEffect(() => {

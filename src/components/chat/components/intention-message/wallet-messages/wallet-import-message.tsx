@@ -12,6 +12,7 @@ import { PlatformSelectMessage } from '../../platform-select-message'
 import { LoadingMessage } from '../../loading-message'
 import { ResponseCode } from '@/api/fetcher/types'
 import { CopyAddr } from '@/components/copy-addr'
+import { useWalletList } from '@/hooks/use-wallet-list'
 
 export const WalletImportMessage = () => {
   const { t } = useTranslation()
@@ -19,6 +20,7 @@ export const WalletImportMessage = () => {
   const { platform_name, private_key } = getMetaData<MetaType.WalletImport>()
   const platformIsEmpty = isEmpty(platform_name)
   const privateKeyIsEmpty = isEmpty(private_key)
+  const { getAllWallet } = useWalletList()
 
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.importPrivateKey.name],
@@ -27,14 +29,16 @@ export const WalletImportMessage = () => {
   const { data: wallet, code } = data ?? {}
   const isErr = isError || (code && code !== ResponseCode.Success)
 
+  const onImport = (p: Platform) => {
+    mutateAsync({
+      platform: p || platform_name,
+      private_key,
+    }).finally(getAllWallet)
+  }
+
   // Auto import if all is not empty.
   useEffect(() => {
     if (platformIsEmpty || privateKeyIsEmpty) return
-
-    mutateAsync({
-      platform: platform_name as Platform,
-      private_key,
-    })
   }, [])
 
   // Importing.
@@ -71,12 +75,7 @@ export const WalletImportMessage = () => {
     return (
       <PlatformSelectMessage
         title={t('wallet.import.select-platform')}
-        onClick={(p) => {
-          mutateAsync({
-            platform: p,
-            private_key,
-          })
-        }}
+        onClick={(p) => onImport(p)}
       />
     )
   }

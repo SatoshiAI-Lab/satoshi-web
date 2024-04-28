@@ -12,11 +12,13 @@ import { LoadingMessage } from '../../loading-message'
 import { walletApi } from '@/api/wallet'
 import { ResponseCode } from '@/api/fetcher/types'
 import { CopyAddr } from '@/components/copy-addr'
+import { useWalletList } from '@/hooks/use-wallet-list'
 
 export const WalletCreateMessage = () => {
   const { t } = useTranslation()
   const { getMetaData } = useMessagesContext()
   const { platform_name } = getMetaData<MetaType.WalletCreate>()
+  const { getAllWallet } = useWalletList()
 
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.createWallet.name],
@@ -26,7 +28,7 @@ export const WalletCreateMessage = () => {
   const isErr = isError || (code && code !== ResponseCode.Success)
 
   const onCreate = async (platform: Platform) => {
-    mutateAsync({ platform })
+    mutateAsync({ platform }).finally(getAllWallet)
   }
 
   useEffect(() => {

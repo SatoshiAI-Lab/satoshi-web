@@ -10,12 +10,12 @@ import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 
+import type { WalletDialogProps } from '../types'
+
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { useShow } from '@/hooks/use-show'
 import { useWalletManage } from '@/hooks/use-wallet'
 import { useUserStore } from '@/stores/use-user-store'
-
-import type { WalletDialogProps } from '../types'
 
 export const WalletRenamePop: FC<WalletDialogProps> = (props) => {
   const { open, onClose, title, onlyWalletRefetch } = props
@@ -98,7 +98,7 @@ export const WalletRenamePop: FC<WalletDialogProps> = (props) => {
               value={walletName}
               onChange={(e) => setWalletName(e.target.value)}
             />
-            <div className="text-[#101010b2] text-sm w-full">
+            <div className="text-black text-sm w-full">
               {currentWallet?.address}
             </div>
           </div>
