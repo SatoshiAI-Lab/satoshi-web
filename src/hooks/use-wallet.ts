@@ -4,6 +4,10 @@ import { useMutation } from '@tanstack/react-query'
 import type { WalletCardProps } from '@/stores/use-wallet-store'
 
 import { walletApi } from '@/api/wallet'
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { UserCreateWalletResp } from '@/api/wallet/params'
+import { FetcherResponse } from '@/api/fetcher/types'
+import { WalletChain } from '@/config/wallet'
 import { useWalletList } from './use-wallet-list'
 import { Platform } from '@/config/wallet'
 

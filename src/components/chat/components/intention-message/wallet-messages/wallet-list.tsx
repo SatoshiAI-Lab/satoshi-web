@@ -94,7 +94,7 @@ export const WalletList = (props: Props) => {
 
   const getTokenBalance = (tokens?: ChatResponseWalletListToken[]) => {
     const balance = tokens?.reduce((cur, next) => {
-      return cur + Number(next.valueUsd)
+      return cur + Number(next.value_usd)
     }, 0)
     return numeral(balance).format('$0.00')
   }

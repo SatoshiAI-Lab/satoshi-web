@@ -184,10 +184,8 @@ export const useMessages = () => {
 
     if (isEnd) {
       setReadAnswer(true)
-      console.log('user start reading answer now!!!')
       setTimeout(function () {
         setReadAnswer(false)
-        console.log('user stop reading answer now!!!')
       }, 10000)
       return
     }

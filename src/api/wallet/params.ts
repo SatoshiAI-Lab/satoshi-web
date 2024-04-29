@@ -1,6 +1,6 @@
 import { Chain, Platform } from '@/config/wallet'
 
-import type { ChatResponseWalletListToken } from '../chat/types'
+import type { ChainInfo, ChatResponseWalletListToken } from '../chat/types'
 
 interface UserCreateWalletReq {
   /**
@@ -20,11 +20,7 @@ interface UserCreateWalletResp {
   user: string
   value: string
   tokens: ChatResponseWalletListToken[]
-  chain?: {
-    id: number
-    logo: string
-    name: string
-  }
+  chain: Chain
 }
 
 interface UserExportPrivateKeyResp {

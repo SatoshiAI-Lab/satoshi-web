@@ -32,7 +32,9 @@ export const useWalletList = (options?: Options) => {
   const getAllWallet = async () => {
     const res = await walletApi.getWallets()
 
-    if (res.data) setAllWallets(res.data)
+    if (res.data) {
+      setAllWallets(res.data)
+    }
   }
 
   // Stored current wallet list.

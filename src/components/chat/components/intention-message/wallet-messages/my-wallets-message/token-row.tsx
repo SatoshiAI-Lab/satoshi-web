@@ -106,7 +106,7 @@ export const TokenRow = (props: TokensProps) => {
             </div>
           </TableCell>
           <TableCell classes={{ root: cellCls() }}>
-            ${Number(numeral(token.valueUsd).format('0.00'))}
+            ${Number(numeral(token.value_usd).format('0.00'))}
           </TableCell>
           <TableCell classes={{ root: cellCls() }}>
             {numeral(formatUnits(BigInt(token.amount), token.decimals)).format(
@@ -116,7 +116,7 @@ export const TokenRow = (props: TokensProps) => {
           <TableCell classes={{ root: cellCls() }}>
             $
             {Number(
-              numeral(utilFmt.token(Number(token.priceUsd))).format('0.00')
+              numeral(utilFmt.token(Number(token.price_usd))).format('0.00')
             )}
           </TableCell>
         </TableRow>

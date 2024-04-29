@@ -215,7 +215,7 @@
   "balance-less-than": "Wallet balance less than {}",
   "insufficient.balance.terms": "There is not enough $1 in your wallet",
   "total": "Total: ",
-  "successful.transaction": "TX: ",
+  "successful.transaction": "Successful transaction: ",
   "tx.token2": "How many $1 do you need to process?",
   "intent.sell": "Help me sell $1, the address is: $2",
   "intent.detail": "Help me find the $1 token address",
@@ -336,5 +336,10 @@
   "no.token-info": "No information found about this token.",
   "click-arrow-to-show": "Click the arrow to show all",
   "token-create.chain-empty": "Please select the chain you'd like to create.",
-  "unsupport-current": "Currently not supported"
+  "unsupport-current": "Currently not supported",
+  "select.token": "Select another token",
+  "from.replace.token": "Since you don't have $1, I have already helped you exchange it for $2.",
+  "to.not.find.token": "No convertible token found.",
+  "from.not.find.token": "There is no $1 available in the wallet",
+  "no.wallets.available": "「Debugger」No wallets available"
 }
