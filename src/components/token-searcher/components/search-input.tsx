@@ -41,8 +41,8 @@ export const TokenSearcherInput = (props: Props) => {
       classes={{
         root: 'w-full !py-1',
         input: clsx(
-          '!pb-0 dark:placeholder:text-white dark:caret-white',
-          'dark:text-white'
+          '!pb-0 not-used-dark:placeholder:text-white not-used-dark:caret-white',
+          'not-used-dark:text-white'
         ),
       }}
       placeholder={t('search.input.placeholder')}

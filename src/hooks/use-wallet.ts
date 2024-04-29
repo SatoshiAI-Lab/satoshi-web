@@ -5,6 +5,7 @@ import type { WalletCardProps } from '@/stores/use-wallet-store'
 
 import { walletApi } from '@/api/wallet'
 import { useWalletList } from './use-wallet-list'
+import { Platform } from '@/config/wallet'
 
 export const useWalletManage = () => {
   // Latest created wallet, used for active hints.
@@ -14,6 +15,7 @@ export const useWalletManage = () => {
   // Create wallet.
   const {
     isPending: isCreating,
+    isError: isCreateError,
     mutateAsync: mutateCreateWallet,
     reset: resetCreateWallet,
   } = useMutation({
@@ -62,13 +64,23 @@ export const useWalletManage = () => {
     mutationFn: walletApi.renameWallet,
   })
 
+  const {
+    isPending: isCheckingName,
+    mutateAsync: checkName,
+    reset: resetCheckName,
+  } = useMutation({
+    mutationKey: [walletApi.checkName.name],
+    mutationFn: walletApi.checkName,
+  })
+
   // Create wallet API.
-  const createWallet = async (platform: string) => {
+  const createWallet = async (platform: Platform) => {
     const { data } = await mutateCreateWallet({ platform })
 
     setLatestWallet(data)
     await refetchWallets()
     resetCreateWallet()
+    return data
   }
 
   // Remove wallet API.
@@ -109,10 +121,12 @@ export const useWalletManage = () => {
   return {
     privateKey: privateKey?.data.private_key ?? '',
     isCreating,
+    isCreateError,
     isRemoving,
     isImporting,
     isExporting,
     isRenaming,
+    isCheckingName,
     latestWallet,
     refetchWallets,
     createWallet,
@@ -121,5 +135,7 @@ export const useWalletManage = () => {
     exportPrivateKey,
     resetExportPrivateKey,
     renameWallet,
+    checkName,
+    resetCheckName,
   }
 }

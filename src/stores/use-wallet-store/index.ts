@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { WALLET_CONFIG, WalletChain } from '@/config/wallet'
+import { WALLET_CONFIG, Chain } from '@/config/wallet'
 
 import type { GetChainsRes, GetWalletsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
@@ -13,7 +13,7 @@ interface States {
   chains: GetChainsRes['chains']
   platforms: GetChainsRes['platforms']
   currentWallet?: WalletCardProps
-  selectedChain: WalletChain
+  selectedChain: Chain
   selectedPlatform: string
 }
 
@@ -25,6 +25,12 @@ interface Actions {
   setCurrentWallet(address?: string): void
   setSelectedChain(chain: string): void
   setSelectedPlatform(platform: string): void
+
+  // Find wallet by name among all wallets.
+  findWallet(name: string): WalletCardProps | undefined
+
+  // Whether have wallet on any or specific chain.
+  hasWallet(chain?: Chain): boolean
 }
 
 export const useWalletStore = create<States & Actions>((set, get) => ({
@@ -46,6 +52,18 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
     // At the very least make sure it's `{}`
     set({ currentWallet: target ?? {} })
   },
-  setSelectedChain: (chain) => set({ selectedChain: chain as WalletChain }),
+  setSelectedChain: (chain) => set({ selectedChain: chain as Chain }),
   setSelectedPlatform: (platform) => set({ selectedPlatform: platform }),
+  findWallet: (name) => {
+    if (!name?.trim()) return
+
+    const allWallets = Object.values(get().allWallets).flat()
+    return allWallets.find((w) => w.name === name)
+  },
+  hasWallet(chain) {
+    const { allWallets } = get()
+
+    if (chain) return !!allWallets[chain].length
+    return !!Object.values(allWallets).length
+  },
 }))

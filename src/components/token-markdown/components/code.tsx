@@ -1,13 +1,12 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AiOutlineCopy } from 'react-icons/ai'
 // @ts-ignore
 import { Prism } from 'react-syntax-highlighter'
-import clsx from 'clsx'
-
-import { useClipboard } from '@/hooks/use-clipboard'
+import { clsx } from 'clsx'
 
 import type { CodeProps } from 'react-markdown/lib/ast-to-react'
+
+import { CopyIcon } from '@/components/copy-icon'
 
 interface Props extends CodeProps {
   clearCodeBreak?: boolean
@@ -20,12 +19,9 @@ export const Code = (props: Props) => {
     ? String(children).replace(/\n+$/, '')
     : children
   const { t } = useTranslation()
-  const { copy } = useClipboard()
-
-  const onCopy = (children: React.ReactNode[]) => {
-    const str = children.reduce((a, b) => `${a}\n${b}`, '') as string
-    copy(str)
-  }
+  const copyContent = useMemo(() => {
+    return children.reduce((a, b) => `${a}\n${b}`, '') as string
+  }, [])
 
   // Inline block
   if (inline) {
@@ -39,11 +35,10 @@ export const Code = (props: Props) => {
         className={clsx(
           'absolute right-3 top-[1.2rem] transition-all items-center',
           'cursor-pointer hidden group-hover:flex gap-1 text-sm',
-          'hover:drop-shadow-bold dark:hover:drop-shadow-bold-dark'
+          'hover:drop-shadow-bold not-used-dark:hover:drop-shadow-bold-dark'
         )}
-        onClick={() => onCopy(children)}
       >
-        <AiOutlineCopy />
+        <CopyIcon text={copyContent} />
         <span>{t('copy')}</span>
       </p>
       <Prism

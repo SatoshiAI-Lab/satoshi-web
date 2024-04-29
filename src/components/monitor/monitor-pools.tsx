@@ -50,7 +50,7 @@ export const MonitorPools = ({ data, className }: Props) => {
     try {
       setLoading(data.chain)
       await setConfig({
-        message_type: MonitorConfig.pool,
+        message_type: MonitorConfig.Pool,
         content: [...content],
       })
     } catch {
@@ -72,7 +72,7 @@ export const MonitorPools = ({ data, className }: Props) => {
     try {
       setLoading('chain')
       await setConfig({
-        message_type: MonitorConfig.pool,
+        message_type: MonitorConfig.Pool,
         content: list,
       })
     } catch {

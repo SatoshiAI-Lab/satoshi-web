@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
+import { nanoid } from 'nanoid'
 
 import type { ChatInteractiveParams, ChatParams } from '@/api/chat/types'
 
@@ -10,7 +11,6 @@ import { useLive2D } from './use-live2d'
 import { useEventStream } from './use-event-stream'
 import { useMessages } from './use-messages'
 import { utilParse } from '@/utils/parse'
-import { utilDom } from '@/utils/dom'
 
 export interface InteractiveOptions {
   question: string
@@ -34,6 +34,7 @@ export const useChat = () => {
     setIntention,
     setIsLoading,
     addMessage,
+    chatScrollToBottom,
   } = useChatStore()
   const { startLoopMotion, stopLoopMotion, emitMotionSpeak } = useLive2D()
   const { parseChatMessage, removeLastLoading, addLoading } = useMessages()
@@ -88,8 +89,7 @@ export const useChat = () => {
   const onEachRead = (message: string, isFirstRead: boolean) => {
     utilParse.streamStrToJson(message, (data, isFirstParse) => {
       parseChatMessage(data, isFirstRead, isFirstParse)
-      // Each read scroll to bottom.
-      chatEl && utilDom.scrollToBottom(chatEl)
+      chatScrollToBottom()
     })
   }
 
@@ -110,22 +110,32 @@ export const useChat = () => {
       text: params.question,
     })
     addLoading()
+    chatScrollToBottom()
   }
 
   // Send chat.
   const sendChat = async (options?: InteractiveOptions) => {
     // Must be get params here.
     const chatParams = getChatParams(options)
+    const debugId = nanoid()
 
+    // If question is custom static question, don't send request.
+    // const isCustom = parseCustomMessage(chatParams)
+    // if (isCustom) return
+
+    sendChatBefore(chatParams)
     try {
-      sendChatBefore(chatParams)
       controllerRef.current = new AbortController()
       const stream = await chatApi.chat(
         chatParams,
         controllerRef.current.signal
       )
 
-      parseStream(stream, onEachRead, resetChat)
+      console.log(`-------------- chat ${debugId} start --------------`)
+      parseStream(stream, onEachRead, () => {
+        console.log(`-------------- chat ${debugId} end --------------`)
+        resetChat()
+      })
     } catch (e: any | undefined) {
       throwChatError(e)
       resetChat()

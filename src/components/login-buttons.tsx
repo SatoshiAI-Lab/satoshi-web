@@ -103,6 +103,7 @@ export const LoginButtons = () => {
         }}
         classes={{
           root: 'mt-2',
+          paper: 'dark:bg-zinc-800 dark:hover:bg-zinc-900',
           list: '!p-[0px]',
         }}
       >

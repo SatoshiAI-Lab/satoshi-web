@@ -1,6 +1,5 @@
-import { WalletChain, WalletPlatform } from '@/config/wallet'
-
-import type { ModelMotions } from '@/stores/use-live2d-store/types'
+import { Chain, Platform } from '@/config/wallet'
+import { DataType } from '@/stores/use-chat-store/types'
 
 export interface ChatResponseBase {
   status: number
@@ -11,20 +10,177 @@ export interface ChatResponseBase {
 }
 
 export interface ChatResponse {
-  answer_type: string
+  answer_type: AnswerType
   text: string
   hyper_text: string
-  meta: ChatResponseMeta
+  meta: ChatMeta
 }
 
-export interface ChatResponseMeta
-  extends Partial<ChatResponseMetaInteractive>,
-    Partial<ChatResponseMetaReference>,
-    Partial<ChatResponseWalletListRaw>,
-    Partial<ChatResponseMetaBalance>,
-    Partial<ChatResponseTxConfrim> {
-  emotion?: ModelMotions
+/***********************  Intent type start. ***********************/
+
+export enum AnswerType {
+  // Normal chat.
+  TokenBasic = 'token_basic',
+  News = 'news',
+  RiskAnalysis = 'risk_analysis',
+  RiskAnalysisHide = 'risk_analysis_hide',
+  Review = 'review',
+  DataInsights = 'data_insights',
+  TechAnalyze = 'tech_analyze',
+  Interactive = 'interactive',
+  Reference = 'reference',
+  Hide = 'hide',
+  End = 'end', // Special type.
+
+  // Stream chat.
+  ChatStream = 'chat_stream',
+  RiskAnalysisStream = 'risk_analysis_stream',
+  NewsStream = 'news_stream',
+  DataInsightsStream = 'data_insights_stream',
+  TechAnalyzeStream = 'tech_analyze_stream',
+  ProcessStream = 'process_stream', // Special type.
+  IntentStream = 'intent_stream', // Special type.
+  WsMonitor = 'ws_monitor',
 }
+
+type ChatMetaParital = ChatMetaInteractive & ChatMetaReference
+
+export interface ChatMeta extends Partial<ChatMetaParital> {
+  type: `${MetaType}`
+  data: MetaTypeData[MetaType]
+  status?: number
+  emotion?: Emotion
+}
+
+type Emotion =
+  | 'Neutral'
+  | 'Happy'
+  | 'Sad'
+  | 'Awkward'
+  | 'Negate'
+  | 'Angry'
+  | 'Encourage'
+
+export enum MetaType {
+  TxConfirm = 'transaction_confirm',
+
+  WalletCreate = 'wallet_create',
+  WalletDelete = 'wallet_delete',
+  WalletChange = 'wallet_change',
+  WalletCheck = 'wallet_check',
+  WalletImport = 'wallet_import',
+  WalletExport = 'wallet_export',
+
+  SubNews = 'subscript_news',
+  SubTwitter = 'subscript_twitter',
+  SubExAnn = 'subscript_announcement',
+  SubWallet = 'subscript_wallet',
+  SubPool = 'subscript_pool',
+
+  TokenCreate = 'token_create',
+
+  CheckAddr = 'check_address',
+
+  // WebSocket message types, not AI types.
+  MonitorNews = DataType.NewsInfo,
+  MonitorExAnn = DataType.AnnInfo,
+  MonitorWallet = DataType.TradeInfo,
+  MonitorTwitter = DataType.TwitterInfo,
+  MonitorNewPool = DataType.PoolInfo,
+}
+
+export enum MetaTypeCategory {
+  // Transaction related.
+  TxPrefix = 'transaction',
+
+  // Wallet related.
+  WalletPrefix = 'wallet',
+
+  // Subscription related.
+  SubPrefix = 'subscript',
+
+  // Token related.
+  TokenPrefix = 'token',
+
+  // Check related.
+  CheckPrefix = 'check',
+}
+
+export type MetaTypeData = {
+  [MetaType.TxConfirm]: {
+    from_token: {
+      type: string
+      content: string
+    }
+    to_token: {
+      type: string
+      content: string
+    }
+    amount: number
+  }
+
+  [MetaType.WalletCreate]: {
+    platform_name: Platform
+  }
+  [MetaType.WalletDelete]: {
+    wallet_name: string
+  }
+  [MetaType.WalletChange]: {
+    from_wallet_name: string
+    to_wallet_name: string
+  }
+  [MetaType.WalletCheck]: {
+    chain_name: Chain
+  }
+  [MetaType.WalletImport]: {
+    private_key: string
+    platform_name: Platform
+  }
+  [MetaType.WalletExport]: {
+    wallet_name: string
+  }
+
+  [MetaType.SubNews]: SubscriptData
+  [MetaType.SubTwitter]: SubscriptData
+  [MetaType.SubExAnn]: SubscriptData<number>
+  [MetaType.SubWallet]: SubscriptData
+  [MetaType.SubPool]: SubscriptData
+
+  [MetaType.TokenCreate]: {
+    chain_name: Chain
+  }
+
+  [MetaType.CheckAddr]: {
+    type: CheckAddrType
+    address: string
+    chain_name: Chain
+  }
+
+  [MetaType.MonitorNews]: ChatResponseMetaNewsInfo
+  [MetaType.MonitorExAnn]: ChatResponseMetaAnnounceMent
+  [MetaType.MonitorWallet]: ChatResponseMetaWallet
+  [MetaType.MonitorTwitter]: ChatResponseMetaTwitter
+  [MetaType.MonitorNewPool]: ChatResponseMetaNewPoolV2
+}
+
+export type MonitorData =
+  | ChatResponseMetaNewsInfo
+  | ChatResponseMetaAnnounceMent
+  | ChatResponseMetaWallet
+  | ChatResponseMetaTwitter
+  | ChatResponseMetaNewPoolV2
+
+interface SubscriptData<T = string> {
+  type: 'on' | 'off'
+  content: T
+}
+
+export enum CheckAddrType {
+  Account = 'account',
+  Token = 'token',
+}
+
+/*********************** Intent type end. ***********************/
 
 export interface ChatResponseMetaDynamic {
   intro: string
@@ -49,7 +205,7 @@ export interface ChatResponseTxConfrim {
 
 export interface TokenInfo {
   platform: string
-  chain: WalletChain
+  chain: Chain
   token_name: null | string
   contract: string
   platform_id: number
@@ -78,7 +234,7 @@ export interface ChatResponseTokneName {
 export interface ChatResponseWalletListRaw {
   status: number
   data: ChatResponseWalletList[]
-  chain: WalletChain
+  chain: Chain
 }
 
 export interface ChatResponseWalletBalance {
@@ -102,7 +258,7 @@ export interface ChatResponseWalletListToken {
   amount: number
   chain_id: number
   chain_logo: string
-  chain_name: string
+  chain_name: Chain
   decimals: number
   logoUrl: string
   name: string
@@ -137,8 +293,8 @@ export interface ChatResponseMetaLabel {
   dynamic: ChatResponseMetaDynamic
 }
 
-export interface ChatResponseMetaInteractive {
-  NFT: []
+export interface ChatMetaInteractive {
+  nft: []
   coin: ChatResponseAnswerMetaCoin[]
   exchange: []
   label: ChatResponseMetaLabel[]
@@ -146,8 +302,7 @@ export interface ChatResponseMetaInteractive {
   software: []
 }
 
-export interface ChatResponseMetaReference {
-  type: string
+export interface ChatMetaReference {
   content: string
   published_at: string
   url: string
@@ -209,7 +364,7 @@ export interface ChatMointorRoomRes {
 export interface ChatResponseMetaNewsInfo {
   content: I18
   created_at: string
-  data_type: string
+  data_type: DataType
   id: number
   logo: string
   title: I18
@@ -224,7 +379,7 @@ export interface I18 {
 export interface ChatResponseMetaAnnounceMent {
   content: I18
   created_at: string
-  data_type: string
+  data_type: DataType
   id: number
   seo: I18
   source_logo: string
@@ -245,7 +400,7 @@ export interface ChatResponseMetaTwitter {
   url: []
   photo: []
   twitter_logo: string
-  data_type: string
+  data_type: DataType
 }
 
 export interface ChatResponseMetaWallet {
@@ -260,7 +415,7 @@ export interface ChatResponseMetaWallet {
   name: string
   remark: string
   content: string
-  data_type: string
+  data_type: DataType
   hash: string
 }
 
@@ -287,11 +442,11 @@ export interface ChatResponseMetaNewPool {
     detail: []
   }
   created_at: string
-  data_type: string
+  data_type: DataType
 }
 export interface ChatResponseMetaNewPoolV2 {
   id: string
-  chain: string
+  chain: Chain
   address: string
   name: string
   symbol: string
@@ -305,7 +460,7 @@ export interface ChatResponseMetaNewPoolV2 {
   top_holders: TopHolders
   score: Score
   created_at: string
-  data_type: string
+  data_type: DataType
   outside_url: string
 }
 

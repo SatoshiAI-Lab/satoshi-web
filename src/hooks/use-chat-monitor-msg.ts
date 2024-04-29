@@ -1,18 +1,19 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import type { MonitorData } from '@/api/chat/types'
+
 import { chatApi } from '@/api/chat'
 import { useUserStore } from '@/stores/use-user-store'
 import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
-import { utilDom } from '@/utils/dom'
 import { useMessages } from './use-messages'
 
 interface MonitorOnEvents {
   event: {
     type: string
-    data: any
+    data: MonitorData[]
   }
 }
 
@@ -26,8 +27,7 @@ export const useChatMonitorMsg = () => {
   const { i18n } = useTranslation()
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
-  const { chatEl, setUnreadMessage } = useChatStore()
-  // const { addMonitorMessage } = useChatMigrating()
+  const { setUnreadMessage, chatScrollToBottom } = useChatStore()
   const { addMonitorMessages } = useMessages()
   const ws = useWebSocket<MonitorOnEvents, MonitorEmitEvents>({
     heartbeat: JSON.stringify({ type: 'ping' }),
@@ -44,6 +44,8 @@ export const useChatMonitorMsg = () => {
     await ws.connect(wssUrl)
 
     ws.on('event', ({ data }) => {
+      data = data.reverse()
+
       console.log(`Keyup: ${useChatStore.getState().inputKeyup}`)
       console.log(`readAnswer: ${useChatStore.getState().readAnswer}`)
       console.log(`waitAnswer: ${useChatStore.getState().waitAnswer}`)
@@ -63,13 +65,10 @@ export const useChatMonitorMsg = () => {
         useChatStore.getState().readAnswer ||
         useChatStore.getState().waitAnswer
       ) {
-        setUnreadMessage([
-          ...useChatStore.getState().unreadMessages,
-          ...data.reverse(),
-        ])
+        setUnreadMessage([...useChatStore.getState().unreadMessages, ...data])
       } else {
-        addMonitorMessages(data.reverse())
-        chatEl && utilDom.scrollToBottom(chatEl)
+        addMonitorMessages(data)
+        chatScrollToBottom()
       }
     })
   }

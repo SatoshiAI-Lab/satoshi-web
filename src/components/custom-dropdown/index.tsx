@@ -39,7 +39,12 @@ export const CustomDropdown = (props: CustomDropdownProps) => {
         open={open}
         classes={{ tooltip: '!bg-transparent !mt-0' }}
         title={
-          <List className="text-sm !p-1 !rounded-md !shadow-lg">
+          <List
+            className={clsx(
+              'text-sm !p-1 !rounded-md !shadow-lg !bg-white',
+              'dark:!bg-zinc-800'
+            )}
+          >
             {items.map((item) => (
               <ListItemButton
                 key={item.key}

@@ -17,7 +17,7 @@ import { useWalletStore } from '@/stores/use-wallet-store'
 import { ChainPlatformSelect } from '../chain-platform-select'
 import { useWalletManage } from '@/hooks/use-wallet'
 import { CustomSuspense } from '../custom-suspense'
-import { WalletPlatform } from '@/config/wallet'
+import { Platform } from '@/config/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { WalletSkeleton } from './components/skeleton'
 import { useChainsPlatforms } from './hooks/use-chains-platforms'
@@ -55,19 +55,19 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
   const { t } = useTranslation()
   const walletMenu = [
     {
-      id: WalletPlatform.SOL,
+      id: Platform.Sol,
       title: t('sol-wallet'),
       content: '',
       disable: false,
     },
     {
-      id: WalletPlatform.EVM,
+      id: Platform.Evm,
       title: t('evm-wallet'),
       content: t('evm-support'),
       disable: false,
     },
     {
-      id: WalletPlatform.BEAR,
+      id: Platform.Bear,
       title: t('bear-wallet'),
       content: '',
       disable: true,
@@ -88,7 +88,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     setAnchorEl(null)
   }
 
-  const onCreateWallet = async (walletType: WalletPlatform) => {
+  const onCreateWallet = async (walletType: Platform) => {
     const id = toast.loading(t('wallet.creating'))
 
     setAnchorEl(null)
@@ -159,7 +159,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
       <Dialog
         maxWidth="lg"
         PaperProps={{
-          className: 'dark:bg-zinc-900 dark:text-gray-300',
+          className: 'not-used-dark:bg-zinc-900 not-used-dark:text-gray-300',
           sx: { borderRadius: '10px' },
         }}
         open={open}
@@ -206,7 +206,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                           key={item.id}
                           className={clsx(
                             'w-[295px] h-[65px] flex flex-col !items-start !justify-center',
-                            'dark:!text-gray-300'
+                            'not-used-dark:!text-gray-300'
                           )}
                           onClick={() => onCreateWallet(item.id)}
                         >
@@ -225,7 +225,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                     className={clsx(
                       '!border-gray-400 hover:!bg-gray-100',
                       'disabled:!border-gray-300 disabled:!text-gray-400',
-                      'dark:hover:!bg-zinc-800 dark:!text-gray-300'
+                      'not-used-dark:hover:!bg-zinc-800 not-used-dark:!text-gray-300'
                     )}
                     variant="outlined"
                     disabled={isCreating}
@@ -260,7 +260,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
             isPendding={isFirstFetchingWallets}
             fallback={<WalletSkeleton className="h-[440px] max-h-[440px]" />}
           >
-            {filteredWallets.length ? (
+            {filteredWallets.length || onlyWallet ? (
               (onlyWallet ? [onlyWallet] : filteredWallets).map((w) => (
                 <WalletCard
                   key={w.address}

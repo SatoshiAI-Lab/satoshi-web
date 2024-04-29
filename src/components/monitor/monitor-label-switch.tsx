@@ -29,7 +29,7 @@ export const MonitorLabelSwitch = <T extends Base>({
     <div
       className={clsx(
         'flex justify-between rounded-lg border border-black',
-        'pl-2 pr-1 min-w-[220px] dark:border-zinc-500'
+        'pl-2 pr-1 min-w-[220px] not-used-dark:border-zinc-500'
       )}
     >
       <div className="flex items-center">

@@ -1,20 +1,22 @@
 import { nanoid } from 'nanoid'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
+import { last } from 'lodash'
 
 import type { Message } from '@/stores/use-chat-store/types'
+import {
+  AnswerType,
+  type MonitorData,
+  type ChatResponse,
+} from '@/api/chat/types'
 
 import { useChatStore } from '@/stores/use-chat-store'
-import { utilArr } from '@/utils/array'
 import { CHAT_CONFIG } from '@/config/chat'
-import { ChatResponse } from '@/api/chat/types'
 import { useLoginAuthStore } from '@/stores/use-need-login-store'
 import { useLive2D } from './use-live2d'
 import { useHypertext } from './use-hyper-text-parser'
+import { useChatType } from './use-chat-type'
 
-/**
- * Messages management hook. base API:
- **/
 export const useMessages = () => {
   const { t } = useTranslation()
   const {
@@ -29,10 +31,11 @@ export const useMessages = () => {
   const { setShow } = useLoginAuthStore()
   const { emitMotionWithWisdom } = useLive2D()
   const hypertextParser = useHypertext(CHAT_CONFIG.hyperTextRule)
+  const { identifyAnswerType, hasEmotion } = useChatType()
 
   // Remove latest message.
   const removeLast = () => {
-    const lastId = utilArr.last(getMessages())?.id
+    const lastId = last(getMessages())?.id
 
     if (!lastId) return
     removeMessage(lastId)
@@ -50,7 +53,7 @@ export const useMessages = () => {
   // Remove latest loading message.
   const removeLastLoading = () => {
     const loadings = getMessages().filter((m) => m.isLoading)
-    const lastId = utilArr.last(loadings)?.id
+    const lastId = last(loadings)?.id
 
     if (!lastId) return
     removeMessage(lastId)
@@ -77,18 +80,18 @@ export const useMessages = () => {
     m?: Partial<Message>,
     overrideText = false
   ) => {
-    const last = utilArr.last(getMessages())
+    const lastMessage = last(getMessages())
 
-    if (!last) return
+    if (!lastMessage) return
     const newMessage: Message = {
       ...data,
-      ...last,
+      ...lastMessage,
       ...m,
       role: 'assistant',
-      text: overrideText ? data.text : last.text + data.text,
+      text: overrideText ? data.text : lastMessage.text + data.text,
     }
 
-    updateMessage(last.id, newMessage)
+    updateMessage(lastMessage.id, newMessage)
   }
 
   // Normal message.
@@ -112,6 +115,7 @@ export const useMessages = () => {
   }
 
   // Reference message.
+  // TODO: Optimzie this method.
   const addReferenceMesssage = (data: ChatResponse) => {
     const { reference } = CHAT_CONFIG.answerType
     const { type, content, published_at, url } = data.meta
@@ -133,108 +137,98 @@ export const useMessages = () => {
   }
 
   // Monitor message.
-  const addMonitorMessages = (messages: Message[]) => {
-    messages.forEach((m) => addMessage({ ...m, isMonitor: true }))
+  const addMonitorMessages = (monitors: MonitorData[]) => {
+    monitors.forEach((m) => {
+      addMessage({
+        role: 'assistant',
+        text: '',
+        answer_type: AnswerType.WsMonitor,
+        hyper_text: '',
+        meta: {
+          type: m.data_type,
+          data: m,
+        },
+        data_type: m.data_type,
+        isMonitor: true,
+      })
+    })
   }
 
   let processId = ''
   // Parseing & render message, by chat `answer_type` or `meta.type`.
   const parseChatMessage = (
     data: ChatResponse,
-    isFirstRead: boolean,
-    isFirstParse: boolean
+    isFirstRead?: boolean,
+    isFirstParse?: boolean
   ) => {
+    const { answer_type, meta } = data
     const {
-      answer_type: answerType,
-      meta: { type: metaType, status: answerStatus },
-    } = data
-    const { hiddenIntentText } = CHAT_CONFIG
-    const {
-      hide,
-      streams,
-      normals,
-      interactive,
-      reference,
-      end,
-      intentStream,
-      intention,
-    } = CHAT_CONFIG.answerType
+      isNormal,
+      isInteractive,
+      isReference,
+      isEnd,
+      isHide,
+      isStream,
+      isIntent,
+      isProcess,
+    } = identifyAnswerType(answer_type)
+
+    console.log('chat response', data)
 
     if (isFirstRead) {
       removeLastLoading()
       // on first read, add a blank message,
       // used for process message fill it.
-      addMessage({ text: '' })
+      addMessage({ role: 'assistant', text: '' })
     }
 
-    // Is end message.
-    const isEnded = data.answer_type === 'end'
-    if (isEnded) {
+    if (isEnd) {
       setReadAnswer(true)
       console.log('user start reading answer now!!!')
       setTimeout(function () {
         setReadAnswer(false)
         console.log('user stop reading answer now!!!')
       }, 10000)
+      return
     }
 
-    // Is intention message, save the intention.
-    const isIntention = answerType.startsWith(intentStream)
-    if (isIntention) {
-      setIntention(answerType!)
+    if (isIntent) {
+      setIntention(answer_type)
     }
 
-    // Should be login.
-    const shouldAuth = answerStatus === 401
-    if (shouldAuth) {
+    if (meta.status === 401) {
       toast.error(t('need.login'))
       setShow(true)
       return
     }
 
-    // Is null message, remove null.
-    const isNull = answerType.includes(hide)
-    if (isNull) {
+    if (isHide) {
       removeLast()
       return
     }
 
-    // Is process hints message.
-    const isProcess = answerType === 'process_stream'
     if (isProcess) {
       if (!processId) processId = nanoid()
       addStreamMessage(data, { id: processId }, true)
       return
     }
 
-    const isStream = answerType.includes('stream')
-    const isNotStream = !isStream
     if (processId) {
-      // Is stream message, clear process message.
-      if (isStream) updateMessage(processId, { text: '' })
       // Is not stream message, remove process message.
-      else if (isNotStream) removeMessage(processId)
+      if (!isStream || isIntent) removeMessage(processId)
+      // Is stream message, clear process message.
+      else if (isStream) {
+        updateMessage(processId, { role: 'assistant', text: '' })
+      }
 
       processId = ''
     }
 
-    // Intention message.
-    if (
-      intention.includes(answerType) ||
-      isIntention ||
-      intention.includes(metaType ?? '') // create token message
-    ) {
-      if (data.text && !hiddenIntentText.includes(data?.meta.type!)) {
-        addStreamMessage(data)
-      }
-
-      data.meta.data?.reverse?.()
-
-      addNormalMessage(data, { isIntention: true })
+    if (isIntent) {
+      // data.meta.data?.reverse?.()
+      addNormalMessage(data, { isIntent })
       return
     }
-
-    // Streaming answer.
 
     if (isStream) {
       // Don't use trim.
@@ -244,32 +238,31 @@ export const useMessages = () => {
       return
     }
 
-    // Token answer.
-    if (normals.includes(answerType)) {
+    if (isNormal) {
       addTokenMessage(data)
       return
     }
 
-    // Interactive answer.
-    if (answerType === interactive) {
+    if (isInteractive) {
       addInteractiveMessage(data)
       return
     }
 
-    // Origin reference
-    if (answerType === reference) {
+    if (isReference) {
       addReferenceMesssage(data)
       return
     }
 
     // Answer ended & include emotion & is not interactive message.
-    const isNotInteractive = !utilArr.last(messages)?.isInteractive
-    if (answerType === end && data.meta.emotion && isNotInteractive) {
-      emitMotionWithWisdom(data.meta.emotion)
+    const isNotInteractive = !last(messages)?.isInteractive
+    if (isEnd && hasEmotion(meta) && isNotInteractive) {
+      // TODO: Fix any type.
+      emitMotionWithWisdom(meta.emotion as any)
     }
   }
 
   return {
+    addMessage,
     addStreamMessage,
     addNormalMessage,
     addTokenMessage,

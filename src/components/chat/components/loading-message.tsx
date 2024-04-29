@@ -5,14 +5,18 @@ import { CircularProgress } from '@mui/material'
 
 import MessageBubble from './message-bubble'
 
-export const LoadingMessage = (props: React.ComponentProps<'div'>) => {
-  const { className } = props
+interface Props extends React.ComponentProps<'div'> {
+  withProgress?: boolean
+}
+
+export const LoadingMessage = (props: Props) => {
+  const { className, children, withProgress = true } = props
   const { t } = useTranslation()
 
   return (
     <MessageBubble className={clsx('flex items-center', className)}>
-      {t('thinking')}
-      <CircularProgress size={18} className="ml-2" />
+      {children || t('thinking')}
+      {withProgress && <CircularProgress size={18} className="ml-2" />}
     </MessageBubble>
   )
 }

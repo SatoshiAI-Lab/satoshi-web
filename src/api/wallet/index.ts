@@ -48,6 +48,13 @@ export const walletApi = {
       }
     )
   },
+  checkName({ id, name }: { id: string; name: string }) {
+    return fetchSatoshi.get<{ result: boolean }>(
+      `/api/v1/update-wallet-name/${id}/`,
+      { name }
+    )
+  },
+
   deleteWallet(params: UserDeleteWalletReq) {
     return fetchSatoshi.delete<UserDeleteWalletResp>(
       `/api/v1/wallet-delete/${params.wallet_id}/`

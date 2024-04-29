@@ -6,7 +6,7 @@ import { clsx } from 'clsx'
 import { toast } from 'react-hot-toast'
 
 import type {
-  ChatResponseMeta,
+  ChatMeta,
   ChatResponseAnswerMetaCoin,
   ChatResponseMetaLabel,
 } from '@/api/chat/types'
@@ -19,7 +19,7 @@ import { useMessages } from '@/hooks/use-messages'
 interface SingleMessageProps {
   id?: string
   meta?: ChatResponseAnswerMetaCoin[] | ChatResponseMetaLabel[]
-  type?: keyof ChatResponseMeta
+  type?: keyof ChatMeta
   classes?: string
   title?: string
   onClick?: (
@@ -28,7 +28,7 @@ interface SingleMessageProps {
   ) => void
 }
 
-function SingleMessage(props: SingleMessageProps) {
+export const SingleMessage = (props: SingleMessageProps) => {
   const [t] = useTranslation()
   const { meta = [], title, id } = props
   const { findPrevInteractive } = useMessages()

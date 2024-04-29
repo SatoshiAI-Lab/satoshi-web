@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
+// import remarkMath from 'remark-math'
+// import rehypeKatex from 'rehype-katex'
 import rehypeRaw from 'rehype-raw'
 
 import A from './components/a'
@@ -39,7 +39,7 @@ export const TokenMarkdown: React.FC<MarkdownParserProps> = (props) => {
       // `remarkMath` may cause market rendering to be repeated
       remarkPlugins={[remarkGfm]} // GFM: GitHub Flavored Markdown
       // @ts-ignore
-      rehypePlugins={[rehypeKatex, rehypeRaw]} // When encountering custom tags like <reference>, probbly parsing failed.
+      rehypePlugins={[rehypeRaw]} // When encountering custom tags like <reference>, probbly parsing failed.
       components={{
         code: (props) => <Code {...props} />,
         span: (props) => <Span {...props} />,

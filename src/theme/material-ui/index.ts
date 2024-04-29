@@ -17,7 +17,7 @@ export const themeOptions = (isDark: boolean) => {
 
   return {
     palette: {
-      mode: isDark ? 'dark' : 'light',
+      // mode: isDark ? 'dark' : 'light',
       primary: { main: vars.primary },
       secondary: { main: vars.secondary },
       error: { main: vars.error },

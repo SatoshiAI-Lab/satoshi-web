@@ -1,13 +1,16 @@
 import { create } from 'zustand'
 import { nanoid } from 'nanoid'
 
-import type { States, Actions, Message } from './types'
+import type { ChatStore, Message } from './types'
 
-export const useChatStore = create<States & Actions>((set, get) => ({
+import { utilDom } from '@/utils/dom'
+
+export const useChatStore = create<ChatStore>((set, get) => ({
   intention: '',
   question: '',
   messages: [],
   chatEl: null,
+  chatInputEl: null,
   isLoading: false,
 
   // 1. If the question input is in the state of Focus
@@ -31,21 +34,28 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   },
   addMessage: (message) => {
     const newMessage: Message = { id: nanoid(), ...message }
+
     set({ messages: [...get().messages, newMessage] })
+    return newMessage
   },
   removeMessage: (id) => {
     const newMessages = get().messages.filter((m) => m.id !== id)
+
     set({ messages: newMessages })
+    return newMessages
   },
   updateMessage: (id, message) => {
     const newMessages = get().messages.map((m) =>
       m.id === id ? { ...m, ...message } : m
     )
+
     set({ messages: newMessages })
+    return newMessages
   },
   getMessage: (id) => get().messages.find((m) => m.id === id),
 
   setChatEl: (chatEl) => set({ chatEl }),
+  setChatInputEl: (chatInputEl) => set({ chatInputEl }),
   setIsLoading: (isLoading) => set({ isLoading }),
 
   setInputKeyup: (inputKeyup) => set({ inputKeyup }),
@@ -53,4 +63,9 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   setWaitAnswer: (waitAnswer) => set({ waitAnswer }),
   setUnreadMessage: (unreadMessages) => set({ unreadMessages }),
   setSocket: (socket) => set({ socket: socket }),
+
+  chatScrollToBottom: () => {
+    const { chatEl } = get()
+    if (chatEl) utilDom.scrollToBottom(chatEl)
+  },
 }))

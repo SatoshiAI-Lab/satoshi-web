@@ -67,7 +67,7 @@ export const LoginAuthDialog = (props: Props) => {
             color="inherit"
             className={clsx(
               'w-[350px] !text-lg !border-black !rounded-full',
-              'dark:!border-gray-400'
+              'not-used-dark:!border-gray-400'
             )}
             size="large"
             onClick={toLogin}

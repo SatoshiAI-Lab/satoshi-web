@@ -5,21 +5,20 @@ import { FaTelegramPlane } from 'react-icons/fa'
 import { GrLanguage } from 'react-icons/gr'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
-import { IoCopyOutline } from 'react-icons/io5'
 import { IconButton, Dialog } from '@mui/material'
 import { BiError } from 'react-icons/bi'
 import numeral from 'numeral'
 
-import MessageBubble from '../message-bubble'
+import { MessageBubble } from '../message-bubble'
 import { utilFmt } from '@/utils/format'
-import { useClipboard } from '@/hooks/use-clipboard'
-import { WalletChain } from '@/config/wallet'
+import { Chain } from '@/config/wallet'
 import { utilLang } from '@/utils/language'
 import { useShow } from '@/hooks/use-show'
 import { DialogHeader } from '@/components/dialog-header'
 import { MonitorPoolStatus } from '@/config/monitor'
-
-import type { ChatResponseMetaNewPoolV2 } from '@/api/chat/types'
+import { useMessagesContext } from '@/contexts/messages'
+import { CopyAddr } from '@/components/copy-addr'
+import { MetaType } from '@/api/chat/types'
 
 interface SecurityList {
   desc: string
@@ -35,27 +34,41 @@ const SecurityItem = ({ desc, status, icon }: SecurityList) => {
   )
 }
 
-const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
+export const NewPoolBubble = () => {
+  const { getMetaData } = useMessagesContext()
+  const {
+    security,
+    chain,
+    created_at,
+    twitter,
+    telegram,
+    website,
+    address,
+    liquidity,
+    started,
+    price,
+    top_holders,
+    score,
+    name,
+    symbol,
+    outside_url,
+  } = getMetaData<MetaType.MonitorNewPool>()
   const { t } = useTranslation()
-  const { copy } = useClipboard()
-
   const { show, open, hidden } = useShow()
-
-  // props = data as unknown as ChatResponseMetaNewPoolV2
 
   const normalList: SecurityList[] = []
   const riskList: SecurityList[] = []
   const unknownList: SecurityList[] = []
 
-  props.security?.content?.forEach((item) => {
+  security?.content?.forEach((item) => {
     const desc = utilLang.getContent(item.content)
 
     switch (item.status) {
-      case MonitorPoolStatus.normal: {
+      case MonitorPoolStatus.Normal: {
         normalList.push({ desc, status: t('normal'), icon: <></> })
         break
       }
-      case MonitorPoolStatus.risk: {
+      case MonitorPoolStatus.Risk: {
         riskList.push({
           desc,
           status: <span className="text-red-500 ml-1">{t('risk')}</span>,
@@ -67,7 +80,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         })
         break
       }
-      case MonitorPoolStatus.unknown: {
+      case MonitorPoolStatus.Unknown: {
         unknownList.push({ desc, status: t('unknown'), icon: <></> })
         break
       }
@@ -81,9 +94,9 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
     return (
       <>
         <div className="">
-          {normalList.map((item, i) => {
-            return <SecurityItem key={i} {...item}></SecurityItem>
-          })}
+          {normalList.map((item, i) => (
+            <SecurityItem key={i} {...item} />
+          ))}
         </div>
       </>
     )
@@ -93,18 +106,14 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
     if (!riskList.length) {
       return <div className="mt-[6px]">{t('no.contract.risk')}</div>
     }
-    return riskList.map((item, i) => {
-      return <SecurityItem key={i} {...item}></SecurityItem>
-    })
+    return riskList.map((item, i) => <SecurityItem key={i} {...item} />)
   }
 
   const handleUnknownList = () => {
     if (!unknownList.length) {
       return <></>
     }
-    return unknownList.map((item, i) => {
-      return <SecurityItem key={i} {...item}></SecurityItem>
-    })
+    return unknownList.map((item, i) => <SecurityItem key={i} {...item} />)
   }
 
   return (
@@ -119,10 +128,10 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
           /> */}
           <div className="flex flex-col">
             <span className="font-bold h-[20px] leading-none">
-              {t('new-pool').replace('{}', props.chain)}
+              {t('new-pool').replace('{}', chain ?? '')}
             </span>
             <span className="text-gray-400 h-[20px] text-sm">
-              {dayjs(props.created_at).format('H:mm M/D')}
+              {dayjs(created_at).format('H:mm M/D')}
             </span>
           </div>
         </div>
@@ -134,26 +143,26 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         <div className="font-bold -mt-4 mb-1 flex justify-between items-center">
           <div className="flex items-center">
             <IconButton
-              onClick={() => window.open(props.twitter)}
+              onClick={() => window.open(twitter)}
               title="Twitter"
               color="primary"
-              disabled={!props.twitter}
+              disabled={!twitter}
             >
               <FaTwitter size={20} />
             </IconButton>
             <IconButton
-              onClick={() => window.open(props.telegram)}
+              onClick={() => window.open(telegram)}
               color="primary"
               title="Telegram"
-              disabled={!props.telegram}
+              disabled={!telegram}
             >
               <FaTelegramPlane size={22} />
             </IconButton>
             <IconButton
               color="primary"
-              onClick={() => window.open(props.website)}
+              onClick={() => window.open(website)}
               title="Website"
-              disabled={!props.website}
+              disabled={!website}
             >
               <GrLanguage size={20} />
             </IconButton>
@@ -161,62 +170,52 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         </div>
       </div>
       <div className="my-2 font-bold">
-        {props.symbol}({props.name})
+        {symbol ?? ''}({name})
       </div>
-
-      <div className="flex items-center mb-2">
-        <span className="font-bold">{t('ca')}:</span>{' '}
-        <a
-          href={props.outside_url}
-          target="_blank"
-          className="text-primary ml-1 underline"
-        >
-          {utilFmt.addr(props.address)}
-        </a>
-        <IoCopyOutline
-          className="ml-3 cursor-pointer"
-          onClick={() => copy(props.address)}
-        />
-      </div>
+      <CopyAddr
+        addr={address}
+        className="underline text-primary cursor-pointer"
+        containerClass="mb-1"
+        onClick={() => window.open(outside_url)}
+        iconSize={16}
+        prefix={<span className="font-bold mr-1">{t('ca')}:</span>}
+      />
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('liquidity')}:</span>
-        <span>{numeral(props.liquidity).format('$0,0a.00')}</span>
+        <span>{numeral(liquidity).format('$0,0a.00')}</span>
       </div>
-      {props.started ? (
+      {started ? (
         <div className="flex items-center mb-2">
           <span className="font-bold mr-1">{t('started')}:</span>{' '}
-          <span>{props.started}</span>
+          <span>{started}</span>
         </div>
       ) : null}
       <div className="flex items-center mb-2">
         <span className="font-bold mr-1">{t('price')}:</span>
-        <span>${utilFmt.token(props.price)}</span>
+        <span>${utilFmt.token(price)}</span>
       </div>
 
       <div className="grid grid-cols-2">
-        {!!props.security && (
+        {!!security && (
           <div>
             <div className="font-bold mt-2">⚙️ {t('ca-secutiry')}</div>
             <div className="max-h-[185px] overflow-y-scroll">
               {handleRiskList()}
               <div className="mt-2 text-sm text-gray-500">
-                {utilLang.getContent(props.security.remark)}
+                {utilLang.getContent(security.remark)}
               </div>
             </div>
           </div>
         )}
-        {!!props.top_holders && (
+        {!!top_holders && (
           <div className="ml-4">
             <div className="font-bold mt-2">🏦 {t('top-holders')}</div>
-            {Object.keys(props.top_holders).map((key) => (
+            {Object.keys(top_holders).map((key) => (
               <div className="mt-2" key={key}>
-                {props.chain == WalletChain.SOL ? key : utilFmt.addr(key)}:{' '}
-                {props.chain == WalletChain.SOL
-                  ? `${
-                      `${parseFloat(props.top_holders[key])}%` ||
-                      props.top_holders[key]
-                    }`
-                  : `${Number(props.top_holders[key]).toFixed(2)}%`}
+                {chain == Chain.Sol ? key : utilFmt.addr(key)}:{' '}
+                {chain == Chain.Sol
+                  ? `${`${parseFloat(top_holders[key])}%` || top_holders[key]}`
+                  : `${Number(top_holders[key]).toFixed(2)}%`}
               </div>
             ))}
             <div></div>
@@ -225,11 +224,11 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         <div className="my-2">
           <div className="font-bold mt-2">
             🧠 {t('score')}:{' '}
-            {props.score?.score ?? (
+            {score?.score ?? (
               <span className="text-red-500">{t('hight.risk')}</span>
             )}
           </div>
-          {props.score?.detail?.map((str, i) => (
+          {score?.detail?.map((str, i) => (
             <div className="mt-2" key={i}>
               {str}
             </div>
@@ -237,8 +236,7 @@ const NewPoolBubble = (props: ChatResponseMetaNewPoolV2) => {
         </div>
       </div>
       <Dialog open={show} onClose={hidden}>
-        <DialogHeader text={'list'} onClose={hidden}></DialogHeader>
-        <></>
+        <DialogHeader text={'list'} onClose={hidden} />
       </Dialog>
     </MessageBubble>
   )

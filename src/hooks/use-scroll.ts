@@ -33,7 +33,6 @@ export const useScroll = (options: Options) => {
     if (!el) return
 
     el.addEventListener('scroll', onScroll)
-
     return () => {
       el.removeEventListener('scroll', onScroll)
     }

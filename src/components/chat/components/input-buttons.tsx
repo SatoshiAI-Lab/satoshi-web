@@ -24,14 +24,14 @@ export const InputButtons = (props: Props) => {
     onPasuseClick,
   } = props
 
-  const ButtonGetter = () => {
+  const Button = () => {
     if (showToBottom) {
       return (
         <IconButton
           onClick={onToBottomClick}
-          className="!bg-slate-50 dark:!bg-zinc-800"
+          className="!bg-slate-50 not-used-dark:!bg-zinc-800"
         >
-          <IoIosArrowDown size={20} className="dark:text-white" />
+          <IoIosArrowDown size={20} className="not-used-dark:text-white" />
         </IconButton>
       )
     }
@@ -40,11 +40,11 @@ export const InputButtons = (props: Props) => {
       return (
         <IconButton
           onClick={onPasuseClick}
-          className="!bg-slate-50 dark:!bg-zinc-800"
+          className="!bg-slate-50 not-used-dark:!bg-zinc-800"
         >
           <FaRegCirclePause
             size={20}
-            className="text-red-500 dark:text-red-700"
+            className="text-red-500 not-used-dark:text-red-700"
           />
         </IconButton>
       )
@@ -53,7 +53,7 @@ export const InputButtons = (props: Props) => {
     // There must be an empty element,
     // otherwise will be no exit animation.
     return (
-      <IconButton className="!bg-slate-50 dark:!bg-zinc-800">
+      <IconButton className="!bg-slate-50 not-used-dark:!bg-zinc-800">
         <FaCircle size={20} className="text-transparent bg-transparent" />
       </IconButton>
     )
@@ -67,7 +67,7 @@ export const InputButtons = (props: Props) => {
         y: isShow ? 0 : 56,
       }}
     >
-      {ButtonGetter()}
+      {Button()}
     </motion.div>
   )
 }

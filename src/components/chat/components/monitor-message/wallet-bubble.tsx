@@ -1,24 +1,19 @@
 import React from 'react'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { useTranslation } from 'react-i18next'
-import toast from 'react-hot-toast'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import dayjs from 'dayjs'
-import { IoCopyOutline } from 'react-icons/io5'
 
 import { MessageBubble } from '../message-bubble'
 import { link } from '@/config/link'
 import { utilFmt } from '@/utils/format'
+import { useMessagesContext } from '@/contexts/messages'
+import { CopyAddr } from '@/components/copy-addr'
+import { MetaType } from '@/api/chat/types'
 
-import type { ChatResponseMetaWallet } from '@/api/chat/types'
-
-interface Props {
-  data: ChatResponseMetaWallet
-}
-
-const WalletBubble = ({ data }: Props) => {
+export const WalletBubble = () => {
+  const { t } = useTranslation()
+  const { getMetaData } = useMessagesContext()
   const {
-    type,
     created_at,
     name,
     sender,
@@ -26,8 +21,7 @@ const WalletBubble = ({ data }: Props) => {
     side_amount,
     side_symbol,
     hash,
-  } = data
-  const { t } = useTranslation()
+  } = getMetaData<MetaType.MonitorWallet>()
 
   return (
     <MessageBubble className={clsx('min-w-[400px] py-4')}>
@@ -40,7 +34,7 @@ const WalletBubble = ({ data }: Props) => {
         /> */}
         <div className="flex flex-col justify-between ">
           <span className="font-bold">
-            {t('walletbubble.title').replace('$1', name)}
+            {t('walletbubble.title').replace('$1', name ?? '')}
           </span>
           <span className="text-gray-400">
             {dayjs(created_at).format('H:mm M/D')}
@@ -60,20 +54,11 @@ const WalletBubble = ({ data }: Props) => {
         {t('for')} {utilFmt.token(side_amount)} {side_symbol}
       </div>
       {/* contract address */}
-      <div className="flex items-center my-1">
-        <div className="mr-2">
-          <span className="font-bold">{side_symbol} CA</span>:{' '}
-          {utilFmt.addr(sender)}
-        </div>
-        <CopyToClipboard
-          text={sender}
-          onCopy={() => {
-            toast.success(t('copy-success'))
-          }}
-        >
-          <IoCopyOutline className="cursor-pointer" />
-        </CopyToClipboard>
-      </div>
+      <CopyAddr
+        addr={sender}
+        prefix={<span className="font-bold mr-1">{side_symbol} CA:</span>}
+        iconSize={16}
+      />
       {/* Transaction hash */}
       <a
         href={`${link.solscan}tx/${hash}`}

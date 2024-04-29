@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { isEmpty } from 'lodash'
 
 import { tokenApi } from '@/api/token'
 import { TokenSearchCoin } from '@/api/token/types'
 import { useFavorites } from '@/components/favorites/hooks/use-favorites'
-import { utilArr } from '@/utils/array'
 
 export const useTokenSearcher = () => {
   const [keyword, search] = useState('')
@@ -35,7 +35,7 @@ export const useTokenSearcher = () => {
   }, [searchResult])
 
   useEffect(() => {
-    if (utilArr.isEmpty(coins)) {
+    if (isEmpty(coins)) {
       setCoins(tokenList)
     }
   }, [tokenList])

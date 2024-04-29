@@ -11,7 +11,7 @@ import { utilArr } from '@/utils/array'
 import { useChat } from '@/hooks/use-chat'
 import { useMessages } from '@/hooks/use-messages'
 
-function MultiMessage(props: MultiMessageProps) {
+export const MultiMessage = (props: MultiMessageProps) => {
   const { id, title, meta } = props
   const { findPrevInteractive } = useMessages()
   const { sendChat } = useChat()

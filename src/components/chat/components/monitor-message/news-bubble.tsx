@@ -5,19 +5,18 @@ import dayjs from 'dayjs'
 import toast from 'react-hot-toast'
 import ShowMoreText from 'react-show-more-text'
 
-import MessageBubble from '../message-bubble'
+import { MessageBubble } from '../message-bubble'
 import { utilLang } from '@/utils/language'
+import { useMessagesContext } from '@/contexts/messages'
+import { MetaType } from '@/api/chat/types'
 
-import type { ChatResponseMetaNewsInfo } from '@/api/chat/types'
-
-interface Props {
-  data: ChatResponseMetaNewsInfo
-}
-
-const NewsBubble = ({ data }: Props) => {
-  const { content, created_at, title, source } = data
+export const NewsBubble = () => {
+  const { getMetaData } = useMessagesContext()
+  const { content, created_at, title, source } =
+    getMetaData<MetaType.MonitorNews>()
   const currentContent = utilLang.getContent(content)
   const currentTitle = utilLang.getContent(title)
+
   const originLinkButton = () => {
     if (source) {
       return (

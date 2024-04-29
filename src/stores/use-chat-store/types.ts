@@ -1,65 +1,49 @@
-import type { ChatResponseMetaNewPoolV2 } from './../../api/chat/types'
-import type { ChatResponse } from '@/api/chat/types'
+import type { ChatResponse, MonitorData } from '@/api/chat/types'
 import type { PartialPick } from '@/types/types'
 
 export enum DataType {
   NewsInfo = 'news_info',
-  AnnouncementInfo = 'announcement_info',
+  AnnInfo = 'announcement_info',
   TwitterInfo = 'twitter_info',
   TradeInfo = 'trade_info',
   PoolInfo = 'pool_info',
 }
 
-// export interface Message {
-//   msg: string
-//   msgs?: ChatResponseMeta
-//   position?: 'left' | 'right'
-//   className?: string
-//   isLoadingMsg?: boolean
-//   isInteractive?: boolean
-//   isMonitor?: boolean
-//   isIntention?: boolean
-//   rawData?: ChatResponse
-//   msgId?: string
-//   type?: string
-//   data_type?: DataType
-// }
-
 export type MessageRole = 'user' | 'assistant' | 'system'
 
-export type PartialMessage = Partial<Omit<ChatResponse, 'text'>>
-
-export type RequiredMessage = Pick<ChatResponse, 'text'>
-
-export interface Message
-  extends PartialMessage,
-    RequiredMessage,
-    Partial<ChatResponseMetaNewPoolV2> {
+export interface Message extends Partial<ChatResponse> {
+  // Required props.
   id: string
-  role?: MessageRole
+  text: string
+  role: MessageRole
+
+  // Used for loading message.
   isLoading?: boolean
+
+  // Used for monitor message.
   data_type?: DataType
 
+  // Categorilize for `answer_type` props.
   isInteractive?: boolean
-  isIntention?: boolean
   isReference?: boolean
+  isIntent?: boolean
   isMonitor?: boolean
+  isPrivateKey?: boolean
 }
 
-export interface States {
+export interface ChatStore {
   intention: string
   question: string
   messages: Message[]
   chatEl: HTMLElement | null
+  chatInputEl: HTMLInputElement | HTMLTextAreaElement | null
   isLoading: boolean
-  unreadMessages: Message[]
+  unreadMessages: MonitorData[]
   inputKeyup: boolean
   readAnswer: boolean
   waitAnswer: boolean
   socket: WebSocket | undefined
-}
 
-export interface Actions {
   setIntention(intention: string): void
   setQuestion(value: string): void
   getMessages(): Message[]
@@ -70,11 +54,14 @@ export interface Actions {
   updateMessage(id: string, message: PartialPick<Message, 'id' | 'text'>): void
   getMessage(id: string): void
 
-  setUnreadMessage(unreadMessages: Message[]): void
+  setUnreadMessage(unreadMessages: MonitorData[]): void
   setChatEl(el: HTMLElement): void
+  setChatInputEl(el: HTMLInputElement | HTMLTextAreaElement): void
   setIsLoading(bool: boolean): void
   setInputKeyup(bool: boolean): void
   setWaitAnswer(bool: boolean): void
   setReadAnswer(bool: boolean): void
   setSocket(socket: WebSocket): void
+
+  chatScrollToBottom(): void
 }
