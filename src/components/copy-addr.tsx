@@ -4,7 +4,8 @@ import { clsx } from 'clsx'
 import { CopyIcon } from './copy-icon'
 import { utilFmt } from '@/utils/format'
 
-interface Props extends Omit<React.ComponentProps<'span'>, 'prefix'> {
+interface Props
+  extends Omit<React.ComponentProps<'span'>, 'prefix' | 'onCopy'> {
   addr: string | undefined
   fmt?: boolean
   prefix?: ReactNode
@@ -12,6 +13,7 @@ interface Props extends Omit<React.ComponentProps<'span'>, 'prefix'> {
   bold?: boolean
   containerClass?: string
   iconClass?: string
+  onCopy?: React.MouseEventHandler<SVGElement>
 }
 
 export const CopyAddr = (props: Props) => {
@@ -24,6 +26,7 @@ export const CopyAddr = (props: Props) => {
     bold = false,
     containerClass,
     iconClass,
+    onCopy,
     ...restProps
   } = props
 
@@ -36,7 +39,12 @@ export const CopyAddr = (props: Props) => {
       >
         {fmt ? utilFmt.addr(addr) : addr}
       </span>
-      <CopyIcon text={addr} size={iconSize} className={iconClass} />
+      <CopyIcon
+        text={addr}
+        size={iconSize}
+        className={iconClass}
+        onClick={onCopy}
+      />
     </div>
   )
 }
