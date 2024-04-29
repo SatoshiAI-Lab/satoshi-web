@@ -29,7 +29,7 @@ export const WalletImportMessage = () => {
   const { data: wallet, code } = data ?? {}
   const isErr = isError || (code && code !== ResponseCode.Success)
 
-  const onImport = (p: Platform) => {
+  const onImport = (p?: Platform) => {
     mutateAsync({
       platform: p || platform_name,
       private_key,
@@ -39,6 +39,7 @@ export const WalletImportMessage = () => {
   // Auto import if all is not empty.
   useEffect(() => {
     if (platformIsEmpty || privateKeyIsEmpty) return
+    onImport()
   }, [])
 
   // Importing.
