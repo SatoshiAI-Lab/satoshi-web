@@ -260,7 +260,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
             isPendding={isFirstFetchingWallets}
             fallback={<WalletSkeleton className="h-[440px] max-h-[440px]" />}
           >
-            {filteredWallets.length ? (
+            {filteredWallets.length || onlyWallet ? (
               (onlyWallet ? [onlyWallet] : filteredWallets).map((w) => (
                 <WalletCard
                   key={w.address}
