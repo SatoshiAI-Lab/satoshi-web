@@ -14,13 +14,9 @@ import { useMessagesContext } from '@/contexts/messages'
 export const TxTokenBubbles = () => {
   const { getMetaData } = useMessagesContext()
   const data = getMetaData<MetaType.Tx>()
-  const isBuy = true // TODO: Wait for implementation
-
-  // const data = props.msg.data as unknown as ChatResponseTxConfrim
-  // const isBuy = props.msg.type == CHAT_CONFIG.metadataType.transactionConfirmBuy
 
   const options = {
-    isBuy,
+    isBuy: false,
     data,
   }
 
