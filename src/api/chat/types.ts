@@ -303,7 +303,7 @@ export interface ChatMetaInteractive {
 }
 
 export interface ChatMetaReference {
-  // content: string
+  content: string
   published_at: string
   url: string
 }
