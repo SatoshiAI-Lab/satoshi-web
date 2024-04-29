@@ -100,6 +100,9 @@ export const WalletSelectMessage = forwardRef((props: Props, ref) => {
                 <span>
                   {t('address')}: {utilFmt.addr(w.address)}
                 </span>
+                <span>
+                  {t('balance')}: ${w.value}
+                </span>
               </Button>
             )}
           </li>

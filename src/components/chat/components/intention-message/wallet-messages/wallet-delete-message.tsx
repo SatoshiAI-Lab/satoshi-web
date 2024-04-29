@@ -70,16 +70,6 @@ export const WaleltDeleteMessage = () => {
     )
   }
 
-  // Not found wallet.
-  if (!wallet && !isClicked) {
-    return (
-      <MessageBubble>
-        <p>{t('wallet.not-found')}:</p>
-        <p className="font-bold">{wallet_name}</p>
-      </MessageBubble>
-    )
-  }
-
   // `wallet_name` is empty, select wallet.
   if (isEmpty(wallet_name)) {
     return (
@@ -89,6 +79,16 @@ export const WaleltDeleteMessage = () => {
         disabled={isPending || isClicked}
         onWalletClick={onDelete}
       />
+    )
+  }
+
+  // Not found wallet.
+  if (!wallet && !isClicked) {
+    return (
+      <MessageBubble>
+        <p>{t('wallet.not-found')}:</p>
+        <p className="font-bold">{wallet_name}</p>
+      </MessageBubble>
     )
   }
 
