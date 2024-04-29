@@ -4,16 +4,19 @@ import type {
   ChatMointorRoomRes,
   ChatParams,
   ChatTransactionParams,
-  SpeechResponse,
 } from './types'
 
 export const chatApi = {
   /** Chat API */
-  async chat(params: ChatParams, signal?: AbortSignal) {
+  chat(params: ChatParams, signal?: AbortSignal) {
     return fetchChat.post('/chat', params, signal) as unknown as Promise<
       ReadableStream<Uint8Array>
     >
   },
+  clearHistory() {
+    return fetchChat.delete('/chat-history')
+  },
+
   /** Transaction */
   transaction(params: ChatTransactionParams) {
     return fetchChat.post('/transaction_confirm', params)
