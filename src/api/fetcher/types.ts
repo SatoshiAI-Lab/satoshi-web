@@ -9,7 +9,7 @@ export interface FetcherOptions {
   needAuth?: boolean
 }
 
-export interface FetcherResponse<T> {
+export interface FetcherResponse<T = null> {
   code: ResponseCode
   message: string
   data: T

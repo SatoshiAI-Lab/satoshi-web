@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-hot-toast'
 
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
@@ -30,6 +31,7 @@ export const WaleltDeleteMessage = () => {
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.deleteWallet.name],
     mutationFn: walletApi.deleteWallet,
+    onError: (e) => toast.error(e.message),
   })
   const { code } = data ?? {}
   const isErr = isError || (code && code !== ResponseCode.Success)

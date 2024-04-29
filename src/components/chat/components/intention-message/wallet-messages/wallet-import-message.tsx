@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-hot-toast'
 
 import { MessageBubble } from '../../message-bubble'
 import { useMessagesContext } from '@/contexts/messages'
@@ -25,6 +26,7 @@ export const WalletImportMessage = () => {
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.importPrivateKey.name],
     mutationFn: walletApi.importPrivateKey,
+    onError: (err) => toast.error(err.message),
   })
   const { data: wallet, code } = data ?? {}
   const isErr = isError || (code && code !== ResponseCode.Success)

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
 import { nanoid } from 'nanoid'
 import { Dialog } from '@mui/material'
+import { toast } from 'react-hot-toast'
 
 import { useMessagesContext } from '@/contexts/messages'
 import { MetaType } from '@/api/chat/types'
@@ -27,6 +28,7 @@ export const SubWalletMessage = () => {
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [monitorApi.update.name],
     mutationFn: monitorApi.update,
+    onError: (e) => toast.error(e.message),
   })
   const { data: wallet, code } = data ?? {}
   const isErr = isError || (code && code !== ResponseCode.Success)
