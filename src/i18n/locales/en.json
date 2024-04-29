@@ -341,5 +341,8 @@
   "from.replace.token": "Since you don't have $1, I have already helped you exchange it for $2.",
   "to.not.find.token": "No convertible token found.",
   "from.not.find.token": "There is no $1 available in the wallet",
-  "no.wallets.available": "「Debugger」No wallets available"
+  "no.wallets.available": "「Debugger」No wallets available",
+  "wallet.null-hints": "Your {} chain does not have a wallet yet.",
+  "wallet.null-case": "Create a {} wallet.",
+  "try-say": "Try saying"
 }
