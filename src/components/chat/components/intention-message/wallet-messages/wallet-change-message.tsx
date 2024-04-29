@@ -12,6 +12,7 @@ import { walletApi } from '@/api/wallet'
 import { WalletSelectMessage } from '../../wallet-select-message'
 import { useWalletList } from '@/hooks/use-wallet-list'
 import { ChatCase } from '../../chat-case'
+import { ResponseCode } from '@/api/fetcher/types'
 
 export const WalletChangeMessage = () => {
   const { t } = useTranslation()
@@ -27,6 +28,8 @@ export const WalletChangeMessage = () => {
     mutationKey: [walletApi.renameWallet.name],
     mutationFn: walletApi.renameWallet,
   })
+  const { code } = data ?? {}
+  const isErr = isError || (code && code !== ResponseCode.Success)
 
   const onRename = (wallet_id: string) => {
     if (!wallet_id) return
@@ -49,7 +52,7 @@ export const WalletChangeMessage = () => {
   }
 
   // Rename error.
-  if (isError) {
+  if (isErr) {
     return <MessageBubble>{t('wallet.rename.error')}</MessageBubble>
   }
 
