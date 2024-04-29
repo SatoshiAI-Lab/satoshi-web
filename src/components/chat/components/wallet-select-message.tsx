@@ -26,6 +26,8 @@ import { walletApi } from '@/api/wallet'
 import { CopyAddr } from '@/components/copy-addr'
 import { CustomSuspense } from '@/components/custom-suspense'
 import { ChatCase } from './chat-case'
+import { CustomCollapse } from '@/components/custom-collapse'
+import { utilParse } from '@/utils/parse'
 
 interface Props {
   title?: ReactNode
@@ -80,47 +82,54 @@ export const WalletSelectMessage = forwardRef((props: Props, ref) => {
         disabled={disabled || isRefetching}
         showTitle={false}
       />
-      <ul className={clsx('grid gap-2', wallets.length && 'grid-cols-2 ')}>
-        <CustomSuspense
-          isPendding={isFetching}
-          fallback={
-            <div className="grid grid-cols-2 gap-2">
-              <WalletItemSkeleton />
-            </div>
-          }
-          nullback={
-            <div>
-              <p>{t('wallet.null-hints').replace('{}', chain)}</p>
-              <ChatCase text={t('wallet.null-case').replace('{}', chain)} />
-            </div>
-          }
+      <CustomCollapse
+        minHeight={140}
+        defaultCollapsed={wallets.length >= 3}
+        showArrow={!isFetching}
+      >
+        <ul
+          className={clsx(
+            'grid gap-2',
+            (wallets.length || isFetching || isRefetching) && 'grid-cols-2'
+          )}
         >
-          {wallets.map((w) => (
-            <li key={w.id}>
-              {
-                <Button
-                  variant="outlined"
-                  size="small"
-                  className="!flex-col !w-full !items-start !text-sm"
-                  disabled={disabled || isRefetching}
-                  onClick={() => onWalletClick?.(w)}
-                >
-                  <span>
-                    {t('name')}: <span className="font-bold">{w.name}</span>($
-                    {w.value})
-                  </span>
-                  <CopyAddr
-                    prefix={<span className="mr-1">{t('address')}:</span>}
-                    iconSize={14}
-                    addr={w.address}
-                    onCopy={(e) => e.stopPropagation()}
-                  />
-                </Button>
-              }
-            </li>
-          ))}
-        </CustomSuspense>
-      </ul>
+          <CustomSuspense
+            isPendding={isFetching}
+            fallback={<WalletItemSkeleton />}
+            nullback={
+              <div>
+                <p>{t('wallet.null-hints').replace('{}', chain)}</p>
+                <ChatCase text={t('wallet.null-case').replace('{}', chain)} />
+              </div>
+            }
+          >
+            {wallets.map((w) => (
+              <li key={w.id}>
+                {
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    className="!flex-col !w-full !items-start !text-sm"
+                    disabled={disabled || isRefetching}
+                    onClick={() => onWalletClick?.(w)}
+                  >
+                    <span>
+                      {t('name')}: <span className="font-bold">{w.name}</span>($
+                      {utilParse.noRoundFixed(Number(w.value), 2)})
+                    </span>
+                    <CopyAddr
+                      prefix={<span className="mr-1">{t('address')}:</span>}
+                      iconSize={14}
+                      addr={w.address}
+                      onCopy={(e) => e.stopPropagation()}
+                    />
+                  </Button>
+                }
+              </li>
+            ))}
+          </CustomSuspense>
+        </ul>
+      </CustomCollapse>
     </MessageBubble>
   )
 })
@@ -129,10 +138,13 @@ const WalletItemSkeleton = () => {
   return Array.from({ length: 4 }).map((_, i) => (
     <div
       key={i}
-      className="h-[48px] border border-zinc-300 rounded px-2 py-1.5 flex flex-col justify-between"
+      className={clsx(
+        'h-[48px] w-[210px] border border-zinc-300 px-2 py-1.5',
+        'rounded flex flex-col justify-between'
+      )}
     >
-      <Skeleton variant="rounded" height={14} width={210} />
-      <Skeleton variant="rounded" height={14} width={210} />
+      <Skeleton variant="rounded" height={14} />
+      <Skeleton variant="rounded" height={14} />
     </div>
   ))
 }

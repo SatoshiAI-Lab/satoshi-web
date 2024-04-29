@@ -272,12 +272,6 @@
   "bear-wallet": "Bearchain 钱包",
   "all.on.or.off": "全部开启或关闭",
   "help-me": "帮我",
-  "create-wallet": "创建钱包",
-  "create-wallet-details": "创建以太坊钱包。",
-  "view-wallets": "查看钱包",
-  "view-wallets-details": "查看我的以太坊钱包。",
-  "create-token": "发布代币",
-  "create-token-details": "在OP链上发布一个代币。",
   "create-token.success": "恭喜！我已成功为您创建代币",
   "tokens": "代币",
   "evm-all-chain": "支持所有EVM兼容链",
@@ -339,5 +333,11 @@
   "no.wallets.available": "「Debugger」没有可用的钱包",
   "wallet.null-hints": "您的 {} 链还没有钱包",
   "wallet.null-case": "创建一个 {} 钱包。",
-  "try-say": "尝试说"
+  "try-say": "尝试说",
+  "wallet.create": "创建钱包",
+  "wallet.create.details": "创建一个以太坊钱包。",
+  "wallet.view": "查看钱包",
+  "token.create": "发布代币",
+  "token.create.details": "在 Scroll 链上发布一个代币。",
+  "wallets.view.details": "查看我的以太坊钱包。"
 }

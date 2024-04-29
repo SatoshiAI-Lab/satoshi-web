@@ -71,7 +71,7 @@ export const WaleltDeleteMessage = () => {
   }
 
   // `wallet_name` is empty, select wallet.
-  if (isEmpty(wallet_name)) {
+  if (isEmpty(wallet_name) && !data) {
     return (
       <WalletSelectMessage
         ref={walletSelectRef}
