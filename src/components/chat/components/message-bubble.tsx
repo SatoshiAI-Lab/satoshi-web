@@ -1,5 +1,5 @@
 import React from 'react'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { motion } from 'framer-motion'
 
 import type { MessageRole } from '@/stores/use-chat-store/types'
@@ -25,7 +25,7 @@ export const MessageBubble = (props: Props) => {
         'not-used-dark:bg-zinc-800 not-used-dark:text-gray-300 not-used-dark:hover:bg-[#232325]',
         !children || children.toString().trim() === '' ? 'hidden' : '',
         role === 'assistant' && 'self-start',
-        role === 'system' && 'self-center',
+        role === 'system' && '!max-w-[unset] self-stretch text-center',
         role === 'user' && 'self-end',
         className
       )}

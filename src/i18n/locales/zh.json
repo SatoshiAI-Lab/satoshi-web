@@ -339,5 +339,16 @@
   "wallet.view": "查看钱包",
   "token.create": "发布代币",
   "token.create.details": "在 Scroll 链上发布一个代币。",
-  "wallets.view.details": "查看我的以太坊钱包。"
+  "wallets.view.details": "查看我的以太坊钱包。",
+  "chat.clear-history": "清屏",
+  "monitor.intro": "监控设置",
+  "wallet.intro": "钱包管理",
+  "scene.intro": "更换背景图",
+  "mute.intro": "模型静音",
+  "clear.intro": "清理上下文历史",
+  "clear.success": "清理成功！",
+  "clear.failed": "清理失败，请重试",
+  "clearing": "清理中...",
+  "clear.history": "上下文历史已清理",
+  "chat.wait-hint": "请等待回答完成或终止回答后再清理。"
 }

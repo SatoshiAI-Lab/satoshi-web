@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { AiOutlineSetting } from 'react-icons/ai'
 import { BiSolidChess, BiSolidWalletAlt } from 'react-icons/bi'
 import { BsVolumeUp, BsVolumeMute } from 'react-icons/bs'
+import { PiBroom } from 'react-icons/pi'
 import { motion } from 'framer-motion'
 import { clsx } from 'clsx'
 
@@ -16,6 +17,8 @@ import { useStorage } from '@/hooks/use-storage'
 import { useUserStore } from '@/stores/use-user-store'
 import { useLoginAuthStore } from '@/stores/use-need-login-store'
 import { useWalletManage } from '@/hooks/use-wallet'
+import { useChat } from '@/hooks/use-chat'
+import { useEnv } from '@/hooks/use-env'
 
 enum AnimateType {
   None,
@@ -40,10 +43,13 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
   const { setShow } = useLoginAuthStore()
   const { refetchWallets } = useWalletManage()
   const { isLogined } = useUserStore()
+  const { clearHistory } = useChat()
+  const { isDev } = useEnv()
 
   const items = [
     {
       label: t('monitor'),
+      title: t('monitor.intro'),
       icon: <AiOutlineSetting size={18} />,
       animate: AnimateType.Rotate,
       onClick: () => {
@@ -56,6 +62,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
     },
     {
       label: t('wallet'),
+      title: t('wallet.intro'),
       icon: <BiSolidWalletAlt size={18} />,
       animate: AnimateType.Shake,
       transition: shakeTransition,
@@ -70,12 +77,14 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
     },
     {
       label: t('scene'),
+      title: t('scene.intro'),
       icon: <BiSolidChess size={18} />,
       animate: AnimateType.Rotate,
       onClick: changeScene,
     },
     {
       label: isMute ? t('unmute') : t('mute'),
+      title: t('mute.intro'),
       animate: AnimateType.Shake,
       transition: shakeTransition,
       icon: isMute ? (
@@ -89,6 +98,17 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
       },
     },
   ]
+
+  // Clear functional, only dev mode use.
+  if (isDev) {
+    items.push({
+      label: t('chat.clear-history'),
+      title: t('clear.intro'),
+      animate: AnimateType.Shake,
+      icon: <PiBroom size={18} />,
+      onClick: clearHistory,
+    })
+  }
 
   return (
     <>
@@ -116,6 +136,7 @@ export const InputMenu: React.FC<{ className?: string }> = (props) => {
                 'cursor-pointer max-sm:mr-4 drop-shadow-bold-dark'
               )}
               onClick={item.onClick}
+              title={item.title}
             >
               <motion.div
                 animate={animateType[item.animate]}

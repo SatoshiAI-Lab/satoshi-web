@@ -59,6 +59,8 @@ export const useChatType = () => {
 
       isCheck: type.startsWith(MetaTypeCategory.CheckPrefix),
       isCheckAddr: type === MetaType.CheckAddr,
+
+      isClearHistory: type === MetaType.ClearHistory,
     }
   }
 

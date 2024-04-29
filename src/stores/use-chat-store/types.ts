@@ -20,6 +20,9 @@ export interface Message extends Partial<ChatResponse> {
   // Used for loading message.
   isLoading?: boolean
 
+  // Used for system message.
+  isSystem?: boolean
+
   // Used for monitor message.
   data_type?: DataType
 

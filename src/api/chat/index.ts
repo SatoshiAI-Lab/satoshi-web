@@ -14,7 +14,7 @@ export const chatApi = {
     >
   },
   clearHistory() {
-    return fetchChat.delete('/chat-history')
+    return fetchChat.post('/clear-history')
   },
 
   /** Transaction */

@@ -87,6 +87,9 @@ export enum MetaType {
   MonitorWallet = DataType.TradeInfo,
   MonitorTwitter = DataType.TwitterInfo,
   MonitorNewPool = DataType.PoolInfo,
+
+  // custom type, clear history.
+  ClearHistory = 'clear_history',
 }
 
 export enum MetaTypeCategory {
@@ -162,6 +165,8 @@ export type MetaTypeData = {
   [MetaType.MonitorWallet]: ChatResponseMetaWallet
   [MetaType.MonitorTwitter]: ChatResponseMetaTwitter
   [MetaType.MonitorNewPool]: ChatResponseMetaNewPoolV2
+
+  [MetaType.ClearHistory]: {}
 }
 
 export type MonitorData =

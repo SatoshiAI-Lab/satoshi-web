@@ -8,6 +8,7 @@ import {
   AnswerType,
   type MonitorData,
   type ChatResponse,
+  MetaType,
 } from '@/api/chat/types'
 
 import { useChatStore } from '@/stores/use-chat-store'
@@ -259,6 +260,19 @@ export const useMessages = () => {
     }
   }
 
+  // Add a clear context history message.
+  const addClearHistoryMessage = () => {
+    addMessage({
+      role: 'system',
+      text: '',
+      isSystem: true,
+      meta: {
+        type: MetaType.ClearHistory,
+        data: {},
+      },
+    })
+  }
+
   return {
     addMessage,
     addStreamMessage,
@@ -272,5 +286,6 @@ export const useMessages = () => {
     removeLast,
     removeLastLoading,
     findPrevInteractive,
+    addClearHistoryMessage,
   }
 }

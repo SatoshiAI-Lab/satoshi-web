@@ -37,7 +37,12 @@ export const useChat = () => {
     chatScrollToBottom,
   } = useChatStore()
   const { startLoopMotion, stopLoopMotion, emitMotionSpeak } = useLive2D()
-  const { parseChatMessage, removeLastLoading, addLoading } = useMessages()
+  const {
+    parseChatMessage,
+    removeLastLoading,
+    addLoading,
+    addClearHistoryMessage,
+  } = useMessages()
 
   const getChatParams = (options?: InteractiveOptions) => {
     const {
@@ -160,6 +165,24 @@ export const useChat = () => {
     setIsLoading(false)
   }
 
+  // Clear chat history.
+  const clearHistory = async () => {
+    if (isLoading) {
+      toast.error(t('chat.wait-hint'))
+      return
+    }
+    const id = toast.loading(t('clearing'))
+    try {
+      await chatApi.clearHistory()
+      addClearHistoryMessage()
+      toast.success(t('clear.success'))
+    } catch (error) {
+      toast.error(t('clear.failed'))
+    } finally {
+      toast.dismiss(id)
+    }
+  }
+
   return {
     messages,
     question,
@@ -168,5 +191,6 @@ export const useChat = () => {
     sendChat,
     stopChat,
     resetChat,
+    clearHistory,
   }
 }

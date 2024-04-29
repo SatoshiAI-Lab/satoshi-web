@@ -10,6 +10,7 @@ import { TokenMessage } from './token-message'
 import { useChatType } from '@/hooks/use-chat-type'
 import { MessagesProvider, useMessagesContext } from '@/contexts/messages'
 import { MetaType, MetaTypeData } from '@/api/chat/types'
+import { SystemMessages } from './system-messages'
 
 export const Messages = memo(({ messages }: { messages: Message[] }) => {
   const { identifyAnswerType, identifyMetaType } = useChatType()
@@ -35,6 +36,9 @@ const MessagesCategory = () => {
 
   // Loading message.
   if (m.isLoading) return <LoadingMessage />
+
+  // System related messages.
+  if (m.isSystem) return <SystemMessages />
 
   // Monitor/Subscript related messages.
   if (m.isMonitor) return <MonitorMessages />

@@ -344,5 +344,16 @@
   "wallet.view": "View wallets",
   "token.create": "Create token",
   "token.create.details": "Create a token on Scroll.",
-  "wallets.view.details": "View my Ethereum wallets."
+  "wallets.view.details": "View my Ethereum wallets.",
+  "chat.clear-history": "Clear",
+  "monitor.intro": "Monitoring settings",
+  "wallet.intro": "Wallets management",
+  "scene.intro": "Change background image",
+  "mute.intro": "Mute the model",
+  "clear.intro": "Clear context history",
+  "clear.success": "Clear successful!",
+  "clear.failed": "Clear failed, please try again",
+  "clearing": "Clearing...",
+  "clear.history": "Context history cleared",
+  "chat.wait-hint": "Please wait until the answer is complete or terminate the answer before clear."
 }
