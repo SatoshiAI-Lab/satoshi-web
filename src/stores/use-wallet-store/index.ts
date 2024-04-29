@@ -58,7 +58,14 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
     })
   },
   setWalletList: (walletList) => set({ walletList }),
-  setChains: (chains) => set({ chains }),
+  setChains: (chains) => {
+    // Pin the scroll chain to top.
+    const scrollIdx = chains.findIndex((c) => c.name === Chain.Scroll)
+    if (scrollIdx !== -1) {
+      chains.unshift(chains.splice(scrollIdx, 1)[0])
+    }
+    set({ chains })
+  },
   setPlatforms: (platforms) => set({ platforms }),
   setCurrentWallet: (wallet) => {
     // Please do not set it to `undefined`,

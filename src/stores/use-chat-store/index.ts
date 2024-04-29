@@ -33,9 +33,11 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     set({ messages: newMessages })
   },
   addMessage: (message) => {
+    const { messages, chatEl } = get()
     const newMessage: Message = { id: nanoid(), ...message }
 
-    set({ messages: [...get().messages, newMessage] })
+    set({ messages: [...messages, newMessage] })
+    chatEl && utilDom.scrollToBottom(chatEl)
     return newMessage
   },
   removeMessage: (id) => {
