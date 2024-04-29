@@ -1,6 +1,6 @@
 import { useSwapWallet } from '@/hooks/use-swap/use-swap-wallet'
 import { SwapContext, TxLogicContext } from '@/hooks/use-swap/context'
-import { WalletCardProps } from '@/stores/use-wallet-store'
+import { PartialWalletRes } from '@/stores/use-wallet-store'
 import clsx from 'clsx'
 import numeral from 'numeral'
 import { useContext } from 'react'
@@ -29,7 +29,7 @@ export const WalletList = () => {
     return 'grid-cols-[120px_120px_120px]'
   }
 
-  const getSelectTokenInfo = (wallet: WalletCardProps) => {
+  const getSelectTokenInfo = (wallet: PartialWalletRes) => {
     return wallet?.tokens?.find((t) => selectFromToken?.address == t.address)
   }
 
@@ -59,7 +59,9 @@ export const WalletList = () => {
                     key={i}
                     className={clsx(
                       'p-3 transition-all hover:text-gray-500 cursor-pointer',
-                      currentWallet?.id == wallet.id ? '!text-primary bg-slate-100' : '',
+                      currentWallet?.id == wallet.id
+                        ? '!text-primary bg-slate-100'
+                        : '',
                       i === 1 ? 'border-x' : '',
                       i === wallets.length - 1 ? '!border-r-0' : ''
                     )}

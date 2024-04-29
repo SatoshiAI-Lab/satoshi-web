@@ -1,8 +1,8 @@
 import { Tooltip } from '@mui/material'
 
-import type { WalletCardProps } from '@/stores/use-wallet-store'
+import type { PartialWalletRes } from '@/stores/use-wallet-store'
 
-export const ChainLogos = (props: { wallet: WalletCardProps }) => {
+export const ChainLogos = (props: { wallet: PartialWalletRes }) => {
   const { chain } = props.wallet
 
   return (

@@ -1,6 +1,10 @@
-import { MultiChainCoin, ChatResponseWalletListToken, ChatResponseTxConfrim } from "@/api/chat/types"
-import { WalletCardProps } from "@/stores/use-wallet-store"
-import { Dispatch, SetStateAction } from "react"
+import {
+  MultiChainCoin,
+  ChatResponseWalletListToken,
+  ChatResponseTxConfrim,
+} from '@/api/chat/types'
+import { PartialWalletRes } from '@/stores/use-wallet-store'
+import { Dispatch, SetStateAction } from 'react'
 
 export interface ITxLogicContext {
   curRate: number
@@ -18,7 +22,7 @@ export interface ITxLogicContext {
   setCurRate: Dispatch<SetStateAction<number>>
   handleRateClick: (rate: number) => void
   getSelectTokenInfo: (
-    wallet?: WalletCardProps,
+    wallet?: PartialWalletRes,
     token?: MultiChainCoin
   ) => ChatResponseWalletListToken | undefined
 }
@@ -26,7 +30,7 @@ export interface ITxLogicContext {
 export interface ISwapContext {
   isBuy: boolean
   data?: ChatResponseTxConfrim
-  checkedWallet: WalletCardProps[]
+  checkedWallet: PartialWalletRes[]
   fromTokenList?: MultiChainCoin[]
   toTokenList: MultiChainCoin[]
   loadingToTokenList: boolean
@@ -34,8 +38,8 @@ export interface ISwapContext {
   replaceWithETHInfo: string
   selectToToken: MultiChainCoin | undefined
   selectFromToken: MultiChainCoin | undefined
-  currentWallet?: WalletCardProps
-  setCurrentWallet:Dispatch<SetStateAction<WalletCardProps | undefined>>
+  currentWallet?: PartialWalletRes
+  setCurrentWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
   setFromTokenList: Dispatch<SetStateAction<MultiChainCoin[]>>
   setToTokenList: Dispatch<SetStateAction<MultiChainCoin[]>>
   setSelectToToken: Dispatch<SetStateAction<MultiChainCoin | undefined>>

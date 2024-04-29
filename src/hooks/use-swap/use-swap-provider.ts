@@ -2,7 +2,7 @@ import { ChatResponseTxConfrim } from '@/api/chat/types'
 import { useTxFromToken } from './use-tx-from-token'
 import { useTxToToken } from './use-tx-to-token'
 import { useState } from 'react'
-import { WalletCardProps } from '@/stores/use-wallet-store'
+import { PartialWalletRes } from '@/stores/use-wallet-store'
 
 interface Options {
   isBuy: boolean
@@ -11,7 +11,7 @@ interface Options {
 
 export const useSwapProviderProvider = ({ isBuy, data }: Options) => {
   const [currentWallet, setCurrentWallet] = useState<
-    WalletCardProps | undefined
+    PartialWalletRes | undefined
   >()
   const {
     checkedWallet,

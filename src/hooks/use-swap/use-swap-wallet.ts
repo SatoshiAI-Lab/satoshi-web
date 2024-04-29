@@ -1,5 +1,5 @@
 import { use, useContext, useEffect, useState } from 'react'
-import { WalletCardProps } from '@/stores/use-wallet-store'
+import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { SwapContext } from './context'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
@@ -7,17 +7,18 @@ import { useTranslation } from 'react-i18next'
 export const useSwapWallet = () => {
   const { t } = useTranslation()
 
-  const { checkedWallet, selectFromToken, currentWallet, setCurrentWallet } = useContext(SwapContext)
-  const [gridWalletList, setGridWalletList] = useState<WalletCardProps[][]>([])
+  const { checkedWallet, selectFromToken, currentWallet, setCurrentWallet } =
+    useContext(SwapContext)
+  const [gridWalletList, setGridWalletList] = useState<PartialWalletRes[][]>([])
 
-  const findTokenUsd = (wallet: WalletCardProps) => {
+  const findTokenUsd = (wallet: PartialWalletRes) => {
     const token = wallet.tokens?.find(
       (t) => t.address == selectFromToken?.address
     )
     return token?.value_usd ?? 0
   }
 
-  const handleWallet = (checkedWallet: WalletCardProps[]) => {
+  const handleWallet = (checkedWallet: PartialWalletRes[]) => {
     let count = 0
     const gridWalletList = checkedWallet
       // 筛选出和FromToken同一条链的钱包
@@ -25,7 +26,7 @@ export const useSwapWallet = () => {
       // 按照余额最高的往下排
       .sort((a, b) => findTokenUsd(a) - findTokenUsd(b))
       // 格式化数据成九宫格
-      .reduce<WalletCardProps[][]>((cur, next) => {
+      .reduce<PartialWalletRes[][]>((cur, next) => {
         if (count % 3 == 0) {
           cur.push([])
         }

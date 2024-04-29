@@ -4,14 +4,14 @@ import { IoCloseOutline, IoSearch } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from 'react-use'
 
-import { WalletCardProps } from '@/stores/use-wallet-store'
+import { PartialWalletRes } from '@/stores/use-wallet-store'
 
 interface Props {
-  wallets: WalletCardProps[]
+  wallets: PartialWalletRes[]
   chain: string
   autofocus?: boolean
-  searchBy?: (keyof Omit<WalletCardProps, 'chain' | 'tokens'>)[]
-  onResult: (wallets: WalletCardProps[]) => void
+  searchBy?: (keyof Omit<PartialWalletRes, 'chain' | 'tokens'>)[]
+  onResult: (wallets: PartialWalletRes[]) => void
 }
 
 export const WalletSearch = (props: Props) => {
@@ -36,7 +36,7 @@ export const WalletSearch = (props: Props) => {
     const unique = filtered.flat().reduce((acc, cur) => {
       acc[cur.id ?? ''] = cur
       return acc
-    }, {} as Record<string, WalletCardProps>)
+    }, {} as Record<string, PartialWalletRes>)
     const result = Object.values(unique)
 
     onResult(result)

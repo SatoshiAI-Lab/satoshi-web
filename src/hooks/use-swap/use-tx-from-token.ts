@@ -1,6 +1,6 @@
 import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
 import { zeroAddr } from '@/config/address'
-import { WalletCardProps, useWalletStore } from '@/stores/use-wallet-store'
+import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGetIntentTokenList } from './use-get-intent-token-list'
@@ -30,12 +30,12 @@ export const useTxFromToken = (options: Options) => {
 
   const [selectFromToken, setSelectFromToken] = useState<MultiChainCoin>()
   const [fromTokenList, setFromTokenList] = useState(fromTokenListData ?? [])
-  const [checkedWallet, setCheckedWallet] = useState<WalletCardProps[]>([])
+  const [checkedWallet, setCheckedWallet] = useState<PartialWalletRes[]>([])
 
   const getCheckedTokenFn = (tokenList?: MultiChainCoin[]) => {
     let checkedTokenList: MultiChainCoin[] = []
 
-    const hasMainToken = (w: WalletCardProps) => {
+    const hasMainToken = (w: PartialWalletRes) => {
       // 查找这条链有哪些钱包是有主代币的
       return w.tokens?.some((t) => {
         // 有余额的主代币
@@ -67,7 +67,7 @@ export const useTxFromToken = (options: Options) => {
       })
     }
 
-    const findIntentToken = (w: WalletCardProps) => {
+    const findIntentToken = (w: PartialWalletRes) => {
       const filterTokenList = tokenList?.filter((token) => {
         const chianID = w.chain?.id
         return w?.tokens?.some((t) => {

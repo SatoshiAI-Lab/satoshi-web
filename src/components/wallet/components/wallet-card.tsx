@@ -5,15 +5,15 @@ import numeral from 'numeral'
 import { useTranslation } from 'react-i18next'
 import { clsx } from 'clsx'
 
-import type { WalletCardProps as WalletProps } from '@/stores/use-wallet-store'
+import type { PartialWalletRes } from '@/stores/use-wallet-store'
 import type { WalletCardProps } from '../types'
 
 import { utilFmt } from '@/utils/format'
 import { ChainLogos } from './chain-logos'
 
 interface Props extends WalletCardProps {
-  wallet: WalletProps
-  latestWallet: WalletProps | undefined
+  wallet: PartialWalletRes
+  latestWallet: PartialWalletRes | undefined
 }
 
 export const WalletCard = (props: Props) => {
@@ -83,7 +83,7 @@ export const WalletCard = (props: Props) => {
             key={index}
             variant="outlined"
             classes={{ root: '!text-black !rounded-full' }}
-            className="!border-gray-400 hover:!bg-gray-100 dark:!text-gray-300 dark:hover:!bg-zinc-800"
+            className="!border-gray-400 hover:!bg-gray-100"
             onClick={() => item.onClick(wallet!)}
           >
             {item.title}

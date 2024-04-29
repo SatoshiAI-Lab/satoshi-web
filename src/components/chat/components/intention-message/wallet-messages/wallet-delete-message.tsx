@@ -14,7 +14,7 @@ import {
   WalletSelectMessage,
   type WalletSelectMessageExport,
 } from '../../wallet-select-message'
-import { WalletCardProps, useWalletStore } from '@/stores/use-wallet-store'
+import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
 import { ResponseCode } from '@/api/fetcher/types'
 import { useWalletList } from '@/hooks/use-wallet-list'
 
@@ -35,7 +35,7 @@ export const WaleltDeleteMessage = () => {
   const isErr = isError || (code && code !== ResponseCode.Success)
   const wallet = !isEmpty(wallet_name) && findWallet(wallet_name)
 
-  const onDelete = async (w: UserCreateWalletResp | WalletCardProps) => {
+  const onDelete = async (w: UserCreateWalletResp | PartialWalletRes) => {
     Promise.all([
       mutateAsync({ wallet_id: w.id ?? '' }),
       walletSelectRef.current?.refetch(),

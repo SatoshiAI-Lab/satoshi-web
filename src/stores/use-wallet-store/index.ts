@@ -5,31 +5,31 @@ import { WALLET_CONFIG, Chain } from '@/config/wallet'
 import type { GetChainsRes, GetWalletsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
-export interface WalletCardProps extends Partial<UserCreateWalletResp> {}
+export interface PartialWalletRes extends Partial<UserCreateWalletResp> {}
 
 interface States {
-  wallets: WalletCardProps[]
+  wallets: PartialWalletRes[]
   allWallets: GetWalletsRes
-  walletList: WalletCardProps[]
+  walletList: PartialWalletRes[]
   chains: GetChainsRes['chains']
   platforms: GetChainsRes['platforms']
-  currentWallet?: WalletCardProps
+  currentWallet?: PartialWalletRes
   selectedChain: Chain
   selectedPlatform: string
 }
 
 interface Actions {
-  setWallets(wallets: WalletCardProps[]): void
+  setWallets(wallets: PartialWalletRes[]): void
   setAllWallets(wallets: GetWalletsRes): void
-  setWalletList(wallets: WalletCardProps[]): void
+  setWalletList(wallets: PartialWalletRes[]): void
   setChains(chains: GetChainsRes['chains']): void
   setPlatforms(platforms: GetChainsRes['platforms']): void
-  setCurrentWallet(wallet: WalletCardProps): void
+  setCurrentWallet(wallet: PartialWalletRes): void
   setSelectedChain(chain: string): void
   setSelectedPlatform(platform: string): void
 
   // Find wallet by name among all wallets.
-  findWallet(name: string): WalletCardProps | undefined
+  findWallet(name: string): PartialWalletRes | undefined
 
   // Whether have wallet on any or specific chain.
   hasWallet(chain?: Chain): boolean
@@ -49,7 +49,7 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   setAllWallets: (allWallets) => {
     const walletList = []
     for (const key in allWallets) {
-      walletList.push(...allWallets[key as WalletChain])
+      walletList.push(...allWallets[key as Chain])
     }
 
     set({

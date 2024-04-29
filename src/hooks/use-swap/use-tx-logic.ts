@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 import { t } from 'i18next'
 import { interactiveApi } from '@/api/interactive'
 import { trandApi } from '@/api/trand'
-import { WalletCardProps } from '@/stores/use-wallet-store'
+import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { formatUnits } from 'viem'
 import { useSwapWallet } from './use-swap-wallet'
 import { useShow } from '../use-show'
@@ -21,7 +21,7 @@ interface Options {
   data: ChatResponseTxConfrim
   selectFromToken?: MultiChainCoin
   selectToToken?: MultiChainCoin
-  currentWallet?: WalletCardProps
+  currentWallet?: PartialWalletRes
 }
 
 export const useTxLogic = ({
@@ -41,7 +41,7 @@ export const useTxLogic = ({
   const { addMessage } = useChatStore()
 
   const getSelectTokenInfo = (
-    wallet?: WalletCardProps,
+    wallet?: PartialWalletRes,
     token?: MultiChainCoin
   ) => {
     return wallet?.tokens?.find((t) => t.address == token?.address)

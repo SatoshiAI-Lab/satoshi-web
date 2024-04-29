@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 
-import type { WalletCardProps } from '@/stores/use-wallet-store'
+import type { PartialWalletRes } from '@/stores/use-wallet-store'
 
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
@@ -13,7 +13,7 @@ import { Platform } from '@/config/wallet'
 
 export const useWalletManage = () => {
   // Latest created wallet, used for active hints.
-  const [latestWallet, setLatestWallet] = useState<WalletCardProps>()
+  const [latestWallet, setLatestWallet] = useState<PartialWalletRes>()
   const { refetchWallets } = useWalletList()
 
   // Create wallet.
