@@ -22,7 +22,7 @@ interface Props extends React.ComponentProps<'div'> {
   onTotalChange: (total: number) => void
 }
 
-export const CreateTokenForm = (props: Props) => {
+export const TokenCreateForm = (props: Props) => {
   const {
     symbol,
     name,
@@ -122,4 +122,4 @@ export const CreateTokenForm = (props: Props) => {
   )
 }
 
-export default CreateTokenForm
+export default TokenCreateForm

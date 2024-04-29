@@ -3,14 +3,14 @@ import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 
 import { interactiveApi } from '@/api/interactive'
-import { useWaitingStatus } from './use-waiting'
+import { useWaitStatus } from './use-wait-status'
 
 import type { CreateTokenInfo } from '@/components/chat/components/intention-message/token-messages/token-create/types'
 
-export const useCreateOpToken = (chain?: string) => {
-  const [opHash, setOpHash] = useState('')
-  const [opAddr, setOpAddr] = useState('')
-  const [isOpLongTime, setIsOpLongTime] = useState(false)
+export const useCreateEvmToken = (chain?: string) => {
+  const [evmHash, setEvmHash] = useState('')
+  const [evmAddr, setEvmAddr] = useState('')
+  const [isEvmLongTime, setIsEvmLongTime] = useState(false)
   const timerRef = useRef<number>()
 
   const {
@@ -26,33 +26,31 @@ export const useCreateOpToken = (chain?: string) => {
     },
   })
 
-  const createOpToken = async (params: CreateTokenInfo) => {
+  const createEvmToken = async (params: CreateTokenInfo) => {
     const { total, ...req } = params
     const { data } = await mutateCreate({
       ...req,
       amount: total,
     })
-    setOpHash(data?.hash_tx)
-    setOpAddr(data?.address)
+    setEvmHash(data?.hash_tx)
+    setEvmAddr(data?.address)
   }
 
-  const { isLoading: isWaiting, isSuccess: isCreateSuccess } = useWaitingStatus(
-    {
-      hash: opHash,
-      chain,
-      onSuccess(data) {
-        console.log('create op success', data)
-      },
-      onError(err) {
-        console.log('create op success', err)
-      },
-    }
-  )
+  const { isLoading: isWaiting, isSuccess: isCreateSuccess } = useWaitStatus({
+    hash: evmHash,
+    chain,
+    onSuccess(data) {
+      console.log('create evm token success', data)
+    },
+    onError(err) {
+      console.log('create evm token success', err)
+    },
+  })
 
-  const cancelOp = () => {
-    setOpHash('')
-    setOpAddr('')
-    setIsOpLongTime(false)
+  const cancelEvm = () => {
+    setEvmHash('')
+    setEvmAddr('')
+    setIsEvmLongTime(false)
     resetCreate()
     clearTimeout(timerRef.current)
   }
@@ -61,21 +59,21 @@ export const useCreateOpToken = (chain?: string) => {
     if (!isCreated) return
 
     timerRef.current = window.setTimeout(() => {
-      setIsOpLongTime(true)
+      setIsEvmLongTime(true)
     }, 10_000)
 
     return () => {
-      setIsOpLongTime(false)
+      setIsEvmLongTime(false)
       clearTimeout(timerRef.current)
     }
   }, [isCreated])
 
   return {
-    opAddr,
-    isOpLoading: isCreating || isWaiting,
-    isOpSuccess: isCreateSuccess,
-    isOpLongTime,
-    createOpToken,
-    cancelOp,
+    evmAddr,
+    isEvmLoading: isCreating || isWaiting,
+    isEvmSuccess: isCreateSuccess,
+    isEvmLongTime: isEvmLongTime,
+    createEvmToken,
+    cancelEvm,
   }
 }

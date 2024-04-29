@@ -9,16 +9,16 @@ import type { UserCreateWalletResp } from '@/api/wallet/params'
 import type { CreateTokenInfo } from './types'
 
 import { MessageBubble } from '../../../message-bubble'
-import { TokenCreateWallets } from './wallets'
-import { CreateTokenLoading } from './loading'
-import { CreateTokenSuccess } from './success'
-import { useCreateSolToken } from '@/hooks/use-create-sol-token'
+import { TokenCreateWallets } from './components/wallets'
+import { TokenCreateLoading } from './components/loading'
+import { TokenCreateSuccess } from './components/success'
+import { useCreateSolToken } from '@/components/chat/components/intention-message/token-messages/token-create/hooks/use-create-sol-token'
 import { DialogHeader } from '@/components/dialog-header'
 import { Chain } from '@/config/wallet'
-import { useCreateOpToken } from '@/hooks/use-create-op-token'
+import { useCreateEvmToken } from '@/components/chat/components/intention-message/token-messages/token-create/hooks/use-create-evm-token'
 import { useTokenCreateConfig } from '@/hooks/use-token-create-config'
-import { CreateTokenForm } from './form'
-import { TokenCreateHints } from './hints'
+import { TokenCreateForm } from './components/form'
+import { TokenCreateHints } from './components/hints'
 import { useMessagesContext } from '@/contexts/messages'
 import { MetaType } from '@/api/chat/types'
 import { ChainSelectMessage } from '../../../chain-select-message'
@@ -48,8 +48,8 @@ export const TokenCreateMessage = () => {
     mintSolToken,
     cancelSol,
   } = useCreateSolToken()
-  const { opAddr, isOpLoading, isOpLongTime, isOpSuccess, createOpToken } =
-    useCreateOpToken(selectedChain)
+  const { evmAddr, isEvmLoading, isEvmLongTime, isEvmSuccess, createEvmToken } =
+    useCreateEvmToken(selectedChain)
   const { config, supports, unsupports, isUnsupport } =
     useTokenCreateConfig(selectedChain)
   const [createTipOpen, setCreateTipOpen] = useState(false)
@@ -60,10 +60,8 @@ export const TokenCreateMessage = () => {
   const totalIsValid = total > 0
   const balance = Number(selectedWallet?.value || 0)
 
-  console.log('selectedWallet', selectedWallet)
-
-  const isLoading = isSolLoading || isOpLoading
-  const isSuccess = (isSolCreateSuccess && isSolMintSuccess) || isOpSuccess
+  const isLoading = isSolLoading || isEvmLoading
+  const isSuccess = (isSolCreateSuccess && isSolMintSuccess) || isEvmSuccess
 
   const onCreate = () => {
     if (isEmpty(selectedChain) || !config) return
@@ -93,15 +91,13 @@ export const TokenCreateMessage = () => {
 
     console.log('create token', params)
 
-    return
-
     if (selectedChain === Chain.Sol) {
       createSolToken(params)
       return
     }
 
     // If everything goes as expected, this will be EVM.
-    createOpToken(params)
+    createEvmToken(params)
   }
 
   // If mint error, show tips.
@@ -139,9 +135,9 @@ export const TokenCreateMessage = () => {
   // Loading state.
   if (isLoading) {
     return (
-      <CreateTokenLoading
+      <TokenCreateLoading
         isMinting={isSolMinting}
-        isLongTime={isSolLongTime || isOpLongTime}
+        isLongTime={isSolLongTime || isEvmLongTime}
         onCancel={cancelSol}
       />
     )
@@ -150,9 +146,9 @@ export const TokenCreateMessage = () => {
   // Success state.
   if (isSuccess) {
     return (
-      <CreateTokenSuccess
+      <TokenCreateSuccess
         tokenName={name}
-        tokenAddr={solAddr || opAddr}
+        tokenAddr={solAddr || evmAddr}
         walletName={selectedWallet?.name}
       />
     )
@@ -239,7 +235,7 @@ export const TokenCreateMessage = () => {
       </div>
 
       {/* Create Form */}
-      <CreateTokenForm
+      <TokenCreateForm
         symbol={symbol}
         name={name}
         total={total}

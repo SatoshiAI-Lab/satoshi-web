@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import {
   type GetHashStatusRes,
   TokenCreateStatus,
-} from './../api/interactive/types'
+} from '../../../../../../../api/interactive/types'
 
 import { interactiveApi } from '@/api/interactive'
 
@@ -15,7 +15,7 @@ interface UseWaitingOptions {
   onError?: (reason: string) => void
 }
 
-export const useWaitingStatus = (options: UseWaitingOptions) => {
+export const useWaitStatus = (options: UseWaitingOptions) => {
   const { hash = '', chain = '', onError, onSuccess } = options
   const [enabled, setEnabled] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
-import { MessageBubble } from '../../../message-bubble'
+import { MessageBubble } from '../../../../message-bubble'
 import { Wallet } from '@/components/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { CopyAddr } from '@/components/copy-addr'
@@ -14,7 +14,7 @@ interface Props {
   walletName?: string
 }
 
-export const CreateTokenSuccess = (props: Props) => {
+export const TokenCreateSuccess = (props: Props) => {
   const { tokenName = '', tokenAddr = '', walletName = '' } = props
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
@@ -51,4 +51,4 @@ export const CreateTokenSuccess = (props: Props) => {
   )
 }
 
-export default CreateTokenSuccess
+export default TokenCreateSuccess

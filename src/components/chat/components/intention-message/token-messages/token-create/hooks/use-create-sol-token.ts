@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 
 import { interactiveApi } from '@/api/interactive'
-import { useWaitingStatus } from './use-waiting'
+import { useWaitStatus } from './use-wait-status'
 
 import type { CreateTokenInfo } from '@/components/chat/components/intention-message/token-messages/token-create/types'
 
@@ -45,7 +45,7 @@ export const useCreateSolToken = () => {
     isSuccess: isSolCreateSuccess,
     isError: isCreateError,
     clear: clearCreate,
-  } = useWaitingStatus({
+  } = useWaitStatus({
     hash: createdHash,
     onSuccess: async (data) => {
       toast.success('Create success, minting...')
@@ -77,7 +77,7 @@ export const useCreateSolToken = () => {
     isSuccess: isSolMintSuccess,
     isError: isSolMintError,
     clear: clearMint,
-  } = useWaitingStatus({
+  } = useWaitStatus({
     hash: mintHash,
     onSuccess(data) {
       console.log('mint success', data)
