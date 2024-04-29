@@ -16,19 +16,19 @@ export const TxTokenBubbles = () => {
   const data = getMetaData<MetaType.Tx>()
 
   const options = {
-    isBuy: false,
     data,
   }
 
   const { currentWallet, contextValue, selectFromToken, selectToToken } =
     useSwapProviderProvider(options)
+
   const { txLogigcContextValue } = useTxLogic({
     ...options,
     selectFromToken,
     selectToToken,
     currentWallet,
   })
-
+  
   return (
     <SwapContext.Provider value={contextValue}>
       <TxLogicContext.Provider value={txLogigcContextValue}>

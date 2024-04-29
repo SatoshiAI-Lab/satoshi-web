@@ -7,17 +7,14 @@ import { interactiveApi } from '@/api/interactive'
 import { trandApi } from '@/api/trand'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { formatUnits } from 'viem'
-import { useSwapWallet } from './use-swap-wallet'
 import { useShow } from '../use-show'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useWalletList } from '../use-wallet-list'
 
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
-import { SwapContext } from './context'
 
 interface Options {
-  isBuy: boolean
   data: ChatResponseTxConfrim
   selectFromToken?: MultiChainCoin
   selectToToken?: MultiChainCoin
@@ -30,6 +27,8 @@ export const useTxLogic = ({
   selectFromToken,
   selectToToken,
 }: Options) => {
+
+  
   const [buyValue, setBuyValue] = useState(data.amount)
   const [slippage, setSlippage] = useState(5)
   const [curRate, setCurRate] = useState(0)
@@ -50,8 +49,6 @@ export const useTxLogic = ({
   const selectWalletToken = getSelectTokenInfo(currentWallet!, selectFromToken!)
 
   const handleRateClick = (rate: number) => {
-    console.log(curRate)
-
     if (!selectWalletToken) return
     const { amount, decimals } = selectWalletToken
     const balance = +numeral(formatUnits(BigInt(amount), decimals)).format(
@@ -165,9 +162,9 @@ export const useTxLogic = ({
     getSelectTokenInfo,
   }
 
-  useEffect(() => {
-    handleRateClick(curRate)
-  }, [selectFromToken])
+  // useEffect(() => {
+  //   handleRateClick(curRate)
+  // }, [selectFromToken])
 
   return {
     txLogigcContextValue,

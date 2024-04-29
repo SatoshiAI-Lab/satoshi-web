@@ -9,16 +9,16 @@ import { useContext } from 'react'
 import { SwapContext, TxLogicContext } from '@/hooks/use-swap/context'
 
 export const SelectSwapRow = () => {
-  const { isBuy, selectFromToken, replaceWithETHInfo } = useContext(SwapContext)
+  const { selectFromToken, selectToToken, autoCheckoutTokenMsg } =
+    useContext(SwapContext)
   const { buyValue, isFinalTx, setBuyValue } = useContext(TxLogicContext)
 
   return (
     <>
       <div className="font-bold mt-1 mb-1">
-        {(isBuy ? t('tx.token.text1') : t('tx.token2')).replace(
-          '$1',
-          selectFromToken?.symbol ?? ''
-        )}
+        {t('tx.token.text')
+          .replace('$1', selectFromToken?.symbol ?? '')
+          .replace('$2', selectToToken?.symbol ?? '')}
       </div>
       <div className="flex justify-start items-center">
         <OutlinedInput
@@ -31,7 +31,7 @@ export const SelectSwapRow = () => {
           size="small"
           placeholder={t('custom')}
           endAdornment={
-            <SelectToken isFrom isBuy isFinalTx={isFinalTx}></SelectToken>
+            <SelectToken isFrom isFinalTx={isFinalTx}></SelectToken>
           }
           value={buyValue}
           disabled={isFinalTx}
@@ -41,14 +41,12 @@ export const SelectSwapRow = () => {
           size={26}
           className="mx-5 text-gray-700"
         ></FaArrowRightLong>
-        <SelectToken
-          isFrom={false}
-          isBuy={isBuy}
-          isFinalTx={isFinalTx}
-        ></SelectToken>
+        <SelectToken isFrom={false} isFinalTx={isFinalTx}></SelectToken>
       </div>
-      {replaceWithETHInfo ? (
-        <div className="text-yellow-500 text-sm mt-2">{replaceWithETHInfo}</div>
+      {autoCheckoutTokenMsg ? (
+        <div className="text-yellow-500 text-sm mt-2">
+          {autoCheckoutTokenMsg}
+        </div>
       ) : null}
     </>
   )

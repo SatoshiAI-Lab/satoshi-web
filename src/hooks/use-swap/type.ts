@@ -28,14 +28,12 @@ export interface ITxLogicContext {
 }
 
 export interface ISwapContext {
-  isBuy: boolean
   data?: ChatResponseTxConfrim
   checkedWallet: PartialWalletRes[]
   fromTokenList?: MultiChainCoin[]
   toTokenList: MultiChainCoin[]
   loadingToTokenList: boolean
   loadingFromTokenList: boolean
-  replaceWithETHInfo: string
   selectToToken: MultiChainCoin | undefined
   selectFromToken: MultiChainCoin | undefined
   currentWallet?: PartialWalletRes

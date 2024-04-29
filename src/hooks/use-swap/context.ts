@@ -19,7 +19,6 @@ export const TxLogicContext = createContext<ITxLogicContext>({
 })
 
 export const SwapContext = createContext<ISwapContext>({
-  isBuy: false,
   data: undefined,
   checkedWallet: [],
   fromTokenList: [],
@@ -28,7 +27,6 @@ export const SwapContext = createContext<ISwapContext>({
   loadingFromTokenList: false,
   selectToToken: undefined,
   selectFromToken: undefined,
-  replaceWithETHInfo: '',
   currentWallet: undefined,
   setCurrentWallet: () => {},
   setSelectFromToken: () => {},

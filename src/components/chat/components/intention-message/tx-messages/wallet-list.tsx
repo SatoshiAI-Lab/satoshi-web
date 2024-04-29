@@ -10,13 +10,8 @@ import { formatUnits } from 'viem'
 export const WalletList = () => {
   const { t } = useTranslation()
   const { isFinalTx } = useContext(TxLogicContext)
-  const {
-    gridWalletList,
-    walletList,
-    selectFromToken,
-    currentWallet,
-    setCurrentWallet,
-  } = useSwapWallet()
+  const { gridWalletList, selectFromToken, currentWallet, setCurrentWallet } =
+    useSwapWallet()
 
   const getCols = (count: number) => {
     if (count == 1) {
@@ -54,6 +49,7 @@ export const WalletList = () => {
             >
               {wallets.map((wallet, i) => {
                 const toeknInfo = getSelectTokenInfo(wallet)
+                console.log(wallet, toeknInfo)
                 return (
                   <div
                     key={i}

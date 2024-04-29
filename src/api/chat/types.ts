@@ -269,9 +269,7 @@ export interface ChatResponseWalletList {
 export interface ChatResponseWalletListToken {
   address: string
   amount: number
-  chain_id: number
-  chain_logo: string
-  chain_name: Chain
+  chain: ChainInfo
   decimals: number
   logoUrl: string
   name: string

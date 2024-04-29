@@ -11,16 +11,11 @@ import { SwapContext } from '@/hooks/use-swap/context'
 import type { MultiChainCoin } from '@/api/chat/types'
 
 interface Props {
-  isBuy: boolean
   isFrom: boolean
   isFinalTx: boolean
 }
 
-export const SelectToken: React.FC<Props> = ({
-  isBuy,
-  isFrom,
-  isFinalTx,
-}: Props) => {
+export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -73,7 +68,7 @@ export const SelectToken: React.FC<Props> = ({
               onClick={() => handleClick(item)}
               selected={selectToken?.chain == item.chain}
             >
-              <div className="flex items-center dark:!text-white py-1">
+              <div className="flex items-center py-1">
                 <div className="mr-2 self-center ">
                   <Avatar src={item.logo} sizes="30">
                     {item.symbol?.slice(0, 1).toUpperCase()}
@@ -111,7 +106,7 @@ export const SelectToken: React.FC<Props> = ({
         <div
           className={clsx(
             'h-full cursor-pointer leading-none py-[12px] text-sm border-l-2 text-nowrap pl-3 flex-shrink-0',
-            isBuy && 'flex items-center cursor-pointer',
+            'flex items-center cursor-pointer',
             isFinalTx && 'pointer-events-none'
           )}
           onClick={onSwitch}
@@ -131,7 +126,7 @@ export const SelectToken: React.FC<Props> = ({
           )}
           <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
         </div>
-        {isBuy ? tokenMenu() : null}
+        {tokenMenu()}
       </>
     )
   }
@@ -144,31 +139,26 @@ export const SelectToken: React.FC<Props> = ({
     <>
       <div
         className={clsx(
-          'border border-gray-400 rounded-xl py-[6px] px-5 text-sm flex-shrink-0',
-          'dark:!border-gray-500',
-          !isBuy && 'flex items-center cursor-pointer',
+          'border border-neutral-300 rounded-xl py-[6px] px-5 text-sm flex-shrink-0',
+          'flex items-center cursor-pointer',
           isFinalTx && 'pointer-events-none'
         )}
         onClick={onSwitch}
       >
-        {isBuy ? (
-          selectToToken?.name?.toUpperCase()
-        ) : (
-          <>
-            <Avatar src={selectToToken?.logo || defaultImg} sizes="30">
-              {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
-            </Avatar>
-            <div className="mx-1">
-              <div>{selectToToken?.symbol}</div>
-              <div className="text-xs text-gray-400">
-                {selectToToken?.chain.name}
-              </div>
+        <>
+          <Avatar src={selectToToken?.logo || defaultImg} sizes="30">
+            {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
+          </Avatar>
+          <div className="mx-1">
+            <div>{selectToToken?.symbol}</div>
+            <div className="text-xs text-gray-400">
+              {selectToToken?.chain.name}
             </div>
-            <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
-          </>
-        )}
+          </div>
+          <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
+        </>
       </div>
-      {!isBuy ? tokenMenu() : null}
+      {tokenMenu()}
     </>
   )
 }

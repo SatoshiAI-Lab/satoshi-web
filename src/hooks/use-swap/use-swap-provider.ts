@@ -3,28 +3,39 @@ import { useTxFromToken } from './use-tx-from-token'
 import { useTxToToken } from './use-tx-to-token'
 import { useState } from 'react'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { useGetIntentTokenList } from './use-get-intent-token-list'
 
 interface Options {
-  isBuy: boolean
   data: ChatResponseTxConfrim
 }
 
-export const useSwapProviderProvider = ({ isBuy, data }: Options) => {
+export const useSwapProviderProvider = ({ data }: Options) => {
+  const { walletList } = useWalletStore() // 所有的钱包
+  const [checkedWallet, setCheckedWallet] = useState<PartialWalletRes[]>([]) // 过滤后合格的钱包
   const [currentWallet, setCurrentWallet] = useState<
+    // 当前选中的钱包
     PartialWalletRes | undefined
   >()
+
+  console.log('swap context');
+  
+  const intentTokenInfo = useGetIntentTokenList({
+    data,
+  })
+
   const {
-    checkedWallet,
     fromTokenList,
     loadingFromTokenList,
     selectFromToken,
-    replaceWithETHInfo,
     setSelectFromToken,
     setFromTokenList,
-    refreshFromTokenList,
+    autoCheckoutTokenMsg,
   } = useTxFromToken({
-    isBuy,
     data,
+    walletList,
+    setCheckedWallet,
+    intentTokenInfo,
   })
 
   const {
@@ -36,11 +47,11 @@ export const useSwapProviderProvider = ({ isBuy, data }: Options) => {
   } = useTxToToken({
     selectFromToken,
     data,
-    refreshFromTokenList,
+    fromTokenList,
+    intentTokenInfo,
   })
 
   const contextValue = {
-    isBuy,
     data,
     checkedWallet,
     fromTokenList,
@@ -49,14 +60,15 @@ export const useSwapProviderProvider = ({ isBuy, data }: Options) => {
     loadingFromTokenList,
     selectToToken,
     selectFromToken,
-    replaceWithETHInfo,
     currentWallet,
     setCurrentWallet,
     setSelectToToken,
+    setToTokenList,
     setSelectFromToken,
     setFromTokenList,
-    setToTokenList,
+    autoCheckoutTokenMsg,
   }
+
 
   return { contextValue, ...contextValue }
 }
