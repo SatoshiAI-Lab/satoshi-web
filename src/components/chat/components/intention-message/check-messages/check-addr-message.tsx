@@ -63,10 +63,10 @@ export const CheckAddrMessage = () => {
     if (!chainIsEmpty) return
 
     // Is ethereum addr.
-    if (isAddress(address)) {
-      setSelectedChain(Chain.Eth)
-      return
-    }
+    // if (isAddress(address)) {
+    //   setSelectedChain(Chain.Eth)
+    //   return
+    // }
 
     // Is solana addr.
     if (validator.isSolAddr(address)) {

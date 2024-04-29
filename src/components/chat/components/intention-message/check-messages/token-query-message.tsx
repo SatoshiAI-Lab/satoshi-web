@@ -24,8 +24,9 @@ export const TokenQueryMessage = (props: Props) => {
   const { info, avatarSize = 45 } = props
   const { t } = useTranslation()
   const priceChange = Number(info.price_change)
+  const values = Object.values(info).filter(Boolean)
 
-  if (isEmpty(info)) {
+  if (isEmpty(values)) {
     return <MessageBubble>{t('no.token-info')}</MessageBubble>
   }
 
