@@ -7,7 +7,7 @@ import { AiFillBank } from 'react-icons/ai'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 
-import { MonitorMenuType } from './monitor-entry-point'
+import { MonitorMenuType } from './monitor-dialog'
 
 interface Props {
   onOpenItem: (comp: MonitorMenuType) => void
@@ -72,6 +72,7 @@ export const MonitorMenu = (props: Props) => {
               size="large"
               className={clsx(
                 '!justify-start !py-[6px] !bg-white max-sm:!py-2',
+                'dark:!bg-zinc-800 dark:!text-gray-300 dark:border-gray-600',
                 i !== monitorMenu.length - 1 ? '!mb-4' : '!mb-2'
               )}
               onClick={() => onOpenItem(item.id)}

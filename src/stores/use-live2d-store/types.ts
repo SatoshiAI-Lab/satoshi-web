@@ -5,7 +5,7 @@ import type {
   UseLipSyncOptions,
   UseLipSyncOverrideOptions,
 } from '@/hooks/use-lip-sync'
-import type { ChatResponseAnswerMeta } from '@/api/chat/types'
+import type { ChatResponseMeta } from '@/api/chat/types'
 import type { EnumToObject } from '@/types/types'
 
 export const {
@@ -25,7 +25,7 @@ export const expressions = (
   {} as Record<ModelExpressions, ModelExpressions>
 )
 
-type ModelMotions = keyof typeof Motions
+export type ModelMotions = keyof typeof Motions
 
 export enum ModelExpressions {
   'default' = 'default',
@@ -70,7 +70,7 @@ export interface Actions {
     }
   ): void
   randomSpeakWisdom(): void
-  handleEmotion(emotion?: ChatResponseAnswerMeta['emotion']): void
+  handleEmotion(emotion?: ChatResponseMeta['emotion']): void
   speakAndMotion(
     motion?: keyof typeof Sounds.motions,
     shouldReset?: boolean

@@ -1,9 +1,8 @@
-import { ChatResponseAnswer } from '@/api/chat/types'
 import toast from 'react-hot-toast'
 
-interface ParseStreamStringOnParsed {
-  (data: ChatResponseAnswer, result: string[], index: number): void
-}
+import { ChatResponse } from '@/api/chat/types'
+
+type OnParse = (data: ChatResponse, isFirst: boolean) => void
 
 interface QueryPaserOptions {
   splitSymbol: string
@@ -18,25 +17,30 @@ export const utilParse = {
    * @param onParsed Each parsing call, include this parsing result string.
    * @return Return string array.
    **/
-  parseStreamString(str: string, onParsed: ParseStreamStringOnParsed) {
-    const arr = str.trim().split('\n').filter(Boolean)
-    return arr
-      .map((m, i) => {
-        try {
-          const parsed = JSON.parse(
-            m.replace('data: ', '')
-          ) as ChatResponseAnswer
-          onParsed(parsed, arr, i)
-          return parsed
-        } catch (err) {
-          toast.error(`[ParseStream Error]: ${err}`)
-          console.error('[ParseStream Error]:', err)
-          console.error('[ParseStream Error m]:', m.replace('data: ', ''))
-          return m
-        }
-      })
-      .flat()
-      .join('')
+  streamStrToJson(str: string, onParsed: OnParse) {
+    let isFirstCall = true
+    const splited = str.trim().split('\n').filter(Boolean)
+    const result = splited.map((m, i) => {
+      try {
+        const replaced = m.startsWith('data: ') ? m.replace('data: ', '') : m
+        const parsed = JSON.parse(replaced) as ChatResponse
+
+        onParsed(parsed, isFirstCall)
+        isFirstCall = false
+        return parsed
+      } catch (err) {
+        toast.error(`[ParseStream Error]: ${err}`)
+        console.error('[ParseStream Error]:', err)
+        console.error('[ParseStream Error m]:', m)
+
+        return {
+          answer_type: 'parsed_error',
+          text: err,
+        } as ChatResponse
+      }
+    })
+
+    return result
   },
 
   /**

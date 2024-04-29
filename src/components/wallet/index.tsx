@@ -6,6 +6,8 @@ import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 
+import type { WalletCardProps, WalletDialogProps } from './types'
+
 import { WalletCard } from './components/wallet-card'
 import { WalletExportKeyPop } from './components/walletpop-exportkey'
 import { WalletRenamePop } from './components/walletpop-rename'
@@ -13,15 +15,14 @@ import { WalletImportKeyPop } from './components/walletpop-importkey'
 import { WalletDeletePop } from './components/walletepop-delete'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { ChainPlatformSelect } from '../chain-platform-select'
-import { useWallet } from '@/hooks/use-wallet'
+import { useWalletManage } from '@/hooks/use-wallet'
 import { CustomSuspense } from '../custom-suspense'
 import { WalletPlatform } from '@/config/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { WalletSkeleton } from './components/skeleton'
 import { useChainsPlatforms } from './hooks/use-chains-platforms'
 import { WalletSearch } from './components/wallet-search'
-
-import type { WalletDialogProps } from './types'
+import { useWalletList } from '@/hooks/use-wallet-list'
 
 const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
   0: WalletExportKeyPop,
@@ -40,10 +41,8 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     onClose,
   } = props
   const { wallets, selectedChain, setCurrentWallet } = useWalletStore()
-  const { latestWallet, isCreating, isFirstFetchingWallets, createWallet } =
-    useWallet({
-      enabled: true,
-    })
+  const { isFirstFetchingWallets } = useWalletList({ enabled: true })
+  const { latestWallet, isCreating, createWallet } = useWalletManage()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const openCreateWallet = Boolean(anchorEl)
   const { copy } = useClipboard()
@@ -109,26 +108,26 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     setPopOpen(true)
   }
 
-  const exportWalletPrivateKey = (address: string) => {
-    setCurrentWallet(address)
+  const exportWalletPrivateKey = (wallet: WalletCardProps) => {
+    setCurrentWallet(wallet)
     setCurrentPopTitle(t('wallet.title.export-privatekey'))
     setCurrentPop(0)
     setPopOpen(true)
   }
 
-  const renameWallet = (address: string) => {
-    setCurrentWallet(address)
+  const renameWallet = (wallet: WalletCardProps) => {
+    setCurrentWallet(wallet)
     setCurrentPopTitle(t('wallet.title.rename-wallet'))
     setCurrentPop(1)
     setPopOpen(true)
   }
 
-  const copyWalletAddress = (address: string) => {
-    copy(address, t('wallet.copy-address.success'))
+  const copyWalletAddress = (wallet: WalletCardProps) => {
+    copy(wallet.address!, t('wallet.copy-wallet.success'))
   }
 
-  const deleteWallet = (address: string) => {
-    setCurrentWallet(address)
+  const deleteWallet = (wallet: WalletCardProps) => {
+    setCurrentWallet(wallet)
     setCurrentPopTitle(t('wallet.title.delete-wallet'))
     setCurrentPop(3)
     setPopOpen(true)
@@ -159,7 +158,10 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
     <>
       <Dialog
         maxWidth="lg"
-        PaperProps={{ sx: { borderRadius: '10px' } }}
+        PaperProps={{
+          className: 'dark:bg-zinc-900 dark:text-gray-300',
+          sx: { borderRadius: '10px' },
+        }}
         open={open}
         onClose={onClose}
       >
@@ -202,7 +204,10 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                         <MenuItem
                           disabled={item.disable}
                           key={item.id}
-                          className="w-[295px] h-[65px] flex flex-col !items-start !justify-center"
+                          className={clsx(
+                            'w-[295px] h-[65px] flex flex-col !items-start !justify-center',
+                            'dark:!text-gray-300'
+                          )}
                           onClick={() => onCreateWallet(item.id)}
                         >
                           <div className="text-base">{item.title}</div>
@@ -219,7 +224,8 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                     classes={{ root: '!text-black !rounded-full !w-[138px]' }}
                     className={clsx(
                       '!border-gray-400 hover:!bg-gray-100',
-                      'disabled:!border-gray-300 disabled:!text-gray-400'
+                      'disabled:!border-gray-300 disabled:!text-gray-400',
+                      'dark:hover:!bg-zinc-800 dark:!text-gray-300'
                     )}
                     variant="outlined"
                     disabled={isCreating}

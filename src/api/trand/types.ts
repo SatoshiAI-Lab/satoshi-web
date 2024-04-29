@@ -9,4 +9,5 @@ export interface BuyTokenParams {
 }
 export interface BuyTokenData {
   hash_tx: string
+  url: string
 }

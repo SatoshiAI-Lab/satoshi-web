@@ -98,7 +98,11 @@ const CreateTokenWallets = (props: Props) => {
             onChange={onSelect}
           >
             {wallets.map((w) => (
-              <MenuItem key={w.id} value={w?.address ?? ''}>
+              <MenuItem
+                key={w.id}
+                value={w?.address ?? ''}
+                className="dark:!text-gray-300"
+              >
                 {w.name}
               </MenuItem>
             ))}

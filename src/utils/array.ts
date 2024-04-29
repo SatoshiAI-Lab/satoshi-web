@@ -20,9 +20,9 @@ export const utilArr = {
 
   isNotEmpty: <T>(arr: T[]) => !utilArr.isEmpty(arr),
 
-  first: <T>(arr: T[]) => arr[0],
+  first: <T>(arr: (T | undefined)[]) => arr[0],
 
-  last: <T>(arr: T[]) => arr[arr.length - 1],
+  last: <T>(arr: (T | undefined)[]) => arr[arr.length - 1],
 
   remove: <T>(arr: T[], el: T) => arr.filter((e) => e !== el),
 
@@ -40,6 +40,10 @@ export const utilArr = {
   },
 
   sameLen: <T, V>(arr1: T[], arr2: V[]) => arr1.length === arr2.length,
+
+  removeLast: <T>(arr: T[]) => arr.slice(0, -1),
+
+  removeFirst: <T>(arr: T[]) => arr.slice(1),
 
   /**
    * Categorize an array to Object and Map based on specified key.

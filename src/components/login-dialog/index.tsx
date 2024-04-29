@@ -9,16 +9,18 @@ import {
   Link,
   OutlinedInput,
 } from '@mui/material'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { MdOutlineArrowBackIosNew } from 'react-icons/md'
 import { useTranslation } from 'react-i18next'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
+import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5'
+
+import type { LoginDialogProps } from './types'
 
 import { useUserStore } from '@/stores/use-user-store'
 import { validator } from '@/utils/validator'
 import { useShow } from '@/hooks/use-show'
-
-import type { LoginDialogProps } from './types'
+import { useThemeStore } from '@/stores/use-theme-store'
 
 export const LoginDialog: React.FC<LoginDialogProps> = ({
   open,
@@ -32,15 +34,15 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
   const [verifyCode, setVerifyCode] = useState('')
   const [validateErr, setValidateErr] = useState<string[]>([])
   const [verifyDialog, setVerifyDialog] = useState(false)
-
+  const [showPwd, setShowPwd] = useState(false)
   const {
     show: showLoading,
     open: openLoading,
     hidden: closeLoading,
   } = useShow()
-
   const { t } = useTranslation()
   const { login, register, sendEmailVerify } = useUserStore()
+  const { isDark } = useThemeStore()
 
   const pswRef = useRef<HTMLInputElement>(null)
 
@@ -151,13 +153,13 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
               <Image
                 width={418}
                 height={91}
-                src={'/images/logos/black.png'}
+                src={
+                  isDark ? '/images/logos/white.png' : '/images/logos/black.png'
+                }
                 alt="satoshilogo"
               ></Image>
-              <div className="text-[#101010] text-[28px] mt-4 md:mt-0 leading-[39px]">
-                {(isSignIn && <>{t('login.tosignin')}</>) || (
-                  <>{t('login.tosignup')}</>
-                )}
+              <div className="text-[28px] mt-4 md:mt-0 leading-[39px]">
+                {isSignIn ? t('login.tosignin') : t('login.tosignup')}
               </div>
             </div>
             {/* form */}
@@ -168,16 +170,14 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   ? validateErr.map((item, index) => (
                       <div className="leading-[23px]" key={index}>
                         <span className="text-blue-500 mr-1">●</span>
-                        <span className="text-[#E2251B]">{item}</span>
+                        <span className="text-red-500">{item}</span>
                       </div>
                     ))
                   : ''}
               </div>
               {/* email input form */}
               <div>
-                <div className="py-[3px] text-[#101010] text-xl">
-                  {t('email')}
-                </div>
+                <div className="py-[3px] text-xl">{t('email')}</div>
                 <OutlinedInput
                   placeholder={t('login.placeholder-email')}
                   classes={{ root: 'w-full h-[50px] !rounded-[10px]' }}
@@ -189,15 +189,15 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
               </div>
               {/* password input form */}
               <div className="mt-10">
-                <div className="py-[3px] text-[#101010] text-xl">
+                <div className="py-[3px] text-xl">
                   {isSignIn ? (
                     <div className="flex justify-between items-center">
                       <div>{t('password')}</div>
                       <Link
                         classes={{
-                          root: '!text-[18px] !text-black !decoration-black',
+                          root: '!text-[18px] !text-black !decoration-black dark:!decoration-gray-300',
                         }}
-                        className="cursor-pointer"
+                        className="cursor-pointer dark:!text-gray-300"
                         onClick={forgotPassword}
                       >
                         {t('forgot')}?
@@ -212,9 +212,14 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   placeholder={t('login.placeholder-password')}
                   classes={{ root: 'w-full h-[50px] !rounded-[10px]' }}
                   inputRef={pswRef}
-                  type="password"
+                  type={showPwd ? 'text' : 'password'}
                   onChange={({ target }) => setUserPassword(target.value)}
                   onKeyUp={passwordKeyDown}
+                  endAdornment={
+                    <IconButton onClick={() => setShowPwd(!showPwd)}>
+                      {showPwd ? <IoEyeOutline /> : <IoEyeOffOutline />}
+                    </IconButton>
+                  }
                 />
               </div>
               <Button
@@ -239,14 +244,15 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
               {/* switch api */}
               <div className="flex gap-[9px] mt-[22px] justify-center">
                 <span>
-                  {(isSignIn && t('login.newaccount')) ||
-                    t('login.alreadyhaveaccount')}
+                  {isSignIn
+                    ? t('login.newaccount')
+                    : t('login.alreadyhaveaccount')}
                 </span>
                 <Link
                   classes={{
-                    root: '!text-black !decoration-black',
+                    root: '!text-black !decoration-black dark:!decoration-gray-300',
                   }}
-                  className="cursor-pointer"
+                  className="cursor-pointer dark:!text-gray-300"
                   onClick={() => setSignIn(!isSignIn)}
                 >
                   {isSignIn ? t('login.tosignup') : t('login.tosignin')}

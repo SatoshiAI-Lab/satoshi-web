@@ -10,15 +10,15 @@ import {
   ListItemButton,
   Skeleton,
 } from '@mui/material'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { IoCloseOutline } from 'react-icons/io5'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
-import PercentTag from '../percent-tag'
-import TokenSearcher from '../token-searcher'
-import CustomSuspense from '../custom-suspense'
+import { PercentTag } from '../percent-tag'
+import { TokenSearcher } from '../token-searcher'
+import { CustomSuspense } from '../custom-suspense'
 import { useFavorites } from './hooks/use-favorites'
 import { ListToken, TokenId, TokenStatus, TokenType } from '@/api/token/types'
 import { useShow } from '@/hooks/use-show'
@@ -73,16 +73,16 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
   return (
     <div
       className={clsx(
-        'bg-favorite dark:bg-favorite-dark py-2 text-sm max-lg:hidden',
-        'h-favorite flex flex-col',
+        'bg-favorite dark:bg-favorite-dark py-2 text-sm',
+        'h-favorite flex flex-col max-lg:hidden',
         className
       )}
     >
       <div
         className={clsx(
-          'flex justify-between items-center pl-4 pr-2 ',
-          'w-[300px] max-xl:max-w-[280px] pb-2',
-          'border-b border-gray-300 dark:border-gray-600'
+          'flex justify-between items-center pl-4 pr-2 pb-2',
+          'w-[300px] max-xl:max-w-[280px] border-b',
+          'border-gray-300 dark:border-gray-600'
         )}
       >
         <span className="font-semibold text-base mr-1 dark:text-white">
@@ -125,12 +125,12 @@ export const Favorites = memo((props: React.ComponentProps<'div'>) => {
                       src={t.logo}
                       sx={{ width: 24, height: 24 }}
                     />
-                    <span className="overflow-hidden mr-2 text-ellipsis ">
+                    <span className="overflow-hidden mr-2 text-ellipsis">
                       {utilFmt.ellipsis(t.symbol)}
                     </span>
                   </div>
                   <span className="text-end basis-20 mr-1">
-                    {utilFmt.token(t.price)}
+                    ${utilFmt.token(t.price)}
                   </span>
                 </div>
                 <PercentTag

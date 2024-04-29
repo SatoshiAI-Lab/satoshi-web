@@ -1,8 +1,11 @@
-import type { ChatResponseAnswerMetaCoin } from '@/api/chat/types'
+import type {
+  ChatResponseAnswerMetaCoin,
+  ChatResponseMeta,
+} from '@/api/chat/types'
 
 export interface MultiMessageProps {
   id?: string
-  msgs?: IMultiMessage[]
+  meta?: IMultiMessage[]
   classes?: string
   title?: string
   key?: string | number

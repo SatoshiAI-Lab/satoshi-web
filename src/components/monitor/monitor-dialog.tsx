@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Dialog } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 import { useShow } from '@/hooks/use-show'
 import { DialogHeader } from '../dialog-header'
@@ -9,9 +10,6 @@ import { MonitorTwitter } from './monitor-twitter'
 import { MonitorPools } from './monitor-pools'
 import { MonitorNews } from './monitor-news'
 import { MonitorEXInfo } from './monitor-ex-info'
-import { useTranslation } from 'react-i18next'
-import { monitorApi } from '@/api/monitor'
-import { useQuery } from '@tanstack/react-query'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 
 interface Props {
@@ -33,14 +31,12 @@ interface Config {
   title: string
 }
 
-export const MonitorEntryPointer = (props: Props) => {
+export const MonitorDialog = (props: Props) => {
   const { t } = useTranslation()
   const { show, hidden } = props
   const { show: showSub, open: openShub, hidden: hiddenSub } = useShow(false)
   const [config, setConfig] = useState<Config>()
-
   const { configData: data } = useMonitorStore()
-
   const menuConfig = {
     [MonitorMenuType.wallet]: {
       comp: <MonitorWallet data={data} />,
@@ -86,7 +82,7 @@ export const MonitorEntryPointer = (props: Props) => {
             </span>
           }
           onClose={hidden}
-        ></DialogHeader>
+        />
         <MonitorMenu onOpenItem={handleOpenMonitorSetting}></MonitorMenu>
       </Dialog>
       <Dialog
@@ -101,7 +97,7 @@ export const MonitorEntryPointer = (props: Props) => {
             </span>
           }
           onClose={closeAll}
-        ></DialogHeader>
+        />
         {config?.comp && config.comp}
       </Dialog>
     </>

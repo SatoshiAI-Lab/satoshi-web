@@ -1,34 +1,29 @@
 import { WalletChain, WalletPlatform } from '@/config/wallet'
 
-export interface ChatResponse {
+import type { ModelMotions } from '@/stores/use-live2d-store/types'
+
+export interface ChatResponseBase {
   status: number
   message: string
   data: {
-    answer: ChatResponseAnswer[]
+    answer: ChatResponse[]
   }
 }
 
-export interface ChatResponseAnswer {
+export interface ChatResponse {
   answer_type: string
   text: string
   hyper_text: string
-  meta: ChatResponseAnswerMeta
+  meta: ChatResponseMeta
 }
 
-export interface ChatResponseAnswerMeta
+export interface ChatResponseMeta
   extends Partial<ChatResponseMetaInteractive>,
     Partial<ChatResponseMetaReference>,
     Partial<ChatResponseWalletListRaw>,
     Partial<ChatResponseMetaBalance>,
     Partial<ChatResponseTxConfrim> {
-  emotion?:
-    | 'natural'
-    | 'happy'
-    | 'sad'
-    | 'awkward'
-    | 'denial'
-    | 'angry'
-    | 'encouragement'
+  emotion?: ModelMotions
 }
 
 export interface ChatResponseMetaDynamic {
@@ -45,22 +40,34 @@ export interface ChatResponseMetaBalance {
 }
 
 export interface ChatResponseTxConfrim {
-  from_token_info: TokenInfo[]
+  from_token: {
+    type: string
+    content: string
+  }
+  to_token: {
+    type: string
+    content: string
+  }
   amount: number
-  from_token_name: string
-  to_token_name: string
-  to_token_info: TokenInfo[]
+  chain_name: string
 }
 
-export interface TokenInfo {
-  platform: string
-  chain: WalletChain
-  token_name: null | string
-  contract: string
-  platform_id: number
-  chain_logo: string
-  chain_symbol: string
-  token_logo: null | string
+export interface MultiChainCoin {
+  address: string
+  chain: Chain
+  decimals: number
+  is_supported: boolean
+  logo: string
+  name: null | string
+  price_change: number | null
+  price_usd: number
+  symbol: string
+  holders: number
+}
+export interface Chain {
+  id: string
+  logo: string
+  name: WalletChain
 }
 
 export interface ChatResponseTokneName {
@@ -83,7 +90,7 @@ export interface ChatResponseTokneName {
 export interface ChatResponseWalletListRaw {
   status: number
   data: ChatResponseWalletList[]
-  chain: string
+  chain: WalletChain
 }
 
 export interface ChatResponseWalletBalance {
@@ -105,15 +112,13 @@ export interface ChatResponseWalletList {
 export interface ChatResponseWalletListToken {
   address: string
   amount: number
-  chain_id: number
-  chain_logo: string
-  chain_name: string
   decimals: number
   logoUrl: string
   name: string
-  priceUsd: number
+  price_usd: number
+  price_change_24h: number
   symbol: string
-  valueUsd: number
+  value_usd: number
 }
 
 export interface ChatResponseTokenDetail {

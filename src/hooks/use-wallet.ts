@@ -1,52 +1,19 @@
 import { useEffect, useState } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
+
+import type { WalletCardProps } from '@/stores/use-wallet-store'
 
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { UserCreateWalletResp } from '@/api/wallet/params'
 import { FetcherResponse } from '@/api/fetcher/types'
 import { WalletChain } from '@/config/wallet'
+import { useWalletList } from './use-wallet-list'
 
-interface Options {
-  enabled?: boolean
-  refetchInterval?: false | number
-}
-
-export const useWallet = (options?: Options) => {
-  const { enabled = false, refetchInterval = false } = options ?? {}
-  const { wallets, allWallets, setAllWallets, selectedChain, setWallets } =
-    useWalletStore()
+export const useWalletManage = () => {
   // Latest created wallet, used for active hints.
-  const [latestWallet, setLatestWallet] = useState<(typeof wallets)[number]>()
-
-  const getAllWallet = async () => {
-    const allWallet: Promise<FetcherResponse<UserCreateWalletResp[]>>[] = []
-
-    Object.values(WalletChain).forEach((chain) => {
-      allWallet.push(walletApi.getWallets(chain))
-    })
-    const data = await Promise.all(allWallet)
-    const ruslt: UserCreateWalletResp[] = []
-    data.forEach((item) => {
-      ruslt.push(...item.data)
-    })
-    setAllWallets(ruslt)
-    return ruslt
-  }
-
-  // Get wallet list.
-  const {
-    data: walletsData,
-    isLoading: isFirstFetchingWallets,
-    isFetching: isFetchingWallets,
-    isFetched,
-    refetch: refetchWallets,
-  } = useQuery({
-    enabled, // By default is disabled.
-    refetchInterval,
-    queryKey: [walletApi.getWallets.name, selectedChain],
-    queryFn: () => walletApi.getWallets(selectedChain),
-  })
+  const [latestWallet, setLatestWallet] = useState<WalletCardProps>()
+  const { refetchWallets } = useWalletList()
 
   // Create wallet.
   const {
@@ -134,13 +101,6 @@ export const useWallet = (options?: Options) => {
     resetRenameWallet()
   }
 
-  // Stored wallet list
-  useEffect(() => {
-    if (isFetched && walletsData?.data) {
-      setWallets(walletsData?.data)
-    }
-  }, [walletsData, isFetched])
-
   // Delay clear latest wallet.
   useEffect(() => {
     if (!latestWallet) return
@@ -151,18 +111,13 @@ export const useWallet = (options?: Options) => {
   }, [latestWallet])
 
   return {
-    wallets,
     privateKey: privateKey?.data.private_key ?? '',
-    isFirstFetchingWallets,
-    isFetchingWallets,
     isCreating,
     isRemoving,
     isImporting,
     isExporting,
     isRenaming,
-    allWallets,
     latestWallet,
-    getAllWallet,
     refetchWallets,
     createWallet,
     removeWallet,

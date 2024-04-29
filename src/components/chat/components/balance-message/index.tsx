@@ -15,22 +15,22 @@ import { IoIosArrowDown } from 'react-icons/io'
 import clsx from 'clsx'
 import { useQuery } from '@tanstack/react-query'
 
-import { useChat } from '@/hooks/use-chat'
-import TokenRow from './token-row'
-import MessageBubble from '../message-bubble'
-import CustomSuspense from '@/components/custom-suspense'
-import { utilArr } from '@/utils/array'
-import { walletApi } from '@/api/wallet'
-
 import type {
-  ChatResponseAnswerMeta,
+  ChatResponseMeta,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
 import type { WalletCardProps } from '@/components/wallet/types'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
+import { TokenRow } from './token-row'
+import { MessageBubble } from '../message-bubble'
+import { CustomSuspense } from '@/components/custom-suspense'
+import { utilArr } from '@/utils/array'
+import { walletApi } from '@/api/wallet'
+import { useChat } from '@/hooks/use-chat'
+
 interface Props {
-  meta?: ChatResponseAnswerMeta
+  meta?: ChatResponseMeta
 }
 
 export const BalanceMessage = (props: Props) => {
@@ -38,17 +38,18 @@ export const BalanceMessage = (props: Props) => {
   const [folds, setFolds] = useState<string[]>([])
   const [wallets, setWallets] = useState<UserCreateWalletResp[]>([])
   const { t } = useTranslation()
-  const { sendMsg, addMessageAndLoading } = useChat()
+  const { sendChat } = useChat()
 
   // Don't use `useWallet`, here is independent.
-  const { data: walletData } = useQuery({
+  const { data: walletData, isError } = useQuery({
     queryKey: [walletApi.getWallets.name, meta?.chain],
     queryFn: () => walletApi.getWallets(meta?.chain),
   })
 
   const sendQ = (question: string) => {
-    addMessageAndLoading({ msg: question, position: 'right' })
-    sendMsg({ question })
+    // addMessageAndLoading({ msg: question, position: 'right' })
+    // sendMsg({ question })
+    sendChat({ question })
   }
 
   const onDetails = (token: ChatResponseWalletListToken) => {
@@ -69,8 +70,9 @@ export const BalanceMessage = (props: Props) => {
       .replace('$1', token.name)
       .replace('$2', token.address)
 
-    addMessageAndLoading({ msg: question, position: 'right' })
-    sendMsg({ question: question })
+    // addMessageAndLoading({ msg: question, position: 'right' })
+    // sendMsg({ question: question })
+    sendChat({ question })
   }
 
   const onFold = (wallet: Partial<WalletCardProps>) => {
@@ -90,9 +92,11 @@ export const BalanceMessage = (props: Props) => {
   }, [])
 
   useEffect(() => {
-    const walletList = walletData?.data ?? []
+    if (!meta?.chain) return
 
-    // Optimize performance
+    const walletList = walletData?.data[meta.chain] ?? []
+
+    // If length is same, don't to sort, optimize performance.
     if (utilArr.sameLen(walletList, wallets)) return
 
     const sortedWalelts = walletList.sort(
@@ -118,8 +122,19 @@ export const BalanceMessage = (props: Props) => {
     </TableHead>
   )
 
+  const NullToken = () => (
+    <tr
+      className={clsx(
+        'text-gray-400 text-center w-full pt-2',
+        'text-sm inline-block'
+      )}
+    >
+      <td>{t('no-assets')}</td>
+    </tr>
+  )
+
   return (
-    <MessageBubble className="pt-4">
+    <MessageBubble className={clsx(!isError && 'pt-4')}>
       {wallets.map((w, i) => (
         <React.Fragment key={w.id}>
           <div
@@ -140,22 +155,11 @@ export const BalanceMessage = (props: Props) => {
           </div>
           <Collapse in={folds.includes(w.id!)}>
             <Table size="small">
-              <TableHeader />
+              {TableHeader()}
               <TableBody>
-                <CustomSuspense
-                  nullback={
-                    <tr
-                      className={clsx(
-                        'text-gray-400 text-center w-full pt-2',
-                        'text-sm inline-block'
-                      )}
-                    >
-                      <td>{t('no-assets')}</td>
-                    </tr>
-                  }
-                >
+                <CustomSuspense nullback={NullToken()}>
                   {w?.tokens
-                    ?.sort((a, b) => Number(b.valueUsd) - Number(a.valueUsd))
+                    ?.sort((a, b) => Number(b.value_usd) - Number(a.value_usd))
                     .map((t, i) => (
                       <TokenRow
                         key={i}
@@ -175,6 +179,7 @@ export const BalanceMessage = (props: Props) => {
           </Collapse>
         </React.Fragment>
       ))}
+      {isError && !wallets.length && <p>Error</p>}
     </MessageBubble>
   )
 }

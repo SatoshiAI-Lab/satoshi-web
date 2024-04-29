@@ -3,14 +3,13 @@ import { Button, IconButton, Tooltip } from '@mui/material'
 import { IoTrash } from 'react-icons/io5'
 import numeral from 'numeral'
 import { useTranslation } from 'react-i18next'
-import { t } from 'i18next'
-import clsx from 'clsx'
-
-import { utilFmt } from '@/utils/format'
-import { WalletPlatform } from '@/config/wallet'
+import { clsx } from 'clsx'
 
 import type { WalletCardProps as WalletProps } from '@/stores/use-wallet-store'
 import type { WalletCardProps } from '../types'
+
+import { utilFmt } from '@/utils/format'
+import { ChainLogos } from './chain-logos'
 
 interface Props extends WalletCardProps {
   wallet: WalletProps
@@ -42,19 +41,20 @@ export const WalletCard = (props: Props) => {
       onClick: copyAddress,
     },
   ]
+  const isLatestCreated = latestWallet?.id === wallet?.id
 
   return (
     <div
       className={clsx(
         'relative border border-black rounded-md px-[30px] py-[17px]',
-        'flex justify-between items-center transition-all ',
-        latestWallet?.id === wallet?.id && 'bg-gray-200 border-gray-300'
+        'flex justify-between items-center transition-all dark:border-zinc-500',
+        isLatestCreated && 'bg-gray-200 border-gray-300 dark:bg-zinc-800'
       )}
     >
       <div>
         <div className="flex gap-2 items-center">
           <Tooltip title={name}>
-            <div className="text-[#0F40F5] text-xl max-w-[240px] truncate">
+            <div className="text-primary text-xl max-w-[240px] truncate">
               {name}
             </div>
           </Tooltip>
@@ -62,7 +62,9 @@ export const WalletCard = (props: Props) => {
             <ChainLogos wallet={wallet} />
           </div>
         </div>
-        <div className="text-[#101010b2]">{utilFmt.addr(address, 4)}</div>
+        <div className="text-black dark:text-gray-300">
+          {utilFmt.addr(address, 4)}
+        </div>
         <div className="flex gap-8">
           <div>
             {t('balance')} ${numeral(value).format('0a')}
@@ -80,8 +82,8 @@ export const WalletCard = (props: Props) => {
             key={index}
             variant="outlined"
             classes={{ root: '!text-black !rounded-full' }}
-            className="!border-gray-400 hover:!bg-gray-100"
-            onClick={() => item.onClick(address!)}
+            className="!border-gray-400 hover:!bg-gray-100 dark:!text-gray-300 dark:hover:!bg-zinc-800"
+            onClick={() => item.onClick(wallet!)}
           >
             {item.title}
           </Button>
@@ -91,63 +93,11 @@ export const WalletCard = (props: Props) => {
         classes={{
           root: '!absolute !w-[30px] !h-[30px] right-2 top-2',
         }}
-        onClick={() => deleteWallet(address!)}
+        onClick={() => deleteWallet(wallet!)}
       >
-        <IoTrash size={30} />
+        <IoTrash size={30} className="dark:text-white" />
       </IconButton>
     </div>
-  )
-}
-
-const ChainLogos = (props: Pick<Props, 'wallet'>) => {
-  const { chain, platform } = props.wallet
-  const baseURL = process.env.NEXT_PUBLIC_CDN_URL
-  const evmLogos = [
-    {
-      src: `${baseURL}/chains/logo/ethereum.png`,
-      tooltip: 'Ethereum(ETH)',
-    },
-    {
-      src: `${baseURL}/chains/logo/bsc.png`,
-      tooltip: 'Binance Smart Chain(BSC)',
-    },
-    {
-      src: `${baseURL}/chains/logo/optimism.png`,
-      tooltip: 'Optimism(OP)',
-    },
-    {
-      src: `${baseURL}/chains/logo/arbitrum.png`,
-      tooltip: 'Arbitrum(ARB)',
-    },
-  ]
-
-  // EVM compatibility chain.
-  if (platform === WalletPlatform.EVM) {
-    return (
-      <>
-        {evmLogos.map((e, i) => (
-          <Tooltip title={e.tooltip}>
-            <img
-              key={i}
-              src={e.src}
-              width={24}
-              height={24}
-              alt="Logo"
-              className="mr-1"
-            />
-          </Tooltip>
-        ))}
-        <Tooltip title={t('evm-all-chain')}>
-          <span>...</span>
-        </Tooltip>
-      </>
-    )
-  }
-
-  return (
-    <Tooltip title="Solana(SOL)">
-      <img src={chain?.logo ?? ''} width={24} height={24} alt="Logo" />
-    </Tooltip>
   )
 }
 

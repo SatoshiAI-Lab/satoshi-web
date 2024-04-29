@@ -3,8 +3,8 @@
  * @param reg A RegExp.
  * @returns Return a tuple, include a parser function.
  */
-export const useHyperTextParser = (reg: RegExp) => {
-  function parser(str: string) {
+export const useHypertext = (reg: RegExp) => {
+  return (str: string) => {
     const parsed = str.replace(reg, ($1) => {
       const isMessage = $1 === 'message'
       if (isMessage) {
@@ -41,6 +41,4 @@ export const useHyperTextParser = (reg: RegExp) => {
     const removeTab = parsed.replace(/\s+(<p>)/g, () => '<p>')
     return removeTab
   }
-
-  return [parser]
 }
