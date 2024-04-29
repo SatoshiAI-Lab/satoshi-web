@@ -21,8 +21,8 @@ export const MessageAlert: React.FC = () => {
       <div
         className={clsx(
           'sticky top-0 border-2 border-slate-100 flex justify-center items-center',
-          'bg-slate-100 w-full py-2 rounded-md cursor-pointer text-primary',
-          'hover:bg-white'
+          'bg-slate-100 w-[calc(100%-2.5rem)] py-2 rounded-md cursor-pointer text-primary',
+          'hover:bg-white hover:border-white z-50'
         )}
         onClick={expandMessage}
       >
