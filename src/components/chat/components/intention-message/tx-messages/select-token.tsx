@@ -123,10 +123,12 @@ export const SelectToken: React.FC<Props> = ({
             height={30}
             className="w-[30px] h-[30px] mr-1"
           ></img>
-          <div className="mx-1">
-            <div>{`${selectToken?.symbol}`}</div>
-            <div className="text-xs text-gray-400">{`${selectToken?.chain.name}`}</div>
-          </div>
+          {selectToken && (
+            <div className="mx-1">
+              <div>{`${selectToken?.symbol}`}</div>
+              <div className="text-xs text-gray-400">{`${selectToken?.chain.name}`}</div>
+            </div>
+          )}
           <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
         </div>
         {isBuy ? tokenMenu() : null}
@@ -153,7 +155,7 @@ export const SelectToken: React.FC<Props> = ({
           selectToToken?.name?.toUpperCase()
         ) : (
           <>
-            <Avatar src={selectToToken?.logo} sizes="30">
+            <Avatar src={selectToToken?.logo || defaultImg} sizes="30">
               {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
             </Avatar>
             <div className="mx-1">
