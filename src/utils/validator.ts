@@ -1,4 +1,5 @@
 import { t } from 'i18next'
+import { PublicKey } from '@solana/web3.js'
 
 export const validator = {
   checkEmail(email: string) {
@@ -24,5 +25,13 @@ export const validator = {
     if (!isValid) return t('invalid')
 
     return isValid
+  },
+  isSolAddr(addr: string) {
+    try {
+      const pubKey = new PublicKey(addr)
+      return PublicKey.isOnCurve(pubKey)
+    } catch (error) {
+      return false
+    }
   },
 }

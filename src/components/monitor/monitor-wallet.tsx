@@ -1,30 +1,21 @@
-import {
-  Avatar,
-  Button,
-  CircularProgress,
-  Dialog,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from '@mui/material'
+import { useState } from 'react'
+import toast from 'react-hot-toast'
+import { Button, CircularProgress, Dialog, OutlinedInput } from '@mui/material'
 import { IoEyeOutline } from 'react-icons/io5'
 import { useTranslation } from 'react-i18next'
 
 import type { MonitorConfigData } from '@/api/monitor/type'
-import { useState } from 'react'
+
 import { useMonitorStore } from '@/stores/use-monitor-store'
-import { MonitorConfig, monitorWalletSupperChain } from '@/config/monitor'
-import toast from 'react-hot-toast'
+import { MonitorConfig } from '@/config/monitor'
 import { DialogHeader } from '../dialog-header'
 import { useShow } from '@/hooks/use-show'
 import { MonitorWalletList } from './monitor-wallet-list'
-import { isAddress } from 'viem'
 
 interface Props {
   data?: MonitorConfigData
 }
 
-const op = 'Optimism'
 export const MonitorWallet = ({ data }: Props) => {
   const [address, setAddress] = useState('')
   const [name, setName] = useState('')
@@ -79,7 +70,7 @@ export const MonitorWallet = ({ data }: Props) => {
 
     setLoading(true)
     setConfig({
-      message_type: MonitorConfig.trade,
+      message_type: MonitorConfig.Trade,
       content: addressList,
     })
       .then(() => {
@@ -144,13 +135,12 @@ export const MonitorWallet = ({ data }: Props) => {
             </Select>
           </div> */}
         </div>
-
         {validateError.map((msg) => {
           return <div className="mt-4 -mb-2 text-sm text-green-600">{msg}</div>
         })}
         <Button
           variant="contained"
-          className="!mt-5 !py-2 !rounded-full "
+          className="!mt-5 !py-2 !rounded-full"
           disableElevation
           onClick={onWatch}
           disabled={loading}
@@ -160,27 +150,23 @@ export const MonitorWallet = ({ data }: Props) => {
           ) : (
             <IoEyeOutline size={20} />
           )}
-
           <span className="ml-2 leading-none">{t('track')}</span>
         </Button>
       </div>
-      <div className="text-[#02101088] text-sx">
+      <div className="text-sx">
         <div>{t('monitor.wallet.text1')}</div>
         <div>{t('monitor.wallet.text2')}</div>
         <div>{t('monitor.wallet.text3')}</div>
       </div>
       <div
-        className="!mt-2 text-primary underline cursor-pointer !rounded-full"
+        className="!mt-2 text-secondary underline cursor-pointer !rounded-full"
         onClick={open}
       >
         {t('trace.address.list')}
       </div>
       <Dialog open={show} onClose={hidden}>
-        <DialogHeader
-          text={t('trace.address.list')}
-          onClose={hidden}
-        ></DialogHeader>
-        <MonitorWalletList></MonitorWalletList>
+        <DialogHeader text={t('trace.address.list')} onClose={hidden} />
+        <MonitorWalletList />
       </Dialog>
     </div>
   )

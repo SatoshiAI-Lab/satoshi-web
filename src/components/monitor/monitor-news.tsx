@@ -11,7 +11,6 @@ interface Props {
 
 export const MonitorNews = ({ data }: Props) => {
   const { t } = useTranslation()
-
   const { setConfig } = useMonitorStore()
 
   const checked = data?.news.content.switch == 'on'
@@ -20,7 +19,7 @@ export const MonitorNews = ({ data }: Props) => {
     data!.news.content.switch = checked ? 'on' : 'off'
 
     setConfig({
-      message_type: MonitorConfig.news,
+      message_type: MonitorConfig.News,
       content: data!.news.content,
     })
   }
@@ -33,7 +32,7 @@ export const MonitorNews = ({ data }: Props) => {
           {t('monitor.news.text1').replace('$1', checked ? t('on') : t('off'))}
         </span>
       </div>
-      <div className="mt-3 text-[#02101088]">
+      <div className="mt-3">
         <span>{t('monitor.news.text2')}</span>
       </div>
     </div>

@@ -1,78 +1,45 @@
 import React, { memo } from 'react'
-import { Avatar, MenuItem, Select } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import clsx from 'clsx'
+import { type SelectClasses } from '@mui/material'
+import { clsx } from 'clsx'
 
 import { useWalletStore } from '@/stores/use-wallet-store'
+import { ChainSelect } from './chain-select'
+import { PlatformSelect } from './platform-select'
 
-interface Props extends React.ComponentProps<'div'> {
+interface Props extends Omit<React.ComponentProps<'div'>, 'onSelect'> {
   // If `chain`, select chain, else select `platform`
   type?: 'chain' | 'platform'
   avatarSize?: number
+  classes?: Partial<SelectClasses>
 }
 
+// This component will change the global chain & platform state.
 export const ChainPlatformSelect = memo((props: Props) => {
-  const { type = 'chain', className, avatarSize = 24 } = props
-  const { t } = useTranslation()
+  const { type = 'chain', className, avatarSize = 24, classes } = props
   const {
-    chains,
-    platforms,
     selectedChain,
     selectedPlatform,
     setSelectedChain,
     setSelectedPlatform,
   } = useWalletStore()
 
-  const ChainSelect = () => {
-    return (
-      <>
-        <div className="mr-2 font-bold">{t('select-chain')}:</div>
-        <Select
-          classes={{ select: '!flex !items-center' }}
-          size="small"
-          value={selectedChain}
-          onChange={({ target }) => setSelectedChain(target.value)}
-        >
-          {chains?.map((c, i) => (
-            <MenuItem key={i} value={c.name}>
-              <Avatar
-                src={c.logo}
-                sx={{ width: avatarSize, height: avatarSize }}
-              >
-                {c.name}
-              </Avatar>
-              <div className="ml-2">{c.name}</div>
-            </MenuItem>
-          ))}
-        </Select>
-      </>
-    )
-  }
-
-  const PlatformSelect = () => {
-    return (
-      <>
-        <div className="mr-2 font-bold">{t('select-platform')}:</div>
-        <Select
-          classes={{ select: '!flex !items-center' }}
-          size="small"
-          value={selectedPlatform}
-          onChange={({ target }) => setSelectedPlatform(target.value)}
-        >
-          {platforms?.map((p, i) => (
-            <MenuItem key={i} value={p}>
-              {p}
-            </MenuItem>
-          ))}
-        </Select>
-      </>
-    )
-  }
-
   return (
     <div className={clsx('flex items-center my-2', className)}>
-      {type === 'chain' && <ChainSelect />}
-      {type === 'platform' && <PlatformSelect />}
+      {type === 'chain' && (
+        <ChainSelect
+          value={selectedChain}
+          onSelect={setSelectedChain}
+          avatarSize={avatarSize}
+          classes={classes}
+        />
+      )}
+      {type === 'platform' && (
+        <PlatformSelect
+          value={selectedPlatform}
+          onSelect={setSelectedPlatform}
+          classes={classes}
+        />
+      )}
     </div>
   )
 })

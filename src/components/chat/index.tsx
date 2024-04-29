@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next'
 import MessageInput from './components/message-input'
 import Messages from './components/messages'
 import Live2DModel from '../live2d-model'
-import { utilDom } from '@/utils/dom'
-import { useChat } from '@/hooks/use-chat'
 import { MessageAlert } from './components/message-alert'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
+import { useChat } from '@/hooks/use-chat'
+import { useChatStore } from '@/stores/use-chat-store'
 import {
   DefaultMessage,
   type DefaultMessageOption,
@@ -23,14 +23,13 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     question,
     messages,
     isLoading,
-    addMessageAndLoading,
-    setChatEl,
-    sendMsg,
     unreadMessages,
+    setChatEl,
     setWaitAnswer,
-    cancelAnswer,
-    setQuestion,
-  } = useChat()
+    chatScrollToBottom,
+  } = useChatStore()
+  const { sendChat, stopChat } = useChat()
+
   const waitMonitor = useThrottledCallback(function () {
     setWaitAnswer(true)
     console.log('user start waiting answer now!!!')
@@ -50,20 +49,11 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     }
     if (isLoading) return
 
-    addMessageAndLoading({
-      msg: question,
-      position: 'right',
-    })
-    await sendMsg()
+    sendChat()
   }
 
   const onOptionClick = async (option: DefaultMessageOption) => {
-    setQuestion(option.details)
-    addMessageAndLoading({
-      msg: option.details,
-      position: 'right',
-    })
-    await sendMsg()
+    sendChat({ question: option.details })
   }
 
   // setChatEl and scroll to latest message
@@ -71,7 +61,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     if (!chatRef.current) return
 
     setChatEl(chatRef.current)
-    utilDom.scrollToBottom(chatRef.current)
+    chatScrollToBottom()
   }, [])
 
   return (
@@ -109,7 +99,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
           <DefaultMessage onOptionClick={onOptionClick} />
           <Messages messages={messages} />
         </div>
-        <MessageInput onSend={onSend} onCancel={cancelAnswer} />
+        <MessageInput onSend={onSend} onCancel={stopChat} />
       </div>
     </div>
   )

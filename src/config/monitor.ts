@@ -1,15 +1,20 @@
 export enum MonitorConfig {
-  news,
-  twitter,
-  announcement,
-  trade,
-  pool,
+  News,
+  Twitter,
+  Announcement,
+  Trade,
+  Pool,
+}
+
+export const MONITOR_CONFIG = {
+  minPool: 1000,
+  maxPool: 1000000,
 }
 
 export enum MonitorPoolStatus {
-  normal,
-  risk,
-  unknown,
+  Normal,
+  Risk,
+  Unknown,
 }
 
 export const monitorWalletSupperChain = [

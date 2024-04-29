@@ -3,17 +3,22 @@ import { useTranslation } from 'react-i18next'
 import { clsx } from 'clsx'
 import { Tooltip } from '@mui/material'
 
-import { useChat } from '@/hooks/use-chat'
 import { useChatStore } from '@/stores/use-chat-store'
+import { useMessages } from '@/hooks/use-messages'
 
 export const MessageAlert: React.FC = () => {
-  const { unreadMessages, setUnreadMessage } = useChatStore()
-  const { addMonitorMessage } = useChat()
   const { t } = useTranslation()
+  const {
+    unreadMessages,
+    setUnreadMessage,
+    chatScrollToBottom: scrollToChatBottom,
+  } = useChatStore()
+  const { addMonitorMessages } = useMessages()
 
   const expandMessage = () => {
-    addMonitorMessage(unreadMessages)
+    addMonitorMessages(unreadMessages)
     setUnreadMessage([])
+    scrollToChatBottom()
   }
 
   return (
@@ -21,14 +26,14 @@ export const MessageAlert: React.FC = () => {
       <div
         className={clsx(
           'sticky top-0 border-2 border-slate-100 flex justify-center items-center',
-          'bg-slate-100 w-full py-2 rounded-md cursor-pointer text-primary',
-          'hover:bg-white'
+          'bg-slate-100 w-[calc(100%-2.5rem)] py-2 rounded-md cursor-pointer text-primary',
+          'hover:bg-white hover:border-white z-50'
         )}
         onClick={expandMessage}
       >
         <MdOutlineFlashOn />{' '}
         <span className="mx-1">{unreadMessages.length}</span>{' '}
-        {t('new-intelligence-alerts')}
+        {t('folded-message')}
       </div>
     </Tooltip>
   )

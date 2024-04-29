@@ -8,22 +8,48 @@ import {
 } from '@mui/material'
 import { TfiClose } from 'react-icons/tfi'
 import toast from 'react-hot-toast'
-import { t } from 'i18next'
-
-import { useWalletStore } from '@/stores/use-wallet-store'
-import { useShow } from '@/hooks/use-show'
-import { useWallet } from '@/hooks/use-wallet'
+import { useTranslation } from 'react-i18next'
 
 import type { WalletDialogProps } from '../types'
 
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { useShow } from '@/hooks/use-show'
+import { useWalletManage } from '@/hooks/use-wallet'
+import { useUserStore } from '@/stores/use-user-store'
+
 export const WalletRenamePop: FC<WalletDialogProps> = (props) => {
   const { open, onClose, title, onlyWalletRefetch } = props
+  const { t } = useTranslation()
   const [walletName, setWalletName] = useState('')
   const { currentWallet } = useWalletStore()
-  const { renameWallet } = useWallet()
+  const { renameWallet, checkName } = useWalletManage()
+  const { userInfo } = useUserStore()
   const { open: openLoading, show, hidden: hiddenLoading } = useShow()
 
+  const checkNameIsExisted = async () => {
+    const loadingId = toast.loading(t('check-name.loading'))
+    try {
+      const { data } = await checkName({
+        id: userInfo?.id!,
+        name: walletName,
+      })
+
+      if (data.result) {
+        toast.error(t('check-name.existed'))
+      }
+
+      return data.result
+    } catch (error) {
+      toast.error(t('check-name.failed'))
+    } finally {
+      toast.dismiss(loadingId)
+    }
+  }
+
   const onRenameWallet = async (walletName: string) => {
+    const isExisted = await checkNameIsExisted()
+    if (isExisted) return
+
     openLoading()
     try {
       await renameWallet(currentWallet?.id!, walletName)
@@ -72,7 +98,7 @@ export const WalletRenamePop: FC<WalletDialogProps> = (props) => {
               value={walletName}
               onChange={(e) => setWalletName(e.target.value)}
             />
-            <div className="text-[#101010b2] text-sm w-full">
+            <div className="text-black text-sm w-full">
               {currentWallet?.address}
             </div>
           </div>

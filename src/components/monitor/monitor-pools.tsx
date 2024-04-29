@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaChevronLeft, FaCheck } from 'react-icons/fa6'
 import { Button, Dialog, OutlinedInput, Switch } from '@mui/material'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
+import { toast } from 'react-hot-toast'
+
+import type { MonitorConfigData, PoolData } from '@/api/monitor/type'
 
 import { useShow } from '@/hooks/use-show'
 import { DialogHeader } from '../dialog-header'
 import { useResponsive } from '@/hooks/use-responsive'
 import { MonitorLabelSwitch } from './monitor-label-switch'
-
-import type { MonitorConfigData, PoolData } from '@/api/monitor/type'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { MonitorConfig } from '@/config/monitor'
-import toast from 'react-hot-toast'
 
 interface Props {
   data?: MonitorConfigData
@@ -50,7 +50,7 @@ export const MonitorPools = ({ data, className }: Props) => {
     try {
       setLoading(data.chain)
       await setConfig({
-        message_type: MonitorConfig.pool,
+        message_type: MonitorConfig.Pool,
         content: [...content],
       })
     } catch {
@@ -72,7 +72,7 @@ export const MonitorPools = ({ data, className }: Props) => {
     try {
       setLoading('chain')
       await setConfig({
-        message_type: MonitorConfig.pool,
+        message_type: MonitorConfig.Pool,
         content: list,
       })
     } catch {
@@ -106,7 +106,7 @@ export const MonitorPools = ({ data, className }: Props) => {
           checked={!chains?.some((item) => !item.subscribed)}
           disabled={!!loading}
           onChange={(_, checked) => handleAll(checked)}
-        ></Switch>
+        />
       </div>
       <div
         className={clsx(
@@ -127,7 +127,7 @@ export const MonitorPools = ({ data, className }: Props) => {
                 chain.logo ??
                 `https://img.mysatoshi.ai/chains/logo/${chain?.chain}.png`
               }
-            ></MonitorLabelSwitch>
+            />
           )
         })}
         {chain?.subscribed && (
@@ -157,7 +157,7 @@ export const MonitorPools = ({ data, className }: Props) => {
               }
               onBack={hidden}
               onClose={hidden}
-            ></DialogHeader>
+            />
             <div className="min-w-[400px] max-sm:min-w-[100px] max-sm:px-6">
               <div className="text-center mb-6 font-bold">
                 {t('pools.config.text1')}
@@ -184,7 +184,7 @@ export const MonitorPools = ({ data, className }: Props) => {
                   fullWidth={isMobile}
                   startAdornment={<span className="opacity-45 mr-2">$</span>}
                   onChange={(e) => setMax(Number(e.target.value))}
-                ></OutlinedInput>
+                />
               </div>
             </div>
             <div className="flex justify-center pt-5 pb-8 max-sm:pt-3 max-sm:pb-4">

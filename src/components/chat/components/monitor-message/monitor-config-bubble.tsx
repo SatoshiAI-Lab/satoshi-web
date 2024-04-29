@@ -1,46 +1,28 @@
-import {
-  ChatResponseMetaNewsInfo,
-  ChatResponseMetaAnnounceMent,
-  ChatResponseMetaWallet,
-  ChatResponseMetaTwitter,
-  ChatResponseMetaNewPool,
-} from '@/api/chat/types'
-import { DataType, Message } from '@/stores/use-chat-store/types'
-import ExchangeAnnouncementBubble from './exchange-announcement-bubble'
-import NewPoolBubble from './new-pool-bubble'
-import NewsBubble from './news-bubble'
-import TwitterBubble from './twitter-bubble'
-import WalletBubble from './wallet-bubble'
+import React from 'react'
 
-interface Props {
-  msg: Message
-}
+import { DataType } from '@/stores/use-chat-store/types'
+import { ExchangeAnnBubble } from './exchange-announcement-bubble'
+import { NewPoolBubble } from './new-pool-bubble'
+import { NewsBubble } from './news-bubble'
+import { TwitterBubble } from './twitter-bubble'
+import { WalletBubble } from './wallet-bubble'
+import { useMessagesContext } from '@/contexts/messages'
+import { MessageMatchError } from '@/components/errors/message-match'
 
-export const MonitorConfigBubble = ({ msg }: Props) => {
+export const MonitorMessages = () => {
+  const {
+    message: { data_type },
+  } = useMessagesContext()
 
-  if (msg.data_type === DataType.NewsInfo) {
-    return <NewsBubble data={msg as unknown as ChatResponseMetaNewsInfo} />
-  }
+  if (data_type === DataType.NewsInfo) return <NewsBubble />
 
-  if (msg.data_type === DataType.AnnouncementInfo) {
-    return (
-      <ExchangeAnnouncementBubble
-        data={msg as unknown as ChatResponseMetaAnnounceMent}
-      />
-    )
-  }
+  if (data_type === DataType.AnnInfo) return <ExchangeAnnBubble />
 
-  if (msg.data_type === DataType.TradeInfo) {
-    return <WalletBubble data={msg as unknown as ChatResponseMetaWallet} />
-  }
+  if (data_type === DataType.TradeInfo) return <WalletBubble />
 
-  if (msg.data_type === DataType.TwitterInfo) {
-    return <TwitterBubble data={msg as unknown as ChatResponseMetaTwitter} />
-  }
+  if (data_type === DataType.TwitterInfo) return <TwitterBubble />
 
-  if (msg.data_type === DataType.PoolInfo) {
-    return (
-      <NewPoolBubble {...{ ...(msg as unknown as ChatResponseMetaNewPool) }} />
-    )
-  }
+  if (data_type === DataType.PoolInfo) return <NewPoolBubble />
+
+  return <MessageMatchError reasonComponent={MonitorMessages} />
 }

@@ -1,10 +1,18 @@
 import { create } from 'zustand'
-import type { States, Actions } from './types'
+import { nanoid } from 'nanoid'
 
-export const useChatStore = create<States & Actions>((set, get) => ({
+import type { ChatStore, Message } from './types'
+
+import { utilDom } from '@/utils/dom'
+
+export const useChatStore = create<ChatStore>((set, get) => ({
   intention: '',
   question: '',
   messages: [],
+  chatEl: null,
+  chatInputEl: null,
+  isLoading: false,
+
   // 1. If the question input is in the state of Focus
   // 2. Within 20 seconds after the latest question answer, read the answer
   // 3. Within 10 seconds after the user clicks Ask, wait for the answer
@@ -12,27 +20,52 @@ export const useChatStore = create<States & Actions>((set, get) => ({
   readAnswer: false,
   waitAnswer: false,
   unreadMessages: [],
-  chatEl: null,
-  isLoading: false,
   socket: undefined,
-  // hasSmooth: true,
-  // controller: null,
-  // isReceiving: false,
-  // thinkTimer: undefined,
 
   setIntention: (intention) => set({ intention }),
-  setMessage: (messages) => set({ messages }),
+  setQuestion: (question) => set({ question }),
+  getMessages: () => get().messages,
+  setMessages: (newMessages) => {
+    // If need current message, use function, such as `setState`.
+    if (typeof newMessages === 'function') {
+      return set(({ messages }) => ({ messages: newMessages(messages) }))
+    }
+    set({ messages: newMessages })
+  },
+  addMessage: (message) => {
+    const newMessage: Message = { id: nanoid(), ...message }
+
+    set({ messages: [...get().messages, newMessage] })
+    return newMessage
+  },
+  removeMessage: (id) => {
+    const newMessages = get().messages.filter((m) => m.id !== id)
+
+    set({ messages: newMessages })
+    return newMessages
+  },
+  updateMessage: (id, message) => {
+    const newMessages = get().messages.map((m) =>
+      m.id === id ? { ...m, ...message } : m
+    )
+
+    set({ messages: newMessages })
+    return newMessages
+  },
+  getMessage: (id) => get().messages.find((m) => m.id === id),
+
+  setChatEl: (chatEl) => set({ chatEl }),
+  setChatInputEl: (chatInputEl) => set({ chatInputEl }),
+  setIsLoading: (isLoading) => set({ isLoading }),
+
+  setInputKeyup: (inputKeyup) => set({ inputKeyup }),
+  setReadAnswer: (readAnswer) => set({ readAnswer }),
+  setWaitAnswer: (waitAnswer) => set({ waitAnswer }),
   setUnreadMessage: (unreadMessages) => set({ unreadMessages }),
-  // setHasSmooth: (bool) => set({ hasSmooth: bool }),
-  setQuestion: (value) => set({ question: value }),
-  // setThinkTimer: (value) => set({ thinkTimer: value }),
-  // setController: (value) => set({ controller: value }),
-  // setIsReceiving: (value) => set({ isLoading: value }),
-  setChatEl: (el) => set({ chatEl: el }),
-  setIsLoading: (bool) => set({ isLoading: bool }),
-  setInputKeyup: (bool) => set({ inputKeyup: bool }),
-  setReadAnswer: (bool) => set({ readAnswer: bool }),
-  setWaitAnswer: (bool) => set({ waitAnswer: bool }),
   setSocket: (socket) => set({ socket: socket }),
-  // removeAllMessage: () => set({ messages: [] }),
+
+  chatScrollToBottom: () => {
+    const { chatEl } = get()
+    if (chatEl) utilDom.scrollToBottom(chatEl)
+  },
 }))

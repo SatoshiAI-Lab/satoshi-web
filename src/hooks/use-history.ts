@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
-
-import { utilArr } from '@/utils/array'
+import { first, last } from 'lodash'
 
 interface Options {
   inputRef: React.MutableRefObject<
@@ -23,7 +22,7 @@ export const useHistory = (options: Options) => {
 
   const getPrevHistory = () => {
     if (pointerRef.current + 1 >= historyRef.current.length) {
-      return utilArr.last(historyRef.current)
+      return last(historyRef.current)!
     }
     const str = historyRef.current[pointerRef.current]
     pointerRef.current += 1
@@ -33,7 +32,7 @@ export const useHistory = (options: Options) => {
 
   const getNextHistory = () => {
     if (pointerRef.current - 1 < 0) {
-      return utilArr.first(historyRef.current)
+      return first(historyRef.current)!
     }
     const ptr = (pointerRef.current -= 1)
 

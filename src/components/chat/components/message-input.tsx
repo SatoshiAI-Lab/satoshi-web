@@ -8,10 +8,9 @@ import { clsx } from 'clsx'
 import { useAudioRecorder } from 'react-audio-voice-recorder'
 import { MdMic } from 'react-icons/md'
 
-import InputMenu from './input-menu'
+import { InputMenu } from './input-menu'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
-import { utilDom } from '@/utils/dom'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { chatApi } from '@/api/chat'
 import { useHistory } from '@/hooks/use-history'
@@ -30,8 +29,15 @@ function MessageInput(props: MessageInputProps) {
   const [isFocus, setIsFocus] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const keyboardIsShow = useMobileKeyboard()
-  const { question, chatEl, isLoading, setQuestion, setInputKeyup } =
-    useChatStore()
+  const {
+    question,
+    chatEl,
+    isLoading,
+    setQuestion,
+    setInputKeyup,
+    setChatInputEl,
+    chatScrollToBottom,
+  } = useChatStore()
   const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
   const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
   const [recording, setRecording] = useState(false)
@@ -94,7 +100,7 @@ function MessageInput(props: MessageInputProps) {
   useEffect(() => {
     if (!chatEl || !keyboardIsShow) return
 
-    utilDom.scrollToBottom(chatEl)
+    chatScrollToBottom()
   }, [keyboardIsShow, chatEl])
 
   useEffect(() => {
@@ -111,6 +117,12 @@ function MessageInput(props: MessageInputProps) {
     }
     // recordingBlob will be present at this point after 'stopRecording' has been called
   }, [recordingBlob])
+
+  useEffect(() => {
+    if (inputRef.current) {
+      setChatInputEl(inputRef.current)
+    }
+  }, [inputRef.current])
 
   return (
     <div
@@ -132,6 +144,7 @@ function MessageInput(props: MessageInputProps) {
         className={clsx(
           'flex rounded-md gap-2 border-2 border-solid items-center duration-500',
           'bg-slate-100 transition-all py-1 px-1 pl-2 hover:border-primary',
+          'not-used-dark:bg-zinc-800 not-used-dark:hover:border-secondary',
           isFocus ? 'border-primary' : 'border-transparent'
         )}
       >
@@ -139,7 +152,7 @@ function MessageInput(props: MessageInputProps) {
           className={clsx(
             'bg-transparent pl-1 text-lg transition-all text-black w-full',
             'resize-none placeholder:whitespace-nowrap placeholder:truncate',
-            'outline-none break-all'
+            'outline-none break-all not-used-dark:text-white not-used-dark:caret-white'
           )}
           value={question}
           placeholder={t('chat.placeholder')}
@@ -159,7 +172,7 @@ function MessageInput(props: MessageInputProps) {
           {recording ? (
             <img src="/svg/three-dots.svg" width={22} height={22}></img>
           ) : (
-            <MdMic size={22} />
+            <MdMic size={22} className="not-used-dark:text-gray-200" />
           )}
         </IconButton>
         <Button
@@ -168,7 +181,7 @@ function MessageInput(props: MessageInputProps) {
           disableElevation
           className={clsx(
             'shrink-0 !text-lg !rounded-md !px-4 !pr-3 self-end',
-            '!text-white'
+            '!text-white not-used-dark:bg-primary'
           )}
           startIcon={
             isLoading ? (

@@ -7,15 +7,13 @@ import { Dialog } from '@mui/material'
 
 import { MessageBubble } from '../message-bubble'
 import { utilLang } from '@/utils/language'
+import { useMessagesContext } from '@/contexts/messages'
+import { MetaType } from '@/api/chat/types'
 
-import type { ChatResponseMetaTwitter } from '@/api/chat/types'
-
-interface Props {
-  data: ChatResponseMetaTwitter
-}
-
-const TwitterBubble = ({ data }: Props) => {
-  const { content, created_at, twitter, tweets_id, twitter_logo, photo } = data
+export const TwitterBubble = () => {
+  const { getMetaData } = useMessagesContext()
+  const { content, created_at, twitter, tweets_id, twitter_logo, photo } =
+    getMetaData<MetaType.MonitorTwitter>()
   const currentContent = utilLang.getContent(content)
 
   const [open, setOpen] = useState(false)
@@ -57,7 +55,7 @@ const TwitterBubble = ({ data }: Props) => {
       >
         {currentContent}
       </ShowMoreText>
-      {photo.map((item) => (
+      {photo?.map((item) => (
         <img
           key={item}
           src={item}

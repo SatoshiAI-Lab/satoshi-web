@@ -3,7 +3,8 @@ import {
   ChatResponseWalletListToken,
   TokenInfo,
 } from '@/api/chat/types'
-import { useWalletStore, WalletCardProps } from '@/stores/use-wallet-store'
+import { WalletCardProps } from '@/components/wallet/types'
+import { useWalletStore } from '@/stores/use-wallet-store'
 import { useEffect, useState } from 'react'
 
 interface Options {
@@ -22,9 +23,7 @@ export const useTxToken = ({ isBuy, data }: Options) => {
     for (let i = 0; i < allWallets.length; i++) {
       const wallet = allWallets[i]
 
-      if (
-        data.to_token_name == token.token_name
-      ) {
+      if (data.to_token_name == token.token_name) {
         continue
       }
 
@@ -35,7 +34,6 @@ export const useTxToken = ({ isBuy, data }: Options) => {
           item.valueUsd > 0
         )
       })
-
 
       if (result) {
         if (!checkedWalletList.includes(wallet)) {
@@ -92,7 +90,6 @@ export const useTxToken = ({ isBuy, data }: Options) => {
     },
     []
   )
-
 
   useEffect(() => {
     setSelectWallet(sortedCheckedWalletList[0])

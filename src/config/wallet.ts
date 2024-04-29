@@ -1,21 +1,28 @@
-export enum WalletPlatform {
-  SOL = 'SOL',
-  EVM = 'EVM',
-  BEAR = 'BEAR',
+export enum Platform {
+  Sol = 'SOL',
+  Evm = 'EVM',
+  Bear = 'BEAR',
 }
 
-export enum WalletChain {
-  SOL = 'solana',
-  ETH = 'ethereum',
-  BSC = 'bsc',
-  OP = 'optimism',
-  ARB = 'arbitrum',
-  BASE = 'base',
+export enum Chain {
+  Sol = 'solana',
+  Eth = 'ethereum',
+  Bsc = 'bsc',
+  Op = 'optimism',
+  Arb = 'arbitrum',
+  Base = 'base',
+  ZkSync = 'zkSync',
+  Linea = 'linea',
+  Blast = 'blast',
+  Fantom = 'fantom',
+  Merlin = 'merlin',
+  Bevm = 'bevm',
+  Scroll = 'scroll',
 }
 
-export type WalletChainSymbol = keyof typeof WalletChain
+export type ChainSymbol = Uppercase<keyof typeof Chain>
 
 export const WALLET_CONFIG = {
-  defaultChain: WalletChain.ETH,
-  defaultPlatform: WalletPlatform.EVM,
+  defaultChain: Chain.Eth,
+  defaultPlatform: Platform.Evm,
 }

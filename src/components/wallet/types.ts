@@ -1,4 +1,5 @@
-import { UserCreateWalletResp } from '@/api/wallet/params'
+import type { UserCreateWalletResp } from '@/api/wallet/params'
+import type { PartialWalletRes } from '@/stores/use-wallet-store'
 
 export interface WalletDialogProps {
   open: boolean
@@ -16,8 +17,8 @@ export interface WalletCardProps {
   name?: string
   address?: string
   value?: string
-  copyAddress(address: string): void
-  renameWallet(address: string): void
-  exportKey(address: string): void
-  deleteWallet(address: string): void
+  copyAddress(wallet: PartialWalletRes): void
+  renameWallet(wallet: PartialWalletRes): void
+  exportKey(wallet: PartialWalletRes): void
+  deleteWallet(wallet: PartialWalletRes): void
 }

@@ -8,6 +8,7 @@ export const themeDark = {
   error: '#f1504a',
   textColor: '#ffffff',
   dividerColor: '#4e515e',
-  bgColor: '#ffffff',
-  skeletonColor: '#000000',
+  bgColor: '#171719',
+  skeletonColor: '#9797a0',
+  textGray: '#a7abb1',
 }

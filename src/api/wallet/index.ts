@@ -1,6 +1,7 @@
-import { useStorage } from '@/hooks/use-storage'
 import { fetchSatoshi } from '..'
-import {
+import { useStorage } from '@/hooks/use-storage'
+
+import type {
   UserCreateWalletReq,
   UserCreateWalletResp,
   UserImportPrivateKeyReq,
@@ -12,6 +13,7 @@ import {
   UserDeleteWalletReq,
   UserDeleteWalletResp,
   GetChainsRes,
+  GetWalletsRes,
 } from './params'
 
 const { getLoginToken } = useStorage()
@@ -20,7 +22,7 @@ export const walletApi = {
     if (!getLoginToken()) {
       return Promise.reject()
     }
-    return fetchSatoshi.get<UserCreateWalletResp[]>('/api/v1/wallet/', {
+    return fetchSatoshi.get<GetWalletsRes>('/api/v1/wallet/', {
       chain,
     })
   },
@@ -46,6 +48,13 @@ export const walletApi = {
       }
     )
   },
+  checkName({ id, name }: { id: string; name: string }) {
+    return fetchSatoshi.get<{ result: boolean }>(
+      `/api/v1/update-wallet-name/${id}/`,
+      { name }
+    )
+  },
+
   deleteWallet(params: UserDeleteWalletReq) {
     return fetchSatoshi.delete<UserDeleteWalletResp>(
       `/api/v1/wallet-delete/${params.wallet_id}/`

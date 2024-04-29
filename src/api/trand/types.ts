@@ -1,7 +1,7 @@
-import { WalletChain } from "@/config/wallet"
+import { Chain } from '@/config/wallet'
 
 export interface BuyTokenParams {
-  chain?: WalletChain
+  chain?: Chain
   input_token: string
   output_token: string
   amount: string
@@ -9,4 +9,5 @@ export interface BuyTokenParams {
 }
 export interface BuyTokenData {
   hash_tx: string
+  url: string
 }

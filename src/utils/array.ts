@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash'
+
 import { AnyObject } from '@/types/types'
 
 interface CategoryArrayOptions {
@@ -16,14 +18,6 @@ type CategoryArrayReturn<R> = [
 
 /** Utilities functions for array */
 export const utilArr = {
-  isEmpty: <T>(arr: T[]) => arr.length === 0,
-
-  isNotEmpty: <T>(arr: T[]) => !utilArr.isEmpty(arr),
-
-  first: <T>(arr: T[]) => arr[0],
-
-  last: <T>(arr: T[]) => arr[arr.length - 1],
-
   remove: <T>(arr: T[], el: T) => arr.filter((e) => e !== el),
 
   /** Array Whether only one element. */
@@ -41,6 +35,10 @@ export const utilArr = {
 
   sameLen: <T, V>(arr1: T[], arr2: V[]) => arr1.length === arr2.length,
 
+  removeLast: <T>(arr: T[]) => arr.slice(0, -1),
+
+  removeFirst: <T>(arr: T[]) => arr.slice(1),
+
   /**
    * Categorize an array to Object and Map based on specified key.
    * @param arr origin array
@@ -51,7 +49,7 @@ export const utilArr = {
     arr: T,
     opts: CategoryArrayOptions
   ): CategoryArrayReturn<T> {
-    if (!arr || utilArr.isEmpty(arr)) return [{}, new Map()]
+    if (!arr || isEmpty(arr)) return [{}, new Map()]
 
     const { key, assignProps, unique = false } = opts
     const mapResult = arr.reduce<Map<any, any>>((prev, item, i) => {

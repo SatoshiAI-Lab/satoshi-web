@@ -1,11 +1,13 @@
 import { useEffect } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { toast } from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
+import { isEmpty } from 'lodash'
 
 import { tokenApi } from '@/api/token'
 import { useFavtokenStore } from '@/stores/use-favorites-store'
 import { ListToken, SelectParams, TokenType } from '@/api/token/types'
 import { SortType } from '@/types/types'
-import { utilArr } from '@/utils/array'
 
 const defaultTokens = {
   ids: [
@@ -42,6 +44,7 @@ export const useFavorites = (opts?: Options) => {
     sortBy = FavoritesSort.Default,
     sortType = SortType.Desc,
   } = opts ?? {}
+  const { t } = useTranslation()
   const { tokenList, setTokenList } = useFavtokenStore()
   const {
     data: tokenData,
@@ -56,18 +59,27 @@ export const useFavorites = (opts?: Options) => {
     queryFn: () => tokenApi.tokenList(defaultTokens),
   })
 
-  const { isPending: isSelecting, mutateAsync: mutateToken } = useMutation({
+  const {
+    isPending: isSelecting,
+    isError: isSelectError,
+    mutateAsync: mutateToken,
+  } = useMutation({
     mutationKey: [tokenApi.select.name],
     mutationFn: (params: SelectParams) => tokenApi.select(params),
   })
 
   const selectToken = async (params: SelectParams) => {
-    await mutateToken(params)
-    await refetchTokens()
+    try {
+      await mutateToken(params)
+    } catch (error) {
+      toast.error(t('select-token.failed'))
+    } finally {
+      await refetchTokens() // whatever, refresh token list.
+    }
   }
 
   const sortTokens = (list: ListToken[]) => {
-    if (utilArr.isEmpty(list)) return list
+    if (isEmpty(list)) return list
     if (sortBy === FavoritesSort.Default) return list
 
     if (sortBy === FavoritesSort.Price) {
@@ -108,6 +120,7 @@ export const useFavorites = (opts?: Options) => {
     isFetchingToken,
     isRefetchingToken,
     isSelecting,
+    isSelectError,
     refetchTokens,
     selectToken,
   }

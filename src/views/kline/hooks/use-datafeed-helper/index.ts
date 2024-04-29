@@ -1,7 +1,8 @@
+import { isEmpty, last } from 'lodash'
+
 import { useKLineApi } from '../use-kline-api'
 import { useKLineFormat } from '../use-kline-format'
 import { useDatafeedCache } from '../use-datafeed-cache'
-import { utilArr } from '@/utils/array'
 import { useTagParser } from '../use-tag-parser'
 
 import type {
@@ -44,21 +45,22 @@ export const useDatafeedHelper = (
         : dexParamsToDexTag(params)
     const received = await listenToken({ tag })
     const bars = formatReceivedBars(received.data ?? [])
-    const lastBar = utilArr.last(bars)
+    const lastBar = last(bars)
     const parsedParams = joinParams(
       tagIsCex(received?.tag)
         ? cexTagToCexParams(received?.tag as CexTag)
         : dexTagToDexParams(received?.tag as DexTag)
     )
+    const fallbackBar = { open: 0, high: 0, low: 0, close: 0, time: 0 }
 
-    cachedApi.setLastBar(lastBar)
+    cachedApi.setLastBar(lastBar || fallbackBar)
     cachedApi.setLastTag(received.tag!)
     Object.assign(symbolInfo, {
       exchange: parsedParams.source.toUpperCase(),
       listed_exchange: parsedParams.source,
     } as typeof symbolInfo)
 
-    return { bars, lastBar }
+    return { bars, lastBar: lastBar || fallbackBar }
   }
 
   // Handle init bars & switch interval,
@@ -89,9 +91,9 @@ export const useDatafeedHelper = (
       }
 
       const cachedBars = cachedApi.getInitBars()
-      const { bars } = utilArr.isNotEmpty(cachedBars)
-        ? { bars: cachedBars }
-        : await getInitBars(symbolInfo, params)
+      const { bars } = isEmpty(cachedBars)
+        ? await getInitBars(symbolInfo, params)
+        : { bars: cachedBars }
 
       return bars
     } catch (error) {

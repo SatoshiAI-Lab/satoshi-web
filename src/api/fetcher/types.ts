@@ -10,7 +10,16 @@ export interface FetcherOptions {
 }
 
 export interface FetcherResponse<T> {
-  status: number
+  code: ResponseCode
   message: string
   data: T
+}
+
+export enum ResponseCode {
+  None = -1,
+
+  Success = 200,
+
+  Err = 400,
+  ErrAuth = 401,
 }
