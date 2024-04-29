@@ -20,7 +20,7 @@ export const IntentMessages = () => {
   const { metaType, message } = useMessagesContext()
 
   // Transaction category.
-  if (metaType.isTxConfirm) return <TxTokenBubbles />
+  if (metaType.isTx) return <TxTokenBubbles />
 
   // Wallet category.
   if (metaType.isWalletCreate) return <WalletCreateMessage />

@@ -62,7 +62,7 @@ type Emotion =
   | 'Encourage'
 
 export enum MetaType {
-  TxConfirm = 'transaction_confirm',
+  Tx = 'transaction',
 
   WalletCreate = 'wallet_create',
   WalletDelete = 'wallet_delete',
@@ -107,7 +107,7 @@ export enum MetaTypeCategory {
 }
 
 export type MetaTypeData = {
-  [MetaType.TxConfirm]: {
+  [MetaType.Tx]: {
     from_token: {
       type: string
       content: string
@@ -117,6 +117,7 @@ export type MetaTypeData = {
       content: string
     }
     amount: number
+    chain_name: string
   }
 
   [MetaType.WalletCreate]: {

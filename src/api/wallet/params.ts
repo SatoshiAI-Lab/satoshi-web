@@ -20,7 +20,7 @@ interface UserCreateWalletResp {
   user: string
   value: string
   tokens: ChatResponseWalletListToken[]
-  chain: Chain
+  chain: ChainInfo
 }
 
 interface UserExportPrivateKeyResp {

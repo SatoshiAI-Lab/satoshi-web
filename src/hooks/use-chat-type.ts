@@ -1,10 +1,11 @@
+import { isEmpty } from 'lodash'
+
 import {
   ChatMeta,
   AnswerType,
   MetaType,
   MetaTypeCategory,
 } from '@/api/chat/types'
-import { isEmpty } from 'lodash'
 
 export const useChatType = () => {
   const identifyAnswerType = (type?: `${AnswerType}`) => {
@@ -36,8 +37,7 @@ export const useChatType = () => {
     return {
       isEmpty: isEmpty(type),
 
-      isTx: type.startsWith(MetaTypeCategory.TxPrefix),
-      isTxConfirm: type === MetaType.TxConfirm,
+      isTx: type === MetaType.Tx,
 
       isWallet: type.startsWith(MetaTypeCategory.WalletPrefix),
       isWalletCreate: type === MetaType.WalletCreate,

@@ -135,7 +135,10 @@ export const useTxLogic = ({
       }
 
       await getStatus()
-      addMessage({ text: `${t('successful.transaction')}${data.url}` })
+      addMessage({
+        role: 'assistant',
+        text: `${t('successful.transaction')}${data.url}`,
+      })
       setIsFinalTx(true)
       getAllWallet()
     } catch {
