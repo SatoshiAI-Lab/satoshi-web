@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import MessageInput from './components/message-input'
 import Messages from './components/messages'
 import Live2DModel from '../live2d-model'
-import { utilDom } from '@/utils/dom'
 import { MessageAlert } from './components/message-alert'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { useChat } from '@/hooks/use-chat'
@@ -20,7 +19,6 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const { className = '' } = props
   const chatRef = useRef<HTMLDivElement | null>(null)
   const { t } = useTranslation()
-  // const {} = useChatMigrating()
   const {
     question,
     messages,
@@ -28,6 +26,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     unreadMessages,
     setChatEl,
     setWaitAnswer,
+    chatScrollToBottom,
   } = useChatStore()
   const { sendChat, stopChat } = useChat()
 
@@ -62,7 +61,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     if (!chatRef.current) return
 
     setChatEl(chatRef.current)
-    utilDom.scrollToBottom(chatRef.current)
+    chatScrollToBottom()
   }, [])
 
   return (

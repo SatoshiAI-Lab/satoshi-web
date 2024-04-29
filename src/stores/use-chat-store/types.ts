@@ -62,4 +62,6 @@ export interface ChatStore {
   setWaitAnswer(bool: boolean): void
   setReadAnswer(bool: boolean): void
   setSocket(socket: WebSocket): void
+
+  chatScrollToBottom(): void
 }

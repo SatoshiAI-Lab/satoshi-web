@@ -24,7 +24,7 @@ export const InputButtons = (props: Props) => {
     onPasuseClick,
   } = props
 
-  const ButtonGetter = () => {
+  const Button = () => {
     if (showToBottom) {
       return (
         <IconButton
@@ -67,7 +67,7 @@ export const InputButtons = (props: Props) => {
         y: isShow ? 0 : 56,
       }}
     >
-      {ButtonGetter()}
+      {Button()}
     </motion.div>
   )
 }

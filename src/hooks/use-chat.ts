@@ -11,7 +11,6 @@ import { useLive2D } from './use-live2d'
 import { useEventStream } from './use-event-stream'
 import { useMessages } from './use-messages'
 import { utilParse } from '@/utils/parse'
-import { utilDom } from '@/utils/dom'
 
 export interface InteractiveOptions {
   question: string
@@ -35,6 +34,7 @@ export const useChat = () => {
     setIntention,
     setIsLoading,
     addMessage,
+    chatScrollToBottom,
   } = useChatStore()
   const { startLoopMotion, stopLoopMotion, emitMotionSpeak } = useLive2D()
   const { parseChatMessage, removeLastLoading, addLoading } = useMessages()
@@ -89,7 +89,7 @@ export const useChat = () => {
   const onEachRead = (message: string, isFirstRead: boolean) => {
     utilParse.streamStrToJson(message, (data, isFirstParse) => {
       parseChatMessage(data, isFirstRead, isFirstParse)
-      chatEl && utilDom.scrollToBottom(chatEl)
+      chatScrollToBottom()
     })
   }
 
@@ -110,8 +110,7 @@ export const useChat = () => {
       text: params.question,
     })
     addLoading()
-
-    chatEl && utilDom.scrollToBottom(chatEl)
+    chatScrollToBottom()
   }
 
   // Send chat.

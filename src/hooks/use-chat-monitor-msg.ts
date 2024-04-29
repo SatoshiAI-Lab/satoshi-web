@@ -8,7 +8,6 @@ import { useUserStore } from '@/stores/use-user-store'
 import { useStorage } from './use-storage'
 import { useWebSocket } from './use-websocket'
 import { useChatStore } from '@/stores/use-chat-store'
-import { utilDom } from '@/utils/dom'
 import { useMessages } from './use-messages'
 
 interface MonitorOnEvents {
@@ -28,8 +27,7 @@ export const useChatMonitorMsg = () => {
   const { i18n } = useTranslation()
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
-  const { chatEl, setUnreadMessage } = useChatStore()
-  // const { addMonitorMessage } = useChatMigrating()
+  const { setUnreadMessage, chatScrollToBottom } = useChatStore()
   const { addMonitorMessages } = useMessages()
   const ws = useWebSocket<MonitorOnEvents, MonitorEmitEvents>({
     heartbeat: JSON.stringify({ type: 'ping' }),
@@ -70,7 +68,7 @@ export const useChatMonitorMsg = () => {
         setUnreadMessage([...useChatStore.getState().unreadMessages, ...data])
       } else {
         addMonitorMessages(data)
-        chatEl && utilDom.scrollToBottom(chatEl)
+        chatScrollToBottom()
       }
     })
   }

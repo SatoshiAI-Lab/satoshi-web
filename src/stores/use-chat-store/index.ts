@@ -3,6 +3,8 @@ import { nanoid } from 'nanoid'
 
 import type { ChatStore, Message } from './types'
 
+import { utilDom } from '@/utils/dom'
+
 export const useChatStore = create<ChatStore>((set, get) => ({
   intention: '',
   question: '',
@@ -61,4 +63,9 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   setWaitAnswer: (waitAnswer) => set({ waitAnswer }),
   setUnreadMessage: (unreadMessages) => set({ unreadMessages }),
   setSocket: (socket) => set({ socket: socket }),
+
+  chatScrollToBottom: () => {
+    const { chatEl } = get()
+    if (chatEl) utilDom.scrollToBottom(chatEl)
+  },
 }))

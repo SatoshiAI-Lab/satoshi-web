@@ -8,10 +8,9 @@ import { clsx } from 'clsx'
 import { useAudioRecorder } from 'react-audio-voice-recorder'
 import { MdMic } from 'react-icons/md'
 
-import InputMenu from './input-menu'
+import { InputMenu } from './input-menu'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useMobileKeyboard } from '@/hooks/use-mobile-keyboard'
-import { utilDom } from '@/utils/dom'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { chatApi } from '@/api/chat'
 import { useHistory } from '@/hooks/use-history'
@@ -37,6 +36,7 @@ function MessageInput(props: MessageInputProps) {
     setQuestion,
     setInputKeyup,
     setChatInputEl,
+    chatScrollToBottom,
   } = useChatStore()
   const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
   const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
@@ -100,7 +100,7 @@ function MessageInput(props: MessageInputProps) {
   useEffect(() => {
     if (!chatEl || !keyboardIsShow) return
 
-    utilDom.scrollToBottom(chatEl)
+    chatScrollToBottom()
   }, [keyboardIsShow, chatEl])
 
   useEffect(() => {
