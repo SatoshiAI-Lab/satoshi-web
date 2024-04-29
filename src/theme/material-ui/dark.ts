@@ -9,6 +9,6 @@ export const themeDark = {
   textColor: '#ffffff',
   dividerColor: '#4e515e',
   bgColor: '#171719',
-  skeletonColor: '#000000',
+  skeletonColor: '#9797a0',
   textGray: '#a7abb1',
 }
