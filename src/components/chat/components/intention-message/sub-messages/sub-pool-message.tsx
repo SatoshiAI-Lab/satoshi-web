@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
 import { useMutation } from '@tanstack/react-query'
+import { toast } from 'react-hot-toast'
 
 import { useMessagesContext } from '@/contexts/messages'
 import { MetaType } from '@/api/chat/types'
@@ -21,6 +22,7 @@ export const SubPoolMessage = () => {
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [monitorApi.update.name],
     mutationFn: monitorApi.update,
+    onError: (e) => toast.error(e.message),
   })
   const { data: pool, code } = data ?? {}
   const isErr = isError || (code && code !== ResponseCode.Success)

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
 import { useMutation } from '@tanstack/react-query'
+import { toast } from 'react-hot-toast'
 
 import { MetaType } from '@/api/chat/types'
 import { useMessagesContext } from '@/contexts/messages'
@@ -24,6 +25,7 @@ export const WalletExportMessage = () => {
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [walletApi.exportPrivateKey.name],
     mutationFn: walletApi.exportPrivateKey,
+    onError: (e) => toast.error(e.message),
   })
   const { data: wallet, code } = data ?? {}
   const isErr = isError || (code && code !== ResponseCode.Success)

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
 import { Button } from '@mui/material'
 import { nanoid } from 'nanoid'
-import { isAddress } from 'viem'
+import { toast } from 'react-hot-toast'
 
 import { useMessagesContext } from '@/contexts/messages'
 import { CheckAddrType, MetaType } from '@/api/chat/types'
@@ -32,7 +32,7 @@ export const CheckAddrMessage = () => {
   const isAccount = selectedType === 'account'
 
   // Query account or token.
-  const { data, isError, isLoading } = useQuery({
+  const { data, error, isError, isLoading } = useQuery({
     enabled: !typeIsEmpty && !addressIsEmpty,
     queryKey: [tokenApi.queryAddr.name + idRef.current, selectedType, address],
     queryFn: () => {
@@ -45,6 +45,7 @@ export const CheckAddrMessage = () => {
   // Only query token.
   const {
     data: infoData,
+    error: infoError,
     isError: isTokenError,
     isLoading: isLoadingInfo,
   } = useQuery({
@@ -57,6 +58,10 @@ export const CheckAddrMessage = () => {
   const { data: tokenInfo, code: tokenCode } = infoData ?? {}
   const isTokenErr =
     isTokenError || (tokenCode && tokenCode !== ResponseCode.Success)
+
+  if (error || infoError) {
+    toast.error(error?.message || infoError?.message || '')
+  }
 
   const selectDefaultChain = () => {
     // If is not empty, don't set.

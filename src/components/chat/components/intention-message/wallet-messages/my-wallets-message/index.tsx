@@ -15,6 +15,7 @@ import { IoIosArrowDown } from 'react-icons/io'
 import { clsx } from 'clsx'
 import { useQuery } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
+import { toast } from 'react-hot-toast'
 
 import type { ChatResponseWalletListToken, MetaType } from '@/api/chat/types'
 import type { WalletCardProps } from '@/components/wallet/types'
@@ -42,10 +43,15 @@ export const MyWalletsMessage = () => {
   const [chain, setChain] = useState(chain_name || WALLET_CONFIG.defaultChain)
   const chainNameIsEmpty = isEmpty(chain_name)
 
-  const { data: walletData } = useQuery({
+  const { data: walletData, error } = useQuery({
     queryKey: [walletApi.getWallets.name, chain],
     queryFn: () => walletApi.getWallets(chain),
   })
+
+  // Error hints.
+  if (error) {
+    toast.error(error.message)
+  }
 
   const sendQ = (question: string) => {
     // addMessageAndLoading({ msg: question, position: 'right' })

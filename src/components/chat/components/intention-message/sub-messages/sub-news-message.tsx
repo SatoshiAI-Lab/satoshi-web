@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-hot-toast'
 
 import { MetaType } from '@/api/chat/types'
 import { useMessagesContext } from '@/contexts/messages'
@@ -21,6 +22,7 @@ export const SubNewsMessage = () => {
   const { data, isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [monitorApi.update.name],
     mutationFn: monitorApi.update,
+    onError: (e) => toast.error(e.message),
   })
   const { data: subData, code } = data ?? {}
   const isErr = isError || (code && code !== ResponseCode.Success)
