@@ -8,10 +8,11 @@ import { useClipboard } from '@/hooks/use-clipboard'
 interface Props extends React.ComponentProps<'svg'> {
   text: string | undefined
   size?: number
+  onClick?: React.MouseEventHandler<SVGElement>
 }
 
 export const CopyIcon = (props: Props) => {
-  const { text = '', size = 18, className, ...restProps } = props
+  const { text = '', size = 18, className, onClick, ...restProps } = props
   const { isCopied, copy } = useClipboard()
 
   return isCopied ? (
@@ -20,7 +21,10 @@ export const CopyIcon = (props: Props) => {
     <MdContentCopy
       className={clsx('cursor-pointer', className)}
       size={size}
-      onClick={() => copy(text)}
+      onClick={(e) => {
+        copy(text)
+        onClick?.(e)
+      }}
       {...restProps}
     />
   )

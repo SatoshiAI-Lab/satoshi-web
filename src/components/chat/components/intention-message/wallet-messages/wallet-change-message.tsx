@@ -1,22 +1,21 @@
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
-import { Button } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 
 import { useMessagesContext } from '@/contexts/messages'
 import { MetaType } from '@/api/chat/types'
 import { LoadingMessage } from '../../loading-message'
 import { MessageBubble } from '../../message-bubble'
-import { useChatStore } from '@/stores/use-chat-store'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { walletApi } from '@/api/wallet'
 import { WalletSelectMessage } from '../../wallet-select-message'
 import { useWalletList } from '@/hooks/use-wallet-list'
+import { ChatCase } from '../../chat-case'
+import { ResponseCode } from '@/api/fetcher/types'
 
 export const WalletChangeMessage = () => {
   const { t } = useTranslation()
-  const { chatInputEl, setQuestion } = useChatStore()
   const { findWallet } = useWalletStore()
   const { getMetaData } = useMessagesContext()
   const { from_wallet_name, to_wallet_name } =
@@ -29,6 +28,8 @@ export const WalletChangeMessage = () => {
     mutationKey: [walletApi.renameWallet.name],
     mutationFn: walletApi.renameWallet,
   })
+  const { code } = data ?? {}
+  const isErr = isError || (code && code !== ResponseCode.Success)
 
   const onRename = (wallet_id: string) => {
     if (!wallet_id) return
@@ -51,7 +52,7 @@ export const WalletChangeMessage = () => {
   }
 
   // Rename error.
-  if (isError) {
+  if (isErr) {
     return <MessageBubble>{t('wallet.rename.error')}</MessageBubble>
   }
 
@@ -74,22 +75,7 @@ export const WalletChangeMessage = () => {
     return (
       <MessageBubble>
         <p>{t('wallet.change-name.title')}</p>
-        <div className="flex items-center">
-          <p className="mr-2">
-            {t('such-as')} "{t('wallet.change-name.example')}"
-          </p>
-          <Button
-            variant="outlined"
-            size="small"
-            classes={{ root: '!py-0' }}
-            onClick={() => {
-              setQuestion(t('wallet.change-name.example'))
-              chatInputEl?.focus()
-            }}
-          >
-            {t('use-it')}
-          </Button>
-        </div>
+        <ChatCase text={t('wallet.change-name.example')} />
       </MessageBubble>
     )
   }

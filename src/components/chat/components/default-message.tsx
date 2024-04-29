@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { nanoid } from 'nanoid'
 import { clsx } from 'clsx'
 
-import MessageBubble from '../components/message-bubble'
+import { MessageBubble } from '../components/message-bubble'
 
 export interface DefaultMessageOption {
   id: string
@@ -21,18 +21,18 @@ export const DefaultMessage = (props: Props) => {
   const defaultChatOptions = [
     {
       id: nanoid(),
-      title: t('create-wallet'),
-      details: t('create-wallet-details'),
+      title: t('wallet.create'),
+      details: t('wallet.create.details'),
     },
     {
       id: nanoid(),
-      title: t('view-wallets'),
-      details: t('view-wallets-details'),
+      title: t('wallet.view'),
+      details: t('wallets.view.details'),
     },
     {
       id: nanoid(),
-      title: t('create-token'),
-      details: t('create-token-details'),
+      title: t('token.create'),
+      details: t('token.create.details'),
     },
   ]
 
