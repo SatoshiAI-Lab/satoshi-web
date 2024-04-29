@@ -13,6 +13,7 @@ import { useResponsive } from '@/hooks/use-responsive'
 import { MonitorLabelSwitch } from './monitor-label-switch'
 import { useMonitorStore } from '@/stores/use-monitor-store'
 import { MonitorConfig } from '@/config/monitor'
+import { Chain } from '@/config/wallet'
 
 interface Props {
   data?: MonitorConfigData
@@ -33,6 +34,12 @@ export const MonitorPools = ({ data, className }: Props) => {
   const [loading, setLoading] = useState<string>()
 
   const chains = configData?.pool.content || []
+  const scrollIdx = chains.findIndex((c) => c.chain === Chain.Scroll)
+
+  // Pin the Scroll chain to top.
+  if (scrollIdx !== -1) {
+    chains.unshift(chains.splice(scrollIdx, 1)[0])
+  }
 
   const onSwitch = async (checked: boolean, data: PoolData) => {
     data.subscribed = checked
