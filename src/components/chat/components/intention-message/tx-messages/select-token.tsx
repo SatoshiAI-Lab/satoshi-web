@@ -6,21 +6,25 @@ import { useContext, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 import { defaultImg } from '@/config/imageUrl'
 import { utilFmt } from '@/utils/format'
-import { SwapContext } from '@/hooks/use-swap/context'
+import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 
 import type { MultiChainCoin } from '@/api/chat/types'
+import { useShow } from '@/hooks/use-show'
+import { DialogSelectToken } from './dialog-select-token/dialog-select-token'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
-  isBuy: boolean
   isFrom: boolean
   isFinalTx: boolean
 }
 
-export const SelectToken: React.FC<Props> = ({
-  isBuy,
-  isFrom,
-  isFinalTx,
-}: Props) => {
+export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
+  const { t } = useTranslation()
+  const {
+    show: showDialog,
+    open: openDialog,
+    hidden: hiddenDialog,
+  } = useShow(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -51,59 +55,68 @@ export const SelectToken: React.FC<Props> = ({
     setAnchorEl(null)
   }
 
-  const tokenMenu = () =>
-    tokenList?.length ? (
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={onCloseMenu}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-      >
-        {/* <MenuItem className="dark:text-white">
+  const tokenMenu = () => {
+    return (
+      <>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={onCloseMenu}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+        >
+          {/* <MenuItem className="dark:text-white">
         <div className="h-[35px] flex items-center underline">
           {t('select.token')}
         </div>
       </MenuItem> */}
-        {tokenList?.map((item, i) => {
-          return (
-            <MenuItem
-              key={i}
-              onClick={() => handleClick(item)}
-              selected={selectToken?.chain == item.chain}
-            >
-              <div className="flex items-center dark:!text-white py-1">
-                <div className="mr-2 self-center ">
-                  <Avatar src={item.logo} sizes="30">
-                    {item.symbol?.slice(0, 1).toUpperCase()}
-                  </Avatar>
-                </div>
-                <div className="flex">
-                  <div className="min-w-[60px]">
-                    <div>{`${item.symbol}`}</div>
-                    <div className="text-xs text-gray-500">{`${item.chain.name}`}</div>
+          {tokenList?.map((item, i) => {
+            return (
+              <MenuItem
+                key={i}
+                onClick={() => handleClick(item)}
+                selected={selectToken?.chain == item.chain}
+              >
+                <div className="flex items-center py-1">
+                  <div className="mr-2 self-center ">
+                    <Avatar src={item.logo} sizes="30">
+                      {item.symbol?.slice(0, 1).toUpperCase()}
+                    </Avatar>
                   </div>
-                  <div className="ml-3">
-                    <div className="">
-                      <div className="leading-none p-1rounded-lg">
-                        <PercentTag
-                          percent={item.price_change ?? 0}
-                          className="text-sm"
-                        />
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        ${utilFmt.token(item.price_usd)}
+                  <div className="flex">
+                    <div className="min-w-[60px]">
+                      <div>{`${item.symbol}`}</div>
+                      <div className="text-xs text-gray-500">{`${item.chain.name}`}</div>
+                    </div>
+                    <div className="ml-3">
+                      <div className="">
+                        <div className="leading-none p-1rounded-lg">
+                          <PercentTag
+                            percent={item.price_change ?? 0}
+                            className="text-sm"
+                          />
+                        </div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          ${utilFmt.token(item.price_usd)}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </MenuItem>
-          )
-        })}
-      </Menu>
-    ) : null
+              </MenuItem>
+            )
+          })}
+          <MenuItem onClick={openDialog}>{t('select.token')}</MenuItem>
+        </Menu>
+        <DialogSelectToken
+          show={showDialog}
+          open={openDialog}
+          hidden={hiddenDialog}
+        ></DialogSelectToken>
+      </>
+    )
+  }
 
   if (isFrom) {
     return (
@@ -111,7 +124,7 @@ export const SelectToken: React.FC<Props> = ({
         <div
           className={clsx(
             'h-full cursor-pointer leading-none py-[12px] text-sm border-l-2 text-nowrap pl-3 flex-shrink-0',
-            isBuy && 'flex items-center cursor-pointer',
+            'flex items-center cursor-pointer',
             isFinalTx && 'pointer-events-none'
           )}
           onClick={onSwitch}
@@ -131,7 +144,7 @@ export const SelectToken: React.FC<Props> = ({
           )}
           <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
         </div>
-        {isBuy ? tokenMenu() : null}
+        {tokenMenu()}
       </>
     )
   }
@@ -144,31 +157,26 @@ export const SelectToken: React.FC<Props> = ({
     <>
       <div
         className={clsx(
-          'border border-gray-400 rounded-xl py-[6px] px-5 text-sm flex-shrink-0',
-          'dark:!border-gray-500',
-          !isBuy && 'flex items-center cursor-pointer',
+          'border border-neutral-300 rounded-xl py-[6px] px-5 text-sm flex-shrink-0',
+          'flex items-center cursor-pointer',
           isFinalTx && 'pointer-events-none'
         )}
         onClick={onSwitch}
       >
-        {isBuy ? (
-          selectToToken?.name?.toUpperCase()
-        ) : (
-          <>
-            <Avatar src={selectToToken?.logo || defaultImg} sizes="30">
-              {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
-            </Avatar>
-            <div className="mx-1">
-              <div>{selectToToken?.symbol}</div>
-              <div className="text-xs text-gray-400">
-                {selectToToken?.chain.name}
-              </div>
+        <>
+          <Avatar src={selectToToken?.logo || defaultImg} sizes="30">
+            {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
+          </Avatar>
+          <div className="mx-1">
+            <div>{selectToToken?.symbol}</div>
+            <div className="text-xs text-gray-400">
+              {selectToToken?.chain.name}
             </div>
-            <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
-          </>
-        )}
+          </div>
+          <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
+        </>
       </div>
-      {!isBuy ? tokenMenu() : null}
+      {tokenMenu()}
     </>
   )
 }

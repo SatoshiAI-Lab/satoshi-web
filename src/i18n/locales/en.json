@@ -333,9 +333,6 @@
   "unsupport-current": "Currently not supported",
   "select.token": "Select another token",
   "from.replace.token": "Since you don't have $1, I have already helped you exchange it for $2.",
-  "to.not.find.token": "No convertible token found.",
-  "from.not.find.token": "There is no $1 available in the wallet",
-  "no.wallets.available": "「Debugger」No wallets available",
   "wallet.null-hints": "Your {} chain does not have a wallet yet.",
   "wallet.null-case": "Create a {} wallet.",
   "try-say": "Try saying",
@@ -355,5 +352,14 @@
   "clear.failed": "Clear failed, please try again",
   "clearing": "Clearing...",
   "clear.history": "Context history cleared",
-  "chat.wait-hint": "Please wait until the answer is complete or terminate the answer before clear."
+  "chat.wait-hint": "Please wait until the answer is complete or terminate the answer before clear.",
+  "tx.token.text": "How much $1 to $2 do you want to use?",
+  "autp.checkout.token": "Your $1 balance is insufficient, I have helped you cut to the main token",
+  "insufficient.balance": "Insufficient wallet balance",
+  "searching": {
+    "tokens": "Searching for tokens..."
+  },
+  "insufficient": {
+    "balance": "Wallet balance is insufficient Please select another token"
+  }
 }

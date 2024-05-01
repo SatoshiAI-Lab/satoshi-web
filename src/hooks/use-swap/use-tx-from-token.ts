@@ -1,193 +1,138 @@
 import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
-import { zeroAddr } from '@/config/address'
-import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
-import { useEffect, useState } from 'react'
+import { PartialWalletRes } from '@/stores/use-wallet-store'
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useState,
+} from 'react'
+import { TIntentTokoenInfo } from './use-get-intent-token-list'
 import { useTranslation } from 'react-i18next'
-import { useGetIntentTokenList } from './use-get-intent-token-list'
-import toast from 'react-hot-toast'
+import { ITxLogicContext } from './type'
 
 interface Options {
-  isBuy: boolean
   data: ChatResponseTxConfrim
+  walletList: PartialWalletRes[]
+  setCheckedWallet: Dispatch<SetStateAction<PartialWalletRes[]>>
+  intentTokenInfo: TIntentTokoenInfo
 }
+
+export const TxLogicContext = createContext<ITxLogicContext>({
+  curRate: 0,
+  isFinalTx: false,
+  validateErr: [],
+  isSwaping: false,
+  buyValue: 0,
+  slippage: 0,
+  onConfirm: () => {},
+  showSwaping: () => {},
+  closeSwaping: () => {},
+  setSlippage: () => {},
+  setBuyValue: () => {},
+  setCurRate: () => {},
+  handleRateClick: (rate) => {},
+  getSelectTokenInfo: (wallet) => undefined,
+})
+
 export const useTxFromToken = (options: Options) => {
-  const { data } = options
+  const { walletList, intentTokenInfo } = options
+
+  const {
+    fromTokenListResult,
+    loadingFromTokenList,
+    toTokenListResult,
+    fromTokenInfo,
+    fromIntentChain,
+    toTokenInfo,
+    setFromTokenInfo,
+  } = intentTokenInfo
 
   const { t } = useTranslation()
 
-  const [replaceWithETHInfo, setReplaceWithETHInfo] = useState('')
-
-  const { walletList } = useWalletStore()
-
-  const {
-    fromTokenListData,
-    fromIntentChain,
-    fromTokenInfo,
-    loadingFromTokenList,
-    toTokenListData,
-    toTokenInfo,
-  } = useGetIntentTokenList({ data })
-
   const [selectFromToken, setSelectFromToken] = useState<MultiChainCoin>()
-  const [fromTokenList, setFromTokenList] = useState(fromTokenListData ?? [])
-  const [checkedWallet, setCheckedWallet] = useState<PartialWalletRes[]>([])
+  const [fromTokenList, setFromTokenList] = useState(fromTokenListResult ?? [])
 
-  const getCheckedTokenFn = (tokenList?: MultiChainCoin[]) => {
-    let checkedTokenList: MultiChainCoin[] = []
+  const [autoCheckoutTokenMsg, setAutoCheckoutTokenMsg] = useState('')
 
-    const hasMainToken = (w: PartialWalletRes) => {
-      // 查找这条链有哪些钱包是有主代币的
-      return w.tokens?.some((t) => {
-        // 有余额的主代币
-        if (t.address == zeroAddr && t.value_usd > 1) {
-          toTokenListData
-
-          // 不是用户想交易的链
-          // if (fromIntentChain && w.chain?.name !== fromIntentChain) {
-          //   return false
-          // }
-
-          // 去重
-          const isInclude = checkedTokenList.some((token) => {
-            token.address == t.address && token.chain.id == w.chain?.id
-          })
-          if (isInclude) return false
-
-          checkedTokenList.push({
-            ...t,
-            chain: w.chain!,
-            is_supported: true,
-            logo: t.logoUrl,
-            price_change: t.price_change_24h,
-            price_usd: t.price_usd,
-            holders: 1000,
-          })
-          return true
-        }
-      })
-    }
-
-    const findIntentToken = (w: PartialWalletRes) => {
-      const filterTokenList = tokenList?.filter((token) => {
-        const chianID = w.chain?.id
-        return w?.tokens?.some((t) => {
-          // 代币地址正确 && 代币和链正确 && 代币余额大于1U
+  const getCheckedTokenFn = () => {
+    const findIntentToken = (token: MultiChainCoin) => {
+      for (const w of walletList) {
+        for (const t of w.tokens!) {
           if (
             token.address === t.address &&
-            token.chain.id == chianID &&
-            // token.name == t.name && // 数据缺失name可能是null
+            token.chain.id == w!.chain!.id &&
             t.value_usd > 1
           ) {
-            // 不是用户想交易的链
-            // if (fromIntentChain && fromIntentChain != token.chain.name) {
-            //   return false
-            // }
+            // 优先选择用户意图的链的代币
+            if (token.chain.name === fromIntentChain) {
+              setSelectFromToken(token)
 
-            // 选中意图链的代币
-            // if (token.chain.name == fromIntentChain) {
-            //   console.log(token.chain.name)
-
-            //   setSelectFromToken(token)
-            // }
+              // 如果这个代币的链是持币人最多的，那么可以选择这条链
+              // toTokenListResult[0]是持币人最多的 toToken
+            } else if (
+              toTokenListResult[0].chain.name == w.chain?.id &&
+              !selectFromToken
+            ) {
+              setSelectFromToken(token)
+            }
 
             return true
           }
-        })
-      })
-
-      if (filterTokenList?.length) {
-        checkedTokenList.push(...filterTokenList)
-        return true
+        }
       }
     }
 
-    const selectDefaultToken = () => {
-      const currentWallet = checkedWallet[0]
+    let checkedTokenList = fromTokenListResult?.filter(findIntentToken)
 
-      // 选择默认选中的代币
-      if (!selectFromToken) {
-        let defaultSelect: MultiChainCoin | undefined
-        if (fromIntentChain) {
-          // 例如：用户提供了某条链，那么我还得将这条链的USDC做为默认选中的From交易币种
-          defaultSelect = checkedTokenList.find(
-            (token) => token.chain.name == fromIntentChain
-          )
-        } else if (currentWallet) {
-          // 如果用户没有说想在什么链上买币，那么使用默认钱包的链
-          defaultSelect = checkedTokenList.find(
-            (t) => currentWallet.chain?.id == t.chain.id
-          )
-        } else {
-          defaultSelect = checkedTokenList[0]
-        }
+    const firstToken = checkedTokenList[0]
 
-        if (defaultSelect) {
-          setSelectFromToken(defaultSelect)
-        } else {
-          toast.error(t('from.not.find.token').replace('$1', fromTokenInfo))
-        }
-
-        return defaultSelect
-      }
-    }
-
-    let checkedWallet = walletList.filter((w) => {
+    // 主动切换到主代币的规则：
+    // 1. fromToken在所有的钱包里没有余额
+    // 2. toToken必须不是主代币
+    // 3. fromToken如果是主代币那么提示余额不足
+    if (!firstToken && toTokenInfo != '') {
       if (fromTokenInfo == '') {
-        return hasMainToken(w)
-      } else {
-        // 例如：在很多链都有USDC的情况下，我只过滤出来我自己拥有某条链的USDC。
-        return findIntentToken(w)
+        // Gas都没有
+        return
       }
-    })
 
-    // 按持有人降序
-    checkedTokenList.sort((a, b) => b.holders - a.holders)
-
-    // 有指定代币购买 && 钱包中指定的代币没有余额
-    // 这种情况下，我们帮用户选中主链代币有余额的钱包
-    // if (!checkedWallet.length && fromTokenInfo !== '') {
-    //   checkedWallet = walletList.filter((w) => hasMainToken(w))
-    //   if (checkedTokenList.length !== 0) {
-    //     const defaultTOken = selectDefaultToken()
-    //     setReplaceWithETHInfo(
-    //       t('from.replace.token')
-    //         .replace('$1', fromTokenInfo)
-    //         .replace('$2', defaultTOken?.symbol ?? '')
-    //     )
-    //   }
-    // }
-
-    if (!checkedWallet.length) {
-      toast.error(t('from.not.find.token').replace('$1', fromTokenInfo))
+      setFromTokenInfo('')
+      setAutoCheckoutTokenMsg(
+        t('autp.checkout.token').replace('$1', fromTokenInfo)
+      )
       return
     }
 
-    setCheckedWallet(checkedWallet)
+    // 没有用户意图链的代币情况，就选择默认选择持币人最多代币
+    if (!selectFromToken) {
+      // 需要做筛选
+      // toTokenListResult.filter
 
-    selectDefaultToken()
+      setSelectFromToken(firstToken)
+    }
 
-    setFromTokenList(checkedTokenList)
+    if (checkedTokenList.length !== fromTokenList.length) {
+      setFromTokenList(checkedTokenList)
+    }
   }
 
   useEffect(() => {
     if (
       // 获取From代币数据 || 本身不需要获取数据
-      (fromTokenListData?.length || fromTokenInfo == '') &&
-      // 获取To代币数据 || 本身不需要获取数据
-      (toTokenListData?.length || toTokenInfo == '')
+      fromTokenListResult.length &&
+      toTokenListResult.length
     ) {
-      getCheckedTokenFn(fromTokenListData)
+      getCheckedTokenFn()
     }
-  }, [fromTokenListData, toTokenListData])
+  }, [fromTokenListResult, toTokenListResult])
 
   return {
     fromTokenList,
-    checkedWallet,
     loadingFromTokenList,
     selectFromToken,
-    replaceWithETHInfo,
+    autoCheckoutTokenMsg,
     setSelectFromToken,
     setFromTokenList,
-    refreshFromTokenList: getCheckedTokenFn,
   }
 }
