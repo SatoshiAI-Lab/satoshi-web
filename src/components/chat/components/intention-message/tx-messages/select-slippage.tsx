@@ -1,10 +1,10 @@
-import { TxLogicContext } from '@/hooks/use-swap/context'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
 import { OutlinedInput } from '@mui/material'
 import { t } from 'i18next'
 import { useContext } from 'react'
 
 export const SelecSlippage = () => {
-  const { isFinalTx, slippage, validateErr,setSlippage } =
+  const { isFinalTx, slippage, validateErr, setSlippage } =
     useContext(TxLogicContext)
 
   return (

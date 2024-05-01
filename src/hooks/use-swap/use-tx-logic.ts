@@ -11,7 +11,7 @@ import { useShow } from '../use-show'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useWalletList } from '../use-wallet-list'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
 
 interface Options {

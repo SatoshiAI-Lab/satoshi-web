@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
-import { SwapContext } from './context'
+import { SwapContext } from './use-swap-provider'
 
 export const useSwapWallet = () => {
   const { walletList } = useWalletStore()

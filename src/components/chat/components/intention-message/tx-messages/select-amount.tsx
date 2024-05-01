@@ -1,7 +1,6 @@
-
 import { useSwapWallet } from '@/hooks/use-swap/use-swap-wallet'
-import { SwapContext, TxLogicContext } from '@/hooks/use-swap/context'
-import { useWalletStore } from '@/stores/use-wallet-store'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
+import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import BigNumber from 'bignumber.js'
 import clsx from 'clsx'
 import { t } from 'i18next'

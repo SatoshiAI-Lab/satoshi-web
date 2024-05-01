@@ -338,5 +338,12 @@
   "from.not.find.token": "钱包余额不足",
   "no.wallets.available": "「Debugger」没有可用的钱包",
   "tx.token.text": "你想要使用多少$1兑换$2?",
-  "autp.checkout.token": "你的$1余额不足，我已经帮你切到主代币"
+  "autp.checkout.token": "你的$1余额不足，我已经帮你切到主代币",
+  "insufficient.balance": "钱包余额不足",
+  "searching": {
+    "tokens": "正在查找代币..."
+  },
+  "insufficient": {
+    "balance": "钱包余额不足请选择其他代币"
+  }
 }

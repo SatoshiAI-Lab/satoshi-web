@@ -1,14 +1,33 @@
 import { ChatResponseTxConfrim } from '@/api/chat/types'
 import { useTxFromToken } from './use-tx-from-token'
 import { useTxToToken } from './use-tx-to-token'
-import { useState } from 'react'
+import { createContext, useState } from 'react'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { useGetIntentTokenList } from './use-get-intent-token-list'
+import { ISwapContext } from './type'
 
 interface Options {
   data: ChatResponseTxConfrim
 }
+
+export const SwapContext = createContext<ISwapContext>({
+  data: undefined,
+  checkedWallet: [],
+  fromTokenList: [],
+  toTokenList: [],
+  loadingToTokenList: false,
+  loadingFromTokenList: false,
+  selectToToken: undefined,
+  selectFromToken: undefined,
+  currentWallet: undefined,
+  autoCheckoutTokenMsg: '',
+  setCurrentWallet: () => {},
+  setSelectFromToken: () => {},
+  setSelectToToken: () => {},
+  setFromTokenList: () => {},
+  setToTokenList: () => {},
+})
 
 export const useSwapProviderProvider = ({ data }: Options) => {
   const { walletList } = useWalletStore() // 所有的钱包
@@ -18,8 +37,8 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     PartialWalletRes | undefined
   >()
 
-  console.log('swap context');
-  
+  console.log('swap context')
+
   const intentTokenInfo = useGetIntentTokenList({
     data,
   })
@@ -68,7 +87,6 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     setFromTokenList,
     autoCheckoutTokenMsg,
   }
-
 
   return { contextValue, ...contextValue }
 }

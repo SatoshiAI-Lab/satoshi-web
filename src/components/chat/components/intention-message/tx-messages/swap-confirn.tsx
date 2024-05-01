@@ -1,4 +1,4 @@
-import { SwapContext, TxLogicContext } from '@/hooks/use-swap/context'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
 import { Button, CircularProgress } from '@mui/material'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'

@@ -8,19 +8,27 @@ import { SelectAmount } from './select-amount'
 import { SelectSwapRow } from './select-swap-row'
 import { SelecSlippage } from './select-slippage'
 import { SwapConfirm } from './swap-confirn'
-import { SwapContext, TxLogicContext } from '@/hooks/use-swap/context'
+import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { useMessagesContext } from '@/contexts/messages'
+import { useTranslation } from 'react-i18next'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
 
 export const TxTokenBubbles = () => {
   const { getMetaData } = useMessagesContext()
   const data = getMetaData<MetaType.Tx>()
+  const { t } = useTranslation()
 
   const options = {
     data,
   }
 
-  const { currentWallet, contextValue, selectFromToken, selectToToken } =
-    useSwapProviderProvider(options)
+  const {
+    currentWallet,
+    contextValue,
+    selectFromToken,
+    selectToToken,
+    loadingFromTokenList,
+  } = useSwapProviderProvider(options)
 
   const { txLogigcContextValue } = useTxLogic({
     ...options,
@@ -28,7 +36,11 @@ export const TxTokenBubbles = () => {
     selectToToken,
     currentWallet,
   })
-  
+
+  if (loadingFromTokenList || loadingFromTokenList) {
+    return <MessageBubble>{t('searching.tokens')}</MessageBubble>
+  }
+
   return (
     <SwapContext.Provider value={contextValue}>
       <TxLogicContext.Provider value={txLogigcContextValue}>

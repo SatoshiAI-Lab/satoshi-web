@@ -6,7 +6,8 @@ import { FaArrowRightLong } from 'react-icons/fa6'
 import { SelectToken } from './select-token'
 import { useContext } from 'react'
 
-import { SwapContext, TxLogicContext } from '@/hooks/use-swap/context'
+import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
 
 export const SelectSwapRow = () => {
   const { selectFromToken, selectToToken, autoCheckoutTokenMsg } =

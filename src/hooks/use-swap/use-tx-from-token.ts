@@ -1,8 +1,15 @@
 import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useState,
+} from 'react'
 import { TIntentTokoenInfo } from './use-get-intent-token-list'
 import { useTranslation } from 'react-i18next'
+import { ITxLogicContext } from './type'
 
 interface Options {
   data: ChatResponseTxConfrim
@@ -10,6 +17,24 @@ interface Options {
   setCheckedWallet: Dispatch<SetStateAction<PartialWalletRes[]>>
   intentTokenInfo: TIntentTokoenInfo
 }
+
+export const TxLogicContext = createContext<ITxLogicContext>({
+  curRate: 0,
+  isFinalTx: false,
+  validateErr: [],
+  isSwaping: false,
+  buyValue: 0,
+  slippage: 0,
+  onConfirm: () => {},
+  showSwaping: () => {},
+  closeSwaping: () => {},
+  setSlippage: () => {},
+  setBuyValue: () => {},
+  setCurRate: () => {},
+  handleRateClick: (rate) => {},
+  getSelectTokenInfo: (wallet) => undefined,
+})
+
 export const useTxFromToken = (options: Options) => {
   const { walletList, intentTokenInfo } = options
 

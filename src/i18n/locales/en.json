@@ -343,5 +343,12 @@
   "from.not.find.token": "Insufficient wallet balance",
   "no.wallets.available": "「Debugger」No wallets available",
   "tx.token.text": "How much $1 to $2 do you want to use?",
-  "autp.checkout.token": "Your $1 balance is insufficient, I have helped you cut to the main token"
+  "autp.checkout.token": "Your $1 balance is insufficient, I have helped you cut to the main token",
+  "insufficient.balance": "Insufficient wallet balance",
+  "searching": {
+    "tokens": "Searching for tokens..."
+  },
+  "insufficient": {
+    "balance": "Wallet balance is insufficient Please select another token"
+  }
 }
