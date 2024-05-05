@@ -31,6 +31,8 @@ export const useGetIntentTokenList = ({ data }: Options) => {
       const { data } = await tokenApi.multiCoin(fromTokenInfo)
       return sortByHolders(data)
     },
+    retry: 2,
+    refetchOnWindowFocus: false,
   })
 
   const { data: toTokenListData, isLoading: loadingToTokenList } = useQuery({
@@ -39,6 +41,8 @@ export const useGetIntentTokenList = ({ data }: Options) => {
       const { data } = await tokenApi.multiCoin(toTokenInfo)
       return sortByHolders(data)
     },
+    retry: 2,
+    refetchOnWindowFocus: false,
   })
 
   const { fromTokenList, toTokenList } = useMemo(() => {

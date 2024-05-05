@@ -56,6 +56,8 @@ export const useTxFromToken = (options: Options) => {
   const [autoCheckoutTokenMsg, setAutoCheckoutTokenMsg] = useState('')
 
   const getCheckedTokenFn = () => {
+    let selectToken: MultiChainCoin | null = null
+
     const findIntentToken = (token: MultiChainCoin) => {
       for (const w of walletList) {
         for (const t of w.tokens!) {
@@ -66,15 +68,15 @@ export const useTxFromToken = (options: Options) => {
           ) {
             // 优先选择用户意图的链的代币
             if (token.chain.name === fromIntentChain) {
-              setSelectFromToken(token)
+              selectToken = token
 
               // 如果这个代币的链是持币人最多的，那么可以选择这条链
               // toTokenListResult[0]是持币人最多的 toToken
             } else if (
               toTokenListResult[0].chain.name == w.chain?.id &&
-              !selectFromToken
+              !selectToken
             ) {
-              setSelectFromToken(token)
+              selectToken = token
             }
 
             return true
@@ -85,7 +87,7 @@ export const useTxFromToken = (options: Options) => {
 
     let checkedTokenList = fromTokenListResult?.filter(findIntentToken)
 
-    const firstToken = checkedTokenList[0]
+    const firstToken = selectToken || checkedTokenList[0]
 
     // 主动切换到主代币的规则：
     // 1. fromToken在所有的钱包里没有余额

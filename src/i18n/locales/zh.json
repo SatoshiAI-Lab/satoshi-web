@@ -178,7 +178,6 @@
   "details": "详情",
   "buy": "买",
   "sell": "卖",
-  "tx.hash": "交易哈希： https://solscan.io/tx/",
   "delete.wallet.intent.text": "删除$1钱包",
   "total.balance": "总余额",
   "operation": "操作",
@@ -350,11 +349,8 @@
   "chat.wait-hint": "请等待回答完成或终止回答后再清理。",
   "tx.token.text": "你想要使用多少$1兑换$2?",
   "autp.checkout.token": "你的$1余额不足，我已经帮你切到主代币",
-  "insufficient.balance": "钱包余额不足",
-  "searching": {
-    "tokens": "正在查找代币..."
-  },
-  "insufficient": {
-    "balance": "钱包余额不足请选择其他代币"
-  }
+  "searching.tokens": "正在查找代币...",
+  "insufficient.balance": "钱包余额不足请选择其他代币",
+  "tx.hash": "交易哈希：",
+  "tx.sned": "交易已经提交: "
 }

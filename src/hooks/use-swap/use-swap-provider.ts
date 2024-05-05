@@ -37,8 +37,6 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     PartialWalletRes | undefined
   >()
 
-  console.log('swap context')
-
   const intentTokenInfo = useGetIntentTokenList({
     data,
   })

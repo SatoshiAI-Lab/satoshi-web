@@ -27,8 +27,6 @@ export const useTxLogic = ({
   selectFromToken,
   selectToToken,
 }: Options) => {
-
-  
   const [buyValue, setBuyValue] = useState(data.amount)
   const [slippage, setSlippage] = useState(5)
   const [curRate, setCurRate] = useState(0)
@@ -56,7 +54,7 @@ export const useTxLogic = ({
     )
     const buyAmount = BigNumber(balance).multipliedBy(rate / 100)
     setCurRate(rate)
-    setBuyValue(+buyAmount.toFixed(5))
+    setBuyValue(+buyAmount.toFixed(buyAmount.toNumber() > 100 ? 0 : 5))
   }
 
   const checkForm = () => {
@@ -100,12 +98,19 @@ export const useTxLogic = ({
     const outputToken = getToken(false)
 
     try {
+      const amount = BigNumber(buyValue).multipliedBy(0.93).toFixed(5)
+
       const { data } = await trandApi.swapToken(currentWallet?.id!, {
         chain: inputToken?.chain.name,
-        amount: `${buyValue}`,
+        amount: `${amount}`,
         input_token: `${inputToken?.address}`,
         output_token: `${outputToken?.address}`,
         slippageBps: slippage,
+      })
+
+      addMessage({
+        role: 'assistant',
+        text: `${t('tx.sned')}${data.url}`,
       })
 
       const getStatus = async () => {
@@ -132,10 +137,6 @@ export const useTxLogic = ({
       }
 
       await getStatus()
-      addMessage({
-        role: 'assistant',
-        text: `${t('successful.transaction')}${data.url}`,
-      })
       setIsFinalTx(true)
       getAllWallet()
     } catch {
