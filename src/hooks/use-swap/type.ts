@@ -38,6 +38,7 @@ export interface ISwapContext {
   selectFromToken: MultiChainCoin | undefined
   currentWallet?: PartialWalletRes
   autoCheckoutTokenMsg: string
+  insufficientBalanceMsg: string
   setCurrentWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
   setFromTokenList: Dispatch<SetStateAction<MultiChainCoin[]>>
   setToTokenList: Dispatch<SetStateAction<MultiChainCoin[]>>

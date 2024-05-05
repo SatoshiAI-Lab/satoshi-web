@@ -54,17 +54,23 @@ export const useTxFromToken = (options: Options) => {
   const [fromTokenList, setFromTokenList] = useState(fromTokenListResult ?? [])
 
   const [autoCheckoutTokenMsg, setAutoCheckoutTokenMsg] = useState('')
+  const [insufficientBalanceMsg, setInsufficientBalanceMsg] = useState('')
 
   const getCheckedTokenFn = () => {
     let selectToken: MultiChainCoin | null = null
 
     const findIntentToken = (token: MultiChainCoin) => {
       for (const w of walletList) {
-        for (const t of w.tokens!) {
+        for (const wt of w.tokens!) {
+          // 如果用户指定意图链，那么则不能记录命中的代币
+          if (fromIntentChain && token.chain.name != fromIntentChain) {
+            return false
+          }
+
           if (
-            token.address === t.address &&
+            token.address === wt.address &&
             token.chain.id == w!.chain!.id &&
-            t.value_usd > 1
+            wt.value_usd > 1
           ) {
             // 优先选择用户意图的链的代币
             if (token.chain.name === fromIntentChain) {
@@ -86,7 +92,6 @@ export const useTxFromToken = (options: Options) => {
     }
 
     let checkedTokenList = fromTokenListResult?.filter(findIntentToken)
-
     const firstToken = selectToken || checkedTokenList[0]
 
     // 主动切换到主代币的规则：
@@ -96,6 +101,7 @@ export const useTxFromToken = (options: Options) => {
     if (!firstToken && toTokenInfo != '') {
       if (fromTokenInfo == '') {
         // Gas都没有
+        setInsufficientBalanceMsg(t('insufficient.balance'))
         return
       }
 
@@ -134,6 +140,7 @@ export const useTxFromToken = (options: Options) => {
     loadingFromTokenList,
     selectFromToken,
     autoCheckoutTokenMsg,
+    insufficientBalanceMsg,
     setSelectFromToken,
     setFromTokenList,
   }

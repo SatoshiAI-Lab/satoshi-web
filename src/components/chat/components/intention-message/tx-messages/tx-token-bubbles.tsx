@@ -28,6 +28,7 @@ export const TxTokenBubbles = () => {
     selectFromToken,
     selectToToken,
     loadingFromTokenList,
+    insufficientBalanceMsg,
   } = useSwapProviderProvider(options)
 
   const { txLogigcContextValue } = useTxLogic({
@@ -39,6 +40,10 @@ export const TxTokenBubbles = () => {
 
   if (loadingFromTokenList || loadingFromTokenList) {
     return <MessageBubble>{t('searching.tokens')}</MessageBubble>
+  }
+
+  if (insufficientBalanceMsg) {
+    return <MessageBubble>{insufficientBalanceMsg}</MessageBubble>
   }
 
   return (

@@ -22,6 +22,7 @@ export const SwapContext = createContext<ISwapContext>({
   selectFromToken: undefined,
   currentWallet: undefined,
   autoCheckoutTokenMsg: '',
+  insufficientBalanceMsg: '',
   setCurrentWallet: () => {},
   setSelectFromToken: () => {},
   setSelectToToken: () => {},
@@ -45,6 +46,7 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     fromTokenList,
     loadingFromTokenList,
     selectFromToken,
+    insufficientBalanceMsg,
     setSelectFromToken,
     setFromTokenList,
     autoCheckoutTokenMsg,
@@ -84,6 +86,7 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     setSelectFromToken,
     setFromTokenList,
     autoCheckoutTokenMsg,
+    insufficientBalanceMsg,
   }
 
   return { contextValue, ...contextValue }
