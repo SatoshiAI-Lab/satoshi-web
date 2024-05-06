@@ -358,5 +358,8 @@
   "searching.tokens": "Searching for tokens...",
   "insufficient.balance": "Wallet balance is insufficient Please select another token",
   "tx.sned": "Transaction hash has been submitted: ",
-  "tx-hash": "Tx hash"
+  "tx-hash": "Tx hash",
+  "my.tokens.in": "My tokens in",
+  "all": "ALL",
+  "select.a.token": "Select a token"
 }

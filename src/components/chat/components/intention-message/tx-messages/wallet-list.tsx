@@ -1,4 +1,4 @@
-import { useSwapWallet } from '@/hooks/use-swap/use-swap-wallet'
+import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import clsx from 'clsx'
@@ -11,7 +11,7 @@ export const WalletList = () => {
   const { t } = useTranslation()
   const { isFinalTx } = useContext(TxLogicContext)
   const { gridWalletList, selectFromToken, currentWallet, setCurrentWallet } =
-    useSwapWallet()
+    useContext(SwapContext)
 
   const getCols = (count: number) => {
     if (count == 1) {

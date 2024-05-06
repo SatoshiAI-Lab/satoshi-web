@@ -1,4 +1,3 @@
-import { useSwapWallet } from '@/hooks/use-swap/use-swap-wallet'
 import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import BigNumber from 'bignumber.js'
@@ -10,11 +9,9 @@ import { formatUnits } from 'viem'
 
 const rates = [20, 50, 100]
 export const SelectAmount = () => {
-  const { selectFromToken } = useContext(SwapContext)
+  const { selectFromToken, currentWallet } = useContext(SwapContext)
   const { isFinalTx, curRate, setCurRate, setBuyValue, getSelectTokenInfo } =
     useContext(TxLogicContext)
-
-  const { currentWallet } = useSwapWallet()
 
   const selectWalletToken = getSelectTokenInfo(currentWallet, selectFromToken)
 
