@@ -188,7 +188,6 @@ export const useMessages = () => {
       setTimeout(function () {
         setReadAnswer(false)
       }, 10000)
-      return
     }
 
     if (isIntent) {
@@ -237,11 +236,6 @@ export const useMessages = () => {
       return
     }
 
-    if (isNormal) {
-      addTokenMessage(data)
-      return
-    }
-
     if (isInteractive) {
       addInteractiveMessage(data)
       return
@@ -257,6 +251,12 @@ export const useMessages = () => {
     if (isEnd && hasEmotion(meta) && isNotInteractive) {
       // TODO: Fix any type.
       emitMotionWithWisdom(meta.emotion as any)
+      return
+    }
+
+    if (isNormal) {
+      addTokenMessage(data)
+      return
     }
   }
 
