@@ -25,7 +25,8 @@ export const utilFmt = {
   },
   token(value?: number, fixed = 2) {
     if (!value) return 0
-    if (value > 1) return utilParse.noRoundFixed(value, fixed)
+    if (value >= 10 && value < 100) return utilParse.noRoundFixed(value, fixed)
+    if (value >= 100) return utilParse.noRoundFixed(value, 1)
 
     const decimalIndex = value.toString().indexOf('.')
     if (decimalIndex !== -1) {

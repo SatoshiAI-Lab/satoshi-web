@@ -357,5 +357,8 @@
   "autp.checkout.token": "Your $1 balance is insufficient, I have helped you cut to the main token",
   "searching.tokens": "Searching for tokens...",
   "insufficient.balance": "Wallet balance is insufficient Please select another token",
-  "tx.sned": "Transaction hash has been submitted: "
+  "tx.sned": "Transaction hash has been submitted: ",
+  "my.tokens.in": "My tokens in",
+  "all": "ALL",
+  "select.a.token": "Select a token"
 }

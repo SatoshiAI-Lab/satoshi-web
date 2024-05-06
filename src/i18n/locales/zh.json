@@ -352,5 +352,8 @@
   "searching.tokens": "正在查找代币...",
   "insufficient.balance": "钱包余额不足请选择其他代币",
   "tx.hash": "交易哈希：",
-  "tx.sned": "交易已经提交: "
+  "tx.sned": "交易已经提交: ",
+  "my.tokens.in": "我的代币在",
+  "all": "全部",
+  "select.a.token": "选择一个代币"
 }
