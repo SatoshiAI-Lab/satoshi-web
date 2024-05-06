@@ -68,10 +68,6 @@ export const MonitorDialog = (props: Props) => {
     }
   }
 
-  const closeAll = () => {
-    hiddenSub()
-  }
-
   return (
     <>
       <Dialog open={show} onClose={hidden} scroll="body">
@@ -89,6 +85,7 @@ export const MonitorDialog = (props: Props) => {
         open={showSub}
         scroll="body"
         classes={{ paper: '!mx-0 max-sm:w-[98vw] !max-w-[92vw]' }}
+        onClose={hiddenSub}
       >
         <DialogHeader
           text={
@@ -96,7 +93,7 @@ export const MonitorDialog = (props: Props) => {
               {config?.title}
             </span>
           }
-          onClose={closeAll}
+          onClose={hiddenSub}
         />
         {config?.comp && config.comp}
       </Dialog>
