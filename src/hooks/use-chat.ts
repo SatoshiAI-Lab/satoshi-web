@@ -39,6 +39,7 @@ export const useChat = () => {
     removeLastLoading,
     addLoading,
     addClearHistoryMessage,
+    streamToMessage,
   } = useMessages()
 
   const getChatParams = (options?: InteractiveOptions) => {
@@ -119,10 +120,6 @@ export const useChat = () => {
     const chatParams = getChatParams(options)
     const debugId = nanoid()
 
-    // If question is custom static question, don't send request.
-    // const isCustom = parseCustomMessage(chatParams)
-    // if (isCustom) return
-
     sendChatBefore(chatParams)
     try {
       controllerRef.current = new AbortController()
@@ -130,6 +127,8 @@ export const useChat = () => {
         chatParams,
         controllerRef.current.signal
       )
+      streamToMessage(stream, resetChat)
+      return
 
       console.log(`-------------- chat ${debugId} start --------------`)
       parseStream(stream, onEachRead, () => {

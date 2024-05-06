@@ -1,11 +1,13 @@
+import { CHAT_CONFIG } from '@/config/chat'
+
 /**
- * parse chatApi `hyper_text` from RegExp, it does not render.
- * @param reg A RegExp.
- * @returns Return a tuple, include a parser function.
+ * Parse chat response's `hyper_text` from `RegExp`.
  */
-export const useHypertext = (reg: RegExp) => {
-  return (str: string) => {
-    const parsed = str.replace(reg, ($1) => {
+export const useHypertext = () => {
+  return (text?: string) => {
+    if (!text) return ''
+
+    const parsed = text.replace(CHAT_CONFIG.hypertextRule, ($1) => {
       const isMessage = $1 === 'message'
       if (isMessage) {
         return 'div data-token-tag'

@@ -9,9 +9,9 @@ type ChatType = ReturnType<typeof useChatType>
 
 interface ContextValue {
   message: Message
-  answerType: ReturnType<ChatType['identifyAnswerType']>
-  metaType: ReturnType<ChatType['identifyMetaType']>
-  dataType: ReturnType<ChatType['identifyDataType']>
+  answerType: ReturnType<ChatType['processAnswerType']>
+  metaType: ReturnType<ChatType['processMetaType']>
+  dataType: ReturnType<ChatType['processDataType']>
 
   // Why we need `getMetaData` function?
   // Because you don't know `message.meta.data` specific type.

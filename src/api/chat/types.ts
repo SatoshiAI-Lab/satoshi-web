@@ -39,6 +39,7 @@ export enum AnswerType {
   DataInsightsStream = 'data_insights_stream',
   TechAnalyzeStream = 'tech_analyze_stream',
   ProcessStream = 'process_stream', // Special type.
+  ProcessStreamEnd = 'process_stream_end', // Special type.
   IntentStream = 'intent_stream', // Special type.
   WsMonitor = 'ws_monitor',
 }

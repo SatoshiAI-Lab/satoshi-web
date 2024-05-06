@@ -15,8 +15,11 @@ import { useChatStore } from '@/stores/use-chat-store'
 import { CHAT_CONFIG } from '@/config/chat'
 import { useLoginAuthStore } from '@/stores/use-need-login-store'
 import { useLive2D } from './use-live2d'
-import { useHypertext } from './use-hyper-text-parser'
+import { useHypertext } from './use-hypertext'
 import { useChatType } from './use-chat-type'
+import { useEventStream } from './use-event-stream'
+import { utilParse } from '@/utils/parse'
+import { VoidFn } from '@/types/types'
 
 export const useMessages = () => {
   const { t } = useTranslation()
@@ -27,12 +30,12 @@ export const useMessages = () => {
     updateMessage,
     removeMessage,
     setReadAnswer,
-    setIntention,
   } = useChatStore()
   const { setShow } = useLoginAuthStore()
   const { emitMotionWithWisdom } = useLive2D()
-  const hypertextParser = useHypertext(CHAT_CONFIG.hyperTextRule)
-  const { identifyAnswerType, hasEmotion } = useChatType()
+  // const hypertextParser = useHypertext(CHAT_CONFIG.hypertextRule)
+  const { processAnswerType, hasEmotion } = useChatType()
+  const { parseStream, cancelParseStream } = useEventStream()
 
   // Remove latest message.
   const removeLast = () => {
@@ -155,6 +158,136 @@ export const useMessages = () => {
     })
   }
 
+  // Create & management stream message.
+  const createStreamMessage = () => {
+    const message: Message = {
+      id: nanoid(),
+      role: 'assistant',
+      text: '',
+    }
+
+    const addStream = (data: ChatResponse) => {
+      // Already exist, update it.
+      const isExisted = getMessages().find((m) => m.id === message.id)
+      if (isExisted) {
+        updateMessage(message.id, (m) => ((m.text += data.text), m))
+        return
+      }
+
+      // Does not exist, add a new.
+      addMessage({ ...message, ...data })
+    }
+
+    const removeStream = () => removeMessage(message.id)
+
+    return [addStream, removeStream] as const
+  }
+
+  // Create & management process message.
+  const createProcessMessag = () => {
+    let isUnremoveProcess = true
+
+    // Process message is also stream message.
+    const [addStream, removeStream] = createStreamMessage()
+
+    const removeProcess = () => {
+      isUnremoveProcess = false
+      removeStream()
+    }
+
+    return {
+      isUnremoveProcess,
+      addProcess: addStream,
+      removeProcess,
+    }
+  }
+
+  // Process end message.
+  const processEnd = () => {
+    setReadAnswer(true)
+    setTimeout(() => setReadAnswer(false), 10_000)
+  }
+
+  const create = () => {
+    let message: Message | undefined
+
+    const add = (data: ChatResponse) => {
+      message = {
+        id: nanoid(),
+        role: 'assistant',
+        ...data,
+        text: '',
+      }
+
+      addMessage(message)
+    }
+
+    const update = (data: ChatResponse) => {
+      // If none exists, add first.
+      if (!message) return add(data)
+
+      updateMessage(message.id, (m) => ({
+        ...m,
+        ...data,
+        // If `data.hyper_text` is empty, then use `m.hyper_text`.
+        hyper_text: data.hyper_text || m.hyper_text,
+        text: m.text + data.text,
+      }))
+    }
+
+    return { add, update }
+  }
+
+  // Parse stream & add message based on type.
+  const streamToMessage = <S extends ReadableStream>(
+    stream: S,
+    onDone?: VoidFn
+  ) => {
+    // Only create, don't add!!!
+    const [addStream] = createStreamMessage()
+    const { isUnremoveProcess, addProcess, removeProcess } =
+      createProcessMessag()
+
+    const { add, update } = create()
+
+    // Each parse message, add message based on type.
+    const onEachParse = (data: ChatResponse) => {
+      const m = processAnswerType(data.answer_type)
+
+      // Process start, is also chat start.
+      if (m.isProcess) {
+        removeLastLoading()
+        addProcess(data)
+        return
+      }
+
+      // Process end.
+      if (m.isProcessEnd) {
+        removeProcess()
+        return
+      }
+
+      // If it's not a `process_stream` message and
+      // `process_stream` has not been removed, then remove it.
+      // Just remove, don't `return`!
+      if (isUnremoveProcess) removeProcess()
+
+      // Chat end.
+      if (m.isEnd) return processEnd()
+
+      // Non-stream, add a new one.
+      if (m.isNonStream) add(data)
+
+      // Stream message, Usually updates the previous message.
+      if (m.isStream) return update(data)
+    }
+
+    // On each read.
+    const onRead = (m: string) => utilParse.streamStrToJson(m, onEachParse)
+
+    parseStream(stream, onRead, onDone)
+  }
+
   let processId = ''
   // Parseing & render message, by chat `answer_type` or `meta.type`.
   const parseChatMessage = (
@@ -164,7 +297,7 @@ export const useMessages = () => {
   ) => {
     const { answer_type, meta } = data
     const {
-      isNormal,
+      isNonStream: isNormal,
       isInteractive,
       isReference,
       isEnd,
@@ -172,9 +305,7 @@ export const useMessages = () => {
       isStream,
       isIntent,
       isProcess,
-    } = identifyAnswerType(answer_type)
-
-    console.log('chat response', data)
+    } = processAnswerType(answer_type)
 
     if (isFirstRead) {
       removeLastLoading()
@@ -188,10 +319,6 @@ export const useMessages = () => {
       setTimeout(function () {
         setReadAnswer(false)
       }, 10000)
-    }
-
-    if (isIntent) {
-      setIntention(answer_type)
     }
 
     if (meta.status === 401) {
@@ -287,5 +414,6 @@ export const useMessages = () => {
     removeLastLoading,
     findPrevInteractive,
     addClearHistoryMessage,
+    streamToMessage,
   }
 }

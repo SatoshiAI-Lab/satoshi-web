@@ -71,7 +71,7 @@ export const CHAT_CONFIG = {
     process: 'process_stream',
   },
   /** `hyper_text` parse RegExp */
-  hyperTextRule:
+  hypertextRule:
     /message|text|<blank.*?\/>|<pct-change.*?>.*?<\/pct-change>|link/g,
   refRule: {
     refNumber: /\[(\d+)\]/g,

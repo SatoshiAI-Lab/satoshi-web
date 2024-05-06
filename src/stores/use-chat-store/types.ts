@@ -50,10 +50,10 @@ export interface ChatStore {
   getMessages(): Message[]
   setMessages(msg: Message[] | ((msgs: Message[]) => Message[])): void
 
-  addMessage(message: PartialPick<Message, 'id'>): void
-  removeMessage(id: string): void
-  updateMessage(id: string, message: PartialPick<Message, 'id' | 'text'>): void
-  getMessage(id: string): void
+  addMessage(message: PartialPick<Message, 'id'>): Message
+  removeMessage(id: string): Message[]
+  updateMessage(id: string, updater: (m: Message) => Message): Message[]
+  getMessage(id: string): Message | undefined
 
   setUnreadMessage(unreadMessages: MonitorData[]): void
   setChatEl(el: HTMLElement): void

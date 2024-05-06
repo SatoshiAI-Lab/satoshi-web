@@ -9,13 +9,13 @@ import {
 import { DataType } from '@/stores/use-chat-store/types'
 
 export const useChatType = () => {
-  const identifyAnswerType = (type?: `${AnswerType}`) => {
+  const processAnswerType = (type?: `${AnswerType}`) => {
     if (!type) return {}
 
     return {
       isEmpty: isEmpty(type),
 
-      isNormal: !type.endsWith('stream'),
+      isNonStream: !type.endsWith('stream'),
       isStream: type.endsWith('stream'),
       isEnd: type === AnswerType.End,
 
@@ -24,11 +24,15 @@ export const useChatType = () => {
       isHide: type === AnswerType.Hide,
 
       isProcess: type === AnswerType.ProcessStream,
+      isProcessEnd: type === AnswerType.ProcessStreamEnd,
       isIntent: type === AnswerType.IntentStream,
+      isNormalChat: type === AnswerType.ChatStream,
+
+      isWsMonitor: type === AnswerType.WsMonitor,
     }
   }
 
-  const identifyMetaType = (type?: `${MetaType}`) => {
+  const processMetaType = (type?: `${MetaType}`) => {
     if (!type) {
       return {
         isEmpty: true,
@@ -65,7 +69,7 @@ export const useChatType = () => {
     }
   }
 
-  const identifyDataType = (type?: `${DataType}`) => {
+  const processDataType = (type?: `${DataType}`) => {
     if (!type) return {}
 
     return {
@@ -80,9 +84,9 @@ export const useChatType = () => {
   const hasEmotion = (meta: ChatMeta) => !!meta.emotion
 
   return {
-    identifyAnswerType,
-    identifyMetaType,
-    identifyDataType,
+    processAnswerType,
+    processMetaType,
+    processDataType,
     hasEmotion,
   }
 }

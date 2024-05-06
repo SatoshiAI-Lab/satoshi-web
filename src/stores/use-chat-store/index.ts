@@ -44,9 +44,9 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     set({ messages: newMessages })
     return newMessages
   },
-  updateMessage: (id, message) => {
+  updateMessage: (id, updater) => {
     const newMessages = get().messages.map((m) =>
-      m.id === id ? { ...m, ...message } : m
+      m.id === id ? updater(m) : m
     )
 
     set({ messages: newMessages })
