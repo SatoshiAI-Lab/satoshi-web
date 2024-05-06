@@ -6,7 +6,6 @@ import type { ChatStore, Message } from './types'
 import { utilDom } from '@/utils/dom'
 
 export const useChatStore = create<ChatStore>((set, get) => ({
-  intention: '',
   question: '',
   messages: [],
   chatEl: null,
@@ -22,7 +21,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   unreadMessages: [],
   socket: undefined,
 
-  setIntention: (intention) => set({ intention }),
   setQuestion: (question) => set({ question }),
   getMessages: () => get().messages,
   setMessages: (newMessages) => {
