@@ -1,49 +1,19 @@
 import { nanoid } from 'nanoid'
-import { useTranslation } from 'react-i18next'
-import { toast } from 'react-hot-toast'
 import { last } from 'lodash'
 
 import type { Message } from '@/stores/use-chat-store/types'
 import {
-  AnswerType,
   type MonitorData,
   type ChatResponse,
+  AnswerType,
   MetaType,
 } from '@/api/chat/types'
 
 import { useChatStore } from '@/stores/use-chat-store'
-import { CHAT_CONFIG } from '@/config/chat'
-import { useLoginAuthStore } from '@/stores/use-need-login-store'
-import { useLive2D } from './use-live2d'
-import { useHypertext } from './use-hypertext'
-import { useChatType } from './use-chat-type'
-import { useEventStream } from './use-event-stream'
-import { utilParse } from '@/utils/parse'
-import { VoidFn } from '@/types/types'
 
 export const useMessages = () => {
-  const { t } = useTranslation()
-  const {
-    messages,
-    getMessages,
-    addMessage,
-    updateMessage,
-    removeMessage,
-    setReadAnswer,
-  } = useChatStore()
-  const { setShow } = useLoginAuthStore()
-  const { emitMotionWithWisdom } = useLive2D()
-  // const hypertextParser = useHypertext(CHAT_CONFIG.hypertextRule)
-  const { processAnswerType, hasEmotion } = useChatType()
-  const { parseStream, cancelParseStream } = useEventStream()
-
-  // Remove latest message.
-  const removeLast = () => {
-    const lastId = last(getMessages())?.id
-
-    if (!lastId) return
-    removeMessage(lastId)
-  }
+  const { getMessages, addMessage, updateMessage, removeMessage } =
+    useChatStore()
 
   // Add a loading message.
   const addLoading = () => {
@@ -78,68 +48,6 @@ export const useMessages = () => {
     return msg
   }
 
-  // Stream message.
-  const addStreamMessage = (
-    data: ChatResponse,
-    m?: Partial<Message>,
-    overrideText = false
-  ) => {
-    const lastMessage = last(getMessages())
-
-    if (!lastMessage) return
-    const newMessage: Message = {
-      ...data,
-      ...lastMessage,
-      ...m,
-      role: 'assistant',
-      text: overrideText ? data.text : lastMessage.text + data.text,
-    }
-
-    updateMessage(lastMessage.id, newMessage)
-  }
-
-  // Normal message.
-  const addNormalMessage = (data: ChatResponse, m?: Partial<Message>) => {
-    addMessage({ ...data, ...m, role: 'assistant' })
-  }
-
-  // Token about message.
-  const addTokenMessage = (data: ChatResponse, m?: Partial<Message>) => {
-    addMessage({
-      ...data,
-      ...m,
-      role: 'assistant',
-      text: hypertextParser(data.hyper_text).trim() + '\n\n',
-    })
-  }
-
-  // Interactive message.
-  const addInteractiveMessage = (data: ChatResponse) => {
-    addNormalMessage(data, { isInteractive: true })
-  }
-
-  // Reference message.
-  // TODO: Optimzie this method.
-  const addReferenceMesssage = (data: ChatResponse) => {
-    const { reference } = CHAT_CONFIG.answerType
-    const { type, content, published_at, url } = data.meta
-    const parsedContent = content?.replaceAll('\n', '<br />')
-    // Must be complete tag
-    const refTag = `
-      <${reference} 
-        type=\"${type}\"
-        published_at=\"${published_at}\" 
-        url=\"${url}\"
-      >${parsedContent}</${reference}>
-    `
-    const newMessage = {
-      ...data,
-      text: data.text + refTag,
-    }
-
-    addStreamMessage(newMessage, { isReference: true })
-  }
-
   // Monitor message.
   const addMonitorMessages = (monitors: MonitorData[]) => {
     monitors.forEach((m) => {
@@ -158,232 +66,70 @@ export const useMessages = () => {
     })
   }
 
-  // Create & management stream message.
-  const createStreamMessage = () => {
-    const message: Message = {
+  // Create a message manager.
+  const createMessageManage = () => {
+    let message: Message = {
       id: nanoid(),
       role: 'assistant',
       text: '',
     }
 
-    const addStream = (data: ChatResponse) => {
-      // Already exist, update it.
+    const add = (data: ChatResponse, override = false) => {
+      // If is exist update it, else add a new one.
       const isExisted = getMessages().find((m) => m.id === message.id)
-      if (isExisted) {
-        updateMessage(message.id, (m) => ((m.text += data.text), m))
-        return
-      }
+      if (isExisted) return update(data, override)
 
-      // Does not exist, add a new.
       addMessage({ ...message, ...data })
     }
 
-    const removeStream = () => removeMessage(message.id)
-
-    return [addStream, removeStream] as const
-  }
-
-  // Create & management process message.
-  const createProcessMessag = () => {
-    let isUnremoveProcess = true
-
-    // Process message is also stream message.
-    const [addStream, removeStream] = createStreamMessage()
-
-    const removeProcess = () => {
-      isUnremoveProcess = false
-      removeStream()
-    }
-
-    return {
-      isUnremoveProcess,
-      addProcess: addStream,
-      removeProcess,
-    }
-  }
-
-  // Process end message.
-  const processEnd = () => {
-    setReadAnswer(true)
-    setTimeout(() => setReadAnswer(false), 10_000)
-  }
-
-  const create = () => {
-    let message: Message | undefined
-
-    const add = (data: ChatResponse) => {
+    const addNew = (data: ChatResponse) => {
       message = {
         id: nanoid(),
         role: 'assistant',
-        ...data,
         text: '',
       }
-
-      addMessage(message)
+      add(data)
     }
 
-    const update = (data: ChatResponse) => {
-      // If none exists, add first.
-      if (!message) return add(data)
-
+    const update = (data: ChatResponse, override = false) => {
       updateMessage(message.id, (m) => ({
         ...m,
         ...data,
         // If `data.hyper_text` is empty, then use `m.hyper_text`.
         hyper_text: data.hyper_text || m.hyper_text,
-        text: m.text + data.text,
+        text: override ? data.text : m.text + data.text,
       }))
     }
 
-    return { add, update }
+    const remove = () => {
+      if (!message.id) return
+
+      removeMessage(message.id)
+      message = {
+        id: '',
+        role: 'assistant',
+        hyper_text: '',
+        text: '',
+      }
+    }
+
+    return {
+      add,
+      addNew,
+      remove,
+    }
   }
 
-  // Parse stream & add message based on type.
-  const streamToMessage = <S extends ReadableStream>(
-    stream: S,
-    onDone?: VoidFn
-  ) => {
-    // Only create, don't add!!!
-    const [addStream] = createStreamMessage()
-    const { isUnremoveProcess, addProcess, removeProcess } =
-      createProcessMessag()
+  // Create process message manager.
+  const createProcessManage = () => {
+    let shouldBeRemove = false
+    const { add, remove } = createMessageManage()
 
-    const { add, update } = create()
-
-    // Each parse message, add message based on type.
-    const onEachParse = (data: ChatResponse) => {
-      const m = processAnswerType(data.answer_type)
-
-      // Process start, is also chat start.
-      if (m.isProcess) {
-        removeLastLoading()
-        addProcess(data)
-        return
-      }
-
-      // Process end.
-      if (m.isProcessEnd) {
-        removeProcess()
-        return
-      }
-
-      // If it's not a `process_stream` message and
-      // `process_stream` has not been removed, then remove it.
-      // Just remove, don't `return`!
-      if (isUnremoveProcess) removeProcess()
-
-      // Chat end.
-      if (m.isEnd) return processEnd()
-
-      // Non-stream, add a new one.
-      if (m.isNonStream) add(data)
-
-      // Stream message, Usually updates the previous message.
-      if (m.isStream) return update(data)
-    }
-
-    // On each read.
-    const onRead = (m: string) => utilParse.streamStrToJson(m, onEachParse)
-
-    parseStream(stream, onRead, onDone)
-  }
-
-  let processId = ''
-  // Parseing & render message, by chat `answer_type` or `meta.type`.
-  const parseChatMessage = (
-    data: ChatResponse,
-    isFirstRead?: boolean,
-    isFirstParse?: boolean
-  ) => {
-    const { answer_type, meta } = data
-    const {
-      isNonStream: isNormal,
-      isInteractive,
-      isReference,
-      isEnd,
-      isHide,
-      isStream,
-      isIntent,
-      isProcess,
-    } = processAnswerType(answer_type)
-
-    if (isFirstRead) {
-      removeLastLoading()
-      // on first read, add a blank message,
-      // used for process message fill it.
-      addMessage({ role: 'assistant', text: '' })
-    }
-
-    if (isEnd) {
-      setReadAnswer(true)
-      setTimeout(function () {
-        setReadAnswer(false)
-      }, 10000)
-    }
-
-    if (meta.status === 401) {
-      toast.error(t('need.login'))
-      setShow(true)
-      return
-    }
-
-    if (isHide) {
-      removeLast()
-      return
-    }
-
-    if (isProcess) {
-      if (!processId) processId = nanoid()
-      addStreamMessage(data, { id: processId }, true)
-      return
-    }
-
-    if (processId) {
-      // Is not stream message, remove process message.
-      if (!isStream || isIntent) removeMessage(processId)
-      // Is stream message, clear process message.
-      else if (isStream) {
-        updateMessage(processId, { role: 'assistant', text: '' })
-      }
-
-      processId = ''
-    }
-
-    if (isIntent) {
-      // data.meta.data?.reverse?.()
-      addNormalMessage(data, { isIntent })
-      return
-    }
-
-    if (isStream) {
-      // Don't use trim.
-      if (!data.text) return
-
-      addStreamMessage(data)
-      return
-    }
-
-    if (isInteractive) {
-      addInteractiveMessage(data)
-      return
-    }
-
-    if (isReference) {
-      addReferenceMesssage(data)
-      return
-    }
-
-    // Answer ended & include emotion & is not interactive message.
-    const isNotInteractive = !last(messages)?.isInteractive
-    if (isEnd && hasEmotion(meta) && isNotInteractive) {
-      // TODO: Fix any type.
-      emitMotionWithWisdom(meta.emotion as any)
-      return
-    }
-
-    if (isNormal) {
-      addTokenMessage(data)
-      return
+    return {
+      addProcess: add,
+      removeProcess: remove,
+      shouldRemoveProcess: () => shouldBeRemove,
+      markedRemoveProcess: () => (shouldBeRemove = true),
     }
   }
 
@@ -401,19 +147,19 @@ export const useMessages = () => {
   }
 
   return {
+    // Store methods.
+    getMessages,
     addMessage,
-    addStreamMessage,
-    addNormalMessage,
-    addTokenMessage,
-    addInteractiveMessage,
-    addReferenceMesssage,
-    addMonitorMessages,
-    parseChatMessage,
+    updateMessage,
+    removeMessage,
+
+    // Hook methods.
     addLoading,
-    removeLast,
     removeLastLoading,
     findPrevInteractive,
+    addMonitorMessages,
+    createMessageManage,
+    createProcessManage,
     addClearHistoryMessage,
-    streamToMessage,
   }
 }

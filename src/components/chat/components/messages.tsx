@@ -44,19 +44,19 @@ const MessagesCategory = () => {
   // Loading message.
   if (message.isLoading) return <LoadingMessage />
 
-  // System related messages.
+  // Normal chat message.
+  if (answerType.isChatStream) return <NormalChatMessage />
+
+  // System messages category.
   if (message.isSystem) return <SystemMessages />
 
-  // Monitor/Subscript related messages.
+  // Monitor messages category.
   if (answerType.isWsMonitor) return <MonitorMessages />
 
-  // Intent related messages.
-  if (answerType.isIntent) return <IntentMessages />
+  // Intent messages category.
+  if (answerType.isIntentStream) return <IntentMessages />
 
-  // Normal chat message.
-  if (answerType.isNormalChat) return <NormalChatMessage />
-
-  // By default is token related messages.
+  // Token messages category.
   return <TokenMessages />
 }
 

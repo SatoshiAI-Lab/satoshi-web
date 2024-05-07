@@ -13,10 +13,8 @@ export const TokenMessages = () => {
 
   if (answerType.isInteractive) return <InteractiveMessage />
 
-  if (answerType.isReference) {
-    console.log('is ref', message)
-    return
-  }
+  // TODO: wait implementation.
+  if (answerType.isReference) return
 
   return (
     <MessageBubble role={message.role}>

@@ -8,6 +8,12 @@ import {
 } from '@/api/chat/types'
 import { DataType } from '@/stores/use-chat-store/types'
 
+export type UseChatTypeReturn = ReturnType<typeof useChatType>
+
+export type UseChatTypeReturns = {
+  [K in keyof UseChatTypeReturn]: ReturnType<UseChatTypeReturn[K]>
+}
+
 export const useChatType = () => {
   const processAnswerType = (type?: `${AnswerType}`) => {
     if (!type) return {}
@@ -15,18 +21,17 @@ export const useChatType = () => {
     return {
       isEmpty: isEmpty(type),
 
-      isNonStream: !type.endsWith('stream'),
-      isStream: type.endsWith('stream'),
-      isEnd: type === AnswerType.End,
-
+      isNonStream: !type.includes('stream'),
       isInteractive: type === AnswerType.Interactive,
       isReference: type === AnswerType.Reference,
       isHide: type === AnswerType.Hide,
+      isEnd: type === AnswerType.End,
 
-      isProcess: type === AnswerType.ProcessStream,
-      isProcessEnd: type === AnswerType.ProcessStreamEnd,
-      isIntent: type === AnswerType.IntentStream,
-      isNormalChat: type === AnswerType.ChatStream,
+      isStream: type.includes('stream'),
+      isProcessStream: type === AnswerType.ProcessStream,
+      isProcessStreamEnd: type === AnswerType.ProcessStreamEnd,
+      isIntentStream: type === AnswerType.IntentStream,
+      isChatStream: type === AnswerType.ChatStream,
 
       isWsMonitor: type === AnswerType.WsMonitor,
     }
