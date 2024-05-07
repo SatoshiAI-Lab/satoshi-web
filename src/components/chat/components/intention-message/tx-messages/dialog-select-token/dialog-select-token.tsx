@@ -1,19 +1,24 @@
-import { ChainInfo, MultiChainCoin } from '@/api/chat/types'
 import { DialogHeader } from '@/components/dialog-header'
 import { Platform } from '@/config/wallet'
-import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
-import { useWalletStore } from '@/stores/use-wallet-store'
 import {
+  Button,
   CircularProgress,
   Dialog,
   MenuItem,
   Select,
 } from '@mui/material'
-import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TokenList } from './token-list'
 import { ChainList } from './chain-list'
 import { SearchInput } from './search-input'
+import {
+  DialogContext,
+  useDialogSelectTokenContext,
+} from '@/hooks/use-swap/use-dialog-select-token'
+import { useWalletStore } from '@/stores/use-wallet-store'
+import { useWalletManage } from '@/hooks/use-wallet'
+import { useWalletList } from '@/hooks/use-wallet-list'
+import { useState } from 'react'
 
 interface Props {
   isFrom: boolean
@@ -26,98 +31,134 @@ export const DialogSelectToken = (props: Props) => {
   const { show, isFrom, hidden } = props
   const { t } = useTranslation()
 
-  const { currentWallet, selectFromToken, selectToToken } =
-    useContext(SwapContext)
-  const { walletPlatform } = useWalletStore()
+  const [createWalletLoading, setCraeteWalletLoading] = useState(false)
 
-  const [searchValue, setSearchValue] = useState('')
-  const [loadingSearch, setLoadingSearch] = useState(false)
-  const [searchTokens, setSearchTokens] = useState<MultiChainCoin[]>([])
-  const [isNameSearch, setIsNameSearch] = useState(false)
-  const [selectChainId, setSelectChainId] = useState(
-    selectFromToken?.chain.id || '-1'
-  )
+  const { createWallet } = useWalletManage()
+  const { getAllWallet } = useWalletList()
+  const {
+    loadingSearch,
+    searchTokens,
+    selectWallet,
+    walletPlatform,
+    contextValue,
+    searchValue,
+    isSearch,
+    createWalletInfo,
+    setCreateWalletInfo,
+  } = useDialogSelectTokenContext(isFrom)
 
-  const selectWallet = walletPlatform[currentWallet!.platform!]?.find(
-    (w) => w.address === currentWallet?.address
-  )
-
-  const tokens = searchValue != '' ? searchTokens : selectWallet?.tokens
-
-  // .filter((t) => t.value_usd > 1)
-
-  const tokenChainRaw = tokens?.map((t) => t.chain) || []
-
-  const tokenChain: ChainInfo[] = []
-  for (const token of tokenChainRaw) {
-    if (!tokenChain.find((chian) => chian.id == token.id)) {
-      tokenChain.push(token)
+  const dialogContent = () => {
+    // 查币中
+    if (loadingSearch) {
+      return (
+        <div className="h-[300px] flex flex-col items-center justify-center">
+          <CircularProgress />
+          <span className="text-gray-400 mt-6">{t('searching.tokens')}</span>
+        </div>
+      )
     }
+
+    // 没找到对应的代币
+    if (searchTokens.length == 0 && searchValue.trim()) {
+      return (
+        <div className="mt-5 flex flex-col items-center justify-center">
+          <img
+            src="/images/empty-token.png"
+            className="w-[150px] h-[150px]"
+            alt="empty"
+          />
+          <div className="mt-2 text-gray-500">
+            {t('not.find.token1')}
+            <span className="font-bold"> {searchValue} </span>
+            {t('not.find.token2')}
+          </div>
+        </div>
+      )
+    }
+
+    // 提示创建钱包
+    if (createWalletInfo?.actived) {
+      const onCreateWallet = async () => {
+        try {
+          setCraeteWalletLoading(true)
+          await createWallet(createWalletInfo.platform)
+          await getAllWallet()
+          setCreateWalletInfo(undefined)
+        } catch {
+        } finally {
+          setCraeteWalletLoading(false)
+        }
+      }
+      return (
+        <div className="flex flex-col justify-center items-center">
+          <img
+            src="/images/chain-logo/Solana.png"
+            alt="Solana"
+            className="w-[80px] h-[80px] mt-5"
+          />
+          <div className="my-4 max-w-[250px]">
+            {t('create.wallet.token')
+              .replace('$1', createWalletInfo.tokenName)
+              .replace('$2', createWalletInfo.chainName)}
+          </div>
+          <div>
+            <Button
+              variant="contained"
+              className='!rounded-full'
+              onClick={onCreateWallet}
+              disabled={createWalletLoading}
+            >
+              {createWalletLoading ? <CircularProgress size={20} className='mr-2' /> : null}
+              {t('create.wallet').replace('$1', createWalletInfo.chainName)}
+            </Button>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <>
+        {searchValue.trim() === '' ? (
+          <div className="px-6 flex items-center">
+            <span className="text-base mr-2">
+              {isSearch ? t('use.wallet') : t('my.tokens.in')}
+            </span>
+            <Select value={selectWallet?.address} size="small">
+              {Object.keys(walletPlatform!).map((platform) => {
+                return walletPlatform![platform as Platform]?.map((wallet) => {
+                  return (
+                    <MenuItem key={wallet.address} value={wallet.address}>
+                      <span className="mr-5">{wallet.name}</span>
+                      <span className="text-gray-400">{wallet.platform}</span>
+                    </MenuItem>
+                  )
+                })
+              })}
+            </Select>
+          </div>
+        ) : null}
+
+        <ChainList />
+        <TokenList />
+      </>
+    )
   }
 
   return (
-    <Dialog open={show} onClose={hidden}>
-      <DialogHeader
-        text={<span className="text-lg">{t('select.a.token')}</span>}
-        onClose={hidden}
-        textAlign="left"
-      ></DialogHeader>
-      <div className="min-w-[400px] min-h-[450px]">
-        <SearchInput
-          isFrom={isFrom}
-          selectWalletTokens={selectWallet?.tokens}
-          searchValue={searchValue}
-          setIsNameSearch={setIsNameSearch}
-          setSearchValue={setSearchValue}
-          setSearchTokens={setSearchTokens}
-          setLoadingSearch={setLoadingSearch}
-        />
-        <div className="mt-4 pt-2 border-t border-gray-300">
-          {loadingSearch ? (
-            <div className="h-[300px] flex flex-col items-center justify-center">
-              <CircularProgress />
-              <span className="text-gray-400 mt-6">
-                {t('searching.tokens')}
-              </span>
-            </div>
-          ) : (
-            <>
-              <div className="px-6 flex items-center">
-                <span className="text-base mr-2">{t('my.tokens.in')}</span>
-                <Select value={selectWallet?.address} size="small">
-                  {Object.keys(walletPlatform).map((platform) => {
-                    return walletPlatform[platform as Platform]?.map(
-                      (wallet) => {
-                        return (
-                          <MenuItem key={wallet.address} value={wallet.address}>
-                            <span className="mr-5">{wallet.name}</span>
-                            <span className="text-gray-400">
-                              {wallet.platform}
-                            </span>
-                          </MenuItem>
-                        )
-                      }
-                    )
-                  })}
-                </Select>
-              </div>
-
-              <ChainList
-                selectChainId={selectChainId}
-                setSelectChainId={setSelectChainId}
-                tokenChain={tokenChain}
-              />
-              <TokenList
-                selectChainId={selectChainId}
-                searchTokens={searchTokens}
-                searchValue={searchValue}
-                selectWalletTokens={tokens}
-                isNameSearch={isNameSearch}
-              />
-            </>
-          )}
+    <DialogContext.Provider value={contextValue}>
+      <Dialog open={show} onClose={hidden}>
+        <DialogHeader
+          text={<span className="text-lg">{t('select.a.token')}</span>}
+          onClose={hidden}
+          textAlign="left"
+        ></DialogHeader>
+        <div className="min-w-[420px] min-h-[380px]">
+          <SearchInput isFrom={isFrom} />
+          <div className="mt-4 pt-2 border-t border-gray-300">
+            {dialogContent()}
+          </div>
         </div>
-      </div>
-    </Dialog>
+      </Dialog>
+    </DialogContext.Provider>
   )
 }

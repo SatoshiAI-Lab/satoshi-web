@@ -22,7 +22,7 @@ export const utilWallet = {
           ...token,
           chain: w.chain!,
           is_supported: true,
-          logo: token.logoUrl,
+          logo: token.logo,
           price_change: token.price_change_24h,
           holders: 10000,
         })

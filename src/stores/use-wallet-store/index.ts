@@ -8,7 +8,7 @@ import type { UserCreateWalletResp } from '@/api/wallet/params'
 export interface PartialWalletRes extends Partial<UserCreateWalletResp> {}
 
 export interface WalletPlatform {
-  [Platform.Bear]?: UserCreateWalletResp[]
+  // [Platform.Bear]?: UserCreateWalletResp[]
   [Platform.Evm]?: UserCreateWalletResp[]
   [Platform.Sol]?: UserCreateWalletResp[]
 }

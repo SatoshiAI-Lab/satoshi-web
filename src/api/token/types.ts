@@ -1,5 +1,9 @@
 import { Chain } from '@/config/wallet'
-import { CheckAddrType } from '../chat/types'
+import {
+  ChatResponseWalletListToken,
+  CheckAddrType,
+  MultiChainCoin,
+} from '../chat/types'
 
 export interface TokenListParams {
   ids: TokenId[]
@@ -162,7 +166,7 @@ export interface AccountToken {
   amount: string
   priceUsd: string
   valueUsd: string
-  logoUrl: string
+  logo: string
 }
 
 export interface QueryAddrRes {
@@ -191,3 +195,7 @@ export interface TokenInfoRes {
   price_change: string
   holders: number
 }
+
+export interface SearchSwapToken
+  extends MultiChainCoin,
+    ChatResponseWalletListToken {}

@@ -1,5 +1,6 @@
 import { ChatResponseWalletListToken, MultiChainCoin } from '@/api/chat/types'
 import { tokenApi } from '@/api/token'
+import { DialogContext } from '@/hooks/use-swap/use-dialog-select-token'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { OutlinedInput } from '@mui/material'
 import { ChangeEvent, useContext, useRef, useState } from 'react'
@@ -7,57 +8,34 @@ import { IoSearchOutline, IoCloseOutline } from 'react-icons/io5'
 
 interface Props {
   isFrom: boolean
-  searchValue: string
-  selectWalletTokens?: ChatResponseWalletListToken[]
-  setSearchValue: (v: string) => void
-  setIsNameSearch: (v: boolean) => void
-  setSearchTokens: (v: MultiChainCoin[]) => void
-  setLoadingSearch: (v: boolean) => void
 }
 
-export const SearchInput = ({
-  isFrom,
-  searchValue,
-  selectWalletTokens,
-  setSearchValue,
-  setIsNameSearch,
-  setSearchTokens,
-  setLoadingSearch,
-}: Props) => {
+export const SearchInput = ({ isFrom }: Props) => {
   const timer = useRef<NodeJS.Timeout>()
-
   const { selectFromToken, selectToToken, walletList } = useContext(SwapContext)
+  const {
+    searchValue,
+    setSearchValue,
+    setIsNameSearch,
+    setSearchTokens,
+    setLoadingSearch,
+    setSelectChainId,
+    selectWallet,
+  } = useContext(DialogContext)
 
   const onSearch = async (value: string) => {
     try {
-      let { data: tokens } = await tokenApi.multiCoin(value)
+      const { data } = await tokenApi.multiCoin(value)
 
-      const isNameSearch = tokens.some(
+      const isNameSearch = data.some(
         (t) => t.symbol.toLowerCase() === value.toLowerCase()
       )
 
-      tokens =
-        selectWalletTokens?.map((token) => {
-          for (const t of tokens) {
-            if (
-              token.address === t.address &&
-              token.chain.id === t.chain.name
-            ) {
-              return {
-                ...t,
-                ...token,
-              }
-            }
-          }
-          return token
-        }) || []
+      data.sort((a, b) => b.holders - a.holders)
 
-      // 一、搜索代币名字
-      // 1. 优先选择原先的钱包
-      // 2. 其他钱包也没有余额
-      // 3. 还是选回原线原先钱包，并提示余额不足
       setIsNameSearch(isNameSearch)
-      setSearchTokens(tokens)
+      setSearchTokens(data)
+      setSelectChainId('-1')
     } catch (e) {
     } finally {
       setLoadingSearch(false)

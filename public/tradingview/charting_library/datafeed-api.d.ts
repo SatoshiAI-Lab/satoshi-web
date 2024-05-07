@@ -48,7 +48,7 @@ export interface CurrencyItem {
 	/** Currency code. @example `USD` */
 	code: string;
 	/** URL to an image of the currency. SVG logos are preferable, but please make sure that the provided image fits nicely in the currency select control (for raster images the expected size is 24x24px). */
-	logoUrl?: string;
+	logo?: string;
 	/** Description for the currency */
 	description?: string;
 }
