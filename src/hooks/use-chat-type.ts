@@ -6,6 +6,7 @@ import {
   MetaType,
   MetaTypeCategory,
 } from '@/api/chat/types'
+import { DataType } from '@/stores/use-chat-store/types'
 
 export const useChatType = () => {
   const identifyAnswerType = (type?: `${AnswerType}`) => {
@@ -64,11 +65,24 @@ export const useChatType = () => {
     }
   }
 
+  const identifyDataType = (type?: `${DataType}`) => {
+    if (!type) return {}
+
+    return {
+      isMonitorNews: type === DataType.NewsInfo,
+      isMonitorAnn: type === DataType.AnnInfo,
+      isMonitorTrade: type === DataType.TradeInfo,
+      isMonitorTwitter: type === DataType.TwitterInfo,
+      isMonitorNewPool: type === DataType.PoolInfo,
+    }
+  }
+
   const hasEmotion = (meta: ChatMeta) => !!meta.emotion
 
   return {
     identifyAnswerType,
     identifyMetaType,
+    identifyDataType,
     hasEmotion,
   }
 }

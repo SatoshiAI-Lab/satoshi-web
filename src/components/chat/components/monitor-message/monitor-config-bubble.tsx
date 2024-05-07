@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { DataType } from '@/stores/use-chat-store/types'
 import { ExchangeAnnBubble } from './exchange-announcement-bubble'
 import { NewPoolBubble } from './new-pool-bubble'
 import { NewsBubble } from './news-bubble'
@@ -10,19 +9,17 @@ import { useMessagesContext } from '@/contexts/messages'
 import { MessageMatchError } from '@/components/errors/message-match'
 
 export const MonitorMessages = () => {
-  const {
-    message: { data_type },
-  } = useMessagesContext()
+  const { dataType } = useMessagesContext()
 
-  if (data_type === DataType.NewsInfo) return <NewsBubble />
+  if (dataType.isMonitorNews) return <NewsBubble />
 
-  if (data_type === DataType.AnnInfo) return <ExchangeAnnBubble />
+  if (dataType.isMonitorAnn) return <ExchangeAnnBubble />
 
-  if (data_type === DataType.TradeInfo) return <WalletBubble />
+  if (dataType.isMonitorTrade) return <WalletBubble />
 
-  if (data_type === DataType.TwitterInfo) return <TwitterBubble />
+  if (dataType.isMonitorTwitter) return <TwitterBubble />
 
-  if (data_type === DataType.PoolInfo) return <NewPoolBubble />
+  if (dataType.isMonitorNewPool) return <NewPoolBubble />
 
   return <MessageMatchError reasonComponent={MonitorMessages} />
 }

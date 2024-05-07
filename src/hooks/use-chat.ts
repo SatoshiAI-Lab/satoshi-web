@@ -25,13 +25,10 @@ export const useChat = () => {
   const controllerRef = useRef<AbortController>()
   const { parseStream, cancelParseStream } = useEventStream()
   const {
-    chatEl,
     messages,
     question,
-    intention,
     isLoading,
     setQuestion,
-    setIntention,
     setIsLoading,
     addMessage,
     chatScrollToBottom,
@@ -62,7 +59,6 @@ export const useChat = () => {
       },
       history: [],
       stream: true,
-      intent_stream: intention,
     }
 
     // multi interactive
@@ -103,7 +99,6 @@ export const useChat = () => {
 
     // Reset chat states.
     setQuestion('')
-    setIntention('')
 
     // Live2D model about.
     emitMotionSpeak('Thinking')
@@ -186,7 +181,6 @@ export const useChat = () => {
   return {
     messages,
     question,
-    intention,
     isLoading,
     sendChat,
     stopChat,

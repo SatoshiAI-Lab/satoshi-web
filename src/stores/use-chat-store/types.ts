@@ -35,7 +35,6 @@ export interface Message extends Partial<ChatResponse> {
 }
 
 export interface ChatStore {
-  intention: string
   question: string
   messages: Message[]
   chatEl: HTMLElement | null
@@ -47,7 +46,6 @@ export interface ChatStore {
   waitAnswer: boolean
   socket: WebSocket | undefined
 
-  setIntention(intention: string): void
   setQuestion(value: string): void
   getMessages(): Message[]
   setMessages(msg: Message[] | ((msgs: Message[]) => Message[])): void

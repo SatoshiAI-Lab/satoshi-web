@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 
-import { type Message } from '@/stores/use-chat-store/types'
+import type { Message } from '@/stores/use-chat-store/types'
 
 import { InteractiveMessage } from './interactive-message'
 import { IntentMessages } from './intention-message'
@@ -13,7 +13,12 @@ import { MetaType, MetaTypeData } from '@/api/chat/types'
 import { SystemMessages } from './system-messages'
 
 export const Messages = memo(({ messages }: { messages: Message[] }) => {
-  const { identifyAnswerType, identifyMetaType } = useChatType()
+  const { identifyAnswerType, identifyMetaType, identifyDataType } =
+    useChatType()
+
+  const getMetaData = <T extends MetaType>(meta: Message['meta']) => {
+    return meta?.data as MetaTypeData[T]
+  }
 
   return messages.map((message, i) => (
     <MessagesProvider
@@ -21,16 +26,19 @@ export const Messages = memo(({ messages }: { messages: Message[] }) => {
       message={message}
       answerType={identifyAnswerType(message.answer_type)}
       metaType={identifyMetaType(message.meta?.type)}
-      getMetaData={<T extends MetaType>() => {
-        return message.meta?.data as MetaTypeData[T]
-      }}
+      dataType={identifyDataType(message.data_type)}
+      getMetaData={() => getMetaData(message.meta)}
     >
       <MessagesCategory />
     </MessagesProvider>
   ))
 })
 
-// Categorize each message.
+// Here is a classification of `answer_type`,
+// primarily categorizing the overall types of messages.
+// More specific classifications exist within each category.
+// For example, monitoring messages are categorized based on `data_type`,
+// and intent messages are categorized based on `meta.type`.
 const MessagesCategory = () => {
   const { message: m } = useMessagesContext()
 
