@@ -354,6 +354,13 @@
   "tx.hash": "交易哈希：",
   "tx.sned": "交易已经提交: ",
   "my.tokens.in": "我的代币在",
-  "all": "全部",
-  "select.a.token": "选择一个代币"
+  "all": "AII",
+  "select.a.token": "选择一个代币",
+  "select.token.tips": "你选择的令牌余额为0。",
+  "not.find.token1": "未找到",
+  "not.find.token2": "代币",
+  "use.wallet": "使用这个钱包: ",
+  "error.chian": "你选择的链与想兑换代币的链不一致",
+  "create.wallet.token": "这个$1代币，它在$2上。你需要先创建一个$2钱包。",
+  "create.wallet": "创建一个$1钱包"
 }

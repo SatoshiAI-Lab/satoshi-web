@@ -359,6 +359,13 @@
   "insufficient.balance": "Wallet balance is insufficient Please select another token",
   "tx.sned": "Transaction hash has been submitted: ",
   "my.tokens.in": "My tokens in",
-  "all": "ALL",
-  "select.a.token": "Select a token"
+  "all": "AII",
+  "select.a.token": "Select a token",
+  "select.token.tips": "The balance of the token you selected is 0.",
+  "not.find.token1": "No",
+  "not.find.token2": "tokens were found",
+  "use.wallet": "To use this wallet:",
+  "error.chian": "The chain you choose is different from the chain you want to exchange tokens for",
+  "create.wallet.token": "This token is $1, which exists on $2.   You need to create a $2 wallet first.",
+  "create.wallet": "Create a $1 wallet"
 }

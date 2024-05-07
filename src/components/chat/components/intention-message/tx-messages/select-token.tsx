@@ -113,6 +113,7 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
           show={showDialog}
           open={openDialog}
           hidden={hiddenDialog}
+          isFrom={isFrom}
         ></DialogSelectToken>
       </>
     )

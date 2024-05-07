@@ -86,7 +86,7 @@ export const TokenRow = (props: TokensProps) => {
           <TableCell classes={{ root: cellCls('!pl-0') }}>
             <div className="flex items-stretch ">
               <Avatar
-                src={token.logoUrl}
+                src={token.logo}
                 sx={{ width: 45, height: 45, bgcolor: 'black' }}
               >
                 <div className="text-base text-center leading-none">

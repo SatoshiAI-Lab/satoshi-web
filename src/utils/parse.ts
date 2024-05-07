@@ -79,7 +79,7 @@ export const utilParse = {
    * @param len to fixed length.
    * @returns Return a number result.
    */
-  noRoundFixed(n: number, len: number) {
+  noRoundFixed(n: number | string, len: number) {
     const str = n.toString()
     const idx = str.indexOf('.') + 1
 

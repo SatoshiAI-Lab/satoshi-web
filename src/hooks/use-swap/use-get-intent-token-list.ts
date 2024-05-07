@@ -28,6 +28,10 @@ export const useGetIntentTokenList = ({ data }: Options) => {
   } = useQuery({
     queryKey: ['from-token-list', fromTokenInfo, onlyFromTokenQueryKey.current],
     queryFn: async () => {
+      if (fromTokenInfo == '') {
+        return undefined
+      }
+
       const { data } = await tokenApi.multiCoin(fromTokenInfo)
       return sortByHolders(data)
     },
@@ -38,6 +42,9 @@ export const useGetIntentTokenList = ({ data }: Options) => {
   const { data: toTokenListData, isLoading: loadingToTokenList } = useQuery({
     queryKey: ['to-token-list', toTokenInfo, onlyToTokenQueryKey.current],
     queryFn: async () => {
+      if (toTokenInfo == '') {
+        return undefined
+      }
       const { data } = await tokenApi.multiCoin(toTokenInfo)
       return sortByHolders(data)
     },

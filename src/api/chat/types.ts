@@ -220,7 +220,7 @@ export interface MultiChainCoin {
   decimals: number
   is_supported: boolean
   logo: string
-  name: null | string
+  name: string
   price_change: number | null
   price_usd: number
   symbol: string
@@ -276,7 +276,7 @@ export interface ChatResponseWalletListToken {
   amount: number
   chain: ChainInfo
   decimals: number
-  logoUrl: string
+  logo: string
   name: string
   price_usd: number
   price_change_24h: number
