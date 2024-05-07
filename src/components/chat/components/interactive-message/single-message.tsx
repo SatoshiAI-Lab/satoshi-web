@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BsChevronRight } from 'react-icons/bs'
 import { Divider } from '@mui/material'
 import { clsx } from 'clsx'
-import { toast } from 'react-hot-toast'
 
 import type {
   ChatMeta,
@@ -12,9 +11,10 @@ import type {
 } from '@/api/chat/types'
 
 import { MessageBubble } from '../message-bubble'
-import { utilDom } from '@/utils/dom'
 import { useChat } from '@/hooks/use-chat'
 import { useMessages } from '@/hooks/use-messages'
+import { useMessagesContext } from '@/contexts/messages'
+import { useChatStore } from '@/stores/use-chat-store'
 
 interface SingleMessageProps {
   id?: string
@@ -28,11 +28,13 @@ interface SingleMessageProps {
   ) => void
 }
 
+let selectedMeta: ChatResponseAnswerMetaCoin | undefined
+
 export const SingleMessage = (props: SingleMessageProps) => {
-  const [t] = useTranslation()
-  const { meta = [], title, id } = props
-  const { findPrevInteractive } = useMessages()
-  const { isLoading, sendChat } = useChat()
+  const { meta = [], title } = props
+  const messageRef = useRef<HTMLDivElement>(null)
+  const { sendChat } = useMessagesContext()
+  const { findPrevMessage } = useChatStore()
 
   const formatMsg = (msg: ChatResponseAnswerMetaCoin) => {
     const { alias, name } = msg
@@ -42,58 +44,55 @@ export const SingleMessage = (props: SingleMessageProps) => {
     }
 
     const uniqueAlias = alias.filter((a) => a !== name)
-    const result = uniqueAlias.length ? `（${uniqueAlias.join('、')}）` : ''
+    const result = uniqueAlias.length ? ` (${uniqueAlias.join('、')})` : ''
 
     return name + result
   }
 
-  const onClick = async (
-    e: React.MouseEvent<HTMLDivElement>,
-    msg: ChatResponseAnswerMetaCoin
-  ) => {
-    if (isLoading) {
-      toast.error(t('chat.asking'))
+  const onClickToken = () => {
+    if (!selectedMeta || !messageRef.current) return
+
+    const id = messageRef.current.dataset.messageId
+    const message = findPrevMessage(id ?? '')
+
+    if (!message) {
+      console.error('Cannot find previous message')
       return
     }
 
-    const { targetEl } = utilDom.eventProxy(e.target as HTMLElement, 'div')
-    const tokenName = targetEl.firstChild?.textContent ?? ''
-    const prevMessage = findPrevInteractive(id) ?? { text: msg.name }
-    const interactiveOps = {
-      id: msg.id,
-      type: msg.type,
-      name: tokenName,
-      question: prevMessage.text,
-    }
-
-    sendChat(interactiveOps)
+    sendChat({
+      id: selectedMeta.id,
+      type: selectedMeta.type,
+      name: selectedMeta.name,
+      question: message.text,
+    })
+    // Clear when clicked.
+    selectedMeta = undefined
   }
 
   if (!meta.length) return <></>
 
   return (
-    <>
-      <MessageBubble>{title}</MessageBubble>
-      <MessageBubble>
-        {meta.map((msg, i) => (
-          <React.Fragment key={i}>
-            <div
-              className={clsx(
-                'flex items-center justify-between cursor-pointer',
-                'hover:text-primary transition-all '
-              )}
-              onClick={(e) => onClick(e, msg)}
-            >
-              <span className="mr-5">{formatMsg(msg)}</span>
-              <BsChevronRight className="shrink-0" />
-            </div>
-            {meta.length - 1 !== i && (
-              <Divider className="!my-2 !border-[#c9c9c9]" />
+    <MessageBubble ref={messageRef} onClick={onClickToken}>
+      <p className="font-bold mb-1">{title}</p>
+      {meta.map((msg, i) => (
+        <React.Fragment key={i}>
+          <div
+            className={clsx(
+              'flex items-center justify-between cursor-pointer',
+              'hover:text-primary transition-all'
             )}
-          </React.Fragment>
-        ))}
-      </MessageBubble>
-    </>
+            onClick={() => (selectedMeta = msg)}
+          >
+            <span className="mr-5">{formatMsg(msg)}</span>
+            <BsChevronRight className="shrink-0" />
+          </div>
+          {meta.length - 1 !== i && (
+            <Divider className="!my-2 !border-[#c9c9c9]" />
+          )}
+        </React.Fragment>
+      ))}
+    </MessageBubble>
   )
 }
 

@@ -214,6 +214,11 @@ export const useChat = () => {
     const chatParams = getChatParams(options)
     const debugId = nanoid()
 
+    if (isLoading) {
+      toast.error(t('chat.asking'))
+      return
+    }
+
     sendChatBefore(chatParams)
     try {
       controllerRef.current = new AbortController()

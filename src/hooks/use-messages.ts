@@ -33,21 +33,6 @@ export const useMessages = () => {
     removeMessage(lastId)
   }
 
-  // Find previous interactive message.
-  const findPrevInteractive = (id?: string) => {
-    if (!id || !id.trim()) return
-    const messages = getMessages()
-    let m = messages.findIndex((m) => m.id === id)
-    let msg: Message | undefined
-
-    while (msg?.role !== 'user' && m !== -1) {
-      m -= 1
-      msg = messages[m]
-    }
-
-    return msg
-  }
-
   // Monitor message.
   const addMonitorMessages = (monitors: MonitorData[]) => {
     monitors.forEach((m) => {
@@ -61,7 +46,6 @@ export const useMessages = () => {
           data: m,
         },
         data_type: m.data_type,
-        isMonitor: true,
       })
     })
   }
@@ -156,7 +140,6 @@ export const useMessages = () => {
     // Hook methods.
     addLoading,
     removeLastLoading,
-    findPrevInteractive,
     addMonitorMessages,
     createMessageManage,
     createProcessManage,

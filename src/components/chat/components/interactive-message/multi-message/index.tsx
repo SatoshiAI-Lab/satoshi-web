@@ -8,13 +8,13 @@ import type { ChatResponseAnswerMetaCoin } from '@/api/chat/types'
 
 import { MessageBubble } from '../../message-bubble'
 import { utilArr } from '@/utils/array'
-import { useChat } from '@/hooks/use-chat'
-import { useMessages } from '@/hooks/use-messages'
+import { useMessagesContext } from '@/contexts/messages'
+import { useChatStore } from '@/stores/use-chat-store'
 
 export const MultiMessage = (props: MultiMessageProps) => {
   const { id, title, meta } = props
-  const { findPrevInteractive } = useMessages()
-  const { sendChat } = useChat()
+  const { sendChat } = useMessagesContext()
+  const { findPrevMessage } = useChatStore()
   const [objMsgs, mapMsgs] = utilArr.categorize(meta, {
     key: 'key',
     assignProps: { checked: false, disabled: false },
@@ -36,10 +36,18 @@ export const MultiMessage = (props: MultiMessageProps) => {
   }
 
   const handleSelected = (arr: IMultiMessage[]) => {
-    const { text: question } = findPrevInteractive(id) ?? { text: '' }
+    const message = findPrevMessage(id ?? '')
+    if (!message) {
+      console.error('Cannot find previous message')
+      return
+    }
+
     const selected_entities = arr.map(({ type, id }) => ({ type, id }))
 
-    sendChat({ question, selected_entities })
+    sendChat({
+      question: message.text,
+      selected_entities,
+    })
   }
 
   const handleChange = () => {
@@ -59,48 +67,53 @@ export const MultiMessage = (props: MultiMessageProps) => {
 
   if (!mapMsgs.size) return <></>
 
-  return Object.entries(msgs).map(([key, value], idx) => {
-    const tokens = value as IMultiMessage[]
+  return (
+    <MessageBubble>
+      <p className="font-bold mb-1">{title}</p>
+      {Object.entries(msgs).map(([k, v], idx, arr) => {
+        const tokens = v as IMultiMessage[]
+        const isNotLast1 = idx !== arr.length - 1
 
-    return (
-      <React.Fragment key={idx}>
-        {idx === 0 && <MessageBubble>{title}</MessageBubble>}
-        <MessageBubble className="pl-3">
-          <RadioGroup name={key} onChange={handleChange}>
-            {tokens.map((msg, i) => (
-              <React.Fragment key={i}>
-                <FormControlLabel
-                  value={i}
-                  classes={{
-                    root: '!m-0 gap-1',
-                    label: clsx(
-                      '!grow hover:text-primary transition-all',
-                      msg.disabled ? 'cursor-not-allowed select-none' : ''
-                    ),
-                  }}
-                  control={<Radio size="small" classes={{ root: '!p-1' }} />}
-                  disabled={msg.disabled}
-                  label={
-                    <span className="flex items-center justify-between w-full">
-                      <span>{formatMsg(msg)}</span>
-                      <BsChevronRight className="shrink-0" />
-                    </span>
-                  }
-                  onChange={() => {
-                    if (checkedMap.has(key)) return
-                    checkedMap.set(key, msg)
-                  }}
-                />
-                {i !== tokens.length - 1 && (
-                  <Divider className="!my-1.5 !border-[#c9c9c9]" />
-                )}
-              </React.Fragment>
-            ))}
+        return (
+          <RadioGroup key={idx} name={k} onChange={handleChange}>
+            {tokens.map((msg, i) => {
+              const isNotLast2 = i !== tokens.length - 1
+
+              return (
+                <React.Fragment key={i}>
+                  <FormControlLabel
+                    value={i}
+                    classes={{
+                      root: '!m-0 gap-1',
+                      label: clsx(
+                        '!grow hover:text-primary transition-all',
+                        msg.disabled ? 'cursor-not-allowed select-none' : ''
+                      ),
+                    }}
+                    control={<Radio size="small" classes={{ root: '!p-1' }} />}
+                    disabled={msg.disabled}
+                    label={
+                      <span className="flex items-center justify-between w-full">
+                        <span>{formatMsg(msg)}</span>
+                        <BsChevronRight className="shrink-0" />
+                      </span>
+                    }
+                    onChange={() => {
+                      if (checkedMap.has(k)) return
+                      checkedMap.set(k, msg)
+                    }}
+                  />
+                  {(isNotLast1 || isNotLast2) && (
+                    <Divider className="!my-1.5 !border-[#c9c9c9]" />
+                  )}
+                </React.Fragment>
+              )
+            })}
           </RadioGroup>
-        </MessageBubble>
-      </React.Fragment>
-    )
-  })
+        )
+      })}
+    </MessageBubble>
+  )
 }
 
 export default MultiMessage

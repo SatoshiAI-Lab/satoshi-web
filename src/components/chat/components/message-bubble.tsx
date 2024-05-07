@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { clsx } from 'clsx'
 import { motion } from 'framer-motion'
 
@@ -8,15 +8,20 @@ interface Props extends React.ComponentProps<'div'> {
   enableAnime?: boolean
 }
 
-export const MessageBubble = (props: Props) => {
-  const { children, className, enableAnime = false } = props
+type Ref = React.ForwardedRef<HTMLDivElement>
+
+export const MessageBubble = forwardRef((props: Props, ref: Ref) => {
+  const { children, className, enableAnime = false, onClick } = props
   const { message, roleType } = useMessagesContext()
 
   return (
     <motion.div
+      ref={ref}
       initial={enableAnime ? { y: 20, opacity: 1 } : {}}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.1 }}
+      data-message-id={message.id}
+      onClick={onClick}
       className={clsx(
         'px-4 py-2 mr-10 bg-slate-100 rounded max-w-lg',
         'my-1 break-all shadow-bubble hover:bg-white transition-all',
@@ -29,11 +34,10 @@ export const MessageBubble = (props: Props) => {
         roleType.isUser && 'self-end',
         className
       )}
-      data-message-id={message.id}
     >
       {children}
     </motion.div>
   )
-}
+})
 
 export default MessageBubble

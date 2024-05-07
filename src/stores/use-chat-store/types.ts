@@ -45,7 +45,8 @@ export interface ChatStore {
   addMessage(message: PartialPick<Message, 'id'>): Message
   removeMessage(id: string): Message[]
   updateMessage(id: string, updater: (m: Message) => Message): Message[]
-  getMessage(id: string): Message | undefined
+  getMessage(id: string): [Message, number]
+  findPrevMessage(id: string): Message | undefined
 
   setUnreadMessage(unreadMessages: MonitorData[]): void
   setChatEl(el: HTMLElement): void
