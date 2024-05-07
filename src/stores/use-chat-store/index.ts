@@ -5,9 +5,16 @@ import type { ChatStore, Message } from './types'
 
 import { utilDom } from '@/utils/dom'
 
+const defaultMessage: Message = {
+  id: nanoid(),
+  role: 'assistant',
+  text: '',
+  isDefaultMessage: true,
+}
+
 export const useChatStore = create<ChatStore>((set, get) => ({
   question: '',
-  messages: [],
+  messages: [defaultMessage],
   chatEl: null,
   chatInputEl: null,
   isLoading: false,

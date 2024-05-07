@@ -1,8 +1,10 @@
+import { StopChat } from './../hooks/use-chat'
 import { ReactNode, createContext, createElement, useContext } from 'react'
 
 import type { Message } from '@/stores/use-chat-store/types'
+import type { UseChatTypeReturns } from '@/hooks/use-chat-type'
+import type { SendChat } from '@/hooks/use-chat'
 
-import { UseChatTypeReturns } from '@/hooks/use-chat-type'
 import { MetaType, MetaTypeData } from '@/api/chat/types'
 
 interface ContextValue {
@@ -10,7 +12,10 @@ interface ContextValue {
   answerType: UseChatTypeReturns['processAnswerType']
   metaType: UseChatTypeReturns['processMetaType']
   dataType: UseChatTypeReturns['processDataType']
+  roleType: UseChatTypeReturns['processRoleType']
 
+  sendChat: SendChat
+  stopChat: StopChat
   // Why we need `getMetaData` function?
   // Because you don't know `message.meta.data` specific type.
   // By passing a generic through this method, we can obtain the specific type.

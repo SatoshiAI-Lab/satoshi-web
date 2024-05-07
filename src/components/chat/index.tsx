@@ -10,10 +10,6 @@ import { MessageAlert } from './components/message-alert'
 import { useThrottledCallback } from '@/hooks/use-throttled-callback'
 import { useChat } from '@/hooks/use-chat'
 import { useChatStore } from '@/stores/use-chat-store'
-import {
-  DefaultMessage,
-  type DefaultMessageOption,
-} from './components/default-message'
 
 export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const { className = '' } = props
@@ -52,10 +48,6 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     sendChat()
   }
 
-  const onOptionClick = async (option: DefaultMessageOption) => {
-    sendChat({ question: option.details })
-  }
-
   // setChatEl and scroll to latest message
   useEffect(() => {
     if (!chatRef.current) return
@@ -82,22 +74,24 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
       {/* Chat main element */}
       <div
         className={clsx(
-          'grow-[8] overflow-auto pb-0 pr-0',
-          'flex flex-col gap-4 z-10 max-sm:pr-0',
-          '2xl:max-w-chat 2xl:grow-unset'
+          'grow-[8] overflow-auto pb-0 pr-0 flex flex-col gap-4 z-10',
+          'max-sm:pr-0 2xl:max-w-chat 2xl:grow-unset'
         )}
       >
         <Live2DModel />
         <div
           className={clsx(
-            'flex flex-col items-start grow overflow-auto z-10 max-sm:ml-20',
-            'relative'
+            'flex flex-col items-start grow overflow-auto z-10',
+            'max-sm:ml-20 relative'
           )}
           ref={chatRef}
         >
           {!!unreadMessages.length && <MessageAlert />}
-          <DefaultMessage onOptionClick={onOptionClick} />
-          <Messages messages={messages} />
+          <Messages
+            messages={messages}
+            sendChat={sendChat}
+            stopChat={stopChat}
+          />
         </div>
         <MessageInput onSend={onSend} onCancel={stopChat} />
       </div>

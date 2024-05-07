@@ -17,21 +17,13 @@ export interface Message extends Partial<ChatResponse> {
   text: string
   role: MessageRole
 
-  // Used for loading message.
+  // Frontend custom type add here.
   isLoading?: boolean
-
-  // Used for system message.
   isSystem?: boolean
+  isDefaultMessage?: boolean
 
   // Used for monitor message.
   data_type?: DataType
-
-  // Categorilize for `answer_type` props.
-  isInteractive?: boolean
-  isReference?: boolean
-  isIntent?: boolean
-  isMonitor?: boolean
-  isPrivateKey?: boolean
 }
 
 export interface ChatStore {

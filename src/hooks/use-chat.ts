@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid'
 import { last } from 'lodash'
 
 import type {
+  ChatMeta,
   ChatInteractiveParams,
   ChatParams,
   ChatResponse,
@@ -29,10 +30,16 @@ export interface InteractiveOptions {
   selected_entities?: ChatInteractiveParams[]
 }
 
+export type SendChat = ReturnType<typeof useChat>['sendChat']
+
+export type StopChat = ReturnType<typeof useChat>['stopChat']
+
 type MessageHandler = (
   data: ChatResponse,
   type: UseChatTypeReturns['processAnswerType']
 ) => void
+
+const hasEmotion = (meta: ChatMeta) => !!meta.emotion
 
 export const useChat = () => {
   const { t, i18n } = useTranslation()
@@ -48,7 +55,12 @@ export const useChat = () => {
     chatScrollToBottom,
     setReadAnswer,
   } = useChatStore()
-  const { startLoopMotion, stopLoopMotion, emitMotionSpeak } = useLive2D()
+  const {
+    startLoopMotion,
+    stopLoopMotion,
+    emitMotionSpeak,
+    emitMotionWithWisdom,
+  } = useLive2D()
   const {
     addLoading,
     removeLastLoading,
@@ -56,10 +68,9 @@ export const useChat = () => {
     createProcessManage,
     addClearHistoryMessage,
   } = useMessages()
-  const { processAnswerType, hasEmotion } = useChatType()
+  const { processAnswerType } = useChatType()
   const { parseStream, cancelParseStream } = useEventStream()
   const { setShow } = useLoginAuthStore()
-  const { emitMotionWithWisdom } = useLive2D()
 
   const getChatParams = (options?: InteractiveOptions) => {
     const {
@@ -116,10 +127,7 @@ export const useChat = () => {
     startLoopMotion('Thinking')
 
     // Add message to display.
-    addMessage({
-      role: 'user',
-      text: params.question,
-    })
+    addMessage({ role: 'user', text: params.question })
     addLoading()
     chatScrollToBottom()
   }

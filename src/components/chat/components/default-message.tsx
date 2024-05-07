@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid'
 import { clsx } from 'clsx'
 
 import { MessageBubble } from '../components/message-bubble'
+import { useMessagesContext } from '@/contexts/messages'
 
 export interface DefaultMessageOption {
   id: string
@@ -11,13 +12,12 @@ export interface DefaultMessageOption {
   details: string
 }
 
-interface Props extends React.ComponentProps<'div'> {
-  onOptionClick: (option: DefaultMessageOption) => void
-}
+interface Props extends React.ComponentProps<'div'> {}
 
 export const DefaultMessage = (props: Props) => {
-  const { className, onOptionClick } = props
+  const { className } = props
   const { t } = useTranslation()
+  const { sendChat } = useMessagesContext()
   const defaultChatOptions = [
     {
       id: nanoid(),
@@ -48,7 +48,7 @@ export const DefaultMessage = (props: Props) => {
               'ml-2 cursor-pointer hover:text-black transition-all duration-300',
               'not-used-dark:hover:text-gray-300'
             )}
-            onClick={() => onOptionClick(o)}
+            onClick={() => sendChat({ question: o.details })}
           >
             {o.title}
           </div>
