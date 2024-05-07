@@ -27,7 +27,6 @@ export const useMessages = () => {
     updateMessage,
     removeMessage,
     setReadAnswer,
-    setIntention,
   } = useChatStore()
   const { setShow } = useLoginAuthStore()
   const { emitMotionWithWisdom } = useLive2D()
@@ -188,11 +187,6 @@ export const useMessages = () => {
       setTimeout(function () {
         setReadAnswer(false)
       }, 10000)
-      return
-    }
-
-    if (isIntent) {
-      setIntention(answer_type)
     }
 
     if (meta.status === 401) {
@@ -237,11 +231,6 @@ export const useMessages = () => {
       return
     }
 
-    if (isNormal) {
-      addTokenMessage(data)
-      return
-    }
-
     if (isInteractive) {
       addInteractiveMessage(data)
       return
@@ -257,6 +246,12 @@ export const useMessages = () => {
     if (isEnd && hasEmotion(meta) && isNotInteractive) {
       // TODO: Fix any type.
       emitMotionWithWisdom(meta.emotion as any)
+      return
+    }
+
+    if (isNormal && !isEnd) {
+      addTokenMessage(data)
+      return
     }
   }
 

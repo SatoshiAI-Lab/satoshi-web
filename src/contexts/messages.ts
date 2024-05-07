@@ -5,14 +5,13 @@ import type { Message } from '@/stores/use-chat-store/types'
 import { useChatType } from '@/hooks/use-chat-type'
 import { MetaType, MetaTypeData } from '@/api/chat/types'
 
-type AnswerTypeFn = ReturnType<typeof useChatType>['identifyAnswerType']
-
-type MetaTypeFn = ReturnType<typeof useChatType>['identifyMetaType']
+type ChatType = ReturnType<typeof useChatType>
 
 interface ContextValue {
   message: Message
-  answerType: ReturnType<AnswerTypeFn>
-  metaType: ReturnType<MetaTypeFn>
+  answerType: ReturnType<ChatType['identifyAnswerType']>
+  metaType: ReturnType<ChatType['identifyMetaType']>
+  dataType: ReturnType<ChatType['identifyDataType']>
 
   // Why we need `getMetaData` function?
   // Because you don't know `message.meta.data` specific type.
