@@ -2,15 +2,15 @@ import React from 'react'
 import { clsx } from 'clsx'
 import { motion } from 'framer-motion'
 
-import type { MessageRole } from '@/stores/use-chat-store/types'
+import { useMessagesContext } from '@/contexts/messages'
 
 interface Props extends React.ComponentProps<'div'> {
-  role?: MessageRole
   enableAnime?: boolean
 }
 
 export const MessageBubble = (props: Props) => {
-  const { children, className, role = 'assistant', enableAnime = false } = props
+  const { children, className, enableAnime = false } = props
+  const { message, roleType } = useMessagesContext()
 
   return (
     <motion.div
@@ -24,11 +24,12 @@ export const MessageBubble = (props: Props) => {
         '2xl:max-w-4xl items-cneter gap-0 whitespace-pre-line',
         'not-used-dark:bg-zinc-800 not-used-dark:text-gray-300 not-used-dark:hover:bg-[#232325]',
         !children || children.toString().trim() === '' ? 'hidden' : '',
-        role === 'assistant' && 'self-start',
-        role === 'system' && '!max-w-[unset] self-stretch text-center',
-        role === 'user' && 'self-end',
+        roleType.isAssistant && 'self-start',
+        roleType.isSystem && '!max-w-[unset] self-stretch text-center',
+        roleType.isUser && 'self-end',
         className
       )}
+      data-message-id={message.id}
     >
       {children}
     </motion.div>

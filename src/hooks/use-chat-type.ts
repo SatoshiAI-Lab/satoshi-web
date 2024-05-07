@@ -1,12 +1,7 @@
 import { isEmpty } from 'lodash'
 
-import {
-  ChatMeta,
-  AnswerType,
-  MetaType,
-  MetaTypeCategory,
-} from '@/api/chat/types'
-import { DataType } from '@/stores/use-chat-store/types'
+import { AnswerType, MetaType, MetaTypeCategory } from '@/api/chat/types'
+import { DataType, MessageRole } from '@/stores/use-chat-store/types'
 
 export type UseChatTypeReturn = ReturnType<typeof useChatType>
 
@@ -33,6 +28,7 @@ export const useChatType = () => {
       isIntentStream: type === AnswerType.IntentStream,
       isChatStream: type === AnswerType.ChatStream,
 
+      // Frontend custom type.
       isWsMonitor: type === AnswerType.WsMonitor,
     }
   }
@@ -86,12 +82,20 @@ export const useChatType = () => {
     }
   }
 
-  const hasEmotion = (meta: ChatMeta) => !!meta.emotion
+  const processRoleType = (role?: MessageRole) => {
+    if (!role) return {}
+
+    return {
+      isUser: role === 'user',
+      isAssistant: role === 'assistant',
+      isSystem: role === 'system',
+    }
+  }
 
   return {
     processAnswerType,
     processMetaType,
     processDataType,
-    hasEmotion,
+    processRoleType,
   }
 }

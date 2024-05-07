@@ -13,11 +13,13 @@ export const TokenMessages = () => {
 
   if (answerType.isInteractive) return <InteractiveMessage />
 
-  // TODO: wait implementation.
-  if (answerType.isReference) return
+  if (answerType.isReference) {
+    console.log('isRef:', message)
+    return
+  }
 
   return (
-    <MessageBubble role={message.role}>
+    <MessageBubble>
       <TokenMarkdown children={hypertext + message.text} />
     </MessageBubble>
   )
