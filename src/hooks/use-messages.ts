@@ -27,7 +27,6 @@ export const useMessages = () => {
     updateMessage,
     removeMessage,
     setReadAnswer,
-    setIntention,
   } = useChatStore()
   const { setShow } = useLoginAuthStore()
   const { emitMotionWithWisdom } = useLive2D()
@@ -190,10 +189,6 @@ export const useMessages = () => {
       }, 10000)
     }
 
-    if (isIntent) {
-      setIntention(answer_type)
-    }
-
     if (meta.status === 401) {
       toast.error(t('need.login'))
       setShow(true)
@@ -254,7 +249,7 @@ export const useMessages = () => {
       return
     }
 
-    if (isNormal) {
+    if (isNormal && !isEnd) {
       addTokenMessage(data)
       return
     }
