@@ -8,12 +8,12 @@ import type { ChatResponseAnswerMetaCoin } from '@/api/chat/types'
 
 import { MessageBubble } from '../../message-bubble'
 import { utilArr } from '@/utils/array'
-import { useMessagesContext } from '@/contexts/messages'
 import { useChatStore } from '@/stores/use-chat-store'
+import { useChat } from '@/hooks/use-chat'
 
 export const MultiMessage = (props: MultiMessageProps) => {
   const { id, title, meta } = props
-  const { sendChat } = useMessagesContext()
+  const { sendChat } = useChat()
   const { findPrevMessage } = useChatStore()
   const [objMsgs, mapMsgs] = utilArr.categorize(meta, {
     key: 'key',

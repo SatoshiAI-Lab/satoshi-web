@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
@@ -59,8 +59,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
       className={clsx(
-        'flex relative max-sm:px-0 max-lg:pl-6 h-body',
-        '2xl:justify-center',
+        'flex relative max-sm:px-0 max-lg:pl-6 h-body 2xl:justify-center',
         className
       )}
     >
@@ -87,11 +86,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
           ref={chatRef}
         >
           {!!unreadMessages.length && <MessageAlert />}
-          <Messages
-            messages={messages}
-            sendChat={sendChat}
-            stopChat={stopChat}
-          />
+          <Messages messages={messages} />
         </div>
         <MessageInput onSend={onSend} onCancel={stopChat} />
       </div>

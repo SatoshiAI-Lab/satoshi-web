@@ -1,7 +1,6 @@
 import React, { memo } from 'react'
 
 import type { Message } from '@/stores/use-chat-store/types'
-import type { SendChat, StopChat } from '@/hooks/use-chat'
 
 import { IntentMessages } from './intention-message'
 import { MonitorMessages } from './monitor-message/monitor-config-bubble'
@@ -16,12 +15,10 @@ import { DefaultMessage } from './default-message'
 
 interface Props {
   messages: Message[]
-  sendChat: SendChat
-  stopChat: StopChat
 }
 
 export const Messages = memo((props: Props) => {
-  const { messages, sendChat, stopChat } = props
+  const { messages } = props
   const {
     processAnswerType,
     processMetaType,
@@ -42,8 +39,6 @@ export const Messages = memo((props: Props) => {
       dataType={processDataType(message.data_type)}
       roleType={processRoleType(message.role)}
       getMetaData={() => getMetaData(message.meta)}
-      sendChat={sendChat}
-      stopChat={stopChat}
     >
       <MessagesCategory />
     </MessagesProvider>

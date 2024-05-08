@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid'
 import { clsx } from 'clsx'
 
 import { MessageBubble } from '../components/message-bubble'
-import { useMessagesContext } from '@/contexts/messages'
+import { useChat } from '@/hooks/use-chat'
 
 export interface DefaultMessageOption {
   id: string
@@ -17,7 +17,7 @@ interface Props extends React.ComponentProps<'div'> {}
 export const DefaultMessage = (props: Props) => {
   const { className } = props
   const { t } = useTranslation()
-  const { sendChat } = useMessagesContext()
+  const { sendChat } = useChat()
   const defaultChatOptions = [
     {
       id: nanoid(),

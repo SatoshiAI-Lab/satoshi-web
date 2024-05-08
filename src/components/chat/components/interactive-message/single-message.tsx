@@ -12,8 +12,6 @@ import type {
 
 import { MessageBubble } from '../message-bubble'
 import { useChat } from '@/hooks/use-chat'
-import { useMessages } from '@/hooks/use-messages'
-import { useMessagesContext } from '@/contexts/messages'
 import { useChatStore } from '@/stores/use-chat-store'
 
 interface SingleMessageProps {
@@ -33,7 +31,7 @@ let selectedMeta: ChatResponseAnswerMetaCoin | undefined
 export const SingleMessage = (props: SingleMessageProps) => {
   const { meta = [], title } = props
   const messageRef = useRef<HTMLDivElement>(null)
-  const { sendChat } = useMessagesContext()
+  const { sendChat } = useChat()
   const { findPrevMessage } = useChatStore()
 
   const formatMsg = (msg: ChatResponseAnswerMetaCoin) => {
