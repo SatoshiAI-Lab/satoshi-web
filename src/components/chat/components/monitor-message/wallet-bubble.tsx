@@ -15,8 +15,6 @@ export const WalletBubble = () => {
   const { getMetaData } = useMessagesContext()
   const data = getMetaData<MetaType.MonitorWallet>()
 
-  // console.log('data', data)
-
   return (
     <MessageBubble className={clsx('min-w-[400px] py-3')}>
       {/* Avatar, chain */}
@@ -35,11 +33,15 @@ export const WalletBubble = () => {
       </div>
       {/* Event description */}
       <div className="mt-2">
-        <a href="#" target="_blank" className="underline text-primary mr-1">
+        <a
+          href={data.wallet_url}
+          target="_blank"
+          className="underline text-primary mr-1"
+        >
           {data.name}
         </a>
         {t('swap')}
-        <a href="#" target="_blank" className="text-primary mx-1">
+        <a href={data.token_url} target="_blank" className="text-primary mx-1">
           {data.currency_symbol}
         </a>
         ({data.currency_amount}) {t('for')} {utilFmt.token(data.side_amount)}{' '}
