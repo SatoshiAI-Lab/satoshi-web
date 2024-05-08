@@ -84,7 +84,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   setUnreadMessage: (unreadMessages) => set({ unreadMessages }),
   setSocket: (socket) => set({ socket: socket }),
 
-  chatScrollToBottom: () => {
+  scrollToChatBottom: () => {
     const { chatEl } = get()
     if (chatEl) utilDom.scrollToBottom(chatEl)
   },

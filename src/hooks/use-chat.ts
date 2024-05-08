@@ -51,7 +51,7 @@ export const useChat = () => {
     setIsLoading,
     getMessages,
     addMessage,
-    chatScrollToBottom,
+    scrollToChatBottom,
     setReadAnswer,
   } = useChatStore()
   const {
@@ -129,7 +129,7 @@ export const useChat = () => {
     // Add message to display.
     addMessage({ role: 'user', text: params.question })
     addLoading()
-    chatScrollToBottom()
+    scrollToChatBottom()
   }
 
   const streamToMessage = <S extends ReadableStream>(stream: S) => {
@@ -200,6 +200,7 @@ export const useChat = () => {
     const onRead = (m: string, isFirst: boolean) => {
       if (isFirst) removeLastLoading()
       utilParse.streamStrToJson(m, onEachParse)
+      scrollToChatBottom()
     }
 
     parseStream(stream, onRead, resetChat)
