@@ -19,7 +19,7 @@ export const useWalletList = (options?: Options) => {
     data: walletsData,
     isLoading: isFirstFetchingWallets,
     isFetching: isFetchingWallets,
-    isFetched,
+    isSuccess,
     refetch: refetchWallets,
   } = useQuery({
     enabled, // By default is disabled.
@@ -40,8 +40,8 @@ export const useWalletList = (options?: Options) => {
   // Stored current wallet list.
   useEffect(() => {
     const wallets = walletsData?.data[selectedChain]
-    if (isFetched && wallets) setWallets(wallets)
-  }, [walletsData, isFetched])
+    if (isSuccess) setWallets(wallets || [])
+  }, [walletsData, isSuccess])
 
   return {
     wallets,

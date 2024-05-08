@@ -90,6 +90,7 @@ export const WalletCard = (props: Props) => {
           </Button>
         ))}
       </div>
+      {/* Delete button */}
       <IconButton
         classes={{
           root: '!absolute !w-[30px] !h-[30px] right-2 top-2',
