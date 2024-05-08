@@ -1,6 +1,8 @@
 import numeral from 'numeral'
 
 import { utilParse } from './parse'
+import { utilNum } from './number'
+import BigNumber from 'bignumber.js'
 
 /**
  * Utilities functions for formatting
@@ -25,11 +27,20 @@ export const utilFmt = {
   },
   token(value?: number, fixed = 2) {
     if (!value) return 0
-    if (value > 1) return utilParse.noRoundFixed(value, fixed)
 
-    const decimalIndex = value.toString().indexOf('.')
+    const strValue = utilNum.transferToNumber(value)
+
+    if (BigNumber(strValue).gte(1) && BigNumber(strValue).lte(100)) {
+      return utilParse.noRoundFixed(strValue, fixed)
+    }
+
+    if (BigNumber(strValue).gte(100)) {
+      return utilParse.noRoundFixed(strValue, 1)
+    }
+
+    const decimalIndex = strValue.toString().indexOf('.')
     if (decimalIndex !== -1) {
-      const decimalPart = value.toString().slice(decimalIndex + 1)
+      const decimalPart = strValue.toString().slice(decimalIndex + 1)
       const zeroLen = decimalPart.match(/^0*/)?.[0].length ?? 0
       const lastNumbers = decimalPart.replace(/^0+/, '')
       const slicedLastNum = lastNumbers.slice(0, fixed)
@@ -39,7 +50,7 @@ export const utilFmt = {
 
       return result
     } else {
-      return numeral(value).format('0.00')
+      return numeral(strValue).format('0.00')
     }
   },
   percent(value?: number, fixed = 2) {

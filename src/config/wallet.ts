@@ -1,7 +1,7 @@
 export enum Platform {
   Sol = 'SOL',
   Evm = 'EVM',
-  Bear = 'BEAR',
+  // Bear = 'BEAR',
 }
 
 export enum Chain {

@@ -1,16 +1,23 @@
 import { create } from 'zustand'
 
-import { WALLET_CONFIG, Chain } from '@/config/wallet'
+import { WALLET_CONFIG, Chain, Platform } from '@/config/wallet'
 
 import type { GetChainsRes, GetWalletsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 
 export interface PartialWalletRes extends Partial<UserCreateWalletResp> {}
 
+export interface WalletPlatform {
+  // [Platform.Bear]?: UserCreateWalletResp[]
+  [Platform.Evm]?: UserCreateWalletResp[]
+  [Platform.Sol]?: UserCreateWalletResp[]
+}
+
 interface States {
   wallets: PartialWalletRes[]
   allWallets: GetWalletsRes
   walletList: PartialWalletRes[]
+  walletPlatform: WalletPlatform
   chains: GetChainsRes['chains']
   platforms: GetChainsRes['platforms']
   currentWallet?: PartialWalletRes
@@ -44,6 +51,7 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   currentWallet: undefined,
   selectedChain: WALLET_CONFIG.defaultChain,
   selectedPlatform: WALLET_CONFIG.defaultPlatform,
+  walletPlatform: {},
 
   setWallets: (wallets) => set({ wallets }),
   setAllWallets: (allWallets) => {
@@ -52,9 +60,36 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
       walletList.push(...allWallets[key as Chain])
     }
 
+    let walletPlatform: WalletPlatform = {}
+    walletList.forEach((walletItem) => {
+      // 把代币的链补充上
+      walletItem.tokens = walletItem.tokens.map((t) => {
+        t.chain = walletItem.chain
+        return t
+      })
+      
+      const wallets = walletPlatform[walletItem.platform]
+
+      if (wallets?.length) {
+        // 找出相同ID的钱包
+        const wallet = wallets.find((w) => w.id === walletItem.id)
+        if (!wallet) {
+          // 新的钱包
+          wallets.push({ ...walletItem })
+        } else {
+          // 已经存在的钱包直接放代币进去
+          wallet.tokens.push(...walletItem.tokens)
+        }
+      } else {
+        // 没有平台就初始化
+        walletPlatform[walletItem.platform] = [{...walletItem}]
+      }
+    })
+
     set({
       allWallets,
       walletList,
+      walletPlatform,
     })
   },
   setWalletList: (walletList) => set({ walletList }),
