@@ -66,6 +66,7 @@ interface GetChainsRes {
 export interface ChainResInfo {
   name: Chain
   logo: string
+  platform: Platform
 }
 
 export type {

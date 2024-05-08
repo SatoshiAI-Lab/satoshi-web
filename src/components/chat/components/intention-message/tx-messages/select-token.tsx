@@ -1,7 +1,7 @@
 import PercentTag from '@/components/percent-tag'
 
 import { clsx } from 'clsx'
-import { Avatar, Menu, MenuItem } from '@mui/material'
+import { Avatar, Menu, MenuItem, Toolbar, Tooltip } from '@mui/material'
 import { useContext, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 import { defaultImg } from '@/config/imageUrl'
@@ -48,30 +48,36 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
   }
 
   const onSwitch = (event: any) => {
-    setAnchorEl(event.currentTarget)
+    // setAnchorEl(event.currentTarget)
+    handleOpenDialog()
   }
 
   const onCloseMenu = () => {
     setAnchorEl(null)
   }
 
+  const handleOpenDialog = () => {
+    openDialog()
+    onCloseMenu()
+  }
+
   const tokenMenu = () => {
     return (
       <>
-        <Menu
+        {/* <Menu
           anchorEl={anchorEl}
           open={open}
           onClose={onCloseMenu}
           MenuListProps={{
             'aria-labelledby': 'basic-button',
           }}
-        >
-          {/* <MenuItem className="dark:text-white">
+        > */}
+        {/* <MenuItem className="dark:text-white">
         <div className="h-[35px] flex items-center underline">
           {t('select.token')}
         </div>
       </MenuItem> */}
-          {tokenList?.map((item, i) => {
+        {/* {tokenList?.map((item, i) => {
             return (
               <MenuItem
                 key={i}
@@ -107,8 +113,8 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
               </MenuItem>
             )
           })}
-          <MenuItem onClick={openDialog}>{t('select.token')}</MenuItem>
-        </Menu>
+          <MenuItem onClick={handleOpenDialog}>{t('select.token')}</MenuItem>
+        </Menu> */}
         <DialogSelectToken
           show={showDialog}
           open={openDialog}
@@ -124,7 +130,7 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
       <>
         <div
           className={clsx(
-            'h-full cursor-pointer leading-none py-[12px] text-sm border-l-2 text-nowrap pl-3 flex-shrink-0',
+            'h-full cursor-pointer leading-none py-[6px] text-sm border-l-2 text-nowrap pl-3 flex-shrink-0',
             'flex items-center cursor-pointer',
             isFinalTx && 'pointer-events-none'
           )}
@@ -133,9 +139,9 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
           <img
             src={selectToken?.logo || defaultImg}
             alt="chain-slogo"
-            width={30}
-            height={30}
-            className="w-[30px] h-[30px] mr-1"
+            width={35}
+            height={35}
+            className="w-[35px] h-[35px] mr-1 rounded-full"
           ></img>
           {selectToken && (
             <div className="mx-1">
@@ -158,24 +164,30 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
     <>
       <div
         className={clsx(
-          'border border-neutral-300 rounded-xl py-[6px] px-5 text-sm flex-shrink-0',
+          'h-[52px] border border-neutral-300 rounded-xl py-[6px] px-5 text-sm flex-shrink-0',
           'flex items-center cursor-pointer',
           isFinalTx && 'pointer-events-none'
         )}
         onClick={onSwitch}
       >
-        <>
-          <Avatar src={selectToToken?.logo || defaultImg} sizes="30">
-            {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
-          </Avatar>
-          <div className="mx-1">
-            <div>{selectToToken?.symbol}</div>
-            <div className="text-xs text-gray-400">
-              {selectToToken?.chain.name}
+        {selectToToken ? (
+          <>
+            <Avatar src={selectToToken?.logo || defaultImg} className='!w-[35px] !h-[35px]'>
+              {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
+            </Avatar>
+            <div className="mx-2">
+              <div className="max-w-[110px] truncate">
+                {selectToToken?.symbol}
+              </div>
+              <div className="text-xs text-gray-400">
+                {selectToToken?.chain.name}
+              </div>
             </div>
-          </div>
-          <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
-        </>
+          </>
+        ) : (
+          <span>{t('select.a.token')}</span>
+        )}
+        <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
       </div>
       {tokenMenu()}
     </>

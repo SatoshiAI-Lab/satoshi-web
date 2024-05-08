@@ -10,11 +10,20 @@ import 'react-horizontal-scrolling-menu/dist/styles.css'
 type scrollVisibilityApiType = ContextType<typeof VisibilityContext>
 
 export const ChainList = () => {
-  const { tokenChain, selectChainId, setSelectChainId } =
-    useContext(DialogContext)
+  const {
+    tokenChain,
+    selectChainId,
+    setSelectChainId,
+    isNameSearch,
+    isSearch,
+  } = useContext(DialogContext)
 
   // NOTE: for drag by mouse
   const dragState = useRef(new DragDealer())
+
+  if (tokenChain.length < 2 || (!isNameSearch && isSearch)) {
+    return <></>
+  }
 
   const handleDrag =
     ({ scrollContainer }: scrollVisibilityApiType) =>
@@ -46,6 +55,7 @@ export const ChainList = () => {
           {tokenChain.map((chain, i) => {
             return (
               <Tooltip
+                key={i}
                 title={chain.name}
                 slotProps={{
                   popper: {

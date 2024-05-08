@@ -62,17 +62,27 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
 
     let walletPlatform: WalletPlatform = {}
     walletList.forEach((walletItem) => {
+      // 把代币的链补充上
       walletItem.tokens = walletItem.tokens.map((t) => {
         t.chain = walletItem.chain
         return t
       })
-
+      
       const wallets = walletPlatform[walletItem.platform]
+
       if (wallets?.length) {
-        const wallet = wallets.find((w) => w.address === walletItem.address)
-        wallet?.tokens.push(...walletItem.tokens)
+        // 找出相同ID的钱包
+        const wallet = wallets.find((w) => w.id === walletItem.id)
+        if (!wallet) {
+          // 新的钱包
+          wallets.push({ ...walletItem })
+        } else {
+          // 已经存在的钱包直接放代币进去
+          wallet.tokens.push(...walletItem.tokens)
+        }
       } else {
-        walletPlatform[walletItem.platform] = [walletItem]
+        // 没有平台就初始化
+        walletPlatform[walletItem.platform] = [{...walletItem}]
       }
     })
 

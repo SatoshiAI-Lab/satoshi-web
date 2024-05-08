@@ -360,7 +360,11 @@
   "not.find.token1": "未找到",
   "not.find.token2": "代币",
   "use.wallet": "使用这个钱包: ",
-  "error.chian": "你选择的链与想兑换代币的链不一致",
+  "error.chian": "暂不支持跨链交易",
   "create.wallet.token": "这个$1代币，它在$2上。你需要先创建一个$2钱包。",
-  "create.wallet": "创建一个$1钱包"
+  "create.wallet": "创建一个$1钱包",
+  "created.wallet.tips1": "为你创建了一个$1钱包，",
+  "created.wallet.tips2": "并且已经进行了自动切换。",
+  "unable.trade": "无法交易",
+  "connot.exchange": "不能用同链的相同代币进行交易"
 }

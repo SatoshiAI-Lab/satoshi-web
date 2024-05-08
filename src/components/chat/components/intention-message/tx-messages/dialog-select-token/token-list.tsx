@@ -1,3 +1,4 @@
+import { ChatResponseWalletListToken } from '@/api/chat/types'
 import PercentTag from '@/components/percent-tag'
 import { zeroAddr } from '@/config/address'
 import { Platform } from '@/config/wallet'
@@ -12,7 +13,13 @@ import { useTranslation } from 'react-i18next'
 import { IoCopyOutline } from 'react-icons/io5'
 
 export const TokenList = () => {
-  const { selectToToken, walletList } = useContext(SwapContext)
+  const {
+    selectToToken,
+    selectFromToken,
+    walletList,
+    setSelectFromToken,
+    setSelectToToken,
+  } = useContext(SwapContext)
   const {
     isSearch,
     searchTokens,
@@ -20,21 +27,42 @@ export const TokenList = () => {
     selectWallet,
     isFrom,
     setCreateWalletInfo,
+    closeDialog,
   } = useContext(DialogContext)
 
   const { t } = useTranslation()
 
+  const atherToken = isFrom ? selectToToken : selectFromToken
   let tokens: any[] = isSearch ? searchTokens : selectWallet!.tokens
 
   tokens = (tokens || [])
-    .filter((t) => t.chain.id === selectChainId || selectChainId === '-1')
+    .filter((t) => {
+      const eqChain = t.chain.id === selectChainId
+      // const eqAddress = t.address !== atherToken?.address
+      return (eqChain || selectChainId === '-1')
+    })
     // 搜索的代币如果有余额则替换成钱包余额的代币
     .map((token) => {
       if (isSearch) {
-        const t = selectWallet?.tokens.find((t) => {
-          return token.address === t.address && token.chain.id === t.chain.id
+        let activeToken: ChatResponseWalletListToken | undefined = undefined
+        // 查找钱包
+        walletList.forEach((w) => {
+          if (token.chain.id != w?.chain?.id) return
+          // 查找钱包内对应代币
+          const t = w?.tokens?.find((t) => {
+            return token.address === t.address && token.chain.id === t.chain.id
+          })
+
+          if (t) {
+            if (!activeToken) {
+              activeToken = { ...t }
+            } else {
+              activeToken.value_usd += t.value_usd
+            }
+          }
         })
-        if (t) return t
+
+        if (activeToken) return activeToken
       }
       return token
     })
@@ -44,26 +72,40 @@ export const TokenList = () => {
     })
 
   const onSelectToken = (token: any) => {
+    // 还没有创建对应平台的钱包
+    if (!walletList.find((w) => w!.chain!.id === token.chain.id)) {
+      return setCreateWalletInfo({
+        actived: true,
+        chainName: token.chain.name,
+        platform: token.chain.name === 'solana' ? Platform.Sol : Platform.Evm,
+        tokenName: token.symbol || token.name,
+      })
+    }
+
+    const selectToken = isFrom ? selectToToken : selectFromToken
+
+    // 交换的代币不可以一致
+    if (
+      token.address === selectToken?.address &&
+      token.chain.id === selectToken?.chain.id
+    ) {
+      return toast.error(t('connot.exchange'))
+    }
+
     if (isFrom) {
       // 余额不足
       if (!token.value_usd || token.value_usd < 0.1) {
         return toast.error(t('select.token.tips'))
       }
-      // 跨链了
-      if (token.chain.id !== selectToToken!.chain.id) {
+      setSelectFromToken(token)
+    } else {
+      // 不支持跨链
+      if (token.chain.id !== selectToToken?.chain.id) {
         return toast.error(t('error.chian'))
       }
-      // 还没有创建对应平台的钱包
-      if (walletList.find((w) => w!.chain!.id === token.chain.id)) {
-        return setCreateWalletInfo({
-          actived: true,
-          chainName: token.chain.id,
-          platform: token.chain.name === 'solana' ? Platform.Sol : Platform.Evm,
-          tokenName: token.symbol || token.name,
-        })
-      }
-    } else {
+      setSelectToToken(token)
     }
+    closeDialog()
   }
 
   return (

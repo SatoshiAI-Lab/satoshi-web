@@ -365,7 +365,11 @@
   "not.find.token1": "No",
   "not.find.token2": "tokens were found",
   "use.wallet": "To use this wallet:",
-  "error.chian": "The chain you choose is different from the chain you want to exchange tokens for",
+  "error.chian": "Cross-chain transactions are not supported",
   "create.wallet.token": "This token is $1, which exists on $2.   You need to create a $2 wallet first.",
-  "create.wallet": "Create a $1 wallet"
+  "create.wallet": "Create a $1 wallet",
+  "created.wallet.tips1": "A $1 wallet has been created for you,",
+  "created.wallet.tips2": "and an automatic switch has been made.",
+  "unable.trade": "Unable to trade",
+  "connot.exchange": "Transactions cannot be made with the same token in the same chain"
 }

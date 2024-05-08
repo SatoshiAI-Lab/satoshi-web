@@ -59,7 +59,6 @@ export const WalletList = () => {
               >
                 {wallets.map((wallet, i) => {
                   const toeknInfo = getSelectTokenInfo(wallet)
-                  console.log(wallet, toeknInfo)
                   return (
                     <div
                       key={i}
