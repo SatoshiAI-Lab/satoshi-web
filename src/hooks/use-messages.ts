@@ -8,12 +8,21 @@ import {
   AnswerType,
   MetaType,
 } from '@/api/chat/types'
+import type { Element as HElement, Text as HText } from 'hast'
 
 import { useChatStore } from '@/stores/use-chat-store'
+import { useTokenCustomData } from './use-token-custom-data'
 
 export const useMessages = () => {
-  const { getMessages, addMessage, updateMessage, removeMessage } =
-    useChatStore()
+  const {
+    messages,
+    getMessages,
+    addMessage,
+    removeMessage,
+    updateMessage,
+    getMessage,
+  } = useChatStore()
+  const { setRefData } = useTokenCustomData()
 
   // Add a loading message.
   const addLoading = () => {
@@ -130,12 +139,25 @@ export const useMessages = () => {
     })
   }
 
+  // Add a reference message, add special mark it.
+  const addReferenceMessage = (data: ChatResponse) => {
+    const refNum = data.text
+    const refMeta = JSON.stringify(data.meta ?? {})
+
+    // Reference message use a `div` & custom data to marked it.
+    data.text = `<div ${setRefData()}>[${refNum}, ${refMeta}]</div>`
+    return data
+  }
+
   return {
+    messages,
+
     // Store methods.
     getMessages,
     addMessage,
-    updateMessage,
     removeMessage,
+    updateMessage,
+    getMessage,
 
     // Hook methods.
     addLoading,
@@ -144,5 +166,6 @@ export const useMessages = () => {
     createMessageManage,
     createProcessManage,
     addClearHistoryMessage,
+    addReferenceMessage,
   }
 }

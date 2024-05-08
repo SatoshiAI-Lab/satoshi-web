@@ -10,7 +10,6 @@ import type {
   ChatParams,
   ChatResponse,
 } from '@/api/chat/types'
-import type { VoidFn } from '@/types/types'
 
 import { chatApi } from '@/api/chat'
 import { useChatStore } from '@/stores/use-chat-store'
@@ -67,6 +66,7 @@ export const useChat = () => {
     createMessageManage,
     createProcessManage,
     addClearHistoryMessage,
+    addReferenceMessage,
   } = useMessages()
   const { processAnswerType } = useChatType()
   const { parseStream, cancelParseStream } = useEventStream()
@@ -132,10 +132,7 @@ export const useChat = () => {
     chatScrollToBottom()
   }
 
-  const streamToMessage = <S extends ReadableStream>(
-    stream: S,
-    onDone?: VoidFn
-  ) => {
+  const streamToMessage = <S extends ReadableStream>(stream: S) => {
     const { add, addNew } = createMessageManage()
     // process message is special, managed separately.
     const {
@@ -165,8 +162,8 @@ export const useChat = () => {
     }
 
     const handleNonStream: MessageHandler = (data, type) => {
-      // `reference` use `add` to upadte, don't `addNew`.
-      if (type.isReference) return add(data)
+      // Special handle reference message.
+      if (type.isReference) return add(addReferenceMessage(data))
 
       // Handle end message.
       if (type.isEnd) return handleEnd(data)
@@ -205,7 +202,7 @@ export const useChat = () => {
       utilParse.streamStrToJson(m, onEachParse)
     }
 
-    parseStream(stream, onRead, onDone)
+    parseStream(stream, onRead, resetChat)
   }
 
   // Send chat.
@@ -227,7 +224,7 @@ export const useChat = () => {
         controllerRef.current.signal
       )
 
-      streamToMessage(stream, resetChat)
+      streamToMessage(stream)
     } catch (e: any | undefined) {
       throwChatError(e)
       resetChat()

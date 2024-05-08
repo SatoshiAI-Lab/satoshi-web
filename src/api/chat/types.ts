@@ -44,7 +44,7 @@ export enum AnswerType {
   WsMonitor = 'ws_monitor',
 }
 
-type ChatMetaParital = ChatMetaInteractive & ChatMetaReference
+type ChatMetaParital = ChatMetaInteractive
 
 export interface ChatMeta extends Partial<ChatMetaParital> {
   type: `${MetaType}`
@@ -321,9 +321,15 @@ export interface ChatMetaInteractive {
 }
 
 export interface ChatMetaReference {
+  id: number | null
+  type: string
   content: string
   published_at: string
+  title: string
   url: string
+  datetime_str: string | null
+  sentiment: number
+  order_point: number
 }
 
 export interface ChatResponseAnswerMetaCoin {
@@ -435,6 +441,11 @@ export interface ChatResponseMetaWallet {
   content: string
   data_type: DataType
   hash: string
+  hash_url: string
+  logo: string
+  network: string
+  token_url: string
+  wallet_url: string
 }
 
 export interface ChatResponseMetaNewPool {

@@ -8,18 +8,14 @@ import { InteractiveMessage } from './interactive-message'
 
 export const TokenMessages = () => {
   const { message, answerType } = useMessagesContext()
-  const parseHypertext = useHypertext()
-  const hypertext = parseHypertext(message.hyper_text).trim() + '\n\n'
+  const { parse } = useHypertext()
+  const hypertext = parse(message.hyper_text).trim() + '\n\n'
 
   if (answerType.isInteractive) return <InteractiveMessage />
 
-  if (answerType.isReference) {
-    console.log('isRef:', message)
-    return
-  }
-
   return (
     <MessageBubble>
+      {/* Reference message within `TokenMarkdown` */}
       <TokenMarkdown children={hypertext + message.text} />
     </MessageBubble>
   )
