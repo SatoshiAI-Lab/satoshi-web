@@ -1,14 +1,21 @@
+import { useTokenCustomData } from './use-token-custom-data'
+
+const regexp =
+  /message|text|<blank.*?\/>|<pct-change.*?>.*?<\/pct-change>|link/g
+
 /**
- * parse chatApi `hyper_text` from RegExp, it does not render.
- * @param reg A RegExp.
- * @returns Return a tuple, include a parser function.
+ * Handle chat response's `hyper_text` field.
  */
-export const useHypertext = (reg: RegExp) => {
-  return (str: string) => {
-    const parsed = str.replace(reg, ($1) => {
+export const useHypertext = () => {
+  const { setTokenData, setPercentData, setLinkData } = useTokenCustomData()
+
+  const parse = (text?: string) => {
+    if (!text) return ''
+
+    const parsed = text.replace(regexp, ($1) => {
       const isMessage = $1 === 'message'
       if (isMessage) {
-        return 'div data-token-tag'
+        return `div ${setTokenData()}`
       }
 
       const isText = $1 === 'text'
@@ -27,12 +34,12 @@ export const useHypertext = (reg: RegExp) => {
       if (isPctChange) {
         const percent = $1.match(/<pct-change>(.*?)<\/pct-change>/)?.[1]
 
-        return `<span data-percent-tag=\"${percent}\">${percent}</span>`
+        return `<span ${setPercentData(percent)}>${percent}</span>`
       }
 
       const isLink = $1 === 'link'
       if (isLink) {
-        return `a`
+        return `a ${setLinkData()}`
       }
 
       return ''
@@ -40,5 +47,9 @@ export const useHypertext = (reg: RegExp) => {
 
     const removeTab = parsed.replace(/\s+(<p>)/g, () => '<p>')
     return removeTab
+  }
+
+  return {
+    parse,
   }
 }

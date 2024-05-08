@@ -1,18 +1,35 @@
-import React from 'react'
-
-import { CHAT_CONFIG } from '@/config/chat'
+import React, { ReactNode } from 'react'
+import { first } from 'lodash'
 
 import type { ReactMarkdownProps } from 'react-markdown/lib/complex-types'
 
+import { useTokenCustomData } from '@/hooks/use-token-custom-data'
+import { ReferenceTag } from '@/components/reference-tag'
+
 interface Props extends ReactMarkdownProps {}
+
+const parseReference = (nodes: ReactNode[]) => {
+  try {
+    const metaStr = first(nodes) as string
+    return JSON.parse(metaStr)
+  } catch (error) {
+    console.error('parseReference error: ', error)
+    return []
+  }
+}
 
 export const Div = (props: Props) => {
   const { node, children } = props
-  const { tokenProp } = CHAT_CONFIG.refRule
+  const { getTokenData, getRefData } = useTokenCustomData()
 
-  // Token div
-  if (node?.properties?.hasOwnProperty(tokenProp)) {
-    // remove useChatStore handleNormalMessage temp add newline
+  if (getRefData(node.properties)) {
+    const [num, refMeta] = parseReference(children)
+    return <ReferenceTag num={num} meta={refMeta} />
+  }
+
+  // If is token message,
+  // Remove `TokenMessages` temp added newline.
+  if (getTokenData(node?.properties)) {
     const result = children.map((c) =>
       typeof c === 'string' ? c.replaceAll(/\n\s+/g, '') : c
     )

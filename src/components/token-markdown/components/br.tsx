@@ -1,22 +1,21 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import type { ReactMarkdownProps } from 'react-markdown/lib/complex-types'
 
 interface Props extends ReactMarkdownProps {}
 
 export const Br = (props: Props) => {
-  useEffect(() => {
-    // Select contains `data-should-remove` prop element,
-    // if don't have next sibling, remove it.
-    Array.from(document.querySelectorAll('[data-should-remove]')).forEach(
-      (e) => {
-        !e.nextSibling && e?.remove()
-      }
-    )
-  }, [])
+  const brRef = useRef<HTMLBRElement>(null)
 
-  // Add special prop to br tag.
-  return <br data-should-remove />
+  useEffect(() => {
+    if (!brRef.current) return
+
+    // If don't have next sibling, remove it.
+    if (brRef.current?.nextSibling) return
+    brRef.current?.nextSibling?.remove()
+  }, [brRef])
+
+  return <br ref={brRef} />
 }
 
 export default Br

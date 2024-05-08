@@ -27,7 +27,7 @@ export const useChatMonitorMsg = () => {
   const { i18n } = useTranslation()
   const { getLoginToken } = useStorage()
   const { userInfo, isLogined } = useUserStore()
-  const { setUnreadMessage, chatScrollToBottom } = useChatStore()
+  const { setUnreadMessage, scrollToChatBottom } = useChatStore()
   const { addMonitorMessages } = useMessages()
   const ws = useWebSocket<MonitorOnEvents, MonitorEmitEvents>({
     heartbeat: JSON.stringify({ type: 'ping' }),
@@ -68,7 +68,7 @@ export const useChatMonitorMsg = () => {
         setUnreadMessage([...useChatStore.getState().unreadMessages, ...data])
       } else {
         addMonitorMessages(data)
-        chatScrollToBottom()
+        scrollToChatBottom()
       }
     })
   }

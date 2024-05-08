@@ -16,10 +16,9 @@ export interface FetcherResponse<T = null> {
 }
 
 export enum ResponseCode {
-  None = -1,
-
   Success = 200,
 
   Err = 400,
-  ErrAuth = 401,
+
+  Auth = 401,
 }

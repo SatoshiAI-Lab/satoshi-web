@@ -4,10 +4,6 @@ import { useMutation } from '@tanstack/react-query'
 import type { PartialWalletRes } from '@/stores/use-wallet-store'
 
 import { walletApi } from '@/api/wallet'
-import { useWalletStore } from '@/stores/use-wallet-store'
-import { UserCreateWalletResp } from '@/api/wallet/params'
-import { FetcherResponse } from '@/api/fetcher/types'
-import { WalletChain } from '@/config/wallet'
 import { useWalletList } from './use-wallet-list'
 import { Platform } from '@/config/wallet'
 
@@ -95,7 +91,7 @@ export const useWalletManage = () => {
   }
 
   // Import wallet API.
-  const importPrivateKey = async (private_key: string, platform: string) => {
+  const importPrivateKey = async (private_key: string, platform: Platform) => {
     await mutateImportPrivateKey({ private_key, platform })
     await refetchWallets()
     resetImportPrivateKey()

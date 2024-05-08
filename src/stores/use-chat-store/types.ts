@@ -17,21 +17,13 @@ export interface Message extends Partial<ChatResponse> {
   text: string
   role: MessageRole
 
-  // Used for loading message.
+  // Frontend custom type add here.
   isLoading?: boolean
-
-  // Used for system message.
   isSystem?: boolean
+  isDefaultMessage?: boolean
 
   // Used for monitor message.
   data_type?: DataType
-
-  // Categorilize for `answer_type` props.
-  isInteractive?: boolean
-  isReference?: boolean
-  isIntent?: boolean
-  isMonitor?: boolean
-  isPrivateKey?: boolean
 }
 
 export interface ChatStore {
@@ -50,10 +42,11 @@ export interface ChatStore {
   getMessages(): Message[]
   setMessages(msg: Message[] | ((msgs: Message[]) => Message[])): void
 
-  addMessage(message: PartialPick<Message, 'id'>): void
-  removeMessage(id: string): void
-  updateMessage(id: string, message: PartialPick<Message, 'id' | 'text'>): void
-  getMessage(id: string): void
+  addMessage(message: PartialPick<Message, 'id'>): Message
+  removeMessage(id: string): Message[]
+  updateMessage(id: string, updater: (m: Message) => Message): Message[]
+  getMessage(id: string): [Message, number]
+  findPrevMessage(id: string): Message | undefined
 
   setUnreadMessage(unreadMessages: MonitorData[]): void
   setChatEl(el: HTMLElement): void
@@ -64,5 +57,5 @@ export interface ChatStore {
   setReadAnswer(bool: boolean): void
   setSocket(socket: WebSocket): void
 
-  chatScrollToBottom(): void
+  scrollToChatBottom(): void
 }
