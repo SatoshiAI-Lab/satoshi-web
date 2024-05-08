@@ -187,7 +187,9 @@ export const useChat = () => {
 
       // `process` message category.
       if (type.isProcessStream) return addProcess(data, true)
-      if (type.isProcessStreamEnd) return markedRemoveProcess()
+      if (type.isProcessStreamEnd || !type.isProcessStream) {
+        return markedRemoveProcess()
+      }
       if (shouldRemoveProcess()) removeProcess()
 
       // Stream message category.
