@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import type { OrderedListProps } from 'react-markdown/lib/ast-to-react'
 
@@ -6,17 +6,18 @@ interface Props extends OrderedListProps {}
 
 export const Ol = (props: Props) => {
   const { children } = props
+  const olRef = useRef<HTMLOListElement>(null)
 
   useEffect(() => {
-    // Change ul/ol previous element to inline-block,
+    // TODO: Perhaps there is a better approach?
+    // Change ul previous element to `inline-block`,
     // then there will be no spacing.
-    Array.from(document.querySelectorAll('[data-change-parent]')).forEach((e) =>
-      e.previousElementSibling?.classList.add('inline-block')
-    )
-  }, [])
+    if (!olRef.current) return
+    olRef.current?.previousElementSibling?.classList.add('inline-block')
+  }, [olRef])
 
   return (
-    <ol className="pl-4 whitespace-normal" data-change-parent>
+    <ol className="pl-4 whitespace-normal" ref={olRef}>
       {children}
     </ol>
   )

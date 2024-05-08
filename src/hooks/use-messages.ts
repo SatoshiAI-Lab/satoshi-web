@@ -1,45 +1,28 @@
 import { nanoid } from 'nanoid'
-import { useTranslation } from 'react-i18next'
-import { toast } from 'react-hot-toast'
 import { last } from 'lodash'
 
 import type { Message } from '@/stores/use-chat-store/types'
 import {
-  AnswerType,
   type MonitorData,
   type ChatResponse,
+  AnswerType,
   MetaType,
 } from '@/api/chat/types'
+import type { Element as HElement, Text as HText } from 'hast'
 
 import { useChatStore } from '@/stores/use-chat-store'
-import { CHAT_CONFIG } from '@/config/chat'
-import { useLoginAuthStore } from '@/stores/use-need-login-store'
-import { useLive2D } from './use-live2d'
-import { useHypertext } from './use-hyper-text-parser'
-import { useChatType } from './use-chat-type'
+import { useTokenCustomData } from './use-token-custom-data'
 
 export const useMessages = () => {
-  const { t } = useTranslation()
   const {
     messages,
     getMessages,
     addMessage,
-    updateMessage,
     removeMessage,
-    setReadAnswer,
+    updateMessage,
+    getMessage,
   } = useChatStore()
-  const { setShow } = useLoginAuthStore()
-  const { emitMotionWithWisdom } = useLive2D()
-  const hypertextParser = useHypertext(CHAT_CONFIG.hyperTextRule)
-  const { identifyAnswerType, hasEmotion } = useChatType()
-
-  // Remove latest message.
-  const removeLast = () => {
-    const lastId = last(getMessages())?.id
-
-    if (!lastId) return
-    removeMessage(lastId)
-  }
+  const { setRefData } = useTokenCustomData()
 
   // Add a loading message.
   const addLoading = () => {
@@ -59,83 +42,6 @@ export const useMessages = () => {
     removeMessage(lastId)
   }
 
-  // Find previous interactive message.
-  const findPrevInteractive = (id?: string) => {
-    if (!id || !id.trim()) return
-    const messages = getMessages()
-    let m = messages.findIndex((m) => m.id === id)
-    let msg: Message | undefined
-
-    while (msg?.role !== 'user' && m !== -1) {
-      m -= 1
-      msg = messages[m]
-    }
-
-    return msg
-  }
-
-  // Stream message.
-  const addStreamMessage = (
-    data: ChatResponse,
-    m?: Partial<Message>,
-    overrideText = false
-  ) => {
-    const lastMessage = last(getMessages())
-
-    if (!lastMessage) return
-    const newMessage: Message = {
-      ...data,
-      ...lastMessage,
-      ...m,
-      role: 'assistant',
-      text: overrideText ? data.text : lastMessage.text + data.text,
-    }
-
-    updateMessage(lastMessage.id, newMessage)
-  }
-
-  // Normal message.
-  const addNormalMessage = (data: ChatResponse, m?: Partial<Message>) => {
-    addMessage({ ...data, ...m, role: 'assistant' })
-  }
-
-  // Token about message.
-  const addTokenMessage = (data: ChatResponse, m?: Partial<Message>) => {
-    addMessage({
-      ...data,
-      ...m,
-      role: 'assistant',
-      text: hypertextParser(data.hyper_text).trim() + '\n\n',
-    })
-  }
-
-  // Interactive message.
-  const addInteractiveMessage = (data: ChatResponse) => {
-    addNormalMessage(data, { isInteractive: true })
-  }
-
-  // Reference message.
-  // TODO: Optimzie this method.
-  const addReferenceMesssage = (data: ChatResponse) => {
-    const { reference } = CHAT_CONFIG.answerType
-    const { type, content, published_at, url } = data.meta
-    const parsedContent = content?.replaceAll('\n', '<br />')
-    // Must be complete tag
-    const refTag = `
-      <${reference} 
-        type=\"${type}\"
-        published_at=\"${published_at}\" 
-        url=\"${url}\"
-      >${parsedContent}</${reference}>
-    `
-    const newMessage = {
-      ...data,
-      text: data.text + refTag,
-    }
-
-    addStreamMessage(newMessage, { isReference: true })
-  }
-
   // Monitor message.
   const addMonitorMessages = (monitors: MonitorData[]) => {
     monitors.forEach((m) => {
@@ -149,109 +55,74 @@ export const useMessages = () => {
           data: m,
         },
         data_type: m.data_type,
-        isMonitor: true,
       })
     })
   }
 
-  let processId = ''
-  // Parseing & render message, by chat `answer_type` or `meta.type`.
-  const parseChatMessage = (
-    data: ChatResponse,
-    isFirstRead?: boolean,
-    isFirstParse?: boolean
-  ) => {
-    const { answer_type, meta } = data
-    const {
-      isNormal,
-      isInteractive,
-      isReference,
-      isEnd,
-      isHide,
-      isStream,
-      isIntent,
-      isProcess,
-    } = identifyAnswerType(answer_type)
-
-    console.log('chat response', data)
-
-    if (isFirstRead) {
-      removeLastLoading()
-      // on first read, add a blank message,
-      // used for process message fill it.
-      addMessage({ role: 'assistant', text: '' })
+  // Create a message manager.
+  const createMessageManage = () => {
+    let message: Message = {
+      id: nanoid(),
+      role: 'assistant',
+      text: '',
     }
 
-    if (isEnd) {
-      setReadAnswer(true)
-      setTimeout(function () {
-        setReadAnswer(false)
-      }, 10000)
+    const add = (data: ChatResponse, override = false) => {
+      // If is exist update it, else add a new one.
+      const isExisted = getMessages().find((m) => m.id === message.id)
+      if (isExisted) return update(data, override)
+
+      addMessage({ ...message, ...data })
     }
 
-    if (meta.status === 401) {
-      toast.error(t('need.login'))
-      setShow(true)
-      return
-    }
-
-    if (isHide) {
-      removeLast()
-      return
-    }
-
-    if (isProcess) {
-      if (!processId) processId = nanoid()
-      addStreamMessage(data, { id: processId }, true)
-      return
-    }
-
-    if (processId) {
-      // Is not stream message, remove process message.
-      if (!isStream || isIntent) removeMessage(processId)
-      // Is stream message, clear process message.
-      else if (isStream) {
-        updateMessage(processId, { role: 'assistant', text: '' })
+    const addNew = (data: ChatResponse) => {
+      message = {
+        id: nanoid(),
+        role: 'assistant',
+        text: '',
       }
-
-      processId = ''
+      add(data)
     }
 
-    if (isIntent) {
-      // data.meta.data?.reverse?.()
-      addNormalMessage(data, { isIntent })
-      return
+    const update = (data: ChatResponse, override = false) => {
+      updateMessage(message.id, (m) => ({
+        ...m,
+        ...data,
+        // If `data.hyper_text` is empty, then use `m.hyper_text`.
+        hyper_text: data.hyper_text || m.hyper_text,
+        text: override ? data.text : m.text + data.text,
+      }))
     }
 
-    if (isStream) {
-      // Don't use trim.
-      if (!data.text) return
+    const remove = () => {
+      if (!message.id) return
 
-      addStreamMessage(data)
-      return
+      removeMessage(message.id)
+      message = {
+        id: '',
+        role: 'assistant',
+        hyper_text: '',
+        text: '',
+      }
     }
 
-    if (isInteractive) {
-      addInteractiveMessage(data)
-      return
+    return {
+      add,
+      addNew,
+      remove,
     }
+  }
 
-    if (isReference) {
-      addReferenceMesssage(data)
-      return
-    }
+  // Create process message manager.
+  const createProcessManage = () => {
+    let shouldBeRemove = false
+    const { add, remove } = createMessageManage()
 
-    // Answer ended & include emotion & is not interactive message.
-    const isNotInteractive = !last(messages)?.isInteractive
-    if (isEnd && hasEmotion(meta) && isNotInteractive) {
-      // TODO: Fix any type.
-      emitMotionWithWisdom(meta.emotion as any)
-      return
-    }
-
-    if (isNormal && !isEnd) {
-      addTokenMessage(data)
-      return
+    return {
+      addProcess: add,
+      removeProcess: remove,
+      shouldRemoveProcess: () => shouldBeRemove,
+      markedRemoveProcess: () => (shouldBeRemove = true),
     }
   }
 
@@ -268,19 +139,33 @@ export const useMessages = () => {
     })
   }
 
+  // Add a reference message, add special mark it.
+  const addReferenceMessage = (data: ChatResponse) => {
+    const refNum = data.text
+    const refMeta = JSON.stringify(data.meta ?? {})
+
+    // Reference message use a `div` & custom data to marked it.
+    data.text = `<div ${setRefData()}>[${refNum}, ${refMeta}]</div>`
+    return data
+  }
+
   return {
+    messages,
+
+    // Store methods.
+    getMessages,
     addMessage,
-    addStreamMessage,
-    addNormalMessage,
-    addTokenMessage,
-    addInteractiveMessage,
-    addReferenceMesssage,
-    addMonitorMessages,
-    parseChatMessage,
+    removeMessage,
+    updateMessage,
+    getMessage,
+
+    // Hook methods.
     addLoading,
-    removeLast,
     removeLastLoading,
-    findPrevInteractive,
+    addMonitorMessages,
+    createMessageManage,
+    createProcessManage,
     addClearHistoryMessage,
+    addReferenceMessage,
   }
 }

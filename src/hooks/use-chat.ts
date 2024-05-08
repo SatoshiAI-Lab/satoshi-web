@@ -2,15 +2,24 @@ import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
 import { nanoid } from 'nanoid'
+import { last } from 'lodash'
 
-import type { ChatInteractiveParams, ChatParams } from '@/api/chat/types'
+import type {
+  ChatMeta,
+  ChatInteractiveParams,
+  ChatParams,
+  ChatResponse,
+} from '@/api/chat/types'
 
 import { chatApi } from '@/api/chat'
 import { useChatStore } from '@/stores/use-chat-store'
 import { useLive2D } from './use-live2d'
-import { useEventStream } from './use-event-stream'
 import { useMessages } from './use-messages'
+import { UseChatTypeReturns, useChatType } from './use-chat-type'
+import { useEventStream } from './use-event-stream'
+import { useLoginAuthStore } from '@/stores/use-need-login-store'
 import { utilParse } from '@/utils/parse'
+import { ResponseCode } from '@/api/fetcher/types'
 
 export interface InteractiveOptions {
   question: string
@@ -20,26 +29,48 @@ export interface InteractiveOptions {
   selected_entities?: ChatInteractiveParams[]
 }
 
+export type SendChat = ReturnType<typeof useChat>['sendChat']
+
+export type StopChat = ReturnType<typeof useChat>['stopChat']
+
+type MessageHandler = (
+  data: ChatResponse,
+  type: UseChatTypeReturns['processAnswerType']
+) => void
+
+const hasEmotion = (meta: ChatMeta) => !!meta.emotion
+
 export const useChat = () => {
   const { t, i18n } = useTranslation()
   const controllerRef = useRef<AbortController>()
-  const { parseStream, cancelParseStream } = useEventStream()
   const {
     messages,
     question,
     isLoading,
     setQuestion,
     setIsLoading,
+    getMessages,
     addMessage,
     chatScrollToBottom,
+    setReadAnswer,
   } = useChatStore()
-  const { startLoopMotion, stopLoopMotion, emitMotionSpeak } = useLive2D()
   const {
-    parseChatMessage,
-    removeLastLoading,
+    startLoopMotion,
+    stopLoopMotion,
+    emitMotionSpeak,
+    emitMotionWithWisdom,
+  } = useLive2D()
+  const {
     addLoading,
+    removeLastLoading,
+    createMessageManage,
+    createProcessManage,
     addClearHistoryMessage,
+    addReferenceMessage,
   } = useMessages()
+  const { processAnswerType } = useChatType()
+  const { parseStream, cancelParseStream } = useEventStream()
+  const { setShow } = useLoginAuthStore()
 
   const getChatParams = (options?: InteractiveOptions) => {
     const {
@@ -85,15 +116,6 @@ export const useChat = () => {
     }
   }
 
-  // After each read call,
-  // a message string may contains multi lines.
-  const onEachRead = (message: string, isFirstRead: boolean) => {
-    utilParse.streamStrToJson(message, (data, isFirstParse) => {
-      parseChatMessage(data, isFirstRead, isFirstParse)
-      chatScrollToBottom()
-    })
-  }
-
   const sendChatBefore = (params: ChatParams) => {
     setIsLoading(true)
 
@@ -105,12 +127,82 @@ export const useChat = () => {
     startLoopMotion('Thinking')
 
     // Add message to display.
-    addMessage({
-      role: 'user',
-      text: params.question,
-    })
+    addMessage({ role: 'user', text: params.question })
     addLoading()
     chatScrollToBottom()
+  }
+
+  const streamToMessage = <S extends ReadableStream>(stream: S) => {
+    const { add, addNew } = createMessageManage()
+    // process message is special, managed separately.
+    const {
+      addProcess,
+      removeProcess,
+      shouldRemoveProcess,
+      markedRemoveProcess,
+    } = createProcessManage()
+
+    const handleEnd = ({ meta }: ChatResponse) => {
+      setReadAnswer(true)
+      setTimeout(() => setReadAnswer(false), 10_000)
+
+      const lastMessageType = last(getMessages())?.answer_type
+      const { isInteractive } = processAnswerType(lastMessageType)
+
+      // Emit live2d motion if the last message is not
+      // an interactive message & `meta` have `emotion`.
+      if (!isInteractive && hasEmotion(meta)) {
+        emitMotionWithWisdom(meta.emotion as any)
+      }
+    }
+
+    const handleStream: MessageHandler = (data, type) => {
+      // If you need `if` judge, add here...
+      add(data)
+    }
+
+    const handleNonStream: MessageHandler = (data, type) => {
+      // Special handle reference message.
+      if (type.isReference) return add(addReferenceMessage(data))
+
+      // Handle end message.
+      if (type.isEnd) return handleEnd(data)
+
+      // General, non-stream is token related,
+      // Token related just render `hyper_text`,
+      // It doesn't need text, so we must clear it.
+      data.text = ''
+      addNew(data)
+    }
+
+    const onEachParse = (data: ChatResponse) => {
+      const type = processAnswerType(data.answer_type)
+
+      // Auth required.
+      if (data.meta.status === ResponseCode.Auth) {
+        toast.error(t('need.login'))
+        setShow(true)
+        return
+      }
+
+      // `process` message category.
+      if (type.isProcessStream) return addProcess(data, true)
+      if (type.isProcessStreamEnd) return markedRemoveProcess()
+      if (shouldRemoveProcess()) removeProcess()
+
+      // Stream message category.
+      if (type.isStream) return handleStream(data, type)
+
+      // Non-stream message category.
+      handleNonStream(data, type)
+    }
+
+    const onRead = (m: string, isFirst: boolean) => {
+      if (isFirst) removeLastLoading()
+      utilParse.streamStrToJson(m, onEachParse)
+    }
+
+    parseStream(stream, onRead, resetChat)
   }
 
   // Send chat.
@@ -119,9 +211,10 @@ export const useChat = () => {
     const chatParams = getChatParams(options)
     const debugId = nanoid()
 
-    // If question is custom static question, don't send request.
-    // const isCustom = parseCustomMessage(chatParams)
-    // if (isCustom) return
+    if (isLoading) {
+      toast.error(t('chat.asking'))
+      return
+    }
 
     sendChatBefore(chatParams)
     try {
@@ -131,11 +224,7 @@ export const useChat = () => {
         controllerRef.current.signal
       )
 
-      console.log(`-------------- chat ${debugId} start --------------`)
-      parseStream(stream, onEachRead, () => {
-        console.log(`-------------- chat ${debugId} end --------------`)
-        resetChat()
-      })
+      streamToMessage(stream)
     } catch (e: any | undefined) {
       throwChatError(e)
       resetChat()
@@ -153,7 +242,7 @@ export const useChat = () => {
     toast(t('cancel-answer'))
   }
 
-  // Rest chat states.
+  // Reset chat states.
   const resetChat = () => {
     stopLoopMotion()
     removeLastLoading()

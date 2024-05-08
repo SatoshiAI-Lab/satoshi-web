@@ -12,21 +12,17 @@ export const A = (props: Props) => {
   const { children, href, page, mid } = props
   const router = useRouter()
 
-  const handleClick = () => {
-    if (page) {
-      router.push(page, { query: { mid } })
-    }
+  const onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    return
   }
 
   return (
     <a
+      className="no-underline cursor-pointer text-primary"
       target="_blank"
-      className={`
-        no-underline cursor-pointer
-        text-primary
-      `}
       href={href}
-      onClick={handleClick}
+      onClick={onClick}
     >
       {children}
     </a>

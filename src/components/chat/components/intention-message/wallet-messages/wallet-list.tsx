@@ -1,8 +1,8 @@
 import { IconButton, Radio, Skeleton } from '@mui/material'
-import clsx from 'clsx'
+import { clsx } from 'clsx'
 import numeral from 'numeral'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { RiDeleteBin5Line } from 'react-icons/ri'
 import { useQuery } from '@tanstack/react-query'
@@ -11,27 +11,24 @@ import type {
   ChatResponseWalletList,
   ChatResponseWalletListToken,
 } from '@/api/chat/types'
+import type { UserCreateWalletResp } from '@/api/wallet/params'
 
-import { UserCreateWalletResp } from '@/api/wallet/params'
-import { CHAT_CONFIG } from '@/config/chat'
 import { utilFmt } from '@/utils/format'
 import { useWalletManage } from '@/hooks/use-wallet'
 import { useChat } from '@/hooks/use-chat'
 import { walletApi } from '@/api/wallet'
 import { CustomSuspense } from '@/components/custom-suspense'
 import { Chain } from '@/config/wallet'
-
-interface Props {
-  type: string
-  chain: string
-}
+import { useMessagesContext } from '@/contexts/messages'
 
 const gridCls = 'grid grid-cols-[175px_130px_130px_100px]'
 
-export const WalletList = (props: Props) => {
-  const { type, chain } = props
+export const WalletList = (props: { chain: string }) => {
+  const { chain } = props
   const { t } = useTranslation()
   const { sendChat } = useChat()
+  const { metaType } = useMessagesContext()
+
   const {
     data: walletsData,
     isLoading,
@@ -47,12 +44,6 @@ export const WalletList = (props: Props) => {
     (a, b) =>
       new Date(b.added_at ?? 0).getTime() - new Date(a.added_at ?? 0).getTime()
   )
-
-  const { changeNameWalletList, deleteNameWalletList, exportWalletList } =
-    CHAT_CONFIG.metadataType
-  const isChange = type == changeNameWalletList
-  const isDelete = type == deleteNameWalletList
-  const isExport = type == exportWalletList
 
   const onRemoveWallet = async (id: string) => {
     const loadingId = toast.loading(t('wallet.deleting'))
@@ -70,17 +61,17 @@ export const WalletList = (props: Props) => {
   const handleSelect = (wallet: ChatResponseWalletList) => {
     let question = ''
 
-    if (isChange) {
+    if (metaType.isWalletChange) {
       question = t('changename.walllet')
     }
 
-    if (isDelete) {
+    if (metaType.isWalletDelete) {
       onRemoveWallet(wallet.id)
       return
       // question = t('delete.wallet.intent.text')
     }
 
-    if (isExport) {
+    if (metaType.isWalletExport) {
       question = t('export.wallet.intent.text')
     }
 
@@ -100,7 +91,7 @@ export const WalletList = (props: Props) => {
   }
 
   const getIcon = (item: UserCreateWalletResp) => {
-    if (isDelete) {
+    if (metaType.isWalletDelete) {
       return (
         <IconButton
           onClick={() => handleSelect(item)}

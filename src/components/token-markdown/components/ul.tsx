@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import type { UnorderedListProps } from 'react-markdown/lib/ast-to-react'
 
@@ -6,17 +6,16 @@ interface Props extends UnorderedListProps {}
 
 export const Ul = (props: Props) => {
   const { children } = props
+  const ulRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
-    // Change ul/ol previous element to inline-block,
-    // then there will be no spacing.
-    Array.from(document.querySelectorAll('[data-change-parent]')).forEach((e) =>
-      e.previousElementSibling?.classList.add('inline-block')
-    )
-  }, [])
+    // It has the same purpose as ul.
+    if (!ulRef.current) return
+    ulRef.current.previousElementSibling?.classList.add('inline-block')
+  }, [ulRef])
 
   return (
-    <ul className="pl-4 whitespace-normal" data-change-parent>
+    <ul className="pl-4 whitespace-normal" ref={ulRef}>
       {children}
     </ul>
   )

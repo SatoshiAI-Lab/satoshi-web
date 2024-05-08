@@ -5,15 +5,15 @@ import remarkGfm from 'remark-gfm'
 // import rehypeKatex from 'rehype-katex'
 import rehypeRaw from 'rehype-raw'
 
-import A from './components/a'
-import P from './components/p'
-import Br from './components/br'
-import Ul from './components/ul'
-import Ol from './components/ol'
-import Div from './components/div'
-import Code from './components/code'
-import Span from './components/span'
-import Li from './components/li'
+import { A } from './components/a'
+import { P } from './components/p'
+import { Br } from './components/br'
+import { Ul } from './components/ul'
+import { Ol } from './components/ol'
+import { Div } from './components/div'
+import { Code } from './components/code'
+import { Span } from './components/span'
+import { Li } from './components/li'
 
 interface MarkdownParserProps {
   children: string
@@ -43,6 +43,7 @@ export const TokenMarkdown: React.FC<MarkdownParserProps> = (props) => {
       components={{
         code: (props) => <Code {...props} />,
         span: (props) => <Span {...props} />,
+        // Reference message here `div`.
         div: (props) => <Div {...props} />,
         ol: (props) => <Ol {...props} />,
         ul: (props) => <Ul {...props} />,

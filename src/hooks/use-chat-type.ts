@@ -1,34 +1,39 @@
 import { isEmpty } from 'lodash'
 
-import {
-  ChatMeta,
-  AnswerType,
-  MetaType,
-  MetaTypeCategory,
-} from '@/api/chat/types'
-import { DataType } from '@/stores/use-chat-store/types'
+import { AnswerType, MetaType, MetaTypeCategory } from '@/api/chat/types'
+import { DataType, MessageRole } from '@/stores/use-chat-store/types'
+
+export type UseChatTypeReturn = ReturnType<typeof useChatType>
+
+export type UseChatTypeReturns = {
+  [K in keyof UseChatTypeReturn]: ReturnType<UseChatTypeReturn[K]>
+}
 
 export const useChatType = () => {
-  const identifyAnswerType = (type?: `${AnswerType}`) => {
+  const processAnswerType = (type?: `${AnswerType}`) => {
     if (!type) return {}
 
     return {
       isEmpty: isEmpty(type),
 
-      isNormal: !type.endsWith('stream'),
-      isStream: type.endsWith('stream'),
-      isEnd: type === AnswerType.End,
-
+      isNonStream: !type.includes('stream'),
       isInteractive: type === AnswerType.Interactive,
       isReference: type === AnswerType.Reference,
       isHide: type === AnswerType.Hide,
+      isEnd: type === AnswerType.End,
 
-      isProcess: type === AnswerType.ProcessStream,
-      isIntent: type === AnswerType.IntentStream,
+      isStream: type.includes('stream'),
+      isProcessStream: type === AnswerType.ProcessStream,
+      isProcessStreamEnd: type === AnswerType.ProcessStreamEnd,
+      isIntentStream: type === AnswerType.IntentStream,
+      isChatStream: type === AnswerType.ChatStream,
+
+      // Frontend custom type.
+      isWsMonitor: type === AnswerType.WsMonitor,
     }
   }
 
-  const identifyMetaType = (type?: `${MetaType}`) => {
+  const processMetaType = (type?: `${MetaType}`) => {
     if (!type) {
       return {
         isEmpty: true,
@@ -65,7 +70,7 @@ export const useChatType = () => {
     }
   }
 
-  const identifyDataType = (type?: `${DataType}`) => {
+  const processDataType = (type?: `${DataType}`) => {
     if (!type) return {}
 
     return {
@@ -77,12 +82,20 @@ export const useChatType = () => {
     }
   }
 
-  const hasEmotion = (meta: ChatMeta) => !!meta.emotion
+  const processRoleType = (role?: MessageRole) => {
+    if (!role) return {}
+
+    return {
+      isUser: role === 'user',
+      isAssistant: role === 'assistant',
+      isSystem: role === 'system',
+    }
+  }
 
   return {
-    identifyAnswerType,
-    identifyMetaType,
-    identifyDataType,
-    hasEmotion,
+    processAnswerType,
+    processMetaType,
+    processDataType,
+    processRoleType,
   }
 }

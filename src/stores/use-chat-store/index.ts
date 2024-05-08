@@ -5,9 +5,16 @@ import type { ChatStore, Message } from './types'
 
 import { utilDom } from '@/utils/dom'
 
+const defaultMessage: Message = {
+  id: nanoid(),
+  role: 'assistant',
+  text: '',
+  isDefaultMessage: true,
+}
+
 export const useChatStore = create<ChatStore>((set, get) => ({
   question: '',
-  messages: [],
+  messages: [defaultMessage],
   chatEl: null,
   chatInputEl: null,
   isLoading: false,
@@ -44,15 +51,28 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     set({ messages: newMessages })
     return newMessages
   },
-  updateMessage: (id, message) => {
+  updateMessage: (id, updater) => {
     const newMessages = get().messages.map((m) =>
-      m.id === id ? { ...m, ...message } : m
+      m.id === id ? updater(m) : m
     )
 
     set({ messages: newMessages })
     return newMessages
   },
-  getMessage: (id) => get().messages.find((m) => m.id === id),
+  getMessage: (id) => {
+    const messages = get().messages
+    const idx = messages.findIndex((m) => m.id === id)
+
+    return [messages[idx], idx]
+  },
+
+  findPrevMessage: (id) => {
+    const messages = get().messages
+    const idx = messages.findIndex((m) => m.id === id)
+    const prevMessage = messages[idx - 1]
+
+    return prevMessage
+  },
 
   setChatEl: (chatEl) => set({ chatEl }),
   setChatInputEl: (chatInputEl) => set({ chatInputEl }),
