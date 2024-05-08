@@ -4,6 +4,7 @@ import {
   SetStateAction,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from 'react'
 import { SwapContext } from './use-swap-provider'
@@ -28,7 +29,7 @@ interface DialogContextType {
   setSearchTokens: (v: MultiChainCoin[]) => void
   isNameSearch: boolean
   setIsNameSearch: (v: boolean) => void
-  selectChainId: string
+  selectChainId?: string
   setSelectChainId: (v: string) => void
   tokenChain: ChainInfo[]
   selectWallet?: UserCreateWalletResp
@@ -37,37 +38,40 @@ interface DialogContextType {
   isFrom: boolean
   createWalletInfo?: CreatewalletInfo
   setCreateWalletInfo: (v: CreatewalletInfo) => void
+  selectSearchToken?: MultiChainCoin
+  setSelectSearchToken: (v: MultiChainCoin) => void
+  setSelectWallet: (v?: UserCreateWalletResp) => void
+  closeDialog: () => any
 }
 
 export const DialogContext = createContext<DialogContextType>({
   selectToToken: undefined,
   searchValue: '',
-  setSearchValue: (v: string) => {},
+  setSearchValue: () => {},
   loadingSearch: false,
-  setLoadingSearch: (value: boolean) => {},
+  setLoadingSearch: () => {},
   searchTokens: [],
-  setSearchTokens: (value: MultiChainCoin[]) => {},
+  setSearchTokens: () => {},
   isNameSearch: false,
-  setIsNameSearch: (value: boolean) => {},
-  selectChainId: '',
-  setSelectChainId: (value: string) => {},
+  setIsNameSearch: () => {},
+  selectChainId: '-1',
+  setSelectChainId: () => {},
   tokenChain: [],
   selectWallet: undefined,
   walletPlatform: undefined,
   isSearch: false,
   isFrom: false,
-  createWalletInfo: {
-    tokenName: 'PYTH',
-    chainName: 'Solana',
-    platform: Platform.Sol,
-    actived: true,
-  },
+  selectSearchToken: undefined,
+  setSelectSearchToken: () => {},
+  createWalletInfo: undefined,
   setCreateWalletInfo: (v: {
     tokenName: string
     chainName: string
     platform: string
     actived: boolean
   }) => {},
+  setSelectWallet: () => {},
+  closeDialog: () => {},
 })
 
 export const useDialogSelectTokenContext = (isFrom: boolean) => {
@@ -80,21 +84,10 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
   const [loadingSearch, setLoadingSearch] = useState(false)
   const [searchTokens, setSearchTokens] = useState<MultiChainCoin[]>([])
   const [isNameSearch, setIsNameSearch] = useState(false)
-  const [selectChainId, setSelectChainId] = useState(
-    selectFromToken?.chain.id || '-1'
-  )
-  const [createWalletInfo, setCreateWalletInfo] = useState<
-    CreatewalletInfo | undefined
-  >({
-    tokenName: 'PYTH',
-    chainName: 'Solana',
-    platform: Platform.Sol,
-    actived: true,
-  })
-
-  const selectWallet = walletPlatform[currentWallet?.platform!]?.find(
-    (w) => w.address === currentWallet?.address
-  )
+  const [selectSearchToken, setSelectSearchToken] = useState<MultiChainCoin>()
+  const [createWalletInfo, setCreateWalletInfo] = useState<CreatewalletInfo>()
+  const [selectWallet, setSelectWallet] = useState<UserCreateWalletResp>()
+  const [selectChainId, setSelectChainId] = useState<string>()
 
   const tokens = searchValue !== '' ? searchTokens : selectWallet?.tokens
   const tokenChainRaw = tokens?.map((t) => t.chain) || []
@@ -105,6 +98,22 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
       tokenChain.push(token)
     }
   }
+
+  useEffect(() => {
+    if (currentWallet) {
+      const wallelt = walletPlatform[currentWallet?.platform!]?.find(
+        (w) => w.address === currentWallet?.address
+      )
+      setSelectWallet(wallelt)
+    }
+  }, [currentWallet])
+
+  useEffect(() => {
+    const selectToken = isFrom ? selectToToken : selectFromToken
+    if (selectToken && !selectChainId) {
+      setSelectChainId(selectToken.chain.id)
+    }
+  }, [selectToToken, selectFromToken])
 
   const contextValue = {
     isNameSearch,
@@ -125,6 +134,9 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
     isFrom,
     createWalletInfo,
     setCreateWalletInfo,
+    selectSearchToken,
+    setSelectSearchToken,
+    setSelectWallet,
   }
 
   return { ...contextValue, contextValue }

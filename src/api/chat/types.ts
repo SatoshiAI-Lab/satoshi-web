@@ -300,6 +300,7 @@ export interface ChatResponseTokenDetail {
   twitter: string
   volume: string
   websites: string[]
+  platform: Platform
 }
 
 export interface ChatResponseMetaLabel {

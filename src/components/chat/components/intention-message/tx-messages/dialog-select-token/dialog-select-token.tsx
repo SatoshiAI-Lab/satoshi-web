@@ -15,10 +15,10 @@ import {
   DialogContext,
   useDialogSelectTokenContext,
 } from '@/hooks/use-swap/use-dialog-select-token'
-import { useWalletStore } from '@/stores/use-wallet-store'
 import { useWalletManage } from '@/hooks/use-wallet'
 import { useWalletList } from '@/hooks/use-wallet-list'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { UserCreateWalletResp } from '@/api/wallet/params'
 
 interface Props {
   isFrom: boolean
@@ -31,6 +31,7 @@ export const DialogSelectToken = (props: Props) => {
   const { show, isFrom, hidden } = props
   const { t } = useTranslation()
 
+  const [createdWallet, setCreatedWallet] = useState('')
   const [createWalletLoading, setCraeteWalletLoading] = useState(false)
 
   const { createWallet } = useWalletManage()
@@ -45,7 +46,23 @@ export const DialogSelectToken = (props: Props) => {
     isSearch,
     createWalletInfo,
     setCreateWalletInfo,
+    setSelectWallet,
+    setSelectChainId
   } = useDialogSelectTokenContext(isFrom)
+
+  const handleSwitchWallet = (wallet: UserCreateWalletResp) => {
+    setSelectWallet(wallet)
+    setSelectChainId('-1')
+  }
+
+  useEffect(() => {
+    if (createdWallet) {
+      setCreatedWallet('')
+    }
+    if (createWalletInfo) {
+      setCreateWalletInfo(undefined)
+    }
+  }, [searchValue])
 
   const dialogContent = () => {
     // 查币中
@@ -84,6 +101,7 @@ export const DialogSelectToken = (props: Props) => {
           await createWallet(createWalletInfo.platform)
           await getAllWallet()
           setCreateWalletInfo(undefined)
+          setCreatedWallet(createWalletInfo.chainName)
         } catch {
         } finally {
           setCraeteWalletLoading(false)
@@ -99,16 +117,18 @@ export const DialogSelectToken = (props: Props) => {
           <div className="my-4 max-w-[250px]">
             {t('create.wallet.token')
               .replace('$1', createWalletInfo.tokenName)
-              .replace('$2', createWalletInfo.chainName)}
+              .replaceAll('$2', createWalletInfo.chainName)}
           </div>
           <div>
             <Button
               variant="contained"
-              className='!rounded-full'
+              className="!rounded-full"
               onClick={onCreateWallet}
               disabled={createWalletLoading}
             >
-              {createWalletLoading ? <CircularProgress size={20} className='mr-2' /> : null}
+              {createWalletLoading ? (
+                <CircularProgress size={20} className="mr-2" />
+              ) : null}
               {t('create.wallet').replace('$1', createWalletInfo.chainName)}
             </Button>
           </div>
@@ -118,7 +138,7 @@ export const DialogSelectToken = (props: Props) => {
 
     return (
       <>
-        {searchValue.trim() === '' ? (
+        {!isSearch && (
           <div className="px-6 flex items-center">
             <span className="text-base mr-2">
               {isSearch ? t('use.wallet') : t('my.tokens.in')}
@@ -127,7 +147,11 @@ export const DialogSelectToken = (props: Props) => {
               {Object.keys(walletPlatform!).map((platform) => {
                 return walletPlatform![platform as Platform]?.map((wallet) => {
                   return (
-                    <MenuItem key={wallet.address} value={wallet.address}>
+                    <MenuItem
+                      key={wallet.address}
+                      value={wallet.address}
+                      onClick={() => handleSwitchWallet(wallet)}
+                    >
                       <span className="mr-5">{wallet.name}</span>
                       <span className="text-gray-400">{wallet.platform}</span>
                     </MenuItem>
@@ -136,23 +160,28 @@ export const DialogSelectToken = (props: Props) => {
               })}
             </Select>
           </div>
-        ) : null}
-
+        )}
         <ChainList />
         <TokenList />
+        {createdWallet !== '' ? (
+          <div className="w-max mx-auto pt-2 mb-5 text-gray-400">
+            <div>{t('created.wallet.tips1').replace('$1', createdWallet)}</div>
+            <div>{t('created.wallet.tips2')}</div>
+          </div>
+        ) : null}
       </>
     )
   }
 
   return (
-    <DialogContext.Provider value={contextValue}>
+    <DialogContext.Provider value={{ ...contextValue, closeDialog: hidden }}>
       <Dialog open={show} onClose={hidden}>
         <DialogHeader
           text={<span className="text-lg">{t('select.a.token')}</span>}
           onClose={hidden}
           textAlign="left"
         ></DialogHeader>
-        <div className="min-w-[420px] min-h-[380px]">
+        <div className="min-w-[420px] min-h-[500px]">
           <SearchInput isFrom={isFrom} />
           <div className="mt-4 pt-2 border-t border-gray-300">
             {dialogContent()}

@@ -53,7 +53,12 @@ export const SearchInput = ({ isFrom }: Props) => {
     setLoadingSearch(true)
     timer.current = setTimeout(() => {
       onSearch(value)
-    }, 200)
+    }, 500)
+  }
+
+  const clearValue = () => {
+    setSearchValue('')
+    setSelectChainId('-1')
   }
 
   return (
@@ -70,7 +75,7 @@ export const SearchInput = ({ isFrom }: Props) => {
             <IoCloseOutline
               size={25}
               className="cursor-pointer"
-              onClick={() => setSearchValue('')}
+              onClick={clearValue}
             />
           )
         }

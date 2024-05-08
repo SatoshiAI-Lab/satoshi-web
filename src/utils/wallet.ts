@@ -14,7 +14,7 @@ export const utilWallet = {
       const token = w.tokens?.find(
         (t) =>
           t.address == zeroAddr &&
-          t.value_usd > 1 &&
+          t.value_usd > 0 &&
           !mainToken.some((t) => someToken(t, w))
       )
       if (token) {

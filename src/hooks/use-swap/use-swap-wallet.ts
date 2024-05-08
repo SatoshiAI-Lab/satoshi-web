@@ -28,11 +28,14 @@ export const useSwapWallet = (options: Options) => {
         (w) =>
           w?.chain?.id == selectFromToken?.chain?.id &&
           w.tokens?.some(
-            (t) => t.value_usd > 1 && t.address == selectFromToken?.address
+            (t) => t.value_usd > 0 && t.address == selectFromToken?.address
           )
       )
       // 按照余额最高的往下排
-      .sort((a, b) => findTokenUsd(a) - findTokenUsd(b))
+      .sort(
+        (a, b) =>
+          new Date(a.added_at!).getTime() - new Date(b.added_at!).getTime()
+      )
       // 格式化数据成九宫格
       .reduce<PartialWalletRes[][]>((cur, next) => {
         if (count % 3 == 0) {
