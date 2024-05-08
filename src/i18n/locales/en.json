@@ -358,5 +358,19 @@
   "searching.tokens": "Searching for tokens...",
   "insufficient.balance": "Wallet balance is insufficient Please select another token",
   "tx.sned": "Transaction hash has been submitted: ",
-  "tx-hash": "Tx hash"
+  "tx-hash": "Tx hash",
+  "my.tokens.in": "My tokens in",
+  "all": "AII",
+  "select.a.token": "Select a token",
+  "select.token.tips": "The balance of the token you selected is 0.",
+  "not.find.token1": "No",
+  "not.find.token2": "tokens were found",
+  "use.wallet": "To use this wallet:",
+  "error.chian": "Cross-chain transactions are not supported",
+  "create.wallet.token": "This token is $1, which exists on $2.   You need to create a $2 wallet first.",
+  "create.wallet": "Create a $1 wallet",
+  "created.wallet.tips1": "A $1 wallet has been created for you,",
+  "created.wallet.tips2": "and an automatic switch has been made.",
+  "unable.trade": "Unable to trade",
+  "connot.exchange": "Transactions cannot be made with the same token in the same chain"
 }

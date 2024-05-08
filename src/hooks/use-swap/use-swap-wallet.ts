@@ -1,11 +1,16 @@
-import { useContext, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
-import { SwapContext } from './use-swap-provider'
+import { MultiChainCoin } from '@/api/chat/types'
 
-export const useSwapWallet = () => {
+interface Options {
+  selectFromToken?: MultiChainCoin
+  currentWallet?: PartialWalletRes
+  setCurrentWallet?: Dispatch<SetStateAction<PartialWalletRes | undefined>>
+}
+
+export const useSwapWallet = (options: Options) => {
   const { walletList } = useWalletStore()
-  const { selectFromToken, currentWallet, setCurrentWallet } =
-    useContext(SwapContext)
+  const { selectFromToken, currentWallet, setCurrentWallet } = options
   const [gridWalletList, setGridWalletList] = useState<PartialWalletRes[][]>([])
 
   const findTokenUsd = (wallet: PartialWalletRes) => {
@@ -23,11 +28,14 @@ export const useSwapWallet = () => {
         (w) =>
           w?.chain?.id == selectFromToken?.chain?.id &&
           w.tokens?.some(
-            (t) => t.value_usd > 1 && t.address == selectFromToken?.address
+            (t) => t.value_usd > 0 && t.address == selectFromToken?.address
           )
       )
       // 按照余额最高的往下排
-      .sort((a, b) => findTokenUsd(a) - findTokenUsd(b))
+      .sort(
+        (a, b) =>
+          new Date(a.added_at!).getTime() - new Date(b.added_at!).getTime()
+      )
       // 格式化数据成九宫格
       .reduce<PartialWalletRes[][]>((cur, next) => {
         if (count % 3 == 0) {
@@ -50,7 +58,7 @@ export const useSwapWallet = () => {
       setGridWalletList(gridWalletList)
 
       if (defaultWallet?.chain?.id !== currentWallet?.chain?.id) {
-        setCurrentWallet(defaultWallet)
+        setCurrentWallet?.(defaultWallet)
       }
     }
   }

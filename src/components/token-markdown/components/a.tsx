@@ -22,7 +22,7 @@ export const A = (props: Props) => {
       className="no-underline cursor-pointer text-primary"
       target="_blank"
       href={href}
-      onClick={onClick}
+      // onClick={onClick}
     >
       {children}
     </a>
