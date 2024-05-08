@@ -2,9 +2,9 @@ import React from 'react'
 import { clsx } from 'clsx'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
+import { Avatar } from '@mui/material'
 
 import { MessageBubble } from '../message-bubble'
-import { link } from '@/config/link'
 import { utilFmt } from '@/utils/format'
 import { useMessagesContext } from '@/contexts/messages'
 import { CopyAddr } from '@/components/copy-addr'
@@ -13,59 +13,51 @@ import { MetaType } from '@/api/chat/types'
 export const WalletBubble = () => {
   const { t } = useTranslation()
   const { getMetaData } = useMessagesContext()
-  const {
-    created_at,
-    name,
-    sender,
-    currency_symbol,
-    side_amount,
-    side_symbol,
-    hash,
-  } = getMetaData<MetaType.MonitorWallet>()
+  const data = getMetaData<MetaType.MonitorWallet>()
+
+  // console.log('data', data)
 
   return (
-    <MessageBubble className={clsx('min-w-[400px] py-4')}>
+    <MessageBubble className={clsx('min-w-[400px] py-3')}>
       {/* Avatar, chain */}
-      <div className="flex items-stretch">
-        {/* <img
-          src="/images/i1.png"
-          alt="avatar"
-          className="w-12 h-12 rounded mr-2"
-        /> */}
-        <div className="flex flex-col justify-between ">
+      <div className="flex items-center">
+        <Avatar src={data.logo} className="mr-2">
+          {data.name.charAt(0)}
+        </Avatar>
+        <div className="flex flex-col justify-between">
           <span className="font-bold">
-            {t('walletbubble.title').replace('$1', name ?? '')}
+            {t('walletbubble.title').replace('$1', data.name ?? '')}
           </span>
           <span className="text-gray-400">
-            {dayjs(created_at).format('H:mm M/D')}
+            {dayjs(data.created_at).format('H:mm M/D')}
           </span>
         </div>
       </div>
       {/* Event description */}
       <div className="mt-2">
-        <a href="#" target="_blank" className="underline text-primary">
-          {name}
-        </a>{' '}
-        {t('swap')}
-        <a href="#" target="_blank" className="text-primary">
-          {' '}
-          {currency_symbol}{' '}
+        <a href="#" target="_blank" className="underline text-primary mr-1">
+          {data.name}
         </a>
-        {t('for')} {utilFmt.token(side_amount)} {side_symbol}
+        {t('swap')}
+        <a href="#" target="_blank" className="text-primary mx-1">
+          {data.currency_symbol}
+        </a>
+        ({data.currency_amount}) {t('for')} {utilFmt.token(data.side_amount)}{' '}
+        {data.side_symbol}
       </div>
-      {/* contract address */}
+      {/* Contract address */}
       <CopyAddr
-        addr={sender}
-        prefix={<span className="font-bold mr-1">{side_symbol} CA:</span>}
+        addr={data.sender}
+        prefix={
+          <span className="font-bold mr-1">
+            {data.currency_symbol} {t('ca')}:
+          </span>
+        }
         iconSize={16}
       />
       {/* Transaction hash */}
-      <a
-        href={`${link.solscan}tx/${hash}`}
-        target="_blank"
-        className="text-primary"
-      >
-        Tx hash
+      <a href={data.hash_url} target="_blank" className="text-primary">
+        {t('tx-hash')}
       </a>
     </MessageBubble>
   )
