@@ -36,7 +36,7 @@ export const TxLogicContext = createContext<ITxLogicContext>({
 })
 
 export const useTxFromToken = (options: Options) => {
-  const { walletList, intentTokenInfo } = options
+  const { walletList, intentTokenInfo, currentWallet } = options
 
   const {
     fromTokenListResult,
@@ -70,7 +70,7 @@ export const useTxFromToken = (options: Options) => {
           if (
             token.address === wt.address &&
             token.chain.id == w!.chain!.id &&
-            wt.value_usd > 1
+            wt.value_usd > 0
           ) {
             // 优先选择用户意图的链的代币
             if (token.chain.name === fromIntentChain) {
