@@ -176,6 +176,8 @@ export const useChat = () => {
     }
 
     const onEachParse = (data: ChatResponse) => {
+      console.log(data)
+
       const type = processAnswerType(data.answer_type)
 
       // Auth required.
@@ -185,11 +187,9 @@ export const useChat = () => {
         return
       }
 
-      // `process` message category.
+      // Process message category.
       if (type.isProcessStream) return addProcess(data, true)
-      if (type.isProcessStreamEnd || !type.isProcessStream) {
-        return markedRemoveProcess()
-      }
+      if (type.isProcessStreamEnd) return markedRemoveProcess()
       if (shouldRemoveProcess()) removeProcess()
 
       // Stream message category.
@@ -205,14 +205,19 @@ export const useChat = () => {
       scrollToChatBottom()
     }
 
-    parseStream(stream, onRead, resetChat)
+    const debugId = nanoid()
+    console.log(`------- chat ${debugId} start -------`)
+
+    parseStream(stream, onRead, () => {
+      resetChat()
+      console.log(`------- chat ${debugId} end -------`)
+    })
   }
 
   // Send chat.
   const sendChat = async (options?: InteractiveOptions) => {
     // Must be get params here.
     const chatParams = getChatParams(options)
-    const debugId = nanoid()
 
     if (isLoading) {
       toast.error(t('chat.asking'))
