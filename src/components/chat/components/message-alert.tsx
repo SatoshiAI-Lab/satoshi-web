@@ -11,7 +11,7 @@ export const MessageAlert: React.FC = () => {
   const {
     unreadMessages,
     setUnreadMessage,
-    chatScrollToBottom: scrollToChatBottom,
+    scrollToChatBottom: scrollToChatBottom,
   } = useChatStore()
   const { addMonitorMessages } = useMessages()
 

@@ -22,7 +22,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     unreadMessages,
     setChatEl,
     setWaitAnswer,
-    chatScrollToBottom,
+    scrollToChatBottom,
   } = useChatStore()
   const { sendChat, stopChat } = useChat()
 
@@ -53,7 +53,7 @@ export const Chat = (props: React.HTMLAttributes<HTMLDivElement>) => {
     if (!chatRef.current) return
 
     setChatEl(chatRef.current)
-    chatScrollToBottom()
+    scrollToChatBottom()
   }, [])
 
   return (

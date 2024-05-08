@@ -36,7 +36,7 @@ function MessageInput(props: MessageInputProps) {
     setQuestion,
     setInputKeyup,
     setChatInputEl,
-    chatScrollToBottom,
+    scrollToChatBottom,
   } = useChatStore()
   const throttledHandleInputKeyup = useThrottledCallback(handleInputKeyup, 3000)
   const { startRecording, stopRecording, recordingBlob } = useAudioRecorder()
@@ -100,7 +100,7 @@ function MessageInput(props: MessageInputProps) {
   useEffect(() => {
     if (!chatEl || !keyboardIsShow) return
 
-    chatScrollToBottom()
+    scrollToChatBottom()
   }, [keyboardIsShow, chatEl])
 
   useEffect(() => {
