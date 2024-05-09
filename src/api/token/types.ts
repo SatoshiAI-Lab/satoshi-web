@@ -159,14 +159,15 @@ export interface QueryAddrAccount {
 }
 
 export interface AccountToken {
-  symbol: string
-  name: string
   address: string
-  decimals: number
   amount: string
-  priceUsd: string
-  valueUsd: string
+  decimals: number
   logo: string
+  name: string
+  price_change_24h: number | null
+  price_usd: string | null
+  symbol: string
+  value_usd: string | null
 }
 
 export interface QueryAddrRes {

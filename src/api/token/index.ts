@@ -11,7 +11,6 @@ import type {
   TokenInfoRes,
   QueryAddrReq,
   QueryAddrRes,
-  QueryAddrToken,
 } from './types'
 
 export const tokenApi = {

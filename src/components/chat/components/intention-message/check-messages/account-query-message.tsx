@@ -41,7 +41,7 @@ export const AccountQueryMessage = (props: Props) => {
 
   // Filter value >= 1 tokens.
   const filterTokens = (tokens: AccountToken[]) => {
-    return tokens.filter((t) => Number(t.valueUsd) >= 1)
+    return tokens.filter((t) => Number(t.value_usd) >= 1)
   }
 
   const TokenRow = (token: AccountToken, i: number) => {
@@ -54,7 +54,7 @@ export const AccountQueryMessage = (props: Props) => {
         )}
       >
         <div className="text-primary truncate">{token.symbol || 'NULL'}</div>
-        <div>${numeral(token.valueUsd).format('0,0.0')}</div>
+        <div>${numeral(token.value_usd).format('0,0.0')}</div>
         <div className="ml-2">
           {numeral(formatUnits(BigInt(token.amount), token.decimals))
             .format('0a.00')
@@ -97,6 +97,7 @@ export const AccountQueryMessage = (props: Props) => {
               ) : (
                 <div>{tokens.map(TokenRow)}</div>
               )}
+              <div>{tokens.map(TokenRow)}</div>
 
               {/* Expand shadow hints. */}
               <div
