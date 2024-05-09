@@ -97,7 +97,6 @@ export const AccountQueryMessage = (props: Props) => {
               ) : (
                 <div>{tokens.map(TokenRow)}</div>
               )}
-              <div>{tokens.map(TokenRow)}</div>
 
               {/* Expand shadow hints. */}
               <div

@@ -33,7 +33,7 @@ export const CheckAddrMessage = () => {
 
   // Query account or token.
   const { data, error, isError, isLoading } = useQuery({
-    enabled: !typeIsEmpty && !addressIsEmpty,
+    enabled: isAccount && !typeIsEmpty && !addressIsEmpty,
     queryKey: [tokenApi.queryAddr.name + idRef.current, selectedType, address],
     queryFn: () => {
       return tokenApi.queryAddr({ address, type: selectedType })
@@ -49,7 +49,7 @@ export const CheckAddrMessage = () => {
     isError: isTokenError,
     isLoading: isLoadingInfo,
   } = useQuery({
-    enabled: !chainIsEmpty && !addressIsEmpty,
+    enabled: isToken && !chainIsEmpty && !addressIsEmpty,
     queryKey: [tokenApi.info.name + idRef.current],
     queryFn: () => {
       return tokenApi.info({ chain: selectedChain, address })
