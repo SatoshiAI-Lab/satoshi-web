@@ -66,12 +66,12 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
       content: t('evm-support'),
       disable: false,
     },
-    {
-      id: Platform.Bear,
-      title: t('bear-wallet'),
-      content: '',
-      disable: true,
-    },
+    // {
+    //   id: Platform.Bear,
+    //   title: t('bear-wallet'),
+    //   content: '',
+    //   disable: true,
+    // },
     // {
     //   id: 'icp',
     //   title: 'ICP Wallet',
@@ -202,8 +202,8 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                     >
                       {walletMenu.map((item) => (
                         <MenuItem
-                          disabled={item.disable}
                           key={item.id}
+                          disabled={item.disable}
                           className={clsx(
                             'w-[295px] h-[65px] flex flex-col !items-start !justify-center',
                             'not-used-dark:!text-gray-300'

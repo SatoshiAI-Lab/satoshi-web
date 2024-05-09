@@ -2,6 +2,7 @@ import { ChatResponseWalletListToken, MultiChainCoin } from '@/api/chat/types'
 import { tokenApi } from '@/api/token'
 import { DialogContext } from '@/hooks/use-swap/use-dialog-select-token'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
+import { utilSwap } from '@/utils/swap'
 import { OutlinedInput } from '@mui/material'
 import { ChangeEvent, useContext, useRef, useState } from 'react'
 import { IoSearchOutline, IoCloseOutline } from 'react-icons/io5'
@@ -12,6 +13,7 @@ interface Props {
 
 export const SearchInput = ({ isFrom }: Props) => {
   const timer = useRef<NodeJS.Timeout>()
+  const abortController = useRef<AbortController>()
   const { selectFromToken, selectToToken, walletList } = useContext(SwapContext)
   const {
     searchValue,
@@ -25,13 +27,17 @@ export const SearchInput = ({ isFrom }: Props) => {
 
   const onSearch = async (value: string) => {
     try {
-      const { data } = await tokenApi.multiCoin(value)
+      abortController.current = new AbortController()
+      const { data } = await tokenApi.multiCoin(
+        value,
+        abortController.current.signal
+      )
 
       const isNameSearch = data.some(
         (t) => t.symbol.toLowerCase() === value.toLowerCase()
       )
 
-      data.sort((a, b) => b.holders - a.holders)
+      utilSwap.sortByHolders(data)
 
       setIsNameSearch(isNameSearch)
       setSearchTokens(data)
@@ -47,8 +53,12 @@ export const SearchInput = ({ isFrom }: Props) => {
 
     setSearchValue(value)
     clearTimeout(timer.current)
+    abortController.current?.abort()
 
-    if (!value.trim()) return
+    if (!value.trim()) {
+      setLoadingSearch(false)
+      return
+    }
 
     setLoadingSearch(true)
     timer.current = setTimeout(() => {

@@ -36,6 +36,7 @@ export const DialogSelectToken = (props: Props) => {
 
   const { createWallet } = useWalletManage()
   const { getAllWallet } = useWalletList()
+  
   const {
     loadingSearch,
     searchTokens,
@@ -45,6 +46,7 @@ export const DialogSelectToken = (props: Props) => {
     searchValue,
     isSearch,
     createWalletInfo,
+    selectChainId,
     setCreateWalletInfo,
     setSelectWallet,
     setSelectChainId,
@@ -63,6 +65,7 @@ export const DialogSelectToken = (props: Props) => {
       setCreateWalletInfo(undefined)
     }
   }, [searchValue])
+
 
   const dialogContent = () => {
     // 查币中

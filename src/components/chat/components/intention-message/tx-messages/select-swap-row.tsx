@@ -10,7 +10,7 @@ import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
 
 export const SelectSwapRow = () => {
-  const { selectFromToken, selectToToken, autoCheckoutTokenMsg } =
+  const { selectFromToken, selectToToken } =
     useContext(SwapContext)
   const { buyValue, isFinalTx, setBuyValue } = useContext(TxLogicContext)
 
@@ -44,11 +44,6 @@ export const SelectSwapRow = () => {
         ></FaArrowRightLong>
         <SelectToken isFrom={false} isFinalTx={isFinalTx}></SelectToken>
       </div>
-      {autoCheckoutTokenMsg ? (
-        <div className="text-yellow-500 text-sm mt-2">
-          {autoCheckoutTokenMsg}
-        </div>
-      ) : null}
     </>
   )
 }

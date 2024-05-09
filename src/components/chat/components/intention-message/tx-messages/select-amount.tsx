@@ -9,10 +9,12 @@ import { formatUnits } from 'viem'
 
 const rates = [20, 50, 100]
 export const SelectAmount = () => {
-  const { selectFromToken, currentWallet } = useContext(SwapContext)
+  const { selectFromToken, currentWallet, gridWalletList } =
+    useContext(SwapContext)
   const { isFinalTx, curRate, setCurRate, setBuyValue, getSelectTokenInfo } =
     useContext(TxLogicContext)
 
+  const walletLength = gridWalletList[0]?.length
   const selectWalletToken = getSelectTokenInfo(currentWallet, selectFromToken)
 
   const getTokenBalance = () => {
@@ -32,6 +34,10 @@ export const SelectAmount = () => {
     const buyAmount = BigNumber(balanceFmt).multipliedBy(rate / 100)
     setCurRate(rate)
     setBuyValue(+buyAmount.toFixed(5))
+  }
+
+  if (!walletLength) {
+    return <></>
   }
 
   return (

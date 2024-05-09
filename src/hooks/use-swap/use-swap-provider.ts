@@ -22,11 +22,11 @@ export const SwapContext = createContext<ISwapContext>({
   selectToToken: undefined,
   selectFromToken: undefined,
   currentWallet: undefined,
-  autoCheckoutTokenMsg: '',
   insufficientBalanceMsg: '',
   gridWalletList: [],
   walletList: [],
-
+  loadingAllWallet: true,
+  intentTokenInfo: undefined,
   setCurrentWallet: () => {},
   setSelectFromToken: () => {},
   setSelectToToken: () => {},
@@ -36,7 +36,7 @@ export const SwapContext = createContext<ISwapContext>({
 })
 
 export const useSwapProviderProvider = ({ data }: Options) => {
-  const { walletList } = useWalletStore() // 所有的钱包
+  const { walletList, loadingAllWallet } = useWalletStore() // 所有的钱包
   const [checkedWallet, setCheckedWallet] = useState<PartialWalletRes[]>([]) // 过滤后合格的钱包
   const [currentWallet, setCurrentWallet] = useState<
     // 当前选中的钱包
@@ -45,6 +45,7 @@ export const useSwapProviderProvider = ({ data }: Options) => {
 
   const intentTokenInfo = useGetIntentTokenList({
     data,
+    walletList,
   })
 
   const {
@@ -54,7 +55,6 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     insufficientBalanceMsg,
     setSelectFromToken,
     setFromTokenList,
-    autoCheckoutTokenMsg,
   } = useTxFromToken({
     data,
     walletList,
@@ -92,7 +92,6 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     selectFromToken,
     currentWallet,
     gridWalletList,
-    autoCheckoutTokenMsg,
     insufficientBalanceMsg,
     setCurrentWallet,
     setSelectToToken,
@@ -101,6 +100,8 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     setFromTokenList,
     findTokenUsd,
     walletList,
+    loadingAllWallet,
+    intentTokenInfo,
   }
 
   return { contextValue, ...contextValue }

@@ -11,6 +11,7 @@ import { SwapContext } from './use-swap-provider'
 import { WalletPlatform, useWalletStore } from '@/stores/use-wallet-store'
 import { UserCreateWalletResp } from '@/api/wallet/params'
 import { Platform } from '@/config/wallet'
+import { useChainsPlatforms } from '@/components/wallet/hooks/use-chains-platforms'
 
 interface CreatewalletInfo {
   tokenName: string
@@ -88,6 +89,9 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
   const [createWalletInfo, setCreateWalletInfo] = useState<CreatewalletInfo>()
   const [selectWallet, setSelectWallet] = useState<UserCreateWalletResp>()
   const [selectChainId, setSelectChainId] = useState<string>()
+  const { getPlatformByChain } = useChainsPlatforms()
+
+  const selectToken = isFrom ? selectToToken : selectFromToken
 
   const tokens = searchValue !== '' ? searchTokens : selectWallet?.tokens
   const tokenChainRaw = tokens?.map((t) => t.chain) || []
@@ -100,6 +104,20 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
   }
 
   useEffect(() => {
+    if (selectToken) {
+      const platform = getPlatformByChain(selectToken.chain.name)
+
+      if (!platform) return
+
+      const wallet = walletPlatform[platform]?.sort(
+        (a, b) =>
+          new Date(b.added_at).getTime() - new Date(a.added_at).getTime()
+      )?.[0]
+      wallet && setSelectWallet(wallet)
+    }
+  }, [selectToken])
+
+  useEffect(() => {
     if (currentWallet) {
       const wallelt = walletPlatform[currentWallet?.platform!]?.find(
         (w) => w.address === currentWallet?.address
@@ -109,10 +127,10 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
   }, [currentWallet])
 
   useEffect(() => {
-    const selectToken = isFrom ? selectToToken : selectFromToken
-    if (selectToken && !selectChainId) {
-      setSelectChainId(selectToken.chain.id)
-    }
+    const selectToken = isFrom
+      ? selectFromToken || selectToToken
+      : selectToToken || selectFromToken
+    setSelectChainId(selectToken?.chain.id || '-1')
   }, [selectToToken, selectFromToken])
 
   const contextValue = {

@@ -32,8 +32,7 @@ export const TokenList = () => {
 
   const { t } = useTranslation()
 
-  const atherToken = isFrom ? selectToToken : selectFromToken
-  let tokens: any[] = isSearch ? searchTokens : selectWallet!.tokens
+  let tokens: any[] = isSearch ? searchTokens : selectWallet?.tokens || []
 
   tokens = (tokens || [])
     .filter((t) => {
@@ -55,7 +54,7 @@ export const TokenList = () => {
 
           if (t) {
             if (!activeToken) {
-              activeToken = { ...t }
+              activeToken = { ...t, ...token }
             } else {
               activeToken.value_usd += t.value_usd
             }
@@ -100,62 +99,75 @@ export const TokenList = () => {
       setSelectFromToken(token)
     } else {
       // 不支持跨链
-      if (token.chain.id !== selectToken?.chain.id) {
-        return toast.error(t('error.chian'))
-      }
+      // if (token.chain.id !== selectToken?.chain.id) {
+      //   return toast.error(t('error.chian'))
+      // }
       setSelectToToken(token)
     }
     closeDialog()
   }
 
+  console.log('tokens', tokens)
+
   return (
     <div className="mt-2 mb-4">
-      {tokens.map((token) => (
-        <MenuItem className="!px-6">
-          <div
-            className="w-full flex justify-between items-center"
-            onClick={() => onSelectToken(token)}
+      {tokens.map((token) => {
+        console.log('tokenItem', token)
+        
+        return (
+          <MenuItem
+            key={`${token.address}${token.chain.id}`}
+            className="!px-6 !py-0"
           >
-            <div className="flex">
-              <Avatar src={token?.logo} className="w-[35px] h-[35px] mr-2">
-                {token?.symbol.slice(0, 1)}
-              </Avatar>
-              <div className="">
-                <div className="flex items-center">
-                  <div className="max-w-[120px] truncate">{token?.symbol}</div>
-                  <div onClick={(e) => e.stopPropagation()}>
-                    {token.address !== zeroAddr ? (
-                      <CopyToClipboard
-                        text={token.address}
-                        onCopy={() => toast.success(t('copy-success'))}
-                      >
-                        <span className="ml-1 flex items-center text-sm text-gray-400 hover:text-gray-500">
-                          {utilFmt.addr(token.address, 4)}
-                          <IoCopyOutline className="ml-1"></IoCopyOutline>
-                        </span>
-                      </CopyToClipboard>
-                    ) : null}
+            <div
+              className="w-full flex py-2 justify-between items-center"
+              onClick={() => onSelectToken(token)}
+            >
+              <div className="flex">
+                <Avatar src={token?.logo} className="w-[35px] h-[35px] mr-2">
+                  {token?.symbol.slice(0, 1)}
+                </Avatar>
+                <div className="">
+                  <div className="flex items-center">
+                    <div className="max-w-[120px] truncate">
+                      {token?.symbol}
+                    </div>
+                    <div onClick={(e) => e.stopPropagation()}>
+                      {token.address !== zeroAddr ? (
+                        <CopyToClipboard
+                          text={token.address}
+                          onCopy={() => toast.success(t('copy-success'))}
+                        >
+                          <span className="ml-1 flex items-center text-sm text-gray-400 hover:text-gray-500">
+                            {utilFmt.addr(token.address, 4)}
+                            <IoCopyOutline className="ml-1"></IoCopyOutline>
+                          </span>
+                        </CopyToClipboard>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-400">
+                    {token?.chain.name}
                   </div>
                 </div>
-                <div className="text-sm text-gray-400">{token?.chain.name}</div>
               </div>
-            </div>
-            <div className="flex">
-              <div className="text-right">
-                <div>${utilFmt.token(token?.value_usd ?? 0)}</div>
-                <div className="flex text-sm text-gray-400">
-                  ${utilFmt.token(token?.price_usd)}
-                  <PercentTag
-                    percent={token?.price_change_24h ?? 0}
-                    className="ml-1 text-sm"
-                  />
-                  {/* {formatUnits(BigInt(token!.amount), token.decimals)} */}
+              <div className="flex">
+                <div className="text-right">
+                  <div>${utilFmt.token(token?.value_usd ?? 0)}</div>
+                  <div className="flex text-sm text-gray-400">
+                    ${utilFmt.token(token?.price_usd)}
+                    <PercentTag
+                      percent={token?.price_change_24h ?? 0}
+                      className="ml-1 text-sm"
+                    />
+                    {/* {formatUnits(BigInt(token!.amount), token.decimals)} */}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </MenuItem>
-      ))}
+          </MenuItem>
+        )
+      })}
     </div>
   )
 }

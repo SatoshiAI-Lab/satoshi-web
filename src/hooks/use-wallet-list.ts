@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
+import toast from 'react-hot-toast'
 
 interface Options {
   enabled?: boolean
@@ -30,10 +31,16 @@ export const useWalletList = (options?: Options) => {
 
   // Get all wallet list.
   const getAllWallet = async () => {
-    const res = await walletApi.getWallets()
+    try {
+      const res = await walletApi.getWallets()
 
-    if (res.data) {
-      setAllWallets(res.data)
+      if (res.data) {
+        setAllWallets(res.data)
+      }
+    } catch {
+      await getAllWallet()
+    } finally {
+      useWalletStore.setState({ loadingAllWallet: false })
     }
   }
 

@@ -5,6 +5,7 @@ import {
 } from '@/api/chat/types'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { Dispatch, SetStateAction } from 'react'
+import { TIntentTokoenInfo } from './use-get-intent-token-list'
 
 export interface ITxLogicContext {
   curRate: number
@@ -31,20 +32,21 @@ export interface ISwapContext {
   data?: ChatResponseTxConfrim
   checkedWallet: PartialWalletRes[]
   fromTokenList?: MultiChainCoin[]
-  toTokenList: MultiChainCoin[]
+  toTokenList?: MultiChainCoin[]
   loadingToTokenList: boolean
   loadingFromTokenList: boolean
   selectToToken: MultiChainCoin | undefined
   selectFromToken: MultiChainCoin | undefined
   currentWallet?: PartialWalletRes
-  autoCheckoutTokenMsg: string
   insufficientBalanceMsg: string
   gridWalletList: PartialWalletRes[][]
   walletList: PartialWalletRes[]
+  loadingAllWallet: boolean
+  intentTokenInfo?: TIntentTokoenInfo
 
   setCurrentWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
-  setFromTokenList: Dispatch<SetStateAction<MultiChainCoin[]>>
-  setToTokenList: Dispatch<SetStateAction<MultiChainCoin[]>>
+  setFromTokenList: Dispatch<SetStateAction<MultiChainCoin[] | undefined>>
+  setToTokenList: Dispatch<SetStateAction<MultiChainCoin[] | undefined>>
   setSelectToToken: Dispatch<SetStateAction<MultiChainCoin | undefined>>
   setSelectFromToken: Dispatch<SetStateAction<MultiChainCoin | undefined>>
   findTokenUsd: (wallet: PartialWalletRes) => number

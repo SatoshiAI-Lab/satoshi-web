@@ -26,7 +26,6 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
     hidden: hiddenDialog,
   } = useShow(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
 
   const {
     fromTokenList,
@@ -41,15 +40,21 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
   const tokenList = isFrom ? fromTokenList : toTokenList
   const selectToken = isFrom ? selectFromToken : selectToToken
 
-  // console.log(open)
   const handleClick = (token: MultiChainCoin) => {
     switchToken(token)
     onCloseMenu()
   }
 
-  const onSwitch = (event: any) => {
-    // setAnchorEl(event.currentTarget)
-    handleOpenDialog()
+  const openMenu = (event: any) => {
+    if (toTokenList && toTokenList?.length > 1) {
+      setAnchorEl(event.currentTarget)
+    } else {
+      openDialog()
+    }
+  }
+
+  const onSwitch = () => {
+    openDialog()
   }
 
   const onCloseMenu = () => {
@@ -64,20 +69,15 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
   const tokenMenu = () => {
     return (
       <>
-        {/* <Menu
+        <Menu
           anchorEl={anchorEl}
-          open={open}
+          open={!!anchorEl}
           onClose={onCloseMenu}
           MenuListProps={{
             'aria-labelledby': 'basic-button',
           }}
-        > */}
-        {/* <MenuItem className="dark:text-white">
-        <div className="h-[35px] flex items-center underline">
-          {t('select.token')}
-        </div>
-      </MenuItem> */}
-        {/* {tokenList?.map((item, i) => {
+        >
+          {tokenList?.map((item, i) => {
             return (
               <MenuItem
                 key={i}
@@ -114,7 +114,7 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
             )
           })}
           <MenuItem onClick={handleOpenDialog}>{t('select.token')}</MenuItem>
-        </Menu> */}
+        </Menu>
         <DialogSelectToken
           show={showDialog}
           open={openDialog}
@@ -130,19 +130,23 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
       <>
         <div
           className={clsx(
-            'h-full cursor-pointer leading-none py-[6px] text-sm border-l-2 text-nowrap pl-3 flex-shrink-0',
+            'cursor-pointer leading-none py-[6px] text-sm border-l-2 text-nowrap pl-3 flex-shrink-0 h-[52px]',
             'flex items-center cursor-pointer',
             isFinalTx && 'pointer-events-none'
           )}
           onClick={onSwitch}
         >
-          <img
-            src={selectToken?.logo || defaultImg}
-            alt="chain-slogo"
-            width={35}
-            height={35}
-            className="w-[35px] h-[35px] mr-1 rounded-full"
-          ></img>
+          {selectToken ? (
+            <img
+              src={selectToken?.logo || defaultImg}
+              alt="chain-slogo"
+              width={35}
+              height={35}
+              className="w-[35px] h-[35px] mr-1 rounded-full"
+            ></img>
+          ) : (
+            <span>{t('select.a.token')}</span>
+          )}
           {selectToken && (
             <div className="mx-1">
               <div>{`${selectToken?.symbol}`}</div>
@@ -156,10 +160,6 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
     )
   }
 
-  // const toToken = data?.to_token_info.find(
-  //   (t) => t.platform_id == selectToken?.platform_id
-  // )
-
   return (
     <>
       <div
@@ -168,11 +168,11 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
           'flex items-center cursor-pointer',
           isFinalTx && 'pointer-events-none'
         )}
-        onClick={onSwitch}
+        onClick={openMenu}
       >
         {selectToToken ? (
           <>
-            <Avatar src={selectToToken?.logo || defaultImg} className='!w-[35px] !h-[35px]'>
+            <Avatar src={selectToToken?.logo} className="!w-[35px] !h-[35px]">
               {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
             </Avatar>
             <div className="mx-2">

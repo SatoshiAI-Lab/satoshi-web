@@ -26,15 +26,15 @@ export const useSwapWallet = (options: Options) => {
       // 筛选出和FromToken同一条链的钱包
       .filter(
         (w) =>
-          w?.chain?.id == selectFromToken?.chain?.id &&
+          w?.chain?.id === selectFromToken?.chain?.id &&
           w.tokens?.some(
-            (t) => t.value_usd > 0 && t.address == selectFromToken?.address
+            (t) => t.value_usd > 0 && t.address === selectFromToken?.address
           )
       )
-      // 按照余额最高的往下排
+      // 按照创建时间往前排
       .sort(
         (a, b) =>
-          new Date(a.added_at!).getTime() - new Date(b.added_at!).getTime()
+          new Date(b.added_at!).getTime() - new Date(a.added_at!).getTime()
       )
       // 格式化数据成九宫格
       .reduce<PartialWalletRes[][]>((cur, next) => {
@@ -46,7 +46,7 @@ export const useSwapWallet = (options: Options) => {
         return cur
       }, [])
 
-    const defaultWallet = gridWalletList[0][0]
+    const defaultWallet = gridWalletList[0]?.[0]
 
     if (
       defaultWallet &&

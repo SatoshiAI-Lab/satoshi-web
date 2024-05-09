@@ -30,7 +30,11 @@ export const tokenApi = {
   info(req: TokenInfoReq) {
     return fetchSatoshi.get<TokenInfoRes>('/api/v1/coin/info/', req)
   },
-  multiCoin(kw: string) {
-    return fetchSatoshi.get<MultiChainCoin[]>('/api/v1/coin/query/', { kw })
+  multiCoin(kw: string, signal?: AbortSignal) {
+    return fetchSatoshi.get<MultiChainCoin[]>(
+      '/api/v1/coin/query/',
+      { kw },
+      signal
+    )
   },
 }

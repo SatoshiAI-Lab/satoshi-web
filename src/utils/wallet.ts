@@ -3,9 +3,16 @@ import { zeroAddr } from '@/config/address'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 
 export const utilWallet = {
+  sortWalletByCreated: (wallets?: PartialWalletRes[]) => {
+    return wallets?.sort(
+      (a, b) =>
+        new Date(b?.added_at || 0).getTime() -
+        new Date(a.added_at || 0).getTime()
+    )
+  },
   getMainToken(wallets: PartialWalletRes[]) {
     const mainToken: MultiChainCoin[] = []
-    
+
     const someToken = (t: MultiChainCoin, w: PartialWalletRes) => {
       return t?.name == t.name && t.chain.id == w?.chain?.id
     }

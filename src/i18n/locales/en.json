@@ -356,7 +356,7 @@
   "tx.token.text": "How much $1 to $2 do you want to use?",
   "autp.checkout.token": "Your $1 balance is insufficient, I have helped you cut to the main token",
   "searching.tokens": "Searching for tokens...",
-  "insufficient.balance": "Wallet balance is insufficient Please select another token",
+  "insufficient.balance": "Wallet $1 balance is insufficient, please select another token",
   "tx.sned": "Transaction hash has been submitted: ",
   "tx-hash": "Tx hash",
   "my.tokens.in": "My tokens in",
@@ -372,5 +372,7 @@
   "created.wallet.tips1": "A $1 wallet has been created for you,",
   "created.wallet.tips2": "and an automatic switch has been made.",
   "unable.trade": "Unable to trade",
-  "connot.exchange": "Transactions cannot be made with the same token in the same chain"
+  "connot.exchange": "Transactions cannot be made with the same token in the same chain",
+  "loading.wallet": "Loading wallet...",
+  "not.cross.chain": "Cross-chain is not currently supported"
 }

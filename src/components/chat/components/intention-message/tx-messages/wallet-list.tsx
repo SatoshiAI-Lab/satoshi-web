@@ -10,8 +10,13 @@ import { formatUnits } from 'viem'
 export const WalletList = () => {
   const { t } = useTranslation()
   const { isFinalTx } = useContext(TxLogicContext)
-  const { gridWalletList, selectFromToken, currentWallet, setCurrentWallet } =
-    useContext(SwapContext)
+  const {
+    gridWalletList,
+    selectFromToken,
+    currentWallet,
+    intentTokenInfo,
+    setCurrentWallet,
+  } = useContext(SwapContext)
 
   const getCols = (count: number) => {
     if (count == 1) {
@@ -33,7 +38,12 @@ export const WalletList = () => {
 
     if (!walletLength) {
       return (
-        <div className="text-sm text-red-500">{t('insufficient.balance')}</div>
+        <div className="text-sm text-red-500">
+          {t('insufficient.balance').replace(
+            '$1',
+            selectFromToken?.symbol || intentTokenInfo?.fromTokenInfo || ''
+          )}
+        </div>
       )
     }
 

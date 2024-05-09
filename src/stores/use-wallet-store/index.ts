@@ -4,6 +4,7 @@ import { WALLET_CONFIG, Chain, Platform } from '@/config/wallet'
 
 import type { GetChainsRes, GetWalletsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
+import { utilWallet } from '@/utils/wallet'
 
 export interface PartialWalletRes extends Partial<UserCreateWalletResp> {}
 
@@ -14,6 +15,7 @@ export interface WalletPlatform {
 }
 
 interface States {
+  loadingAllWallet: boolean
   wallets: PartialWalletRes[]
   allWallets: GetWalletsRes
   walletList: PartialWalletRes[]
@@ -43,6 +45,7 @@ interface Actions {
 }
 
 export const useWalletStore = create<States & Actions>((set, get) => ({
+  loadingAllWallet: true,
   wallets: [],
   allWallets: {} as GetWalletsRes,
   walletList: [],
@@ -67,8 +70,10 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
         t.chain = walletItem.chain
         return t
       })
-      
-      const wallets = walletPlatform[walletItem.platform]
+
+      const wallets = utilWallet.sortWalletByCreated(
+        walletPlatform[walletItem.platform]
+      )
 
       if (wallets?.length) {
         // 找出相同ID的钱包
@@ -78,11 +83,11 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
           wallets.push({ ...walletItem })
         } else {
           // 已经存在的钱包直接放代币进去
-          wallet.tokens.push(...walletItem.tokens)
+          wallet.tokens?.push(...walletItem.tokens)
         }
       } else {
         // 没有平台就初始化
-        walletPlatform[walletItem.platform] = [{...walletItem}]
+        walletPlatform[walletItem.platform] = [{ ...walletItem }]
       }
     })
 

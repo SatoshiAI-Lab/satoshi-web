@@ -8,12 +8,25 @@ import { IoFlash } from 'react-icons/io5'
 export const SwapConfirm = () => {
   const { t } = useTranslation()
 
-  const { selectFromToken, selectToToken } = useContext(SwapContext)
+  const { selectFromToken, selectToToken, gridWalletList } =
+    useContext(SwapContext)
   const { isSwaping, isFinalTx, onConfirm } = useContext(TxLogicContext)
 
-  const unableTrade = !selectFromToken || !selectToToken
+  const handleCrossChain = () => {
+    if (
+      selectToToken &&
+      selectFromToken &&
+      selectToToken?.chain.id !== selectFromToken?.chain.id
+    ) {
+      return t('not.cross.chain')
+    }
+  }
+
+  const unableTrade =
+    !selectFromToken || !selectToToken || !gridWalletList.length
 
   let text = t('confirm')
+  const crossChain = handleCrossChain()
 
   if (isFinalTx) {
     text = t('tx.finally')
@@ -27,12 +40,16 @@ export const SwapConfirm = () => {
     text = t('unable.trade')
   }
 
+  if (crossChain) {
+    text = crossChain
+  }
+  
   return (
     <Button
       variant="contained"
       className="!mb-2 !rounded-full"
       onClick={onConfirm}
-      disabled={isSwaping || isFinalTx || unableTrade}
+      disabled={isSwaping || isFinalTx || unableTrade || !!crossChain}
     >
       {isSwaping ? (
         <CircularProgress size={16} className="mr-2"></CircularProgress>
