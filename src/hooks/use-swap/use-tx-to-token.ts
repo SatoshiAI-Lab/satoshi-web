@@ -25,7 +25,7 @@ export const useTxToToken = (options: Options) => {
         return t.chain.name === fromIntentChain
       }
       // 按照持币人
-      return t.chain.id === selectFromToken?.chain.id
+      return tokenList[0].chain.id === t.chain.id
     })
     setSelectToToken(list?.[0])
     setToTokenList(list)
