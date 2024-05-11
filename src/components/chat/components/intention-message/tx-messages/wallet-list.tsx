@@ -14,7 +14,9 @@ export const WalletList = () => {
     gridWalletList,
     selectFromToken,
     currentWallet,
+    selectToToken,
     intentTokenInfo,
+    toTokenList,
     setCurrentWallet,
   } = useContext(SwapContext)
 
@@ -36,13 +38,25 @@ export const WalletList = () => {
   const walletList = () => {
     const walletLength = gridWalletList?.[0]?.length
 
-    if (!walletLength) {
+    if (!walletLength || !toTokenList?.length) {
       return (
         <div className="text-sm text-red-500">
-          {t('insufficient.balance').replace(
-            '$1',
-            selectFromToken?.symbol || intentTokenInfo?.fromTokenInfo || ''
-          )}
+          {!walletLength ? (
+            <div>
+              {t('insufficient.balance').replace(
+                '$1',
+                selectFromToken?.symbol || intentTokenInfo?.fromTokenInfo || ''
+              )}
+            </div>
+          ) : null}
+          {!toTokenList?.length && !selectToToken ? (
+            <div className="mt-1">
+              {t('not.find.token').replace(
+                '$1',
+                intentTokenInfo?.toTokenInfo || ''
+              )}
+            </div>
+          ) : null}
         </div>
       )
     }

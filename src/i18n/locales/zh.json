@@ -350,13 +350,13 @@
   "tx.token.text": "你想要使用多少$1兑换$2?",
   "autp.checkout.token": "你的$1余额不足，我已经帮你切到主代币",
   "searching.tokens": "正在查找代币...",
-  "insufficient.balance": "钱包$1余额不足请选择其他代币",
+  "insufficient.balance": "钱包$1代币余额不足，请选择其他代币",
   "tx.hash": "交易哈希：",
   "tx.sned": "交易已经提交: ",
   "tx-hash": "交易哈希",
   "my.tokens.in": "我的代币在",
   "all": "AII",
-  "select.a.token": "选择一个代币",
+  "select.a.token": "选择代币",
   "select.token.tips": "你选择的令牌余额为0。",
   "not.find.token1": "未找到",
   "not.find.token2": "代币",
@@ -369,5 +369,6 @@
   "unable.trade": "无法交易",
   "connot.exchange": "不能用同链的相同代币进行交易",
   "loading.wallet": "正在加载钱包...",
-  "not.cross.chain": "暂不支持跨链"
+  "not.cross.chain": "暂不支持跨链",
+  "not.find.token": "没有找到$1代币，请选择其他代币"
 }

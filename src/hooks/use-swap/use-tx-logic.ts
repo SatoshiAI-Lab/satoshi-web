@@ -105,7 +105,7 @@ export const useTxLogic = ({
         amount: `${amount}`,
         input_token: `${inputToken?.address}`,
         output_token: `${outputToken?.address}`,
-        slippageBps: slippage,
+        slippageBps: slippage * 100,
       })
 
       addMessage({

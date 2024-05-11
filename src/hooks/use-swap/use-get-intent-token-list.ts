@@ -12,19 +12,22 @@ interface Options {
 }
 export const useGetIntentTokenList = (options: Options) => {
   const { data, walletList } = options
-  const [fromTokenInfo, setFromTokenInfo] = useState(data?.from_token?.content)
-  const [toTokenInfo, setToTokenInfo] = useState(data.to_token.content)
-  const [fromIntentChain, setFromIntentChain] = useState(data?.chain_name)
+  const { to_token, from_token } = data
+  const [fromTokenInfo, setFromTokenInfo] = useState(from_token?.content)
+  const [toTokenInfo, setToTokenInfo] = useState(to_token.content)
+  const [fromIntentChain, setFromIntentChain] = useState(from_token.chain_name)
+  const [toIntentChain, setToIntentChain] = useState(to_token.chain_name)
   const { onlyQueryKey: onlyFromTokenQueryKey } = useFetchOnlyKey()
   const { onlyQueryKey: onlyToTokenQueryKey } = useFetchOnlyKey()
 
   // 如果是主链代币那么就默认设置成''
-  const fromIsMainToken = utilSwap.isMainToken(walletList, fromTokenInfo)
-  if (fromIsMainToken) {
+  const fromMainToken = utilSwap.getMainToken(walletList, fromTokenInfo)
+  if (fromMainToken?.length && fromTokenInfo !== '') {
     setFromTokenInfo('')
   }
-  const toIsMainToken = utilSwap.isMainToken(walletList, toTokenInfo)
-  if (toIsMainToken) {
+
+  const toMainToken = utilSwap.getMainToken(walletList, toTokenInfo)
+  if (toMainToken?.length && toTokenInfo !== '') {
     setToTokenInfo('')
   }
 
@@ -64,6 +67,9 @@ export const useGetIntentTokenList = (options: Options) => {
   return {
     fromTokenInfo,
     fromIntentChain,
+    toIntentChain,
+    fromMainToken,
+    toMainToken,
     fromTokenListResult: fromTokenListData,
     toTokenListResult: toTokenListData,
     loadingFromTokenList,

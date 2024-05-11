@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
 import { MultiChainCoin } from '@/api/chat/types'
+import { utilWallet } from '@/utils/wallet'
 
 interface Options {
   selectFromToken?: MultiChainCoin
@@ -22,24 +23,24 @@ export const useSwapWallet = (options: Options) => {
 
   const handleWallet = () => {
     let count = 0
-    const gridWalletList = walletList
-      // 筛选出和FromToken同一条链的钱包
-      .filter(
-        (w) =>
-          w?.chain?.id === selectFromToken?.chain?.id &&
-          w.tokens?.some(
-            (t) => t.value_usd > 0 && t.address === selectFromToken?.address
-          )
+
+    // 筛选出和FromToken同一条链的钱包
+    let wallets = walletList.filter(
+      (w) => w?.chain?.id === selectFromToken?.chain?.id
+    )
+
+    setCurrentWallet?.(wallets[0])
+
+    // 格式化数据成九宫格
+    const gridWalletList = wallets
+      .filter((w) =>
+        w.tokens?.some(
+          (t) => t.value_usd > 0 && t.address === selectFromToken?.address
+        )
       )
-      // 按照创建时间往前排
-      .sort(
-        (a, b) =>
-          new Date(b.added_at!).getTime() - new Date(a.added_at!).getTime()
-      )
-      // 格式化数据成九宫格
       .reduce<PartialWalletRes[][]>((cur, next) => {
         if (count % 3 == 0) {
-          cur.push([])
+          cur.push([next])
         }
         cur[cur.length - 1].push(next)
         count++

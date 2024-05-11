@@ -23,6 +23,7 @@ import { WalletSkeleton } from './components/skeleton'
 import { useChainsPlatforms } from './hooks/use-chains-platforms'
 import { WalletSearch } from './components/wallet-search'
 import { useWalletList } from '@/hooks/use-wallet-list'
+import { utilWallet } from '@/utils/wallet'
 
 const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
   0: WalletExportKeyPop,
@@ -135,12 +136,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
 
   // Sort by date DESC
   const sortWallets = () => {
-    wallets.sort((a, b) => {
-      const tsA = new Date(a.added_at ?? '').getTime()
-      const tsB = new Date(b.added_at ?? '').getTime()
-
-      return tsB - tsA
-    })
+    utilWallet.sortWalletByCreated(wallets)
   }
 
   // Request chains & platforms when mounted.
@@ -270,6 +266,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                   renameWallet={renameWallet}
                   exportKey={exportWalletPrivateKey}
                   deleteWallet={deleteWallet}
+                  chain={undefined}
                 />
               ))
             ) : (

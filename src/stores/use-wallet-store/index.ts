@@ -30,7 +30,6 @@ interface States {
 interface Actions {
   setWallets(wallets: PartialWalletRes[]): void
   setAllWallets(wallets: GetWalletsRes): void
-  setWalletList(wallets: PartialWalletRes[]): void
   setChains(chains: GetChainsRes['chains']): void
   setPlatforms(platforms: GetChainsRes['platforms']): void
   setCurrentWallet(wallet: PartialWalletRes): void
@@ -63,6 +62,8 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
       walletList.push(...allWallets[key as Chain])
     }
 
+    utilWallet.sortWalletByCreated(walletList)
+
     let walletPlatform: WalletPlatform = {}
     walletList.forEach((walletItem) => {
       // 把代币的链补充上
@@ -71,9 +72,7 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
         return t
       })
 
-      const wallets = utilWallet.sortWalletByCreated(
-        walletPlatform[walletItem.platform]
-      )
+      const wallets = walletPlatform[walletItem.platform]
 
       if (wallets?.length) {
         // 找出相同ID的钱包
@@ -97,7 +96,6 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
       walletPlatform,
     })
   },
-  setWalletList: (walletList) => set({ walletList }),
   setChains: (chains) => {
     // Pin the scroll chain to top.
     const scrollIdx = chains.findIndex((c) => c.name === Chain.Scroll)

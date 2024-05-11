@@ -1,8 +1,4 @@
-import {
-  ChatResponseTxConfrim,
-  ChatResponseWalletListToken,
-  MultiChainCoin,
-} from '@/api/chat/types'
+import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import {
   Dispatch,

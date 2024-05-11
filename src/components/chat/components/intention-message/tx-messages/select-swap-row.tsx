@@ -10,7 +10,7 @@ import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
 
 export const SelectSwapRow = () => {
-  const { selectFromToken, selectToToken } =
+  const { selectFromToken, selectToToken, intentTokenInfo } =
     useContext(SwapContext)
   const { buyValue, isFinalTx, setBuyValue } = useContext(TxLogicContext)
 
@@ -18,8 +18,14 @@ export const SelectSwapRow = () => {
     <>
       <div className="font-bold mt-1 mb-1">
         {t('tx.token.text')
-          .replace('$1', selectFromToken?.symbol ?? '')
-          .replace('$2', selectToToken?.symbol ?? '')}
+          .replace(
+            '$1',
+            selectFromToken?.symbol || intentTokenInfo?.fromTokenInfo || ''
+          )
+          .replace(
+            '$2',
+            selectToToken?.symbol || intentTokenInfo?.toTokenInfo || ''
+          )}
       </div>
       <div className="flex justify-start items-center">
         <OutlinedInput

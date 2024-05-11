@@ -20,6 +20,7 @@ import { walletApi } from '@/api/wallet'
 import { CustomSuspense } from '@/components/custom-suspense'
 import { Chain } from '@/config/wallet'
 import { useMessagesContext } from '@/contexts/messages'
+import { utilWallet } from '@/utils/wallet'
 
 const gridCls = 'grid grid-cols-[175px_130px_130px_100px]'
 
@@ -39,11 +40,7 @@ export const WalletList = (props: { chain: string }) => {
   })
 
   const { removeWallet } = useWalletManage()
-  const wallets = walletsData?.data[chain as Chain] ?? []
-  const walletList = wallets.sort(
-    (a, b) =>
-      new Date(b.added_at ?? 0).getTime() - new Date(a.added_at ?? 0).getTime()
-  )
+  const walletList = walletsData?.data[chain as Chain] ?? []
 
   const onRemoveWallet = async (id: string) => {
     const loadingId = toast.loading(t('wallet.deleting'))

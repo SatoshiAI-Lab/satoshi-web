@@ -7,6 +7,7 @@ import { useWalletStore } from '@/stores/use-wallet-store'
 import { useGetIntentTokenList } from './use-get-intent-token-list'
 import { ISwapContext } from './type'
 import { useSwapWallet } from './use-swap-wallet'
+import { useSwapSelectToken } from './use-swap-select-token'
 
 interface Options {
   data: ChatResponseTxConfrim
@@ -51,29 +52,15 @@ export const useSwapProviderProvider = ({ data }: Options) => {
   const {
     fromTokenList,
     loadingFromTokenList,
-    selectFromToken,
-    insufficientBalanceMsg,
-    setSelectFromToken,
-    setFromTokenList,
-  } = useTxFromToken({
-    data,
-    walletList,
-    setCheckedWallet,
-    intentTokenInfo,
-  })
-
-  const {
-    toTokenList,
     loadingToTokenList,
+    selectFromToken,
     selectToToken,
+    toTokenList,
+    setFromTokenList,
+    setSelectFromToken,
     setSelectToToken,
     setToTokenList,
-  } = useTxToToken({
-    selectFromToken,
-    data,
-    fromTokenList,
-    intentTokenInfo,
-  })
+  } = useSwapSelectToken({ intentTokenInfo, walletList })
 
   const { gridWalletList, findTokenUsd } = useSwapWallet({
     selectFromToken,
@@ -92,7 +79,7 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     selectFromToken,
     currentWallet,
     gridWalletList,
-    insufficientBalanceMsg,
+    insufficientBalanceMsg: '',
     setCurrentWallet,
     setSelectToToken,
     setToTokenList,

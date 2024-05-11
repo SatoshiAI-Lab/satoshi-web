@@ -203,16 +203,19 @@ export interface ChatResponseMetaBalance {
 }
 
 export interface ChatResponseTxConfrim {
+  from_token_info: any
+  to_token_name: any
   from_token: {
     type: string
     content: string
+    chain_name: string
   }
   to_token: {
     type: string
     content: string
+    chain_name: string
   }
   amount: number
-  chain_name: string
 }
 
 export interface MultiChainCoin {
@@ -273,6 +276,7 @@ export interface ChatResponseWalletList {
 }
 
 export interface ChatResponseWalletListToken {
+  chain_name: any
   address: string
   amount: number
   chain: ChainInfo

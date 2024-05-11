@@ -1,17 +1,11 @@
 import { MultiChainCoin, ChainInfo } from '@/api/chat/types'
-import {
-  Dispatch,
-  SetStateAction,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { SwapContext } from './use-swap-provider'
 import { WalletPlatform, useWalletStore } from '@/stores/use-wallet-store'
 import { UserCreateWalletResp } from '@/api/wallet/params'
 import { Platform } from '@/config/wallet'
 import { useChainsPlatforms } from '@/components/wallet/hooks/use-chains-platforms'
+import { utilWallet } from '@/utils/wallet'
 
 interface CreatewalletInfo {
   tokenName: string
@@ -109,9 +103,8 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
 
       if (!platform) return
 
-      const wallet = walletPlatform[platform]?.sort(
-        (a, b) =>
-          new Date(b.added_at).getTime() - new Date(a.added_at).getTime()
+      const wallet = utilWallet.sortWalletByCreated<UserCreateWalletResp>(
+        walletPlatform[platform]
       )?.[0]
       wallet && setSelectWallet(wallet)
     }

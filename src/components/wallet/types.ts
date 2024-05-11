@@ -13,6 +13,7 @@ export interface WalletDialogProps {
 }
 
 export interface WalletCardProps {
+  chain: any
   id?: string
   name?: string
   address?: string
