@@ -5,13 +5,6 @@ import clsx from 'clsx'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 
-import Intervals from './components/intervals'
-import Studies from './components/studies'
-import { TV_CHART_OVERRIDES } from '@/config/tradingview'
-import { useStudiesAnalysis } from './hooks/use-study-analysis'
-import { useKLineCreate } from '@/views/kline/hooks/use-kline'
-import { useTagParser } from './hooks/use-tag-parser'
-
 import type { AnyObject } from '@/types/types'
 import type {
   CexTag,
@@ -19,6 +12,15 @@ import type {
   DexTag,
   TagString,
 } from './hooks/use-kline-api/types'
+
+import Intervals from './components/intervals'
+import Studies from './components/studies'
+import { TV_CHART_OVERRIDES } from '@/config/tradingview'
+import { useStudiesAnalysis } from './hooks/use-study-analysis'
+import { useKLineCreate } from '@/views/kline/hooks/use-kline'
+import { useTagParser } from './hooks/use-tag-parser'
+
+import { TradingViewLink } from '@/components/trading-view-link'
 
 export const Candlestick = () => {
   const router = useRouter()
@@ -89,7 +91,10 @@ export const Candlestick = () => {
           'rounded overflow-hidden'
         )}
       ></div>
-      <Studies />
+      <div className="flex items-center justify-between">
+        <Studies />
+        <TradingViewLink />
+      </div>
     </div>
   )
 }

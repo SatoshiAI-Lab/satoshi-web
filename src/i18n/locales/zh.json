@@ -353,5 +353,6 @@
   "insufficient.balance": "钱包余额不足请选择其他代币",
   "tx.hash": "交易哈希：",
   "tx.sned": "交易已经提交: ",
-  "tx-hash": "交易哈希"
+  "tx-hash": "交易哈希",
+  "tv.chart.intro": "图表由$提供，点击$查看更多"
 }
