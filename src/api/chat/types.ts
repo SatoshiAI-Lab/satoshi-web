@@ -111,18 +111,7 @@ export enum MetaTypeCategory {
 }
 
 export type MetaTypeData = {
-  [MetaType.Tx]: {
-    from_token: {
-      type: string
-      content: string
-    }
-    to_token: {
-      type: string
-      content: string
-    }
-    amount: number
-    chain_name: string
-  }
+  [MetaType.Tx]: ChatResponseTxConfrim
 
   [MetaType.WalletCreate]: {
     platform_name: Platform
