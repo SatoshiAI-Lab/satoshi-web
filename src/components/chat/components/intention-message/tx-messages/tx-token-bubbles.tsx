@@ -11,7 +11,7 @@ import { SwapConfirm } from './swap-confirn'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { useMessagesContext } from '@/contexts/messages'
 import { useTranslation } from 'react-i18next'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
 
 export const TxTokenBubbles = () => {
   const { getMetaData } = useMessagesContext()

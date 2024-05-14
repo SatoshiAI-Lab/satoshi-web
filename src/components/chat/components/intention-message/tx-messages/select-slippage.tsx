@@ -1,23 +1,12 @@
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
 import { OutlinedInput } from '@mui/material'
 import { t } from 'i18next'
 import { useContext } from 'react'
 
 export const SelecSlippage = () => {
-  const { selectToToken, selectFromToken } = useContext(SwapContext)
   const { isFinalTx, slippage, validateErr, setSlippage } =
     useContext(TxLogicContext)
-
-  const handleCrossChain = () => {
-    if (
-      selectToToken &&
-      selectFromToken &&
-      selectToToken?.chain.id !== selectFromToken?.chain.id
-    ) {
-      return t('not.cross.chain')
-    }
-  }
 
   return (
     <div className="mt-5 flex">
@@ -52,7 +41,6 @@ export const SelecSlippage = () => {
         {validateErr.map((error) => {
           return <div key={error}>{error}</div>
         })}
-        {handleCrossChain()}
       </div>
     </div>
   )

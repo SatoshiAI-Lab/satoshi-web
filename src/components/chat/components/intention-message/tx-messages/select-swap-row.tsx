@@ -7,7 +7,7 @@ import { SelectToken } from './select-token'
 import { useContext } from 'react'
 
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
 
 export const SelectSwapRow = () => {
   const { selectFromToken, selectToToken, intentTokenInfo } =

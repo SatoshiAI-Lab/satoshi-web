@@ -9,7 +9,6 @@ import {
 } from 'react'
 import { TIntentTokoenInfo } from './use-get-intent-token-list'
 import { useTranslation } from 'react-i18next'
-import { ITxLogicContext } from './type'
 import { excluedCoin } from '@/config/stablecoin'
 import { zeroAddr } from '@/config/address'
 import { utilSwap } from '@/utils/swap'
@@ -17,26 +16,8 @@ import { utilSwap } from '@/utils/swap'
 interface Options {
   data: ChatResponseTxConfrim
   walletList: PartialWalletRes[]
-  setCheckedWallet: Dispatch<SetStateAction<PartialWalletRes[]>>
   intentTokenInfo: TIntentTokoenInfo
 }
-
-export const TxLogicContext = createContext<ITxLogicContext>({
-  curRate: 0,
-  isFinalTx: false,
-  validateErr: [],
-  isSwaping: false,
-  buyValue: 0,
-  slippage: 0,
-  onConfirm: () => {},
-  showSwaping: () => {},
-  closeSwaping: () => {},
-  setSlippage: () => {},
-  setBuyValue: () => {},
-  setCurRate: () => {},
-  handleRateClick: (rate) => {},
-  getSelectTokenInfo: (wallet) => undefined,
-})
 
 export const useTxFromToken = (options: Options) => {
   const { walletList, intentTokenInfo } = options
@@ -130,7 +111,7 @@ export const useTxFromToken = (options: Options) => {
         : walletList
 
       // 判断To是否是链主代币
-      const toIsMainToken = utilSwap.isMainToken(wallets, toTokenInfo)
+      const toIsMainToken = utilSwap.getMainToken(wallets, toTokenInfo)
 
       if (toIsMainToken) return []
 

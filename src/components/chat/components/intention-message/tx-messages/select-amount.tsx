@@ -1,4 +1,4 @@
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import BigNumber from 'bignumber.js'
 import clsx from 'clsx'

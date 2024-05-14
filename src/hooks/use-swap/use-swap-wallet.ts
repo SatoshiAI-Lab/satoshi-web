@@ -1,17 +1,16 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
 import { MultiChainCoin } from '@/api/chat/types'
-import { utilWallet } from '@/utils/wallet'
 
 interface Options {
   selectFromToken?: MultiChainCoin
-  currentWallet?: PartialWalletRes
-  setCurrentWallet?: Dispatch<SetStateAction<PartialWalletRes | undefined>>
+  fromWallet?: PartialWalletRes
+  setFromWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
 }
 
 export const useSwapWallet = (options: Options) => {
   const { walletList } = useWalletStore()
-  const { selectFromToken, currentWallet, setCurrentWallet } = options
+  const { selectFromToken, fromWallet, setFromWallet } = options
   const [gridWalletList, setGridWalletList] = useState<PartialWalletRes[][]>([])
 
   const findTokenUsd = (wallet: PartialWalletRes) => {
@@ -29,7 +28,7 @@ export const useSwapWallet = (options: Options) => {
       (w) => w?.chain?.id === selectFromToken?.chain?.id
     )
 
-    setCurrentWallet?.(wallets[0])
+    setFromWallet(wallets[0])
 
     // 格式化数据成九宫格
     const gridWalletList = wallets
@@ -40,12 +39,14 @@ export const useSwapWallet = (options: Options) => {
       )
       .reduce<PartialWalletRes[][]>((cur, next) => {
         if (count % 3 == 0) {
-          cur.push([next])
+          cur.push([])
         }
         cur[cur.length - 1].push(next)
         count++
         return cur
       }, [])
+
+    console.log(gridWalletList)
 
     const defaultWallet = gridWalletList[0]?.[0]
 
@@ -53,13 +54,15 @@ export const useSwapWallet = (options: Options) => {
       defaultWallet &&
       // 链ID和钱包ID都必须是不一致的
       // 这里和跨不跨链无关，因为选择的代币必须用这条链的钱包支付
-      (defaultWallet.id !== currentWallet?.id ||
-        defaultWallet.chain?.id != currentWallet?.chain?.id)
+      (defaultWallet.id !== fromWallet?.id ||
+        defaultWallet.chain?.id != fromWallet?.chain?.id)
     ) {
       setGridWalletList(gridWalletList)
 
-      if (defaultWallet?.chain?.id !== currentWallet?.chain?.id) {
-        setCurrentWallet?.(defaultWallet)
+      if (defaultWallet?.chain?.id !== fromWallet?.chain?.id) {
+        console.log(defaultWallet, '----')
+
+        setFromWallet(defaultWallet)
       }
     }
   }
@@ -71,10 +74,8 @@ export const useSwapWallet = (options: Options) => {
   }, [walletList, selectFromToken])
 
   return {
-    currentWallet,
     gridWalletList,
     selectFromToken,
-    setCurrentWallet,
     findTokenUsd,
   }
 }

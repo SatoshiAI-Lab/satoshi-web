@@ -1,11 +1,11 @@
-import { ChatResponseTxConfrim } from '@/api/chat/types'
-import { useTxFromToken } from './use-tx-from-token'
-import { useTxToToken } from './use-tx-to-token'
-import { createContext, useState } from 'react'
+import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
+import { Dispatch, SetStateAction, createContext, useState } from 'react'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { useWalletStore } from '@/stores/use-wallet-store'
-import { useGetIntentTokenList } from './use-get-intent-token-list'
-import { ISwapContext } from './type'
+import {
+  TIntentTokoenInfo,
+  useGetIntentTokenList,
+} from './use-get-intent-token-list'
 import { useSwapWallet } from './use-swap-wallet'
 import { useSwapSelectToken } from './use-swap-select-token'
 
@@ -13,22 +13,48 @@ interface Options {
   data: ChatResponseTxConfrim
 }
 
+export interface ISwapContext {
+  data?: ChatResponseTxConfrim
+  fromTokenList?: MultiChainCoin[]
+  toTokenList?: MultiChainCoin[]
+  loadingToTokenList: boolean
+  loadingFromTokenList: boolean
+  selectToToken: MultiChainCoin | undefined
+  selectFromToken: MultiChainCoin | undefined
+  fromWallet?: PartialWalletRes
+  insufficientBalanceMsg: string
+  gridWalletList: PartialWalletRes[][]
+  walletList: PartialWalletRes[]
+  loadingAllWallet: boolean
+  intentTokenInfo?: TIntentTokoenInfo
+  toWallet?: PartialWalletRes
+
+  setToWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
+  setFromWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
+  setFromTokenList: Dispatch<SetStateAction<MultiChainCoin[] | undefined>>
+  setToTokenList: Dispatch<SetStateAction<MultiChainCoin[] | undefined>>
+  setSelectToToken: Dispatch<SetStateAction<MultiChainCoin | undefined>>
+  setSelectFromToken: Dispatch<SetStateAction<MultiChainCoin | undefined>>
+  findTokenUsd: (wallet: PartialWalletRes) => number
+}
+
 export const SwapContext = createContext<ISwapContext>({
   data: undefined,
-  checkedWallet: [],
   fromTokenList: [],
   toTokenList: [],
   loadingToTokenList: false,
   loadingFromTokenList: false,
   selectToToken: undefined,
   selectFromToken: undefined,
-  currentWallet: undefined,
+  fromWallet: undefined,
   insufficientBalanceMsg: '',
   gridWalletList: [],
   walletList: [],
   loadingAllWallet: true,
   intentTokenInfo: undefined,
-  setCurrentWallet: () => {},
+  toWallet: undefined,
+  setToWallet: () => {},
+  setFromWallet: () => {},
   setSelectFromToken: () => {},
   setSelectToToken: () => {},
   setFromTokenList: () => {},
@@ -38,11 +64,10 @@ export const SwapContext = createContext<ISwapContext>({
 
 export const useSwapProviderProvider = ({ data }: Options) => {
   const { walletList, loadingAllWallet } = useWalletStore() // 所有的钱包
-  const [checkedWallet, setCheckedWallet] = useState<PartialWalletRes[]>([]) // 过滤后合格的钱包
-  const [currentWallet, setCurrentWallet] = useState<
-    // 当前选中的钱包
-    PartialWalletRes | undefined
-  >()
+  // 用于支付代币的钱包
+  const [fromWallet, setFromWallet] = useState<PartialWalletRes | undefined>()
+  // 用于接收代币的钱包
+  const [toWallet, setToWallet] = useState<PartialWalletRes | undefined>()
 
   const intentTokenInfo = useGetIntentTokenList({
     data,
@@ -64,23 +89,24 @@ export const useSwapProviderProvider = ({ data }: Options) => {
 
   const { gridWalletList, findTokenUsd } = useSwapWallet({
     selectFromToken,
-    currentWallet,
-    setCurrentWallet,
+    fromWallet,
+    setFromWallet,
   })
 
   const contextValue = {
     data,
-    checkedWallet,
     fromTokenList,
     toTokenList,
     loadingToTokenList,
     loadingFromTokenList,
     selectToToken,
     selectFromToken,
-    currentWallet,
+    fromWallet,
     gridWalletList,
     insufficientBalanceMsg: '',
-    setCurrentWallet,
+    toWallet,
+    setToWallet,
+    setFromWallet,
     setSelectToToken,
     setToTokenList,
     setSelectFromToken,

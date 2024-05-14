@@ -74,6 +74,16 @@ export const useSwapSelectToken = (options: Options) => {
       ? toMainToken.filter((t) => t.chain.id === fromTokenChainId)
       : toTokenListResult || []
 
+    // 去重To代币
+    tokenList = tokenList?.filter((item, i) => {
+      for (const t of tokenList?.slice(i + 1) || []) {
+        if (item.address === t.address && item.chain.id === t.chain.id) {
+          return false
+        }
+      }
+      return true
+    })
+
     // Intentional chain
     if (toIntentChain !== '') {
       let beforeFilterTokenList = tokenList

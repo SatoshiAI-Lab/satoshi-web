@@ -1,6 +1,7 @@
 import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
 import { useEffect, useState } from 'react'
 import { TIntentTokoenInfo } from './use-get-intent-token-list'
+import { utilArr } from '@/utils/array'
 
 interface Options {
   selectFromToken?: MultiChainCoin
@@ -19,7 +20,7 @@ export const useTxToToken = (options: Options) => {
   const [toTokenList, setToTokenList] = useState(toTokenListResult)
 
   const getCheckedTokenFn = (tokenList?: MultiChainCoin[]) => {
-    const list = tokenList?.filter((t) => {
+    let list = tokenList?.filter((t) => {
       // 按照意图链
       if (fromIntentChain) {
         return t.chain.name === fromIntentChain
@@ -27,6 +28,18 @@ export const useTxToToken = (options: Options) => {
       // 按照持币人
       return tokenList[0].chain.id === t.chain.id
     })
+    list = list?.filter((item, i) => {
+      debugger
+      for (const t of list?.slice(i + 1) || []) {
+        if (item.address === t.address && item.chain.id === t.chain.id) {
+          return false
+        }
+      }
+      return true
+    })
+
+    console.log('list', list)
+
     setSelectToToken(list?.[0])
     setToTokenList(list)
   }

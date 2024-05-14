@@ -1,5 +1,5 @@
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
+import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import clsx from 'clsx'
 import numeral from 'numeral'
@@ -13,11 +13,11 @@ export const WalletList = () => {
   const {
     gridWalletList,
     selectFromToken,
-    currentWallet,
+    fromWallet,
     selectToToken,
     intentTokenInfo,
     toTokenList,
-    setCurrentWallet,
+    setFromWallet,
   } = useContext(SwapContext)
 
   const getCols = (count: number) => {
@@ -88,14 +88,14 @@ export const WalletList = () => {
                       key={i}
                       className={clsx(
                         'p-3 transition-all hover:text-gray-500 cursor-pointer',
-                        currentWallet?.id == wallet.id
+                        fromWallet?.id == wallet.id
                           ? '!text-primary bg-slate-100'
                           : '',
                         i === 1 ? 'border-x' : '',
                         i === wallets.length - 1 ? '!border-r-0' : ''
                       )}
                       onClick={() => {
-                        setCurrentWallet(wallet)
+                        setFromWallet(wallet)
                       }}
                     >
                       <div className="truncate">{wallet.name}</div>
