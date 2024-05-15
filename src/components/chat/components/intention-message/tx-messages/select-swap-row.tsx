@@ -8,11 +8,15 @@ import { useContext } from 'react'
 
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
+import { utilFmt } from '@/utils/format'
 
 export const SelectSwapRow = () => {
   const { selectFromToken, selectToToken, intentTokenInfo } =
     useContext(SwapContext)
-  const { buyValue, isFinalTx, setBuyValue } = useContext(TxLogicContext)
+  const { buyValue, isFinalTx, crossFeeData, setBuyValue } =
+    useContext(TxLogicContext)
+
+  const { provider, provider_data } = crossFeeData || {}
 
   return (
     <>
@@ -50,6 +54,19 @@ export const SelectSwapRow = () => {
         ></FaArrowRightLong>
         <SelectToken isFrom={false} isFinalTx={isFinalTx}></SelectToken>
       </div>
+
+      {Number(provider_data?.cross_chain_fee) ? (
+        <div className="mt-2 text-sm text-gray-500">
+          {t('cross.fee.tips')
+            .replace('$1', utilFmt.fisrtCharUppercase(provider) || '')
+            .replace(
+              '$2',
+              `${utilFmt.token(Number(provider_data?.cross_chain_fee) || 0, 2)}`
+            )
+            .toString()
+            .replace('$3', selectFromToken?.symbol || '')}
+        </div>
+      ) : null}
     </>
   )
 }

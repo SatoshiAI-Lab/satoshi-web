@@ -29,7 +29,6 @@ export const useTxToToken = (options: Options) => {
       return tokenList[0].chain.id === t.chain.id
     })
     list = list?.filter((item, i) => {
-      debugger
       for (const t of list?.slice(i + 1) || []) {
         if (item.address === t.address && item.chain.id === t.chain.id) {
           return false

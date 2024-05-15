@@ -1,4 +1,4 @@
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
+import { TxLogicContext, rates } from '@/hooks/use-swap/use-tx-logic'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import BigNumber from 'bignumber.js'
 import clsx from 'clsx'
@@ -6,35 +6,16 @@ import { t } from 'i18next'
 import numeral from 'numeral'
 import { useContext } from 'react'
 import { formatUnits } from 'viem'
+import { utilFmt } from '@/utils/format'
 
-const rates = [20, 50, 100]
 export const SelectAmount = () => {
-  const { selectFromToken, currentWallet, gridWalletList } =
+  const { selectFromToken, fromWallet, gridWalletList } =
     useContext(SwapContext)
-  const { isFinalTx, curRate, setCurRate, setBuyValue, getSelectTokenInfo } =
+  const { isFinalTx, curRate, handleRateClick, getSelectTokenInfo } =
     useContext(TxLogicContext)
 
   const walletLength = gridWalletList[0]?.length
-  const selectWalletToken = getSelectTokenInfo(currentWallet, selectFromToken)
-
-  const getTokenBalance = () => {
-    return currentWallet?.tokens?.find(
-      (t) => t.address === selectFromToken?.address
-    )
-  }
-
-  const handleRateClick = (rate: number) => {
-    const balance = getTokenBalance()
-
-    if (!balance) return
-    const { amount, decimals } = balance
-    const balanceFmt = +numeral(formatUnits(BigInt(amount), decimals)).format(
-      '0.00000'
-    )
-    const buyAmount = BigNumber(balanceFmt).multipliedBy(rate / 100)
-    setCurRate(rate)
-    setBuyValue(+buyAmount.toFixed(5))
-  }
+  const selectWalletToken = getSelectTokenInfo(fromWallet, selectFromToken)
 
   if (!walletLength) {
     return <></>
@@ -66,13 +47,13 @@ export const SelectAmount = () => {
       </div>
       <div className="ml-2">
         {t('total')}
-        {Number(
-          numeral(
+        {utilFmt.token(
+          Number(
             formatUnits(
               BigInt(selectWalletToken?.amount ?? 0),
               selectWalletToken?.decimals ?? 0
             )
-          ).format('0.0000')
+          )
         )}
         {selectWalletToken?.symbol}
       </div>

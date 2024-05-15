@@ -113,11 +113,8 @@
   "tx.token.text2": "你想用哪个钱包?",
   "custom": "自定义",
   "slippage": "滑点",
-  "tx.token.tips.error1": "请输入正确的购买成本。",
-  "tx.token.tips.error2": "钱包余额不足。",
-  "tx.token.tips.error3": "请输入正确的滑点。",
   "confirm": "确认交易",
-  "tx.form.error1": "请输入正确的购买费用",
+  "tx.form.error1": "请输入正确的购买成本",
   "tx.form.error2": "钱包余额不足",
   "tx.form.error3": "请输入正确的滑点",
   "slippage.warning": "小于0.05%的滑点可能导致交易失败",
@@ -370,5 +367,9 @@
   "connot.exchange": "不能用同链的相同代币进行交易",
   "loading.wallet": "正在加载钱包...",
   "not.cross.chain": "暂不支持跨链",
-  "not.find.token": "没有找到$1代币，请选择其他代币"
+  "not.find.token": "没有找到$1代币，请选择其他代币",
+  "receive.wallet": "接收$1的钱包",
+  "cross.fee.tips": "本次交易基于$1平台，该平台将收取$$2的$3作为手续费",
+  "not.supported": "不支持从$1跨链到$2",
+  "cross.chain.quote": "正在获取代币跨链报价"
 }

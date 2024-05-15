@@ -39,7 +39,7 @@ export const SelecSlippage = () => {
 
       <div className="flex flex-col justify-center ml-5 text-sm text-red-500 leading-6">
         {validateErr.map((error) => {
-          return <div key={error}>{error}</div>
+          return <div key={error.errorText}>{error.errorText}</div>
         })}
       </div>
     </div>

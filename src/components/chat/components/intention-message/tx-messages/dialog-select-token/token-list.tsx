@@ -113,7 +113,7 @@ export const TokenList = () => {
     <div className="mt-2 mb-4">
       {tokens.map((token) => {
         console.log('tokenItem', token)
-        
+
         return (
           <MenuItem
             key={`${token.address}${token.chain.id}`}
@@ -147,7 +147,7 @@ export const TokenList = () => {
                     </div>
                   </div>
                   <div className="text-sm text-gray-400">
-                    {token?.chain.name}
+                    {utilFmt.fisrtCharUppercase(token?.chain.name)}
                   </div>
                 </div>
               </div>

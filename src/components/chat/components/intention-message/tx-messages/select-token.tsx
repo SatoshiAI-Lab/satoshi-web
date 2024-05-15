@@ -93,7 +93,9 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
                   <div className="flex">
                     <div className="min-w-[60px]">
                       <div>{`${item.symbol}`}</div>
-                      <div className="text-xs text-gray-500">{`${item.chain.name}`}</div>
+                      <div className="text-xs text-gray-500">{`${utilFmt.fisrtCharUppercase(
+                        item.chain.name
+                      )}`}</div>
                     </div>
                     <div className="ml-3">
                       <div className="">
@@ -149,8 +151,10 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
           )}
           {selectToken && (
             <div className="mx-1">
-              <div>{`${selectToken?.symbol}`}</div>
-              <div className="text-xs text-gray-400">{`${selectToken?.chain.name}`}</div>
+              <div>{`${utilFmt.fisrtCharUppercase(selectToken?.symbol)}`}</div>
+              <div className="text-xs text-gray-400">{`${utilFmt.fisrtCharUppercase(
+                selectToken?.chain.name
+              )}`}</div>
             </div>
           )}
           <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
@@ -177,10 +181,10 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
             </Avatar>
             <div className="mx-2">
               <div className="max-w-[110px] truncate">
-                {selectToToken?.symbol}
+                {utilFmt.fisrtCharUppercase(selectToToken?.symbol)}
               </div>
               <div className="text-xs text-gray-400">
-                {selectToToken?.chain.name}
+                {utilFmt.fisrtCharUppercase(selectToToken?.chain.name)}
               </div>
             </div>
           </>

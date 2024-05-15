@@ -6,6 +6,7 @@ import { ContextType, useContext, useRef, MouseEvent, WheelEvent } from 'react'
 import { DialogContext } from '@/hooks/use-swap/use-dialog-select-token'
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
 import 'react-horizontal-scrolling-menu/dist/styles.css'
+import { utilFmt } from '@/utils/format'
 
 type scrollVisibilityApiType = ContextType<typeof VisibilityContext>
 
@@ -56,7 +57,7 @@ export const ChainList = () => {
             return (
               <Tooltip
                 key={i}
-                title={chain.name}
+                title={utilFmt.fisrtCharUppercase(chain.name)}
                 slotProps={{
                   popper: {
                     modifiers: [

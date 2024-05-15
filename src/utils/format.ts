@@ -8,6 +8,13 @@ import BigNumber from 'bignumber.js'
  * Utilities functions for formatting
  */
 export const utilFmt = {
+  fisrtCharUppercase(value?: string) {
+    if (typeof value !== 'string') {
+      return ''
+    }
+
+    return value.slice(0, 1).toUpperCase() + value.slice(1)
+  },
   addr(address?: string, len = 5) {
     if (address) {
       return `${address.slice(0, len)}...${address.slice(-len, address.length)}`
@@ -25,13 +32,17 @@ export const utilFmt = {
   ellipsis(str: string, len = 8) {
     return str.length > len ? `${str.slice(0, len)}...` : str
   },
-  token(value?: number, fixed = 2) {
+  token(value?: number, fixed = 3) {
     if (!value) return 0
 
     const strValue = utilNum.transferToNumber(value)
 
-    if (BigNumber(strValue).gte(1) && BigNumber(strValue).lte(100)) {
+    if (BigNumber(strValue).gte(1) && BigNumber(strValue).lte(10)) {
       return utilParse.noRoundFixed(strValue, fixed)
+    }
+
+    if (BigNumber(strValue).gte(10) && BigNumber(strValue).lte(100)) {
+      return utilParse.noRoundFixed(strValue, 2)
     }
 
     if (BigNumber(strValue).gte(100)) {
@@ -46,7 +57,10 @@ export const utilFmt = {
       const slicedLastNum = lastNumbers.slice(0, fixed)
       const result = `0.0{${zeroLen}}${slicedLastNum}`
 
-      if (zeroLen < 2) return `0.${slicedLastNum}`
+      if (zeroLen === 0) return `0.${slicedLastNum}`
+      if (zeroLen === 1) return `0.0${slicedLastNum}`
+      if (zeroLen === 2) return `0.00${lastNumbers.slice(0, 2)}`
+      if (zeroLen === 3) return `0.000${lastNumbers.slice(0, 1)}`
 
       return result
     } else {

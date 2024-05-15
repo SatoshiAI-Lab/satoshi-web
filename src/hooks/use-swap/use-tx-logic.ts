@@ -23,21 +23,32 @@ import {
   ChatResponseWalletListToken,
   MultiChainCoin,
 } from '@/api/chat/types'
+import { useQuery } from '@tanstack/react-query'
+import { CrossFeeData } from '@/api/trand/types'
+import { SwapError } from '@/config/swap-error'
 
 interface Options {
   data: ChatResponseTxConfrim
   selectFromToken?: MultiChainCoin
   selectToToken?: MultiChainCoin
   fromWallet?: PartialWalletRes
+  receiveWallet?: PartialWalletRes
+}
+
+export interface ValidateError {
+  type: string
+  errorText: string
 }
 
 export interface ITxLogicContext {
   curRate: number
   isFinalTx: boolean
-  validateErr: string[]
+  validateErr: ValidateError[]
   isSwaping: boolean
   buyValue: number
   slippage: number
+  crossFeeData?: CrossFeeData
+  crossFeeLoading: boolean
 
   onConfirm: () => any
   showSwaping: () => void
@@ -52,6 +63,8 @@ export interface ITxLogicContext {
   ) => ChatResponseWalletListToken | undefined
 }
 
+export const rates = [20, 50, 100]
+
 export const TxLogicContext = createContext<ITxLogicContext>({
   curRate: 0,
   isFinalTx: false,
@@ -59,6 +72,8 @@ export const TxLogicContext = createContext<ITxLogicContext>({
   isSwaping: false,
   buyValue: 0,
   slippage: 0,
+  crossFeeData: undefined,
+  crossFeeLoading: false,
   onConfirm: () => {},
   showSwaping: () => {},
   closeSwaping: () => {},
@@ -74,18 +89,67 @@ export const useTxLogic = ({
   fromWallet,
   selectFromToken,
   selectToToken,
+  receiveWallet,
 }: Options) => {
   const [buyValue, setBuyValue] = useState(data.amount)
   const [slippage, setSlippage] = useState(5)
-  const [curRate, setCurRate] = useState(0)
-  const [validateErr, setValidateErr] = useState<string[]>([])
+  const [curRate, setCurRate] = useState(20)
+  const [validateErr, setValidateErr] = useState<ValidateError[]>([])
   const [isFinalTx, setIsFinalTx] = useState(false)
   const { show: isSwaping, open: showSwaping, hidden: closeSwaping } = useShow()
 
   const { getAllWallet } = useWalletList()
   const { addMessage } = useChatStore()
 
-  console.log(fromWallet)
+  const { data: crossFeeData, isFetching: crossFeeLoading } = useQuery({
+    queryKey: [selectFromToken, selectToToken, setValidateErr],
+    queryFn: async () => {
+      if (selectToToken?.chain.id === selectFromToken?.chain.id) {
+        return
+      }
+
+      if (!selectFromToken || !selectToToken || !buyValue) {
+        return undefined
+      }
+
+      const { code, data } = await trandApi.getCrossFee({
+        crossAmount: `${buyValue || 0.00001}`,
+        fromData: {
+          chain: selectFromToken.chain.name,
+          tokenAddress: selectFromToken.address,
+        },
+        slippageBps: slippage * 100,
+        toData: {
+          chain: selectToToken.chain.name,
+          tokenAddress: selectToToken.address,
+        },
+      })
+
+      if (code != 200) {
+        const errorText = t('not.supported')
+          .replace('$1', selectFromToken.chain.name)
+          .replace('$2', selectToToken.chain.name)
+
+        if (
+          !validateErr.find(
+            ({ type }) => type === SwapError.crossChainNotSupper
+          )
+        ) {
+          validateErr.push({
+            type: SwapError.crossChainNotSupper,
+            errorText,
+          })
+        }
+
+        setValidateErr(validateErr)
+      }
+
+      return data
+    },
+    refetchInterval: 15 * 1000,
+  })
+
+  console.log(crossFeeLoading)
 
   const getSelectTokenInfo = (
     wallet?: PartialWalletRes,
@@ -102,16 +166,26 @@ export const useTxLogic = ({
     const balance = +numeral(formatUnits(BigInt(amount), decimals)).format(
       '0.00000'
     )
+
+    if (rate == 100) {
+      setBuyValue(+balance)
+      setCurRate(rate)
+      return
+    }
+
     const buyAmount = BigNumber(balance).multipliedBy(rate / 100)
     setCurRate(rate)
     setBuyValue(+buyAmount.toFixed(buyAmount.toNumber() > 100 ? 0 : 5))
   }
 
   const checkForm = () => {
-    let error: string[] = []
+    let error: ValidateError[] = []
 
     if (buyValue <= 0) {
-      error.push(t('tx.form.error1'))
+      error.push({
+        type: SwapError.buyCost,
+        errorText: t('tx.form.error1'),
+      })
     }
 
     const { amount = 0, decimals = 0 } = selectWalletToken ?? {}
@@ -119,11 +193,17 @@ export const useTxLogic = ({
       '0.00000'
     )
     if (buyValue > balance) {
-      error.push(t('tx.form.error2'))
+      error.push({
+        type: SwapError.insufficient,
+        errorText: t('tx.form.error2'),
+      })
     }
 
     if (slippage <= 0.05) {
-      error.push(t('tx.form.error3'))
+      error.push({
+        type: SwapError.slippage,
+        errorText: t('tx.form.error3'),
+      })
     }
 
     setValidateErr(error)
@@ -131,24 +211,16 @@ export const useTxLogic = ({
     return error.length === 0
   }
 
+  // 单链交易
   const baseSwap = async () => {
-    const getToken = (isFrom: boolean) => {
-      if (isFrom) {
-        return selectFromToken
-      } else {
-        return selectToToken
-      }
-    }
-    const inputToken = getToken(true)
-    const outputToken = getToken(false)
     const amount = BigNumber(buyValue).multipliedBy(0.93).toFixed(5)
 
     const { data } = await trandApi.swapToken(fromWallet?.id!, {
-      chain: inputToken?.chain.name,
+      chain: selectFromToken?.chain.name,
       amount: `${amount}`,
-      input_token: `${inputToken?.address}`,
-      output_token: `${outputToken?.address}`,
-      slippageBps: slippage * 100,
+      input_token: `${selectFromToken?.address}`,
+      output_token: `${selectToToken?.address}`,
+      slippageBps: slippage,
     })
 
     addMessage({
@@ -159,9 +231,14 @@ export const useTxLogic = ({
     const getStatus = async () => {
       const { data: result } = await interactiveApi.getHashStatus({
         hash_tx: data.hash_tx,
-        chain: inputToken?.chain.name,
+        chain: selectFromToken?.chain.name,
       })
       if (result.status == 0) {
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(null)
+          }, 1500)
+        })
         await getStatus()
         return
       }
@@ -184,7 +261,36 @@ export const useTxLogic = ({
     getAllWallet()
   }
 
-  const crossSwap = async () => {}
+  // 跨链交易
+  const crossSwap = async () => {
+    const amount = BigNumber(buyValue).multipliedBy(0.93).toFixed(5)
+
+    if (!selectFromToken || !selectToToken || !crossFeeData || !receiveWallet) {
+      console.log('Transaction parameter missing')
+      return
+    }
+
+    const approval_address =
+      crossFeeData.provider_data.cross_chain_fee_token_address!
+
+    const { data } = await trandApi.crossSwap(fromWallet?.id!, {
+      crossAmount: amount,
+      fromData: {
+        chain: selectFromToken.chain.name,
+        tokenAddress: selectFromToken.address,
+      },
+      toData: {
+        chain: selectToToken.chain.name,
+        tokenAddress: selectToToken.address,
+        walletAddress: receiveWallet.address!,
+      },
+      // 默认为 10% 即 1000；1 为 0.01%
+      slippageBps: slippage * 100,
+      providerData: {
+        approval_address,
+      },
+    })
+  }
 
   const onConfirm = async () => {
     if (!checkForm()) return
@@ -207,6 +313,35 @@ export const useTxLogic = ({
     handleRateClick(curRate)
   }, [fromWallet])
 
+  useEffect(() => {
+    checkForm()
+  }, [selectWalletToken, buyValue, slippage])
+
+  useEffect(() => {
+    if (!selectWalletToken) return
+    const { amount, decimals } = selectWalletToken
+    const balance = +numeral(formatUnits(BigInt(amount), decimals)).format(
+      '0.00000'
+    )
+
+    if (balance === buyValue) {
+      setCurRate(100)
+      return
+    }
+
+    for (const rate of rates) {
+      const buyAmount = BigNumber(balance).multipliedBy(rate / 100)
+      const value = buyAmount.toFixed(buyAmount.toNumber() > 100 ? 0 : 5)
+
+      if (+value === buyValue) {
+        setCurRate(rate)
+        return
+      }
+    }
+
+    setCurRate(0)
+  }, [buyValue])
+
   const txLogigcContextValue = {
     curRate,
     isFinalTx,
@@ -214,6 +349,8 @@ export const useTxLogic = ({
     isSwaping,
     buyValue,
     slippage,
+    crossFeeData,
+    crossFeeLoading,
     onConfirm,
     showSwaping,
     closeSwaping,

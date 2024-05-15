@@ -70,8 +70,7 @@ export const DialogContext = createContext<DialogContextType>({
 })
 
 export const useDialogSelectTokenContext = (isFrom: boolean) => {
-  const { currentWallet, selectFromToken, selectToToken } =
-    useContext(SwapContext)
+  const { fromWallet, selectFromToken, selectToToken } = useContext(SwapContext)
 
   const { walletPlatform } = useWalletStore()
 
@@ -111,13 +110,13 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
   }, [selectToken])
 
   useEffect(() => {
-    if (currentWallet) {
-      const wallelt = walletPlatform[currentWallet?.platform!]?.find(
-        (w) => w.address === currentWallet?.address
+    if (fromWallet) {
+      const wallelt = walletPlatform[fromWallet?.platform!]?.find(
+        (w) => w.address === fromWallet?.address
       )
       setSelectWallet(wallelt)
     }
-  }, [currentWallet])
+  }, [fromWallet])
 
   useEffect(() => {
     const selectToken = isFrom

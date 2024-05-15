@@ -23,20 +23,21 @@ export const TxTokenBubbles = () => {
   }
 
   const {
-    currentWallet,
+    fromWallet,
     contextValue,
     selectFromToken,
     selectToToken,
     loadingFromTokenList,
-    insufficientBalanceMsg,
     loadingAllWallet,
+    receiveWallet,
   } = useSwapProviderProvider(options)
 
   const { txLogigcContextValue } = useTxLogic({
     ...options,
     selectFromToken,
     selectToToken,
-    currentWallet,
+    fromWallet,
+    receiveWallet,
   })
 
   if (loadingAllWallet) {

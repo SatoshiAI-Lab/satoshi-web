@@ -1,6 +1,6 @@
 import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
 import { Dispatch, SetStateAction, createContext, useState } from 'react'
-import { PartialWalletRes } from '@/stores/use-wallet-store'
+import { PartialWalletRes, WalletPlatform } from '@/stores/use-wallet-store'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import {
   TIntentTokoenInfo,
@@ -8,6 +8,8 @@ import {
 } from './use-get-intent-token-list'
 import { useSwapWallet } from './use-swap-wallet'
 import { useSwapSelectToken } from './use-swap-select-token'
+import { useQuery } from '@tanstack/react-query'
+import { trandApi } from '@/api/trand'
 
 interface Options {
   data: ChatResponseTxConfrim
@@ -27,9 +29,10 @@ export interface ISwapContext {
   walletList: PartialWalletRes[]
   loadingAllWallet: boolean
   intentTokenInfo?: TIntentTokoenInfo
-  toWallet?: PartialWalletRes
+  receiveWallet?: PartialWalletRes
+  walletPlatform?: WalletPlatform
 
-  setToWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
+  setReceiveWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
   setFromWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
   setFromTokenList: Dispatch<SetStateAction<MultiChainCoin[] | undefined>>
   setToTokenList: Dispatch<SetStateAction<MultiChainCoin[] | undefined>>
@@ -52,8 +55,9 @@ export const SwapContext = createContext<ISwapContext>({
   walletList: [],
   loadingAllWallet: true,
   intentTokenInfo: undefined,
-  toWallet: undefined,
-  setToWallet: () => {},
+  receiveWallet: undefined,
+  walletPlatform: undefined,
+  setReceiveWallet: () => {},
   setFromWallet: () => {},
   setSelectFromToken: () => {},
   setSelectToToken: () => {},
@@ -63,11 +67,13 @@ export const SwapContext = createContext<ISwapContext>({
 })
 
 export const useSwapProviderProvider = ({ data }: Options) => {
-  const { walletList, loadingAllWallet } = useWalletStore() // 所有的钱包
+  const { walletList, loadingAllWallet, walletPlatform } = useWalletStore() // 所有的钱包
   // 用于支付代币的钱包
   const [fromWallet, setFromWallet] = useState<PartialWalletRes | undefined>()
   // 用于接收代币的钱包
-  const [toWallet, setToWallet] = useState<PartialWalletRes | undefined>()
+  const [receiveWallet, setReceiveWallet] = useState<
+    PartialWalletRes | undefined
+  >()
 
   const intentTokenInfo = useGetIntentTokenList({
     data,
@@ -89,8 +95,11 @@ export const useSwapProviderProvider = ({ data }: Options) => {
 
   const { gridWalletList, findTokenUsd } = useSwapWallet({
     selectFromToken,
+    selectToToken,
     fromWallet,
+    receiveWallet,
     setFromWallet,
+    setReceiveWallet,
   })
 
   const contextValue = {
@@ -104,8 +113,8 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     fromWallet,
     gridWalletList,
     insufficientBalanceMsg: '',
-    toWallet,
-    setToWallet,
+    receiveWallet,
+    setReceiveWallet,
     setFromWallet,
     setSelectToToken,
     setToTokenList,
@@ -115,6 +124,7 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     walletList,
     loadingAllWallet,
     intentTokenInfo,
+    walletPlatform,
   }
 
   return { contextValue, ...contextValue }

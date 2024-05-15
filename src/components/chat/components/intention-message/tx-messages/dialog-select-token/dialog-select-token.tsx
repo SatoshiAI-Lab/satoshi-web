@@ -36,7 +36,7 @@ export const DialogSelectToken = (props: Props) => {
 
   const { createWallet } = useWalletManage()
   const { getAllWallet } = useWalletList()
-  
+
   const {
     loadingSearch,
     searchTokens,
@@ -65,7 +65,6 @@ export const DialogSelectToken = (props: Props) => {
       setCreateWalletInfo(undefined)
     }
   }, [searchValue])
-
 
   const dialogContent = () => {
     // 查币中
@@ -141,7 +140,7 @@ export const DialogSelectToken = (props: Props) => {
 
     return (
       <>
-        {!isSearch && (
+        {!isSearch && isFrom ? (
           <div className="px-6 flex items-center">
             <span className="text-base mr-2">
               {isSearch ? t('use.wallet') : t('my.tokens.in')}
@@ -163,7 +162,7 @@ export const DialogSelectToken = (props: Props) => {
               })}
             </Select>
           </div>
-        )}
+        ) : null}
         <ChainList />
         <TokenList />
         {createdWallet !== '' ? (

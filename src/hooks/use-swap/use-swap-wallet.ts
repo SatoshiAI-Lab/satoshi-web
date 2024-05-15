@@ -4,13 +4,22 @@ import { MultiChainCoin } from '@/api/chat/types'
 
 interface Options {
   selectFromToken?: MultiChainCoin
+  selectToToken?: MultiChainCoin
   fromWallet?: PartialWalletRes
+  receiveWallet?: PartialWalletRes
   setFromWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
+  setReceiveWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
 }
 
 export const useSwapWallet = (options: Options) => {
   const { walletList } = useWalletStore()
-  const { selectFromToken, fromWallet, setFromWallet } = options
+  const {
+    selectFromToken,
+    selectToToken,
+    fromWallet,
+    setFromWallet,
+    setReceiveWallet,
+  } = options
   const [gridWalletList, setGridWalletList] = useState<PartialWalletRes[][]>([])
 
   const findTokenUsd = (wallet: PartialWalletRes) => {
@@ -21,20 +30,24 @@ export const useSwapWallet = (options: Options) => {
   }
 
   const handleWallet = () => {
+    debugger
     let count = 0
 
     // 筛选出和FromToken同一条链的钱包
     let wallets = walletList.filter(
       (w) => w?.chain?.id === selectFromToken?.chain?.id
     )
-
     setFromWallet(wallets[0])
+    setReceiveWallet(wallets[0])
 
     // 格式化数据成九宫格
     const gridWalletList = wallets
       .filter((w) =>
         w.tokens?.some(
-          (t) => t.value_usd > 0 && t.address === selectFromToken?.address
+          (t) =>
+            t.value_usd > 0 &&
+            t.address === selectFromToken?.address &&
+            t.name === selectFromToken?.name
         )
       )
       .reduce<PartialWalletRes[][]>((cur, next) => {
@@ -46,8 +59,6 @@ export const useSwapWallet = (options: Options) => {
         return cur
       }, [])
 
-    console.log(gridWalletList)
-
     const defaultWallet = gridWalletList[0]?.[0]
 
     if (
@@ -58,11 +69,9 @@ export const useSwapWallet = (options: Options) => {
         defaultWallet.chain?.id != fromWallet?.chain?.id)
     ) {
       setGridWalletList(gridWalletList)
-
       if (defaultWallet?.chain?.id !== fromWallet?.chain?.id) {
-        console.log(defaultWallet, '----')
-
         setFromWallet(defaultWallet)
+        setReceiveWallet(defaultWallet)
       }
     }
   }
@@ -71,7 +80,7 @@ export const useSwapWallet = (options: Options) => {
     if (selectFromToken) {
       handleWallet()
     }
-  }, [walletList, selectFromToken])
+  }, [selectFromToken])
 
   return {
     gridWalletList,

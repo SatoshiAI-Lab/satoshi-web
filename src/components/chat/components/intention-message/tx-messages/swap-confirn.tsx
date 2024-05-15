@@ -10,20 +10,14 @@ export const SwapConfirm = () => {
 
   const { selectFromToken, selectToToken, gridWalletList } =
     useContext(SwapContext)
-  const { isSwaping, isFinalTx, onConfirm } = useContext(TxLogicContext)
-
-  const handleCrossChain = () => {
-    if (
-      selectToToken &&
-      selectFromToken &&
-      selectToToken?.chain.id !== selectFromToken?.chain.id
-    ) {
-      return t('not.cross.chain')
-    }
-  }
+  const { isSwaping, isFinalTx, validateErr, crossFeeLoading, onConfirm } =
+    useContext(TxLogicContext)
 
   const unableTrade =
-    !selectFromToken || !selectToToken || !gridWalletList.length
+    !selectFromToken ||
+    !selectToToken ||
+    !gridWalletList.length ||
+    !!validateErr.length
 
   let text = t('confirm')
 
@@ -39,12 +33,16 @@ export const SwapConfirm = () => {
     text = t('unable.trade')
   }
 
+  if (crossFeeLoading) {
+    text = t('cross.chain.quote')
+  }
+
   return (
     <Button
       variant="contained"
       className="!mb-2 !rounded-full"
       onClick={onConfirm}
-      disabled={isSwaping || isFinalTx || unableTrade}
+      disabled={isSwaping || isFinalTx || unableTrade || crossFeeLoading}
     >
       {isSwaping ? (
         <CircularProgress size={16} className="mr-2"></CircularProgress>
