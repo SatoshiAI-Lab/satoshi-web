@@ -21,4 +21,12 @@ export enum ResponseCode {
   Err = 400,
 
   Auth = 401,
+
+  CrossChianLiquidity = 1004,
+
+  CrossChianPath = 2001,
+
+  CrossChianMinAmout = 1005,
+
+  CrossChianMaxAmout = 1006,
 }

@@ -1,12 +1,10 @@
 import { useChainsPlatforms } from '@/components/wallet/hooks/use-chains-platforms'
-import { Platform } from '@/config/wallet'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { utilFmt } from '@/utils/format'
 import { Select, MenuItem } from '@mui/material'
 import clsx from 'clsx'
-import numeral from 'numeral'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { formatUnits } from 'viem'
@@ -44,17 +42,16 @@ export const WalletList = () => {
   )?.platform
 
   const isSomeChian = selectFromToken?.chain.id !== selectToToken?.chain.id
+  const walletLength = gridWalletList?.[0]?.length
 
   const getSelectTokenInfo = (wallet: PartialWalletRes) => {
     return wallet?.tokens?.find((t) => selectFromToken?.address == t.address)
   }
 
   const fromWalletList = () => {
-    const walletLength = gridWalletList?.[0]?.length
-
     if (!walletLength || !toTokenList?.length) {
       return (
-        <div className="text-sm text-red-500">
+        <div className="text-sm text-red-500 mb-5">
           {!walletLength ? (
             <div>
               {t('insufficient.balance').replace(
@@ -139,15 +136,20 @@ export const WalletList = () => {
   }
 
   return (
-    <div className={clsx('mt-5', isSomeChian ? 'flex items-stretch' : '')}>
+    <div
+      className={clsx(
+        'mt-5',
+        isSomeChian && walletLength ? 'flex items-stretch' : ''
+      )}
+    >
       <div className={clsx('pr-5', isFinalTx && 'pointer-events-none')}>
         {fromWalletList()}
       </div>
       {isSomeChian && receiveWallet ? (
         <div
           className={clsx(
-            'flex flex-col justify-stretch',
-            gridWalletList[0].length > 2 ? 'mt-5' : ''
+            walletLength ? 'flex flex-col justify-stretch' : '',
+            gridWalletList[0]?.length > 2 ? 'mt-5' : ''
           )}
         >
           <div className="font-bold mb-1">

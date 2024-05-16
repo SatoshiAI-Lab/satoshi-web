@@ -374,7 +374,10 @@
   "not.cross.chain": "Cross-chain is not currently supported",
   "not.find.token": "No $1 token found Please select another token",
   "receive.wallet": "Receive $1 wallet",
-  "cross.fee.tips": "This transaction is based on the $1 platform, which will charge $3 of $2 as a handling fee",
+  "cross.fee.tips": "This transaction is based on the $1 platform, which will charge $2 as a processing fee",
   "not.supported": "Cross-chain from $1 to $2 is not supported",
-  "cross.chain.quote": "Tokens are being offered cross-chain"
+  "cross.chain.quote": "Tokens are being offered cross-chain",
+  "cross.chain.min": "The cross-chain limit cannot be less than $1 $2",
+  "cross.chain.max": "The cross-chain limit cannot be greater than $1 $2",
+  "cross.chain.liquidity": "Insufficient liquidity"
 }

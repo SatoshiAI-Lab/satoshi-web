@@ -58,6 +58,9 @@ export interface CrossPriceQuery {
 
 export interface CrossFeeData {
   provider: string
+  max_amount?: string
+  minimum_amount?: string
+
   /**
    * 不同服务商获得的数据会有所不同
    */

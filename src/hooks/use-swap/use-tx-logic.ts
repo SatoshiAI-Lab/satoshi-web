@@ -26,6 +26,8 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { CrossFeeData } from '@/api/trand/types'
 import { SwapError } from '@/config/swap-error'
+import { ResponseCode } from '@/api/fetcher/types'
+import { utilFmt } from '@/utils/format'
 
 interface Options {
   data: ChatResponseTxConfrim
@@ -96,6 +98,7 @@ export const useTxLogic = ({
   const [curRate, setCurRate] = useState(20)
   const [validateErr, setValidateErr] = useState<ValidateError[]>([])
   const [isFinalTx, setIsFinalTx] = useState(false)
+  const [crossMinMountError, setCrossMinMountError] = useState(0)
   const { show: isSwaping, open: showSwaping, hidden: closeSwaping } = useShow()
 
   const { getAllWallet } = useWalletList()
@@ -105,51 +108,75 @@ export const useTxLogic = ({
     queryKey: [selectFromToken, selectToToken, setValidateErr],
     queryFn: async () => {
       if (selectToToken?.chain.id === selectFromToken?.chain.id) {
-        return
+        return undefined
       }
 
       if (!selectFromToken || !selectToToken || !buyValue) {
         return undefined
       }
 
-      const { code, data } = await trandApi.getCrossFee({
-        crossAmount: `${buyValue || 0.00001}`,
-        fromData: {
-          chain: selectFromToken.chain.name,
-          tokenAddress: selectFromToken.address,
-        },
-        slippageBps: slippage * 100,
-        toData: {
-          chain: selectToToken.chain.name,
-          tokenAddress: selectToToken.address,
-        },
-      })
+      try {
+        const { code, data } = await trandApi.getCrossFee({
+          crossAmount: `${buyValue || 0.00001}`,
+          fromData: {
+            chain: selectFromToken.chain.name,
+            tokenAddress: selectFromToken.address,
+          },
+          slippageBps: slippage * 100,
+          toData: {
+            chain: selectToToken.chain.name,
+            tokenAddress: selectToToken.address,
+          },
+        })
+        return data
+      } catch (result: any) {
+        const { code, data } = result.data
+        const handleError = (errorText: string, errorType: string) => {
+          if (!validateErr.find(({ type }) => type === errorType)) {
+            validateErr.push({
+              type: errorType,
+              errorText,
+            })
+          }
 
-      if (code != 200) {
-        const errorText = t('not.supported')
-          .replace('$1', selectFromToken.chain.name)
-          .replace('$2', selectToToken.chain.name)
-
-        if (
-          !validateErr.find(
-            ({ type }) => type === SwapError.crossChainNotSupper
-          )
-        ) {
-          validateErr.push({
-            type: SwapError.crossChainNotSupper,
-            errorText,
-          })
+          setValidateErr(validateErr)
+        }
+        switch (code) {
+          case ResponseCode.CrossChianPath: {
+            const errorText = t('not.supported')
+              .replace('$1', selectFromToken.chain.name)
+              .replace('$2', selectToToken.chain.name)
+            handleError(errorText, SwapError.crossChainNotSupper)
+            break
+          }
+          case ResponseCode.CrossChianMaxAmout: {
+            const errorText = t('cross.chain.max')
+              .replace('$1', utilFmt.token(data.minimum_amount).toString())
+              .replace('$2', selectToToken.symbol)
+            handleError(errorText, SwapError.crossChaiMaxAmount)
+            break
+          }
+          case ResponseCode.CrossChianMinAmout: {
+            const errorText = t('cross.chain.min')
+              .replace('$1', utilFmt.token(data.minimum_amount).toString())
+              .replace('$2', selectToToken.symbol)
+            handleError(errorText, SwapError.crossChaiMinAmount)
+            break
+          }
+          case ResponseCode.CrossChianLiquidity: {
+            const errorText = t('cross.chain.liquidity')
+              .replace('$1', utilFmt.token(data.minimum_amount).toString())
+              .replace('$2', selectToToken.symbol)
+            handleError(errorText, SwapError.crossChainLiquidity)
+            break
+          }
         }
 
-        setValidateErr(validateErr)
+        return undefined
       }
-
-      return data
     },
     refetchInterval: 15 * 1000,
   })
-
-  console.log(crossFeeLoading)
 
   const getSelectTokenInfo = (
     wallet?: PartialWalletRes,

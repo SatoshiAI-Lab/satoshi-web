@@ -369,7 +369,10 @@
   "not.cross.chain": "暂不支持跨链",
   "not.find.token": "没有找到$1代币，请选择其他代币",
   "receive.wallet": "接收$1的钱包",
-  "cross.fee.tips": "本次交易基于$1平台，该平台将收取$$2的$3作为手续费",
+  "cross.fee.tips": "本次交易基于$1平台，该平台将收取$$2作为手续费",
   "not.supported": "不支持从$1跨链到$2",
-  "cross.chain.quote": "正在获取代币跨链报价"
+  "cross.chain.quote": "正在获取代币跨链报价",
+  "cross.chain.min": "跨链额度不能小于$1个$2",
+  "cross.chain.max": "跨链额度不能大于$1个$2",
+  "cross.chain.liquidity": "流动性不足"
 }

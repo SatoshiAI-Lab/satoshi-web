@@ -4,6 +4,22 @@ export const SwapError = {
    */
   crossChainNotSupper: 'cross-chain',
   /**
+   * 跨链余额过少
+   */
+  crossChaiMinAmount: 'cross-chain-min-amount',
+  /**
+   * 跨链余额过多
+   */
+  crossChaiMaxAmount: 'cross-chain-max-amount',
+  /**
+   * 跨链流动性不足
+   */
+  crossChainLiquidity: 'cross-chain-liquidity',
+  /**
+   * 没找到跨链路径
+   */
+  crossChainNotPath: 'cross-chain-no-path',
+  /**
    * 余额不足
    */
   insufficient: 'insufficient-balance',

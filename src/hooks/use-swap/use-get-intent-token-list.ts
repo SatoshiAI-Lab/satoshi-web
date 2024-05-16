@@ -1,4 +1,8 @@
-import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
+import {
+  ChatResponseTxConfrim,
+  ChatResponseWalletListToken,
+  MultiChainCoin,
+} from '@/api/chat/types'
 import { tokenApi } from '@/api/token'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -30,6 +34,12 @@ export const useGetIntentTokenList = (options: Options) => {
   if (toMainToken?.length && toTokenInfo !== '') {
     setToTokenInfo('')
   }
+
+  // const handleSearchTokenData: ChatResponseWalletListToken[] = (
+  //   searchTokenList?: MultiChainCoin[]
+  // ) => {
+  //   searchTokenList
+  // }
 
   // 获取fromToken在全部链的代币信息
   const {

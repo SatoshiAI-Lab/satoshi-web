@@ -32,7 +32,9 @@ export const utilFmt = {
   ellipsis(str: string, len = 8) {
     return str.length > len ? `${str.slice(0, len)}...` : str
   },
-  token(value?: number, fixed = 3) {
+  token(value?: number | string, fixed = 3) {
+    value = Number(value)
+
     if (!value) return 0
 
     const strValue = utilNum.transferToNumber(value)

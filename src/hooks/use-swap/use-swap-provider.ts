@@ -8,8 +8,6 @@ import {
 } from './use-get-intent-token-list'
 import { useSwapWallet } from './use-swap-wallet'
 import { useSwapSelectToken } from './use-swap-select-token'
-import { useQuery } from '@tanstack/react-query'
-import { trandApi } from '@/api/trand'
 
 interface Options {
   data: ChatResponseTxConfrim

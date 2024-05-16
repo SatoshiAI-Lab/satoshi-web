@@ -107,13 +107,9 @@ export const TokenList = () => {
     closeDialog()
   }
 
-  console.log('tokens', tokens)
-
   return (
     <div className="mt-2 mb-4">
       {tokens.map((token) => {
-        console.log('tokenItem', token)
-
         return (
           <MenuItem
             key={`${token.address}${token.chain.id}`}

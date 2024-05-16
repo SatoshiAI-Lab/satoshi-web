@@ -20,6 +20,8 @@ export const useSwapWallet = (options: Options) => {
     setFromWallet,
     setReceiveWallet,
   } = options
+  const [shouldCreateReceiveWallet, setShouldCreateReceiveWallet] =
+    useState(false)
   const [gridWalletList, setGridWalletList] = useState<PartialWalletRes[][]>([])
 
   const findTokenUsd = (wallet: PartialWalletRes) => {
@@ -30,7 +32,6 @@ export const useSwapWallet = (options: Options) => {
   }
 
   const handleWallet = () => {
-    debugger
     let count = 0
 
     // 筛选出和FromToken同一条链的钱包
@@ -38,17 +39,17 @@ export const useSwapWallet = (options: Options) => {
       (w) => w?.chain?.id === selectFromToken?.chain?.id
     )
     setFromWallet(wallets[0])
-    setReceiveWallet(wallets[0])
 
     // 格式化数据成九宫格
     const gridWalletList = wallets
       .filter((w) =>
-        w.tokens?.some(
-          (t) =>
+        w.tokens?.some((t) => {
+          return (
             t.value_usd > 0 &&
             t.address === selectFromToken?.address &&
             t.name === selectFromToken?.name
-        )
+          )
+        })
       )
       .reduce<PartialWalletRes[][]>((cur, next) => {
         if (count % 3 == 0) {
@@ -58,7 +59,6 @@ export const useSwapWallet = (options: Options) => {
         count++
         return cur
       }, [])
-
     const defaultWallet = gridWalletList[0]?.[0]
 
     if (
@@ -71,9 +71,42 @@ export const useSwapWallet = (options: Options) => {
       setGridWalletList(gridWalletList)
       if (defaultWallet?.chain?.id !== fromWallet?.chain?.id) {
         setFromWallet(defaultWallet)
-        setReceiveWallet(defaultWallet)
       }
     }
+  }
+
+  const handleReceiveWallet = () => {
+    const wallets = walletList.filter(
+      (w) => w?.chain?.id === selectToToken?.chain?.id
+    )
+
+    if (!wallets.length) {
+      setShouldCreateReceiveWallet(true)
+      return
+    }
+
+    wallets.sort((a, b) => {
+      let x = 0
+      let y = 0
+
+      a.tokens?.find((t) => {
+        if (t.address === selectToToken?.address && t.amount) {
+          x = t.value_usd
+          return true
+        }
+      })
+
+      b.tokens?.find((t) => {
+        if (t.address === selectToToken?.address && t.amount) {
+          y = t.value_usd
+          return true
+        }
+      })
+
+      return y - x
+    })
+
+    setReceiveWallet(wallets[0])
   }
 
   useEffect(() => {
@@ -82,9 +115,16 @@ export const useSwapWallet = (options: Options) => {
     }
   }, [selectFromToken])
 
+  useEffect(() => {
+    if (selectToToken) {
+      handleReceiveWallet()
+    }
+  }, [selectToToken])
+
   return {
     gridWalletList,
     selectFromToken,
+    shouldCreateReceiveWallet,
     findTokenUsd,
   }
 }

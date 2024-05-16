@@ -1,4 +1,8 @@
-import { MultiChainCoin } from '@/api/chat/types'
+import {
+  ChatResponseTokenDetail,
+  ChatResponseWalletListToken,
+  MultiChainCoin,
+} from '@/api/chat/types'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { useEffect, useState } from 'react'
 import { TIntentTokoenInfo } from './use-get-intent-token-list'
@@ -44,9 +48,39 @@ export const useSwapSelectToken = (options: Options) => {
   let toTokenChainId = ''
 
   const handleFromToken = () => {
-    let tokenList: MultiChainCoin[] = isFromMainToken
-      ? fromMainToken.filter((t) => t.chain.id === toTokenChainId)
-      : fromTokenListResult || []
+    const isStablecoin = includesStablecoin(selectFromToken?.name || '')
+
+    const handleToTokenlist = () => {
+      if (isFromMainToken) {
+        // 主代币
+        const tokenList = fromMainToken.filter((t) => {
+          const token = t as unknown as ChatResponseWalletListToken
+          return token.chain.id === toTokenChainId && token.value_usd
+        })
+        if (!tokenList.length) {
+          return [fromMainToken[0]]
+        }
+
+        return tokenList
+      } else {
+        // 稳定币
+        const tokenList = fromMainToken.filter((t) => {
+          const token = t as unknown as ChatResponseWalletListToken
+          return token.chain.id === toTokenChainId && token.value_usd
+        })
+
+        if (!tokenList.length) {
+          return [fromMainToken[0]]
+        }
+
+        return tokenList
+      }
+    }
+
+    let tokenList: MultiChainCoin[] =
+      isFromMainToken || isStablecoin
+        ? handleToTokenlist()
+        : fromTokenListResult || []
 
     // Intentional chain
     if (fromIntentChain !== '') {
@@ -60,7 +94,7 @@ export const useSwapSelectToken = (options: Options) => {
     }
 
     // 没有匹配到合适的代币
-    if (tokenList.length === 0) {
+    if (!tokenList?.length) {
       return
     }
 
