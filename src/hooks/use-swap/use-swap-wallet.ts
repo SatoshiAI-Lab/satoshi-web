@@ -1,5 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
+import {
+  PartialWalletRes,
+  WalletPlatform,
+  useWalletStore,
+} from '@/stores/use-wallet-store'
 import { MultiChainCoin } from '@/api/chat/types'
 
 interface Options {

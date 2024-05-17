@@ -1,6 +1,6 @@
 import { useChainsPlatforms } from '@/components/wallet/hooks/use-chains-platforms'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
+import { TxLogicContext } from '@/hooks/use-swap/use-swap-confirm-logic'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { utilFmt } from '@/utils/format'
 import { Select, MenuItem } from '@mui/material'

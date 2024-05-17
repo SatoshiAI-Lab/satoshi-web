@@ -1,5 +1,5 @@
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
+import { TxLogicContext } from '@/hooks/use-swap/use-swap-confirm-logic'
 import { OutlinedInput } from '@mui/material'
 import { t } from 'i18next'
 import { useContext } from 'react'

@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid'
 import { useEffect, useRef } from 'react'
 
-export const useFetchOnlyKey = () => {
+export const useOnlyKey = () => {
   const onlyQueryKey = useRef<string>()
 
   useEffect(() => {

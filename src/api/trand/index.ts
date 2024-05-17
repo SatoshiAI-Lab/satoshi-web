@@ -23,7 +23,7 @@ export const trandApi = {
    */
   crossSwap(walletId: string, data: CrossSwapParams) {
     return fetchSatoshi.post<BuyTokenData>(
-      `/api/v1/wallet-transaction/${walletId}/`,
+      `/api/v1/coin/cross/${walletId}/`,
       data
     )
   },

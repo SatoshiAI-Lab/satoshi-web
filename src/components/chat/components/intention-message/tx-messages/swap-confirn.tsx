@@ -1,5 +1,5 @@
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
+import { TxLogicContext } from '@/hooks/use-swap/use-swap-confirm-logic'
 import { Button, CircularProgress } from '@mui/material'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'

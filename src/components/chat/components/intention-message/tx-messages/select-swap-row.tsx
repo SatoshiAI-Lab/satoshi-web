@@ -7,7 +7,7 @@ import { SelectToken } from './select-token'
 import { useContext } from 'react'
 
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
+import { TxLogicContext } from '@/hooks/use-swap/use-swap-confirm-logic'
 import { utilFmt } from '@/utils/format'
 
 export const SelectSwapRow = () => {

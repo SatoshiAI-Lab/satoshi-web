@@ -1,4 +1,4 @@
-import { TxLogicContext, rates } from '@/hooks/use-swap/use-tx-logic'
+import { TxLogicContext, rates } from '@/hooks/use-swap/use-swap-confirm-logic'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import BigNumber from 'bignumber.js'
 import clsx from 'clsx'

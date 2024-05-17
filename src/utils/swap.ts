@@ -1,6 +1,7 @@
 import { MultiChainCoin } from '@/api/chat/types'
 import { zeroAddr } from '@/config/address'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
+import { utilToken } from './token'
 
 export const utilSwap = {
   sortByHolders: (tokenList?: MultiChainCoin[]) => {
@@ -12,11 +13,7 @@ export const utilSwap = {
     walletList?.forEach((w) => {
       return w?.tokens?.find((t) => {
         const isMainToken =
-          t.address === zeroAddr &&
-          (tokenName === '' ||
-            t.name === tokenName ||
-            t.symbol === tokenName ||
-            t.address === tokenName)
+          t.address === zeroAddr && utilToken.isMainToken(t.symbol)
 
         if (isMainToken) {
           mainTokenList.push({

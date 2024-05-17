@@ -76,6 +76,8 @@ export const useSwapProviderProvider = ({ data }: Options) => {
   const intentTokenInfo = useGetIntentTokenList({
     data,
     walletList,
+    walletPlatform,
+    loadingAllWallet,
   })
 
   const {
@@ -89,7 +91,7 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     setSelectFromToken,
     setSelectToToken,
     setToTokenList,
-  } = useSwapSelectToken({ intentTokenInfo, walletList })
+  } = useSwapSelectToken({ data, intentTokenInfo, walletList })
 
   const { gridWalletList, findTokenUsd } = useSwapWallet({
     selectFromToken,

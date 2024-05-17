@@ -1,21 +1,21 @@
 import {
-  ChatResponseTokenDetail,
+  ChatResponseTxConfrim,
   ChatResponseWalletListToken,
   MultiChainCoin,
 } from '@/api/chat/types'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { useEffect, useState } from 'react'
 import { TIntentTokoenInfo } from './use-get-intent-token-list'
-import { useTranslation } from 'react-i18next'
-import { excluedCoin } from '@/config/stablecoin'
+import { excluedToken } from '@/config/coin'
 
 interface Options {
+  data?: ChatResponseTxConfrim
   walletList: PartialWalletRes[]
   intentTokenInfo: TIntentTokoenInfo
 }
 
 export const useSwapSelectToken = (options: Options) => {
-  const { walletList, intentTokenInfo } = options
+  const { data, intentTokenInfo } = options
 
   const {
     toTokenInfo,
@@ -30,10 +30,32 @@ export const useSwapSelectToken = (options: Options) => {
     toMainToken,
   } = intentTokenInfo
 
+  const includesStablecoin = (token?: MultiChainCoin | string) => {
+    if (typeof token === 'string') {
+      return excluedToken.includes(token)
+    } else {
+      return (
+        !!token &&
+        (excluedToken.includes(token.symbol) ||
+          excluedToken.includes(token.name))
+      )
+    }
+  }
+
+  const isEqTokenBaseInfo = (
+    token: ChatResponseWalletListToken | MultiChainCoin,
+    info: string
+  ) => {
+    return (
+      token.symbol === info || token.name === info || token.address === info
+    )
+  }
+
+  const surceFromTokneInfo = data?.from_token.content!
   const isFromMainToken = fromTokenInfo === ''
   const isToMainToken = toTokenInfo === ''
-  const includesStablecoin = (tokenName: string) =>
-    excluedCoin.includes(tokenName) || excluedCoin.includes(tokenName)
+  const isFromStableToken = includesStablecoin(fromTokenInfo)
+  const isToStableToken = includesStablecoin(toTokenInfo)
 
   // From Token
   const [selectFromToken, setSelectFromToken] = useState<MultiChainCoin>()
@@ -44,19 +66,43 @@ export const useSwapSelectToken = (options: Options) => {
   // To Token List
   const [toTokenList, setToTokenList] = useState(toTokenListResult)
 
-  let fromTokenChainId = ''
-  let toTokenChainId = ''
+  let fromToken: MultiChainCoin | undefined
+  let toToken: MultiChainCoin | undefined
 
   const handleFromToken = () => {
-    const isStablecoin = includesStablecoin(selectFromToken?.name || '')
+    const handlMainOrStableToken = () => {
+      // To是稳定币或者主代币
+      if (isToStableToken || isToMainToken) {
+        return (fromTokenListResult || []).filter((t) => {
+          // 存在意图
+          if (fromIntentChain !== '') {
+            return t?.chain.name === fromIntentChain
+          }
+          return t.value_usd && isEqTokenBaseInfo(t, surceFromTokneInfo)
+        })
+      }
 
-    const handleToTokenlist = () => {
       if (isFromMainToken) {
         // 主代币
         const tokenList = fromMainToken.filter((t) => {
+          // 意图链
+          if (fromIntentChain !== '') {
+            return t?.chain.name === fromIntentChain
+          }
+
           const token = t as unknown as ChatResponseWalletListToken
-          return token.chain.id === toTokenChainId && token.value_usd
+
+          return (
+            // 对比代币链是否和To代币链一致
+            (token.chain.id === toToken?.chain.id ||
+              // 如果是 购买PYTH 则surceFromTokneInfo === ''
+              (surceFromTokneInfo !== '' &&
+                // 代币基础信息是否和意图代币信息一致
+                isEqTokenBaseInfo(token, surceFromTokneInfo))) &&
+            token.value_usd
+          )
         })
+
         if (!tokenList.length) {
           return [fromMainToken[0]]
         }
@@ -64,33 +110,44 @@ export const useSwapSelectToken = (options: Options) => {
         return tokenList
       } else {
         // 稳定币
-        const tokenList = fromMainToken.filter((t) => {
+        const tokenList = (fromTokenListResult || []).filter((t) => {
           const token = t as unknown as ChatResponseWalletListToken
-          return token.chain.id === toTokenChainId && token.value_usd
+          return token.chain.id === toToken?.chain.id && token.value_usd
         })
 
-        if (!tokenList.length) {
-          return [fromMainToken[0]]
+        // 匹配情况6
+        // 稳定币没有余额，没有指定指定的链，给他切换到有余额的链
+        if (!tokenList?.length && fromIntentChain === '') {
+          return fromTokenListResult?.filter((t) => {
+            const token = t as unknown as ChatResponseWalletListToken
+            return token.value_usd && isEqTokenBaseInfo(token, fromTokenInfo)
+          })
+        }
+
+        // 代币列表
+        if (!tokenList?.length && fromTokenListResult) {
+          return [fromTokenListResult[0]]
         }
 
         return tokenList
       }
     }
 
+    const isStablecoin = isFromStableToken
     let tokenList: MultiChainCoin[] =
-      isFromMainToken || isStablecoin
-        ? handleToTokenlist()
-        : fromTokenListResult || []
+      (isFromMainToken || isStablecoin
+        ? handlMainOrStableToken()
+        : fromTokenListResult) || []
 
-    // Intentional chain
     if (fromIntentChain !== '') {
+      //处理意图链
       let beforeFilterTokenList = tokenList
       tokenList = beforeFilterTokenList.filter(
         (t) => t.chain.name === fromIntentChain
       )
-    } else if (includesStablecoin(fromTokenInfo)) {
-      // 需要由ToToken决定主代币以及稳定币的链
-      tokenList = tokenList.filter((t) => t.chain.id === toTokenChainId)
+    } else if (isFromStableToken) {
+      // 处理稳定币交易
+      tokenList = tokenList.filter((t) => t.value_usd! > 0)
     }
 
     // 没有匹配到合适的代币
@@ -98,28 +155,60 @@ export const useSwapSelectToken = (options: Options) => {
       return
     }
 
-    setSelectFromToken(tokenList[0])
+    // 匹配情况6
+    // 使用ETH购买PYTH，当SOL也有余额时匹配成SOL购买PYTH
+    if (
+      isFromMainToken &&
+      surceFromTokneInfo !== '' &&
+      tokenList[0].name !== surceFromTokneInfo
+    ) {
+      tokenList.find((token) => {
+        if (isEqTokenBaseInfo(token, surceFromTokneInfo)) {
+          fromToken = token
+          setSelectFromToken(token)
+          return true
+        }
+      })
+    } else {
+      tokenList[0]
+      setSelectFromToken(tokenList[0])
+    }
+
     setFromTokenList(tokenList)
-    fromTokenChainId = tokenList[0].chain.id
   }
 
   const handleToToken = () => {
+    const handleMainToken = () => {
+      let tokenList = toMainToken
+        // 筛选同链
+        .filter((t) => {
+          if (toIntentChain !== '') {
+            return t.chain.name === toIntentChain
+          } else {
+            return t.chain.id === fromToken?.chain.id
+          }
+        })
+      // 去重多个钱包相同链的主代币
+      if (tokenList.length > 1) {
+        tokenList = tokenList?.filter((item, i) => {
+          for (const t of tokenList?.slice(i + 1) || []) {
+            if (item.address === t.address && item.chain.id === t.chain.id) {
+              return false
+            }
+          }
+          return true
+        })
+      }
+
+      return tokenList
+    }
+
     let tokenList: MultiChainCoin[] = isToMainToken
-      ? toMainToken.filter((t) => t.chain.id === fromTokenChainId)
+      ? handleMainToken()
       : toTokenListResult || []
 
-    // 去重To代币
-    tokenList = tokenList?.filter((item, i) => {
-      for (const t of tokenList?.slice(i + 1) || []) {
-        if (item.address === t.address && item.chain.id === t.chain.id) {
-          return false
-        }
-      }
-      return true
-    })
-
-    // Intentional chain
     if (toIntentChain !== '') {
+      // 优先匹配意图链
       let beforeFilterTokenList = tokenList
       // Main Token
       if (isToMainToken) {
@@ -128,9 +217,6 @@ export const useSwapSelectToken = (options: Options) => {
       tokenList = beforeFilterTokenList.filter(
         (t) => t.chain.name === toIntentChain
       )
-    } else if (includesStablecoin(toTokenInfo)) {
-      // 需要由ToToken决定主代币以及稳定币的链
-      tokenList = tokenList.filter((t) => t.chain.id === toTokenChainId)
     }
 
     // 没有匹配到合适的代币
@@ -138,11 +224,10 @@ export const useSwapSelectToken = (options: Options) => {
       return
     }
 
-    console.log('To Token List:', tokenList)
     setSelectToToken(tokenList[0])
     setToTokenList(tokenList)
 
-    toTokenChainId = tokenList[0].chain.id
+    toToken = tokenList[0]
   }
 
   useEffect(() => {
@@ -152,8 +237,8 @@ export const useSwapSelectToken = (options: Options) => {
       !loadingToTokenList &&
       !loadingFromTokenList
     ) {
-      // 是主代币 || 稳定币
-      if (isFromMainToken || includesStablecoin(fromTokenInfo)) {
+      // From是稳定币或者主代币
+      if (isFromMainToken || isFromStableToken) {
         handleToToken()
         handleFromToken()
       } else {

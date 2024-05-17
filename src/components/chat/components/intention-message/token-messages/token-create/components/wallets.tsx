@@ -13,7 +13,7 @@ import { useTokenCreateConfig } from '@/hooks/use-token-create-config'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { Chain } from '@/config/wallet'
 import { CopyAddr } from '@/components/copy-addr'
-import { defaultImg } from '@/config/imageUrl'
+import { defaultImg } from '@/config/image-url'
 
 interface Props extends React.ComponentProps<'div'> {
   chain: Chain

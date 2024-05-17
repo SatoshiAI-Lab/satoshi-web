@@ -4,7 +4,7 @@ import { clsx } from 'clsx'
 import { Avatar, Menu, MenuItem, Toolbar, Tooltip } from '@mui/material'
 import { useContext, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
-import { defaultImg } from '@/config/imageUrl'
+import { defaultImg } from '@/config/image-url'
 import { utilFmt } from '@/utils/format'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 
@@ -151,7 +151,9 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
           )}
           {selectToken && (
             <div className="mx-1">
-              <div>{`${utilFmt.fisrtCharUppercase(selectToken?.symbol)}`}</div>
+              <div className="max-w-[110px] truncate leading-5">{`${utilFmt.fisrtCharUppercase(
+                selectToken?.symbol
+              )}`}</div>
               <div className="text-xs text-gray-400">{`${utilFmt.fisrtCharUppercase(
                 selectToken?.chain.name
               )}`}</div>

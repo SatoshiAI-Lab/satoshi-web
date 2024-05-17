@@ -3,7 +3,7 @@ import MessageBubble from '../../message-bubble'
 import { MetaType } from '@/api/chat/types'
 import { useSwapProviderProvider } from '@/hooks/use-swap/use-swap-provider'
 import { WalletList } from './wallet-list'
-import { useTxLogic } from '@/hooks/use-swap/use-tx-logic'
+import { useSwapConfirmLogic } from '@/hooks/use-swap/use-swap-confirm-logic'
 import { SelectAmount } from './select-amount'
 import { SelectSwapRow } from './select-swap-row'
 import { SelecSlippage } from './select-slippage'
@@ -11,7 +11,7 @@ import { SwapConfirm } from './swap-confirn'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { useMessagesContext } from '@/contexts/messages'
 import { useTranslation } from 'react-i18next'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-logic'
+import { TxLogicContext } from '@/hooks/use-swap/use-swap-confirm-logic'
 
 export const TxTokenBubbles = () => {
   const { getMetaData } = useMessagesContext()
@@ -32,7 +32,7 @@ export const TxTokenBubbles = () => {
     receiveWallet,
   } = useSwapProviderProvider(options)
 
-  const { txLogigcContextValue } = useTxLogic({
+  const { txLogigcContextValue } = useSwapConfirmLogic({
     ...options,
     selectFromToken,
     selectToToken,

@@ -86,7 +86,7 @@ export const TxLogicContext = createContext<ITxLogicContext>({
   getSelectTokenInfo: (wallet) => undefined,
 })
 
-export const useTxLogic = ({
+export const useSwapConfirmLogic = ({
   data,
   fromWallet,
   selectFromToken,
@@ -299,8 +299,12 @@ export const useTxLogic = ({
 
     const approval_address =
       crossFeeData.provider_data.cross_chain_fee_token_address!
-
-    const { data } = await trandApi.crossSwap(fromWallet?.id!, {
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(null)
+      }, 2000)
+    })
+    const { code, data } = await trandApi.crossSwap(fromWallet?.id!, {
       crossAmount: amount,
       fromData: {
         chain: selectFromToken.chain.name,
@@ -313,10 +317,53 @@ export const useTxLogic = ({
       },
       // 默认为 10% 即 1000；1 为 0.01%
       slippageBps: slippage * 100,
+      provider: crossFeeData.provider,
       providerData: {
         approval_address,
       },
     })
+
+    const handleError = (errorText: string, errorType: string) => {
+      if (!validateErr.find(({ type }) => type === errorType)) {
+        validateErr.push({
+          type: errorType,
+          errorText,
+        })
+      }
+
+      setValidateErr(validateErr)
+    }
+
+    switch (code) {
+      case ResponseCode.CrossChianPath: {
+        const errorText = t('not.supported')
+          .replace('$1', selectFromToken!.chain.name)
+          .replace('$2', selectToToken!.chain.name)
+        handleError(errorText, SwapError.crossChainNotSupper)
+        break
+      }
+      case ResponseCode.CrossChianMaxAmout: {
+        const errorText = t('cross.chain.max')
+          .replace('$1', utilFmt.token(data.minimum_amount).toString())
+          .replace('$2', selectToToken.symbol)
+        handleError(errorText, SwapError.crossChaiMaxAmount)
+        break
+      }
+      case ResponseCode.CrossChianMinAmout: {
+        const errorText = t('cross.chain.min')
+          .replace('$1', utilFmt.token(data.minimum_amount).toString())
+          .replace('$2', selectToToken.symbol)
+        handleError(errorText, SwapError.crossChaiMinAmount)
+        break
+      }
+      case ResponseCode.CrossChianLiquidity: {
+        const errorText = t('cross.chain.liquidity')
+          .replace('$1', utilFmt.token(data.minimum_amount).toString())
+          .replace('$2', selectToToken.symbol)
+        handleError(errorText, SwapError.crossChainLiquidity)
+        break
+      }
+    }
   }
 
   const onConfirm = async () => {
@@ -325,9 +372,9 @@ export const useTxLogic = ({
 
     try {
       if (selectFromToken?.chain.id === selectToToken?.chain.id) {
-        baseSwap()
+        await baseSwap()
       } else {
-        crossSwap()
+        await crossSwap()
       }
     } catch {
       toast.error(t('trading.fail'))

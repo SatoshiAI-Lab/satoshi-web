@@ -192,6 +192,7 @@ export interface ChatResponseMetaBalance {
 }
 
 export interface ChatResponseTxConfrim {
+  minimum_amount: string | number | undefined
   from_token_info: any
   to_token_name: any
   from_token: {
@@ -214,11 +215,15 @@ export interface MultiChainCoin {
   is_supported: boolean
   logo: string
   name: string
-  price_change: number | null
+  price_change?: number
   price_usd: number
   symbol: string
   holders: number
+  amount?: number
+  price_change_24h?: number
+  value_usd?: number
 }
+
 export interface ChainInfo {
   id: string
   logo: string
