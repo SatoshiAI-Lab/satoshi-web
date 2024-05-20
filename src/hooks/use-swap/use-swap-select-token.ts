@@ -7,6 +7,8 @@ import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { useEffect, useState } from 'react'
 import { TIntentTokoenInfo } from './use-get-intent-token-list'
 import { excluedToken } from '@/config/coin'
+import { utilArr } from '@/utils/array'
+import { utilSwap } from '@/utils/swap'
 
 interface Options {
   data?: ChatResponseTxConfrim
@@ -73,7 +75,7 @@ export const useSwapSelectToken = (options: Options) => {
     const handlMainOrStableToken = () => {
       // To是稳定币或者主代币
       if (isToStableToken || isToMainToken) {
-        return (fromTokenListResult || []).filter((t) => {
+        return (fromMainToken || []).filter((t) => {
           // 存在意图
           if (fromIntentChain !== '') {
             return t?.chain.name === fromIntentChain
@@ -170,7 +172,7 @@ export const useSwapSelectToken = (options: Options) => {
         }
       })
     } else {
-      tokenList[0]
+      fromToken = tokenList[0]
       setSelectFromToken(tokenList[0])
     }
 
@@ -178,42 +180,51 @@ export const useSwapSelectToken = (options: Options) => {
   }
 
   const handleToToken = () => {
-    const handleMainToken = () => {
-      let tokenList = toMainToken
-        // 筛选同链
-        .filter((t) => {
-          if (toIntentChain !== '') {
-            return t.chain.name === toIntentChain
-          } else {
-            return t.chain.id === fromToken?.chain.id
-          }
-        })
-      // 去重多个钱包相同链的主代币
-      if (tokenList.length > 1) {
-        tokenList = tokenList?.filter((item, i) => {
-          for (const t of tokenList?.slice(i + 1) || []) {
-            if (item.address === t.address && item.chain.id === t.chain.id) {
-              return false
-            }
-          }
-          return true
-        })
-      }
+    let tokenList: MultiChainCoin[] = isToMainToken
+      ? toMainToken
+      : toTokenListResult || []
 
-      return tokenList
+    // 主代币
+    if (toMainToken) {
+      const tokenList = utilArr.removeDuplicates(toMainToken, [
+        'address',
+        'chain.id',
+      ])
+
+      const mainToken = tokenList.find((token) => {
+        if (toIntentChain !== '') {
+          return token.chain.name === toIntentChain
+        } else {
+          isEqTokenBaseInfo(token, data?.to_token.content!)
+        }
+      })
+
+      toToken = mainToken
+      setSelectToToken(mainToken)
+      setToTokenList(tokenList)
+      return
     }
 
-    let tokenList: MultiChainCoin[] = isToMainToken
-      ? handleMainToken()
-      : toTokenListResult || []
+    // 稳定币
+    if (isToStableToken) {
+      // 意图链
+      const token = tokenList.find((t) => {
+        if (toIntentChain !== '') {
+          return t.chain.name === toIntentChain
+        } else {
+          return t.chain.name === fromToken?.chain.name
+        }
+      })
+
+      toToken = token
+      setSelectToToken(token)
+      setToTokenList(tokenList)
+      return
+    }
 
     if (toIntentChain !== '') {
       // 优先匹配意图链
       let beforeFilterTokenList = tokenList
-      // Main Token
-      if (isToMainToken) {
-        beforeFilterTokenList = toMainToken
-      }
       tokenList = beforeFilterTokenList.filter(
         (t) => t.chain.name === toIntentChain
       )

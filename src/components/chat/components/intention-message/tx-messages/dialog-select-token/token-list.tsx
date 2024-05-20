@@ -1,12 +1,14 @@
-import { ChatResponseWalletListToken } from '@/api/chat/types'
+import { ChatResponseWalletListToken, MultiChainCoin } from '@/api/chat/types'
 import PercentTag from '@/components/percent-tag'
 import { zeroAddr } from '@/config/address'
 import { Platform } from '@/config/wallet'
+import { useStorage } from '@/hooks/use-storage'
 import { DialogContext } from '@/hooks/use-swap/use-dialog-select-token'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { utilFmt } from '@/utils/format'
-import { MenuItem, Avatar } from '@mui/material'
-import { useContext } from 'react'
+import { utilSwap } from '@/utils/swap'
+import { MenuItem, Avatar, Checkbox, FormControlLabel } from '@mui/material'
+import { useContext, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
@@ -24,15 +26,51 @@ export const TokenList = () => {
     isSearch,
     searchTokens,
     selectChainId,
-    selectWallet,
     isFrom,
     setCreateWalletInfo,
     closeDialog,
   } = useContext(DialogContext)
 
   const { t } = useTranslation()
+  const { getSearchTokensSetting, setSerchTokensSetting } = useStorage()
 
-  let tokens: any[] = isSearch ? searchTokens : selectWallet?.tokens || []
+  const [isIgnoreLowValue, setIsIgnoreLowValue] = useState(
+    getSearchTokensSetting() === 'true'
+  )
+
+  const handleSearchTokensSetting = () => {
+    const isIgnoreLowValue = getSearchTokensSetting() === 'true'
+    setSerchTokensSetting(`${!isIgnoreLowValue}`)
+    setIsIgnoreLowValue(!isIgnoreLowValue)
+  }
+
+  const myTokens = () => {
+    const tokens: MultiChainCoin[] = []
+
+    walletList.forEach((w) => {
+      const tokneBalance = isIgnoreLowValue
+        ? w.tokens?.filter((t) => {
+            return t.value_usd! >= 1
+          })
+        : w.tokens
+
+      tokneBalance?.forEach((t) => {
+        const token = tokens.find(
+          (token) =>
+            token.address === t.address && token.chain.id === t.chain.id
+        )
+
+        if (token) {
+          token.value_usd! += t.value_usd || 0
+        } else {
+          tokens.push({ ...t, holders: 1000, is_supported: true })
+        }
+      })
+    })
+    return tokens
+  }
+
+  let tokens: any[] = isSearch ? searchTokens : myTokens() || []
 
   tokens = (tokens || [])
     .filter((t) => {
@@ -109,6 +147,15 @@ export const TokenList = () => {
 
   return (
     <div className="mt-2 mb-4">
+      <div className="pl-[25px] text-sm flex items-center">
+        <FormControlLabel
+          control={<Checkbox checked={isIgnoreLowValue} size="small" />}
+          label={<span className="text-sm">{t('hide.low.value.token')}</span>}
+          onClick={() => {
+            handleSearchTokensSetting()
+          }}
+        />
+      </div>
       {tokens.map((token) => {
         return (
           <MenuItem

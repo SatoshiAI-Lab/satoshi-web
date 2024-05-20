@@ -43,7 +43,7 @@ export const ChainList = () => {
         onWheel={onWheel}
         onMouseMove={handleDrag}
       >
-        <div className="mt-2 pb-2 px-6 flex">
+        <div className="mt-2 pb-2 pl-[21px] pr-6 p flex">
           <Avatar
             className={clsx(
               '!w-[35px] !h-[35px] mr-2 !bg-black cursor-pointer border-[3px]',

@@ -84,5 +84,10 @@ export const useStorage = (useSessionStorage = false) => {
     // Chart related.
     getChartInterval: () => get('chart_interval'),
     setChartInterval: (val: string) => set('chart_interval', val),
+
+    // Swap setting related.
+    getSearchTokensSetting: () => get('swap_search_tokens_setting'),
+    setSerchTokensSetting: (val: string) =>
+      set('swap_search_tokens_setting', val),
   }
 }

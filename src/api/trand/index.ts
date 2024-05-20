@@ -5,6 +5,7 @@ import {
   CrossFeeData,
   CrossPriceQuery,
   CrossStatusQuery,
+  CrossSwapData,
   CrossSwapParams,
 } from './types'
 
@@ -22,7 +23,7 @@ export const trandApi = {
    * 跨链交易
    */
   crossSwap(walletId: string, data: CrossSwapParams) {
-    return fetchSatoshi.post<BuyTokenData>(
+    return fetchSatoshi.post<CrossSwapData>(
       `/api/v1/coin/cross/${walletId}/`,
       data
     )

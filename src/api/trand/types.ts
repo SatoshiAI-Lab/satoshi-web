@@ -11,6 +11,15 @@ export interface BuyTokenData {
   hash_tx: string
   url: string
 }
+
+export interface CrossSwapData {
+  hash_tx: string
+  url: string
+  provider: string
+  minimum_amount: number
+  max_amount: number
+}
+
 export interface CrossSwapParams {
   crossAmount: string
   fromData: FromData

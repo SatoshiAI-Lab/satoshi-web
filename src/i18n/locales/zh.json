@@ -374,5 +374,6 @@
   "cross.chain.quote": "正在获取代币跨链报价",
   "cross.chain.min": "跨链额度不能小于$1个$2",
   "cross.chain.max": "跨链额度不能大于$1个$2",
-  "cross.chain.liquidity": "流动性不足"
+  "cross.chain.liquidity": "流动性不足",
+  "hide.low.value.token": "隐藏低于1美元的代币"
 }

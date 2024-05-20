@@ -1,12 +1,5 @@
 import { DialogHeader } from '@/components/dialog-header'
-import { Platform } from '@/config/wallet'
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  MenuItem,
-  Select,
-} from '@mui/material'
+import { Button, CircularProgress, Dialog } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { TokenList } from './token-list'
 import { ChainList } from './chain-list'
@@ -19,6 +12,7 @@ import { useWalletManage } from '@/hooks/use-wallet'
 import { useWalletList } from '@/hooks/use-wallet-list'
 import { useEffect, useState } from 'react'
 import { UserCreateWalletResp } from '@/api/wallet/params'
+import { useStorage } from '@/hooks/use-storage'
 
 interface Props {
   isFrom: boolean
@@ -52,10 +46,9 @@ export const DialogSelectToken = (props: Props) => {
     setSelectChainId,
   } = useDialogSelectTokenContext(isFrom)
 
-  const handleSwitchWallet = (wallet: UserCreateWalletResp) => {
-    setSelectWallet(wallet)
-    setSelectChainId('-1')
-  }
+  const { getSearchTokensSetting, setSerchTokensSetting } = useStorage()
+
+  const isIgnoreLowValue = getSearchTokensSetting() === 'true'
 
   useEffect(() => {
     if (createdWallet) {
@@ -140,7 +133,7 @@ export const DialogSelectToken = (props: Props) => {
 
     return (
       <>
-        {!isSearch && isFrom ? (
+        {/* {!isSearch && isFrom ? (
           <div className="px-6 flex items-center">
             <span className="text-base mr-2">
               {isSearch ? t('use.wallet') : t('my.tokens.in')}
@@ -162,7 +155,7 @@ export const DialogSelectToken = (props: Props) => {
               })}
             </Select>
           </div>
-        ) : null}
+        ) : null} */}
         <ChainList />
         <TokenList />
         {createdWallet !== '' ? (

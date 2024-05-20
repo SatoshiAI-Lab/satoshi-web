@@ -379,5 +379,6 @@
   "cross.chain.quote": "Tokens are being offered cross-chain",
   "cross.chain.min": "The cross-chain limit cannot be less than $1 $2",
   "cross.chain.max": "The cross-chain limit cannot be greater than $1 $2",
-  "cross.chain.liquidity": "Insufficient liquidity"
+  "cross.chain.liquidity": "Insufficient liquidity",
+  "hide.low.value.token": "Hide tokens under $1"
 }

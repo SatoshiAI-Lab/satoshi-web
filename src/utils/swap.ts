@@ -30,4 +30,9 @@ export const utilSwap = {
 
     return mainTokenList
   },
+  isTokenBaseInfo(toekn: MultiChainCoin, info: string) {
+    return (
+      toekn.symbol === info || toekn.name === info || toekn.address === info
+    )
+  },
 }
