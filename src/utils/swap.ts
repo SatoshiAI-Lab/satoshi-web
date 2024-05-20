@@ -1,4 +1,4 @@
-import { MultiChainCoin } from '@/api/chat/types'
+import { ChatResponseWalletListToken, MultiChainCoin } from '@/api/chat/types'
 import { zeroAddr } from '@/config/address'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { utilToken } from './token'
@@ -30,9 +30,16 @@ export const utilSwap = {
 
     return mainTokenList
   },
-  isTokenBaseInfo(toekn: MultiChainCoin, info: string) {
+  isTokenBaseInfo(
+    toekn: MultiChainCoin | ChatResponseWalletListToken,
+    info: string
+  ) {
+    info = info.toLowerCase()
+
     return (
-      toekn.symbol === info || toekn.name === info || toekn.address === info
+      toekn.symbol.toLowerCase() === info ||
+      toekn.name.toLowerCase() === info ||
+      toekn.address.toLowerCase() === info
     )
   },
 }

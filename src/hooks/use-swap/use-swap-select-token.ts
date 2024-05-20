@@ -44,16 +44,8 @@ export const useSwapSelectToken = (options: Options) => {
     }
   }
 
-  const isEqTokenBaseInfo = (
-    token: ChatResponseWalletListToken | MultiChainCoin,
-    info: string
-  ) => {
-    return (
-      token.symbol === info || token.name === info || token.address === info
-    )
-  }
-
   const surceFromTokneInfo = data?.from_token.content!
+  const surceToTokneInfo = data?.to_token.content!
   const isFromMainToken = fromTokenInfo === ''
   const isToMainToken = toTokenInfo === ''
   const isFromStableToken = includesStablecoin(fromTokenInfo)
@@ -80,7 +72,7 @@ export const useSwapSelectToken = (options: Options) => {
           if (fromIntentChain !== '') {
             return t?.chain.name === fromIntentChain
           }
-          return t.value_usd && isEqTokenBaseInfo(t, surceFromTokneInfo)
+          return t.value_usd && utilSwap.isTokenBaseInfo(t, surceFromTokneInfo)
         })
       }
 
@@ -93,14 +85,13 @@ export const useSwapSelectToken = (options: Options) => {
           }
 
           const token = t as unknown as ChatResponseWalletListToken
-
           return (
             // 对比代币链是否和To代币链一致
             (token.chain.id === toToken?.chain.id ||
               // 如果是 购买PYTH 则surceFromTokneInfo === ''
               (surceFromTokneInfo !== '' &&
                 // 代币基础信息是否和意图代币信息一致
-                isEqTokenBaseInfo(token, surceFromTokneInfo))) &&
+                utilSwap.isTokenBaseInfo(token, surceFromTokneInfo))) &&
             token.value_usd
           )
         })
@@ -122,7 +113,9 @@ export const useSwapSelectToken = (options: Options) => {
         if (!tokenList?.length && fromIntentChain === '') {
           return fromTokenListResult?.filter((t) => {
             const token = t as unknown as ChatResponseWalletListToken
-            return token.value_usd && isEqTokenBaseInfo(token, fromTokenInfo)
+            return (
+              token.value_usd && utilSwap.isTokenBaseInfo(token, fromTokenInfo)
+            )
           })
         }
 
@@ -165,7 +158,7 @@ export const useSwapSelectToken = (options: Options) => {
       tokenList[0].name !== surceFromTokneInfo
     ) {
       tokenList.find((token) => {
-        if (isEqTokenBaseInfo(token, surceFromTokneInfo)) {
+        if (utilSwap.isTokenBaseInfo(token, surceFromTokneInfo)) {
           fromToken = token
           setSelectFromToken(token)
           return true
@@ -195,7 +188,7 @@ export const useSwapSelectToken = (options: Options) => {
         if (toIntentChain !== '') {
           return token.chain.name === toIntentChain
         } else {
-          isEqTokenBaseInfo(token, data?.to_token.content!)
+          return utilSwap.isTokenBaseInfo(token, surceToTokneInfo)
         }
       })
 
@@ -212,7 +205,7 @@ export const useSwapSelectToken = (options: Options) => {
         if (toIntentChain !== '') {
           return t.chain.name === toIntentChain
         } else {
-          return t.chain.name === fromToken?.chain.name
+          return utilSwap.isTokenBaseInfo(t, surceToTokneInfo)
         }
       })
 
@@ -243,8 +236,8 @@ export const useSwapSelectToken = (options: Options) => {
 
   useEffect(() => {
     if (
-      (fromTokenListResult?.length || fromTokenInfo === '') &&
-      (toTokenListResult?.length || toTokenInfo === '') &&
+      (fromTokenListResult != undefined || fromTokenInfo === '') &&
+      (toTokenListResult != undefined || toTokenInfo === '') &&
       !loadingToTokenList &&
       !loadingFromTokenList
     ) {

@@ -5,7 +5,7 @@ import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { utilFmt } from '@/utils/format'
 import { Select, MenuItem } from '@mui/material'
 import clsx from 'clsx'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { formatUnits } from 'viem'
 
@@ -20,8 +20,6 @@ export const WalletList = () => {
     selectFromToken,
     fromWallet,
     selectToToken,
-    intentTokenInfo,
-    toTokenList,
     setFromWallet,
     setReceiveWallet,
   } = useContext(SwapContext)
@@ -41,7 +39,8 @@ export const WalletList = () => {
     (c) => c.name === selectToToken?.chain.name
   )?.platform
 
-  const isSomeChian = selectFromToken?.chain.id !== selectToToken?.chain.id
+  const isInequalityChain =
+    selectFromToken?.chain.id !== selectToToken?.chain.id
   const walletLength = gridWalletList?.[0]?.length
 
   const getSelectTokenInfo = (wallet: PartialWalletRes) => {
@@ -49,85 +48,74 @@ export const WalletList = () => {
   }
 
   const fromWalletList = () => {
-    if (!walletLength || !toTokenList?.length) {
-      return (
-        <div className="text-sm text-red-500 mb-5">
-          {!walletLength ? (
-            <div>
-              {t('insufficient.balance').replace(
-                '$1',
-                selectFromToken?.symbol || intentTokenInfo?.fromTokenInfo || ''
-              )}
-            </div>
-          ) : null}
-          {!toTokenList?.length && !selectToToken ? (
-            <div className="mt-1">
-              {t('not.find.token').replace(
-                '$1',
-                intentTokenInfo?.toTokenInfo || ''
-              )}
-            </div>
-          ) : null}
-        </div>
-      )
-    }
-
     return (
-      <>
-        <div className="font-bold mb-1 ">
-          {walletLength == 1
-            ? t('tx.token.wallet.balance')
-            : t('tx.token.text2')}
-        </div>
-        <div className={clsx('inline-flex border rounded-2xl overflow-hidden')}>
-          {gridWalletList.map((wallets, i) => {
-            return (
-              <div
-                key={i}
-                className={clsx(
-                  'grid border-neutral-300',
-                  i !== 0 ? 'border-t' : '',
-                  getCols(wallets.length)
-                )}
-              >
-                {wallets.map((wallet, i) => {
-                  const toeknInfo = getSelectTokenInfo(wallet)
-                  return (
-                    <div
-                      key={i}
-                      className={clsx(
-                        'p-3 transition-all hover:text-gray-500 cursor-pointer',
-                        fromWallet?.id == wallet.id
-                          ? '!text-primary bg-slate-100'
-                          : '',
-                        i === 1 ? 'border-x' : '',
-                        i === wallets.length - 1 ? '!border-r-0' : ''
-                      )}
-                      onClick={() => {
-                        setFromWallet(wallet)
-                      }}
-                    >
-                      <div className="truncate">{wallet.name}</div>
-                      <div className="text-sm text-gray-500">
-                        {utilFmt.token(
-                          Number(
-                            formatUnits(
-                              BigInt(toeknInfo?.amount ?? 0),
-                              toeknInfo?.decimals ?? 0
-                            )
-                          ),
-                          2
-                        )}
-                        {toeknInfo?.symbol}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )
-          })}
-        </div>
-      </>
+      <React.Fragment>
+        {walletLength > 0 ? (
+          <React.Fragment>
+            <div
+              className={clsx(
+                'font-bold mt-5 mb-1',
+                !selectToToken && !selectFromToken ? 'mt-3' : 'mt-0'
+              )}
+            >
+              {walletLength == 1
+                ? t('tx.token.wallet.balance')
+                : t('tx.token.text2')}
+            </div>
+            <div
+              className={clsx('inline-flex border rounded-2xl overflow-hidden')}
+            >
+              {gridWalletList.map((wallets, i) => {
+                debugger
+                return (
+                  <div
+                    key={i}
+                    className={clsx(
+                      'grid border-neutral-300',
+                      i !== 0 ? 'border-t' : '',
+                      getCols(wallets.length)
+                    )}
+                  >
+                    {wallets.map((wallet, i) => {
+                      const toeknInfo = getSelectTokenInfo(wallet)
+                      return (
+                        <div
+                          key={i}
+                          className={clsx(
+                            'p-3 transition-all hover:text-gray-500 cursor-pointer',
+                            fromWallet?.id == wallet.id
+                              ? '!text-primary bg-slate-100'
+                              : '',
+                            i === 1 ? 'border-x' : '',
+                            i === wallets.length - 1 ? '!border-r-0' : ''
+                          )}
+                          onClick={() => {
+                            setFromWallet(wallet)
+                          }}
+                        >
+                          <div className="truncate">{wallet.name}</div>
+                          <div className="text-sm text-gray-500">
+                            {utilFmt.token(
+                              Number(
+                                formatUnits(
+                                  BigInt(toeknInfo?.amount ?? 0),
+                                  toeknInfo?.decimals ?? 0
+                                )
+                              ),
+                              2
+                            )}
+                            {toeknInfo?.symbol}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })}
+            </div>
+          </React.Fragment>
+        ) : null}
+      </React.Fragment>
     )
   }
 
@@ -138,18 +126,19 @@ export const WalletList = () => {
   return (
     <div
       className={clsx(
-        'mt-5',
-        isSomeChian && walletLength ? 'flex items-stretch' : ''
+        isInequalityChain && walletLength < 2 ? 'flex items-stretch' : '',
+        selectFromToken ? 'mt-3' : ''
       )}
     >
       <div className={clsx('pr-5', isFinalTx && 'pointer-events-none')}>
         {fromWalletList()}
       </div>
-      {isSomeChian && receiveWallet ? (
+      {isInequalityChain && receiveWallet ? (
         <div
           className={clsx(
             walletLength ? 'flex flex-col justify-stretch' : '',
-            gridWalletList[0]?.length > 2 ? 'mt-5' : ''
+            gridWalletList[0]?.length > 2 ? 'mt-5 inline-flex' : '',
+            !selectFromToken ? 'mt-2' : ''
           )}
         >
           <div className="font-bold mb-1">
@@ -179,9 +168,7 @@ export const WalletList = () => {
             })}
           </Select>
         </div>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </div>
   )
 }

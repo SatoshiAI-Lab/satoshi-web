@@ -5,6 +5,7 @@ import { t } from 'i18next'
 import { useContext } from 'react'
 
 export const SelecSlippage = () => {
+  const { selectFromToken, selectToToken } = useContext(SwapContext)
   const { isFinalTx, slippage, validateErr, setSlippage } =
     useContext(TxLogicContext)
 
@@ -38,9 +39,11 @@ export const SelecSlippage = () => {
       </div>
 
       <div className="flex flex-col justify-center ml-5 text-sm text-red-500 leading-6">
-        {validateErr.map((error) => {
-          return <div key={error.errorText}>{error.errorText}</div>
-        })}
+        {selectFromToken && selectToToken
+          ? validateErr.map((error) => {
+              return <div key={error.errorText}>{error.errorText}</div>
+            })
+          : null}
       </div>
     </div>
   )

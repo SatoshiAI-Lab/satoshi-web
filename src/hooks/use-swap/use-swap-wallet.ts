@@ -1,9 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import {
-  PartialWalletRes,
-  WalletPlatform,
-  useWalletStore,
-} from '@/stores/use-wallet-store'
+import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
 import { MultiChainCoin } from '@/api/chat/types'
 
 interface Options {
@@ -42,6 +38,7 @@ export const useSwapWallet = (options: Options) => {
     let wallets = walletList.filter(
       (w) => w?.chain?.id === selectFromToken?.chain?.id
     )
+
     setFromWallet(wallets[0])
 
     // 格式化数据成九宫格
