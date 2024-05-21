@@ -51,6 +51,7 @@ export interface ITxLogicContext {
   slippage: number
   crossFeeData?: CrossFeeData
   crossFeeLoading: boolean
+  isInitCrossFee: boolean
 
   onConfirm: () => any
   showSwaping: () => void
@@ -75,7 +76,8 @@ export const TxLogicContext = createContext<ITxLogicContext>({
   buyValue: 0,
   slippage: 0,
   crossFeeData: undefined,
-  crossFeeLoading: false,
+  crossFeeLoading: true,
+  isInitCrossFee: true,
   onConfirm: () => {},
   showSwaping: () => {},
   closeSwaping: () => {},
@@ -98,21 +100,30 @@ export const useSwapConfirmLogic = ({
   const [curRate, setCurRate] = useState(20)
   const [validateErr, setValidateErr] = useState<ValidateError[]>([])
   const [isFinalTx, setIsFinalTx] = useState(false)
-  const [crossMinMountError, setCrossMinMountError] = useState(0)
   const { show: isSwaping, open: showSwaping, hidden: closeSwaping } = useShow()
 
   const { getAllWallet } = useWalletList()
   const { addMessage } = useChatStore()
 
-  const { data: crossFeeData, isFetching: crossFeeLoading } = useQuery({
-    queryKey: [selectFromToken, selectToToken, setValidateErr],
+  const {
+    data: crossFeeData,
+    isLoading: isInitCrossFee,
+    isFetching: crossFeeLoading,
+  } = useQuery({
+    queryKey: [
+      selectFromToken,
+      selectToToken,
+      setValidateErr,
+      buyValue,
+      slippage,
+    ],
     queryFn: async () => {
       if (selectToToken?.chain.id === selectFromToken?.chain.id) {
-        return undefined
+        return {} as CrossFeeData
       }
 
       if (!selectFromToken || !selectToToken || !buyValue) {
-        return undefined
+        return {} as CrossFeeData
       }
 
       try {
@@ -175,7 +186,6 @@ export const useSwapConfirmLogic = ({
         return undefined
       }
     },
-    refetchInterval: 15 * 1000,
   })
 
   const getSelectTokenInfo = (
@@ -284,8 +294,6 @@ export const useSwapConfirmLogic = ({
     }
 
     await getStatus()
-    setIsFinalTx(true)
-    getAllWallet()
   }
 
   // 跨链交易
@@ -299,70 +307,114 @@ export const useSwapConfirmLogic = ({
 
     const approval_address =
       crossFeeData.provider_data.cross_chain_fee_token_address!
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(null)
-      }, 2000)
-    })
-    const { code, data } = await trandApi.crossSwap(fromWallet?.id!, {
-      crossAmount: amount,
-      fromData: {
-        chain: selectFromToken.chain.name,
-        tokenAddress: selectFromToken.address,
-      },
-      toData: {
-        chain: selectToToken.chain.name,
-        tokenAddress: selectToToken.address,
-        walletAddress: receiveWallet.address!,
-      },
-      // 默认为 10% 即 1000；1 为 0.01%
-      slippageBps: slippage * 100,
-      provider: crossFeeData.provider,
-      providerData: {
-        approval_address,
-      },
-    })
+    const bridge_id = crossFeeData.provider_data.bridge_id!
 
-    const handleError = (errorText: string, errorType: string) => {
-      if (!validateErr.find(({ type }) => type === errorType)) {
-        validateErr.push({
-          type: errorType,
-          errorText,
-        })
+    const loading = toast.loading(t('cross.chain.loading'))
+
+    try {
+      const { code, data } = await trandApi.crossSwap(fromWallet?.id!, {
+        crossAmount: amount,
+        fromData: {
+          chain: selectFromToken.chain.name,
+          tokenAddress: selectFromToken.address,
+        },
+        toData: {
+          chain: selectToToken.chain.name,
+          tokenAddress: selectToToken.address,
+          walletAddress: receiveWallet.address!,
+        },
+        // 默认为 10% 即 1000；1 为 0.01%
+        slippageBps: slippage * 100,
+        provider: crossFeeData.provider,
+        providerData: {
+          approval_address,
+          bridge_id,
+        },
+      })
+
+      addMessage({
+        role: 'assistant',
+        text: `${t('tx.sned')}${data.url}`,
+      })
+
+      const getStatus = async () => {
+        if (code != 200) return
+
+        try {
+          const { data: result } = await interactiveApi.getCrossHashStatus({
+            hash_tx: data.hash_tx,
+            provider: data.provider,
+            chain: selectFromToken.chain.name,
+          })
+
+          if (result.status === 'PENDING') {
+            await getStatus()
+          }
+
+          if (result.status === 'SUCCESS') {
+            toast.success(t('cross.chain.success'))
+            return
+          }
+
+          if (result.status === 'FAILURE' || result.status === 'REFUND') {
+            toast.error(t('trading.fail'))
+            return Promise.reject()
+          }
+        } catch (e) {
+          console.log('报错了')
+        }
       }
 
-      setValidateErr(validateErr)
-    }
+      const handlerError = () => {
+        const pushError = (errorText: string, errorType: string) => {
+          if (!validateErr.find(({ type }) => type === errorType)) {
+            validateErr.push({
+              type: errorType,
+              errorText,
+            })
+          }
 
-    switch (code) {
-      case ResponseCode.CrossChianPath: {
-        const errorText = t('not.supported')
-          .replace('$1', selectFromToken!.chain.name)
-          .replace('$2', selectToToken!.chain.name)
-        handleError(errorText, SwapError.crossChainNotSupper)
-        break
+          setValidateErr(validateErr)
+        }
+
+        switch (code) {
+          case ResponseCode.CrossChianPath: {
+            const errorText = t('not.supported')
+              .replace('$1', selectFromToken!.chain.name)
+              .replace('$2', selectToToken!.chain.name)
+            pushError(errorText, SwapError.crossChainNotSupper)
+            break
+          }
+          case ResponseCode.CrossChianMaxAmout: {
+            const errorText = t('cross.chain.max')
+              .replace('$1', utilFmt.token(data.minimum_amount).toString())
+              .replace('$2', selectToToken.symbol)
+            pushError(errorText, SwapError.crossChaiMaxAmount)
+            break
+          }
+          case ResponseCode.CrossChianMinAmout: {
+            const errorText = t('cross.chain.min')
+              .replace('$1', utilFmt.token(data.minimum_amount).toString())
+              .replace('$2', selectToToken.symbol)
+            pushError(errorText, SwapError.crossChaiMinAmount)
+            break
+          }
+          case ResponseCode.CrossChianLiquidity: {
+            const errorText = t('cross.chain.liquidity')
+              .replace('$1', utilFmt.token(data.minimum_amount).toString())
+              .replace('$2', selectToToken.symbol)
+            pushError(errorText, SwapError.crossChainLiquidity)
+            break
+          }
+        }
       }
-      case ResponseCode.CrossChianMaxAmout: {
-        const errorText = t('cross.chain.max')
-          .replace('$1', utilFmt.token(data.minimum_amount).toString())
-          .replace('$2', selectToToken.symbol)
-        handleError(errorText, SwapError.crossChaiMaxAmount)
-        break
-      }
-      case ResponseCode.CrossChianMinAmout: {
-        const errorText = t('cross.chain.min')
-          .replace('$1', utilFmt.token(data.minimum_amount).toString())
-          .replace('$2', selectToToken.symbol)
-        handleError(errorText, SwapError.crossChaiMinAmount)
-        break
-      }
-      case ResponseCode.CrossChianLiquidity: {
-        const errorText = t('cross.chain.liquidity')
-          .replace('$1', utilFmt.token(data.minimum_amount).toString())
-          .replace('$2', selectToToken.symbol)
-        handleError(errorText, SwapError.crossChainLiquidity)
-        break
-      }
+
+      handlerError()
+      await getStatus()
+    } catch (e) {
+      toast.error(t('trading.fail'))
+    } finally {
+      toast.dismiss(loading)
     }
   }
 
@@ -376,6 +428,8 @@ export const useSwapConfirmLogic = ({
       } else {
         await crossSwap()
       }
+      setIsFinalTx(true)
+      getAllWallet()
     } catch {
       toast.error(t('trading.fail'))
     } finally {
@@ -385,7 +439,7 @@ export const useSwapConfirmLogic = ({
 
   useEffect(() => {
     handleRateClick(curRate)
-  }, [fromWallet])
+  }, [fromWallet, selectFromToken])
 
   useEffect(() => {
     checkForm()
@@ -424,6 +478,7 @@ export const useSwapConfirmLogic = ({
     buyValue,
     slippage,
     crossFeeData,
+    isInitCrossFee,
     crossFeeLoading,
     onConfirm,
     showSwaping,
@@ -434,10 +489,6 @@ export const useSwapConfirmLogic = ({
     setCurRate,
     getSelectTokenInfo,
   }
-
-  // useEffect(() => {
-  //   handleRateClick(curRate)
-  // }, [selectFromToken])
 
   return {
     txLogigcContextValue,

@@ -26,13 +26,13 @@ export const WalletList = () => {
 
   const getCols = (count: number) => {
     if (count == 1) {
-      return 'grid-cols-[135px]'
+      return 'grid-cols-[128px]'
     }
     if (count == 2) {
-      return 'grid-cols-[135px_135px]'
+      return 'grid-cols-[128px_128px]'
     }
 
-    return 'grid-cols-[135px_135px_135px]'
+    return 'grid-cols-[128px_128px_128px]'
   }
 
   const platform = chains.find(
@@ -48,16 +48,21 @@ export const WalletList = () => {
   }
 
   const fromWalletList = () => {
+    if (!selectFromToken) {
+      return <></>
+    }
+
     return (
-      <React.Fragment>
+      <div
+        className={clsx(
+          'flex gap-5 mt-3 pr-5',
+          isFinalTx && 'pointer-events-none',
+          !selectToToken && !selectFromToken ? 'mt-3' : 'mt-0'
+        )}
+      >
         {walletLength > 0 ? (
-          <React.Fragment>
-            <div
-              className={clsx(
-                'font-bold mt-5 mb-1',
-                !selectToToken && !selectFromToken ? 'mt-3' : 'mt-0'
-              )}
-            >
+          <div>
+            <div className={clsx('font-bold mb-1')}>
               {walletLength == 1
                 ? t('tx.token.wallet.balance')
                 : t('tx.token.text2')}
@@ -66,7 +71,6 @@ export const WalletList = () => {
               className={clsx('inline-flex border rounded-2xl overflow-hidden')}
             >
               {gridWalletList.map((wallets, i) => {
-                debugger
                 return (
                   <div
                     key={i}
@@ -113,9 +117,53 @@ export const WalletList = () => {
                 )
               })}
             </div>
-          </React.Fragment>
+          </div>
         ) : null}
-      </React.Fragment>
+        {walletLength < 3 ? receiveWalletComp() : null}
+      </div>
+    )
+  }
+
+  const receiveWalletComp = () => {
+    if (!isInequalityChain || !receiveWallet || !selectToToken) {
+      return <></>
+    }
+
+    return (
+      <div
+        className={clsx(
+          walletLength ? 'flex flex-col justify-stretch' : '',
+          gridWalletList[0]?.length > 2 ? 'inline-flex mt-5' : ''
+        )}
+      >
+        <div className="font-bold mb-1">
+          {t('receive.wallet').replace('$1', selectToToken?.symbol || '')}
+        </div>
+        <Select
+          defaultValue={receiveWallet.id}
+          size="small"
+          className={clsx('!h-full  !rounded-2xl input-border-gray-300')}
+          disabled={isFinalTx}
+        >
+          {walletPlatform![platform!]?.map((wallet) => {
+            return (
+              <MenuItem
+                key={wallet.id}
+                selected={receiveWallet.id === wallet.id}
+                value={wallet.id}
+                onClick={() => onChangeToWallet(wallet)}
+              >
+                <div>
+                  <div className="max-w-[130px] truncate">{wallet.name}</div>
+                  <div className="text-sm text-gray-400">
+                    <div>{utilFmt.addr(wallet.address, 4)}</div>
+                  </div>
+                </div>
+              </MenuItem>
+            )
+          })}
+        </Select>
+      </div>
     )
   }
 
@@ -126,49 +174,11 @@ export const WalletList = () => {
   return (
     <div
       className={clsx(
-        isInequalityChain && walletLength < 2 ? 'flex items-stretch' : '',
-        selectFromToken ? 'mt-3' : ''
+        isInequalityChain && walletLength < 2 ? 'flex items-stretch' : ''
       )}
     >
-      <div className={clsx('pr-5', isFinalTx && 'pointer-events-none')}>
-        {fromWalletList()}
-      </div>
-      {isInequalityChain && receiveWallet ? (
-        <div
-          className={clsx(
-            walletLength ? 'flex flex-col justify-stretch' : '',
-            gridWalletList[0]?.length > 2 ? 'mt-5 inline-flex' : '',
-            !selectFromToken ? 'mt-2' : ''
-          )}
-        >
-          <div className="font-bold mb-1">
-            {t('receive.wallet').replace('$1', selectToToken?.symbol || '')}
-          </div>
-          <Select
-            defaultValue={receiveWallet.id}
-            size="small"
-            className={clsx('!h-full  !rounded-2xl input-border-gray-300')}
-          >
-            {walletPlatform![platform!]?.map((wallet) => {
-              return (
-                <MenuItem
-                  key={wallet.id}
-                  selected={receiveWallet.id === wallet.id}
-                  value={wallet.id}
-                  onClick={() => onChangeToWallet(wallet)}
-                >
-                  <div>
-                    <div className="max-w-[130px] truncate">{wallet.name}</div>
-                    <div className="text-sm text-gray-400">
-                      <div>{utilFmt.addr(wallet.address, 4)}</div>
-                    </div>
-                  </div>
-                </MenuItem>
-              )
-            })}
-          </Select>
-        </div>
-      ) : null}
+      {fromWalletList()}
+      {walletLength > 2 ? receiveWalletComp() : null}
     </div>
   )
 }

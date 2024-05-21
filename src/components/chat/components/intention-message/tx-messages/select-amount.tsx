@@ -15,47 +15,66 @@ export const SelectAmount = () => {
     selectToToken,
     intentTokenInfo,
   } = useContext(SwapContext)
-  const { isFinalTx, curRate, handleRateClick, getSelectTokenInfo } =
-    useContext(TxLogicContext)
+  const {
+    isFinalTx,
+    curRate,
+    validateErr,
+    handleRateClick,
+    getSelectTokenInfo,
+  } = useContext(TxLogicContext)
 
   const walletLength = gridWalletList[0]?.length
   const selectWalletToken = getSelectTokenInfo(fromWallet, selectFromToken)
 
-  return (
-    <React.Fragment>
-      {/* From的错误提示 */}
-      {!walletLength || !selectFromToken ? (
-        <div
-          className={clsx(
-            'text-sm text-red-500',
-            selectToToken ? 'mt-3' : 'mt-3'
-          )}
-        >
-          {!walletLength ? (
-            <div>
-              {t('insufficient.balance').replace(
-                '$1',
-                selectFromToken?.symbol || intentTokenInfo?.fromTokenInfo || ''
-              )}
-            </div>
-          ) : null}
-        </div>
-      ) : null}
+  const handleFromTokenError = () => {
+    if (selectWalletToken?.symbol === selectToToken?.symbol) {
+      return <></>
+    }
 
-      {/* To的错误提示 */}
-      {!selectToToken ? (
-        <div
-          className={clsx(
-            'text-sm text-red-500',
-            selectFromToken ? 'mt-3' : 'mt-1'
+    if (!selectWalletToken && selectToToken) {
+      return (
+        <div className={clsx('text-sm text-red-500 mt-2')}>
+          {t('not.find.token').replace(
+            '$1',
+            intentTokenInfo?.fromTokenInfo || ''
           )}
-        >
+        </div>
+      )
+    }
+
+    if (selectWalletToken && !selectWalletToken.value_usd) {
+      debugger
+      return (
+        <div className={clsx('text-sm text-red-500 mt-2')}>
+          {t('insufficient.balance').replace(
+            '$1',
+            selectWalletToken?.symbol || intentTokenInfo?.fromTokenInfo || ''
+          )}
+        </div>
+      )
+    }
+  }
+
+  const handleToTokenError = () => {
+    if (!selectToToken) {
+      return (
+        <div className={clsx('text-sm text-red-500 mt-2')}>
           {t('not.find.token').replace(
             '$1',
             intentTokenInfo?.toTokenInfo || ''
           )}
         </div>
-      ) : null}
+      )
+    }
+  }
+
+  return (
+    <React.Fragment>
+      {/* From的错误提示 */}
+      {handleFromTokenError()}
+
+      {/* To的错误提示 */}
+      {handleToTokenError()}
 
       {walletLength ? (
         <div

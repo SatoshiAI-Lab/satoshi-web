@@ -37,6 +37,7 @@ export interface FromData {
 
 export interface ProviderData {
   approval_address: string
+  bridge_id: number
   [property: string]: any
 }
 
@@ -81,6 +82,7 @@ export interface CrossFeeData {
  * 不同服务商获得的数据会有所不同
  */
 export interface CrossProviderData {
+  bridge_id: number
   /**
    * (必返回) 预估跨链花费的token数量，不包含精度
    */

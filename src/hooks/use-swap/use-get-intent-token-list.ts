@@ -82,7 +82,7 @@ export const useGetIntentTokenList = (options: Options) => {
     ],
     queryFn: async () => {
       if (fromTokenInfo === '' || loadingAllWallet) {
-        return undefined
+        return []
       }
 
       const { data } = await tokenApi.multiCoin(fromTokenInfo)
@@ -101,7 +101,7 @@ export const useGetIntentTokenList = (options: Options) => {
     ],
     queryFn: async () => {
       if (toTokenInfo === '' || loadingAllWallet) {
-        return undefined
+        return []
       }
 
       const { data } = await tokenApi.multiCoin(toTokenInfo)

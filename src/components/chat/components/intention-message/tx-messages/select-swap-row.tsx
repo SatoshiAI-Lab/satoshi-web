@@ -19,13 +19,13 @@ export const SelectSwapRow = () => {
   const handleCrossPlatform = () => {
     const { provider, provider_data } = crossFeeData || {}
 
-    // if (crossFeeLoading) {
-    //   return (
-    //     <div className="mt-2 text-sm text-gray-500 flicker-text">
-    //       {t('cross.chain.quote')}
-    //     </div>
-    //   )
-    // }
+    if (crossFeeLoading) {
+      return (
+        <div className="mt-2 text-sm text-gray-500 flicker-text">
+          {t('cross.chain.quote')}
+        </div>
+      )
+    }
 
     return Number(provider_data?.cross_chain_fee) ? (
       <div className="mt-2 text-sm text-gray-500">

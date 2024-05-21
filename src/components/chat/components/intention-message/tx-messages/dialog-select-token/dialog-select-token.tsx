@@ -34,21 +34,11 @@ export const DialogSelectToken = (props: Props) => {
   const {
     loadingSearch,
     searchTokens,
-    selectWallet,
-    walletPlatform,
     contextValue,
     searchValue,
-    isSearch,
     createWalletInfo,
-    selectChainId,
     setCreateWalletInfo,
-    setSelectWallet,
-    setSelectChainId,
   } = useDialogSelectTokenContext(isFrom)
-
-  const { getSearchTokensSetting, setSerchTokensSetting } = useStorage()
-
-  const isIgnoreLowValue = getSearchTokensSetting() === 'true'
 
   useEffect(() => {
     if (createdWallet) {
@@ -176,7 +166,7 @@ export const DialogSelectToken = (props: Props) => {
           onClose={hidden}
           textAlign="left"
         ></DialogHeader>
-        <div className="min-w-[420px] h-[500px]">
+        <div className="min-w-[430px] h-[500px]">
           <SearchInput isFrom={isFrom} />
           <div className="mt-4 pt-2 border-t border-gray-300">
             {dialogContent()}

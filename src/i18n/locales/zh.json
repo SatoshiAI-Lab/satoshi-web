@@ -257,7 +257,7 @@
   "swap": "兑换",
   "for": "成",
   "trading.timeout": "交易超时",
-  "trading.fail": "交易失败",
+  "trading.fail": "跨链交易失败",
   "trading.success": "交易成功",
   "export-wallet": "导出{}钱包私钥成功！悬浮以显示私钥（请注意您的私钥安全）",
   "delete-success": "删除成功！",
@@ -375,5 +375,7 @@
   "cross.chain.min": "跨链额度不能小于$1个$2",
   "cross.chain.max": "跨链额度不能大于$1个$2",
   "cross.chain.liquidity": "流动性不足",
-  "hide.low.value.token": "隐藏低于1美元的代币"
+  "hide.low.value.token": "隐藏低于1美元的代币",
+  "cross.chain.success": "跨链交易成功",
+  "cross.chain.loading": "跨链交易中..."
 }

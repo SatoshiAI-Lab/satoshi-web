@@ -10,14 +10,15 @@ export const SwapConfirm = () => {
 
   const { selectFromToken, selectToToken, gridWalletList } =
     useContext(SwapContext)
-  const { isSwaping, isFinalTx, validateErr, onConfirm } =
+  const { isSwaping, isFinalTx, validateErr, isInitCrossFee, onConfirm } =
     useContext(TxLogicContext)
 
   const unableTrade =
     !selectFromToken ||
     !selectToToken ||
     !gridWalletList.length ||
-    !!validateErr.length
+    !!validateErr.length ||
+    isInitCrossFee
 
   let text = t('confirm')
 
@@ -31,6 +32,10 @@ export const SwapConfirm = () => {
 
   if (unableTrade) {
     text = t('unable.trade')
+  }
+
+  if (isInitCrossFee) {
+    text = t('cross.chain.quote')
   }
 
   return (

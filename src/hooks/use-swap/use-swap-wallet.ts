@@ -42,38 +42,25 @@ export const useSwapWallet = (options: Options) => {
     setFromWallet(wallets[0])
 
     // 格式化数据成九宫格
-    const gridWalletList = wallets
-      .filter((w) =>
-        w.tokens?.some((t) => {
-          return (
-            t.value_usd > 0 &&
-            t.address === selectFromToken?.address &&
-            t.name === selectFromToken?.name
-          )
-        })
-      )
-      .reduce<PartialWalletRes[][]>((cur, next) => {
-        if (count % 3 == 0) {
-          cur.push([])
-        }
-        cur[cur.length - 1].push(next)
-        count++
-        return cur
-      }, [])
+    wallets = wallets.filter((w) => {
+      return w.tokens?.some((t) => {
+        return t.value_usd > 0 && t.address === selectFromToken?.address
+      })
+    })
+
+    const gridWalletList = wallets.reduce<PartialWalletRes[][]>((cur, next) => {
+      if (count % 3 == 0) {
+        cur.push([])
+      }
+      cur[cur.length - 1].push(next)
+      count++
+      return cur
+    }, [])
+
     const defaultWallet = gridWalletList[0]?.[0]
 
-    if (
-      defaultWallet &&
-      // 链ID和钱包ID都必须是不一致的
-      // 这里和跨不跨链无关，因为选择的代币必须用这条链的钱包支付
-      (defaultWallet.id !== fromWallet?.id ||
-        defaultWallet.chain?.id != fromWallet?.chain?.id)
-    ) {
-      setGridWalletList(gridWalletList)
-      if (defaultWallet?.chain?.id !== fromWallet?.chain?.id) {
-        setFromWallet(defaultWallet)
-      }
-    }
+    setGridWalletList(gridWalletList || [])
+    setFromWallet(defaultWallet)
   }
 
   const handleReceiveWallet = () => {

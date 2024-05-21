@@ -261,7 +261,7 @@
   "swap": "swap",
   "for": "for",
   "trading.timeout": "Trading timeout",
-  "trading.fail": "Trade failed",
+  "trading.fail": "Cross-chain transaction failed",
   "trading.success": "Successful transaction",
   "export-wallet": "Export {} private key success! hover to show private key(Attention private key security)",
   "delete-success": "Delete successful!",
@@ -380,5 +380,7 @@
   "cross.chain.min": "The cross-chain limit cannot be less than $1 $2",
   "cross.chain.max": "The cross-chain limit cannot be greater than $1 $2",
   "cross.chain.liquidity": "Insufficient liquidity",
-  "hide.low.value.token": "Hide tokens under $1"
+  "hide.low.value.token": "Hide tokens under $1",
+  "cross.chain.success": "Successful cross-chain transaction",
+  "cross.chain.loading": "In cross-chain transactions..."
 }

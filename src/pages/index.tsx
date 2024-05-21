@@ -40,10 +40,11 @@ export default function Home() {
     refetchInterval: 15_000,
   })
 
-  // By default, get all wallets once on background.
-  useEffect(() => {
-    getAllWallet()
-  }, [])
+  useQuery({
+    queryKey: [getAllWallet.name],
+    queryFn: getAllWallet,
+    refetchInterval: 15_000,
+  })
 
   return (
     <main className="flex flex-col h-screen !overflow-hidden">

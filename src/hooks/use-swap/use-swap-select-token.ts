@@ -178,7 +178,7 @@ export const useSwapSelectToken = (options: Options) => {
       : toTokenListResult || []
 
     // 主代币
-    if (toMainToken) {
+    if (isToMainToken) {
       const tokenList = utilArr.removeDuplicates(toMainToken, [
         'address',
         'chain.id',
@@ -215,12 +215,9 @@ export const useSwapSelectToken = (options: Options) => {
       return
     }
 
+    // 意图链
     if (toIntentChain !== '') {
-      // 优先匹配意图链
-      let beforeFilterTokenList = tokenList
-      tokenList = beforeFilterTokenList.filter(
-        (t) => t.chain.name === toIntentChain
-      )
+      tokenList.filter((t) => t.chain.name === toIntentChain)
     }
 
     // 没有匹配到合适的代币

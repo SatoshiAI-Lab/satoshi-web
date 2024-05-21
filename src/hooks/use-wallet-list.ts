@@ -37,6 +37,8 @@ export const useWalletList = (options?: Options) => {
       if (res.data) {
         setAllWallets(res.data)
       }
+
+      return res
     } catch {
       await getAllWallet()
     } finally {
