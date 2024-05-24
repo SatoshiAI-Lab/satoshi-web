@@ -93,6 +93,8 @@ export interface CrossProviderData {
    */
   cross_chain_fee_token_address: string
 
+  approval_address: string
+
   cross_chain_fee_token: {
     address: string
     decimals: number
@@ -104,6 +106,7 @@ export interface CrossProviderData {
    * (必返回) 目标链预估获得的数量，不包含精度
    */
   estimate_gain_amount: string
+  estimate_gas_costs_symbol: string
   [property: string]: any
 }
 

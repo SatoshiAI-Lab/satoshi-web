@@ -33,6 +33,7 @@ export const TxTokenBubbles = () => {
     selectFromToken,
     selectToToken,
     loadingFromTokenList,
+    loadingToTokenList,
     loadingAllWallet,
     receiveWallet,
     chains,
@@ -53,7 +54,7 @@ export const TxTokenBubbles = () => {
     return <MessageBubble>{t('loading.wallet')}</MessageBubble>
   }
 
-  if (loadingFromTokenList || loadingFromTokenList) {
+  if (loadingFromTokenList || loadingToTokenList) {
     return <MessageBubble>{t('searching.tokens')}</MessageBubble>
   }
 

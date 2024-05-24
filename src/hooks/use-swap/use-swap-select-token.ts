@@ -96,7 +96,7 @@ export const useSwapSelectToken = (options: Options) => {
           )
         })
 
-        if (!tokenList.length) {
+        if (!tokenList.length && fromMainToken.length) {
           return [fromMainToken[0]]
         }
 

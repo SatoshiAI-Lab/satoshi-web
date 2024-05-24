@@ -139,13 +139,12 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
           onClick={onSwitch}
         >
           {selectToken ? (
-            <img
-              src={selectToken?.logo || defaultImg}
-              alt="chain-slogo"
-              width={35}
-              height={35}
-              className="w-[35px] h-[35px] mr-1 rounded-full"
-            ></img>
+            <Avatar
+              src={selectToken?.logo}
+              className="!w-[35px] !h-[35px] mr-1 rounded-full"
+            >
+              {selectToken?.symbol?.slice(0, 1).toUpperCase()}
+            </Avatar>
           ) : (
             <span>{t('select.a.token')}</span>
           )}
@@ -179,7 +178,7 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
         {selectToToken ? (
           <>
             <Avatar src={selectToToken?.logo} className="!w-[35px] !h-[35px]">
-              {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
+              {selectToToken?.symbol?.slice(0, 1).toUpperCase()}
             </Avatar>
             <div className="mx-2">
               <div className="max-w-[110px] truncate">

@@ -22,17 +22,22 @@ export const trandApi = {
   /**
    * 跨链交易
    */
-  crossSwap(walletId: string, data: CrossSwapParams) {
+  crossSwap(walletId: string, data: CrossSwapParams, signal?: AbortSignal) {
     return fetchSatoshi.post<CrossSwapData>(
       `/api/v1/coin/cross/${walletId}/`,
-      data
+      data,
+      signal
     )
   },
   /**
    * 查询跨链手续费
    */
-  getCrossFee(data: CrossPriceQuery) {
-    return fetchSatoshi.post<CrossFeeData>(`/api/v1/coin/cross-quote/`, data)
+  getCrossFee(data: CrossPriceQuery, signal?: AbortSignal) {
+    return fetchSatoshi.post<CrossFeeData>(
+      `/api/v1/coin/cross-quote/`,
+      data,
+      signal
+    )
   },
   /**
    * 查询跨链进度

@@ -24,9 +24,9 @@ export default function Home() {
     refetchInterval: 15_000,
   })
 
-  useChatMonitorMsg()
+  // useChatMonitorMsg()
 
-  // Refresh monitor config every 15s.
+  // // Refresh monitor config every 15s.
   useQuery({
     queryKey: [monitorApi.getConfig.name, isLogined],
     queryFn: async () => {
