@@ -1,4 +1,6 @@
 export const SwapError = {
+  crossChainNoTransfer: 'cross-chain-no-transfer',
+
   /**
    * 不支持从某条链跨到某条链
    */

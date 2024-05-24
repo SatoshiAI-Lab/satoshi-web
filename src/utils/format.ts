@@ -59,14 +59,14 @@ export const utilFmt = {
       const slicedLastNum = lastNumbers.slice(0, fixed)
       const result = `0.0{${zeroLen}}${slicedLastNum}`
 
-      if (zeroLen === 0) return `0.${slicedLastNum}`
-      if (zeroLen === 1) return `0.0${slicedLastNum}`
-      if (zeroLen === 2) return `0.00${lastNumbers.slice(0, 2)}`
-      if (zeroLen === 3) return `0.000${lastNumbers.slice(0, 1)}`
+      if (zeroLen === 0) return +`0.${slicedLastNum}`
+      if (zeroLen === 1) return +`0.0${slicedLastNum}`
+      if (zeroLen === 2) return +`0.00${lastNumbers.slice(0, 2)}`
+      if (zeroLen === 3) return +`0.000${lastNumbers.slice(0, 1)}`
 
       return result
     } else {
-      return numeral(strValue).format('0.00')
+      return +numeral(strValue).format('0.00')
     }
   },
   percent(value?: number, fixed = 2) {

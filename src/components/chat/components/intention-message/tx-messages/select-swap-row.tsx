@@ -22,15 +22,7 @@ export const SelectSwapRow = () => {
     setSelectFromToken,
     setSelectToToken,
   } = useContext(SwapContext)
-  const {
-    buyValue,
-    isFinalTx,
-    crossFeeData,
-    setBuyValue,
-    crossFeeLoading,
-    isCrossFeeError,
-    validateCrossErr,
-  } = useContext(TxLogicContext)
+  const { buyValue, isFinalTx, setBuyValue } = useContext(TxLogicContext)
 
   const onSwitch = () => {
     const {
@@ -56,40 +48,6 @@ export const SelectSwapRow = () => {
     setToTokenInfo(fromTokenInfo)
   }
 
-  const handleCrossPlatform = () => {
-    const { provider, provider_data } = crossFeeData || {}
-
-    if (crossFeeLoading) {
-      return (
-        <div className="mt-2 text-sm text-gray-500 flicker-text">
-          {t('cross.chain.quote')}
-        </div>
-      )
-    }
-
-    if (isCrossFeeError || validateCrossErr.length) {
-      return (
-        <div className="mt-2 text-sm text-red-500">
-          {validateCrossErr.length
-            ? validateCrossErr.map((item) => <div>{item.errorText}</div>)
-            : t('cross.chain.error')}
-        </div>
-      )
-    }
-
-    return Number(provider_data?.cross_chain_fee) ? (
-      <div className="mt-2 text-sm text-gray-500">
-        {t('cross.fee.tips')
-          .replace('$1', utilFmt.fisrtCharUppercase(provider) || '')
-          .replace(
-            '$2',
-            `${utilFmt.token(Number(provider_data?.cross_chain_fee) || 0, 2)}`
-          )
-          .toString()
-          .replace('$3', selectFromToken?.symbol || '')}
-      </div>
-    ) : null
-  }
   return (
     <>
       <div className="font-bold mt-1 mb-1">
@@ -127,8 +85,6 @@ export const SelectSwapRow = () => {
         ></VscArrowSwap>
         <SelectToken isFrom={false} isFinalTx={isFinalTx}></SelectToken>
       </div>
-
-      {handleCrossPlatform()}
     </>
   )
 }

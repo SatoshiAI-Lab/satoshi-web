@@ -34,7 +34,7 @@ export const SelectAmount = () => {
     if (!selectWalletToken && selectToToken) {
       return (
         <div className={clsx('text-sm text-red-500 mt-2')}>
-          {t('not.find.token').replace(
+          {t('from.token.balance.insufficient').replace(
             '$1',
             intentTokenInfo?.fromTokenInfo || ''
           )}

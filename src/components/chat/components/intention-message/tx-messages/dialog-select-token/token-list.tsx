@@ -25,6 +25,8 @@ export const TokenList = ({ setCreateWalletInfo }: Props) => {
     walletList,
     setSelectFromToken,
     setSelectToToken,
+    setFromTokenList,
+    setToTokenList,
   } = useContext(SwapContext)
   const { isSearch, searchTokens, selectChainId, isFrom, closeDialog } =
     useContext(DialogContext)
@@ -139,12 +141,14 @@ export const TokenList = ({ setCreateWalletInfo }: Props) => {
         return toast.error(t('select.token.tips'))
       }
       setSelectFromToken(token)
+      setFromTokenList([])
     } else {
       // 不支持跨链
       // if (token.chain.id !== selectToken?.chain.id) {
       //   return toast.error(t('error.chian'))
       // }
       setSelectToToken(token)
+      setToTokenList([])
     }
     closeDialog()
   }

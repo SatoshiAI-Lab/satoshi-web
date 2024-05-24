@@ -9,7 +9,7 @@ export interface GetCrossHashStatusReq {
   provider?: string
 }
 export interface GetCrossHashStatusRes {
-  status: 'PENDING' | 'SUCCESS' | 'FAILURE' | 'REFUND'
+  status: 'PENDING' | 'SUCCESS' | 'FAILURE' | 'REFUND' | 'NOT_FOUND'
   to_url: string
   to_hash_tx: string
 }

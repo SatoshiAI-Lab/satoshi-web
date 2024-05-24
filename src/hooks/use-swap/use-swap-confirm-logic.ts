@@ -28,6 +28,7 @@ import { CrossFeeData } from '@/api/trand/types'
 import { SwapError } from '@/config/swap-error'
 import { ResponseCode } from '@/api/fetcher/types'
 import { utilFmt } from '@/utils/format'
+import { utilTime } from '@/utils/time'
 
 interface Options {
   data: ChatResponseTxConfrim
@@ -126,7 +127,7 @@ export const useSwapConfirmLogic = ({
       buyValue,
       slippage,
     ],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       if (selectToToken?.chain.id === selectFromToken?.chain.id) {
         return {} as CrossFeeData
       }
@@ -136,18 +137,21 @@ export const useSwapConfirmLogic = ({
       }
 
       try {
-        const { code, data } = await trandApi.getCrossFee({
-          crossAmount: `${buyValue || 0.00001}`,
-          fromData: {
-            chain: selectFromToken.chain.name,
-            tokenAddress: selectFromToken.address,
+        const { code, data } = await trandApi.getCrossFee(
+          {
+            crossAmount: `${buyValue}`,
+            fromData: {
+              chain: selectFromToken.chain.name,
+              tokenAddress: selectFromToken.address,
+            },
+            slippageBps: slippage * 100,
+            toData: {
+              chain: selectToToken.chain.name,
+              tokenAddress: selectToToken.address,
+            },
           },
-          slippageBps: slippage * 100,
-          toData: {
-            chain: selectToToken.chain.name,
-            tokenAddress: selectToToken.address,
-          },
-        })
+          signal
+        )
 
         const validateCrossErr: ValidateError[] = []
 
@@ -164,14 +168,14 @@ export const useSwapConfirmLogic = ({
 
         if (code === ResponseCode.CrossChainNotFindTranfer) {
           const errorText = t('not.find.transfer')
-            .replace(
-              '$1',
-              utilFmt.fisrtCharUppercase(selectFromToken.chain.name)
-            )
-            .replace('$2', utilFmt.fisrtCharUppercase(selectFromToken.symbol))
-            .replace('$3', utilFmt.fisrtCharUppercase(selectToToken.chain.name))
-            .replace('$4', utilFmt.fisrtCharUppercase(selectToToken.symbol!))
-          pushCrossError(errorText, SwapError.crossChainNotSupper)
+          // .replace(
+          //   '$1',
+          //   utilFmt.fisrtCharUppercase(selectFromToken.chain.name)
+          // )
+          // .replace('$2', utilFmt.fisrtCharUppercase(selectFromToken.symbol))
+          // .replace('$3', utilFmt.fisrtCharUppercase(selectToToken.chain.name))
+          // .replace('$4', utilFmt.fisrtCharUppercase(selectToToken.symbol!))
+          pushCrossError(errorText, SwapError.crossChainNoTransfer)
         }
 
         if (code === ResponseCode.CrossChainPath) {
@@ -251,7 +255,7 @@ export const useSwapConfirmLogic = ({
     const balance = +numeral(formatUnits(BigInt(amount), decimals)).format(
       '0.00000'
     )
-    console.log(buyValue, balance)
+
     if (buyValue > balance) {
       pushError(t('tx.form.error2'), SwapError.insufficient)
       isError = true
@@ -276,7 +280,6 @@ export const useSwapConfirmLogic = ({
         errorText,
       })
     }
-
     setValidateErr(validateErr)
   }
 
@@ -312,11 +315,7 @@ export const useSwapConfirmLogic = ({
         chain: selectFromToken?.chain.name,
       })
       if (result.status == 0) {
-        await new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(null)
-          }, 1500)
-        })
+        await utilTime.wait(1500)
         await getStatus()
         return
       }
@@ -340,15 +339,10 @@ export const useSwapConfirmLogic = ({
   // 跨链交易
   const crossSwap = async () => {
     const amount = BigNumber(buyValue).multipliedBy(0.93).toFixed(5)
-
     if (!selectFromToken || !selectToToken || !crossFeeData || !receiveWallet) {
       console.log('Transaction parameter missing')
       return
     }
-
-    const approval_address =
-      crossFeeData.provider_data.cross_chain_fee_token_address!
-    const bridge_id = crossFeeData.provider_data.bridge_id!
 
     const loading = toast.loading(t('cross.chain.loading'))
 
@@ -367,24 +361,24 @@ export const useSwapConfirmLogic = ({
         // 默认为 10% 即 1000；1 为 0.01%
         slippageBps: slippage * 100,
         provider: crossFeeData.provider,
-        providerData: {
-          approval_address,
-          bridge_id,
-        },
+        providerData: crossFeeData.provider_data,
       })
 
       addMessage({
         role: 'assistant',
         text: `${t('cross.tx.sned.2').replace(
           '$1',
-          selectToToken.chain.name!
+          selectFromToken.chain.name!
         )}${data.url}`,
       })
 
+      let errorCount = 0
+      let limit = 10
       const getStatus = async () => {
         if (code != 200) return
 
         try {
+          await utilTime.wait(1500)
           const { data: result } = await interactiveApi.getCrossHashStatus({
             hash_tx: data.hash_tx,
             provider: data.provider,
@@ -402,10 +396,17 @@ export const useSwapConfirmLogic = ({
               text: `${t('cross.tx.sned.2').replace(
                 '$1',
                 selectToToken.chain.name!
-              )}${data.to_url}`,
+              )}${result.to_url}`,
             })
 
             return
+          }
+
+          if (result.status === 'NOT_FOUND') {
+            if (errorCount++ === limit) {
+              throw new Error('Cross chain transaction not found')
+            }
+            await getStatus()
           }
 
           if (result.status === 'FAILURE' || result.status === 'REFUND') {
@@ -413,7 +414,10 @@ export const useSwapConfirmLogic = ({
             return Promise.reject()
           }
         } catch (e) {
-          console.log('报错了')
+          if (errorCount++ === limit) {
+            throw e
+          }
+          await getStatus()
         }
       }
 
@@ -460,7 +464,7 @@ export const useSwapConfirmLogic = ({
   }
 
   const onConfirm = async () => {
-    if (!checkForm()) return
+    if (checkForm()) return
     showSwaping()
 
     try {

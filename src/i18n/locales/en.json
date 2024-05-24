@@ -374,7 +374,7 @@
   "not.cross.chain": "Cross-chain is not currently supported",
   "not.find.token": "No $1 token found Please select another token",
   "receive.wallet": "Receive $1 wallet",
-  "cross.fee.tips": "This transaction is based on the $1 platform, which will charge $2 as a processing fee",
+  "cross.fee.tips": "$1 Cross-chain bridge fee: $2",
   "not.supported": "Cross-chain from $1 to $2 is not supported",
   "cross.chain.quote": "Tokens are being offered cross-chain",
   "cross.chain.min": "The cross-chain limit cannot be less than $1 $2",
@@ -383,11 +383,13 @@
   "hide.low.value.token": "Hide tokens under $1",
   "cross.chain.success": "Successful cross-chain transaction",
   "cross.chain.loading": "In cross-chain transactions...",
-  "cross.chain.error": "Failed to obtain transaction information",
+  "cross.chain.error": "Failed to obtain a cross-chain quote",
   "loading.chains": "Getting chain info...",
   "not.find.wallet": "You need to create a $1 wallet to receive $2",
   "cross.tx.sned.2": "$1 chain transaction record:",
-  "not.find.transfer": "No support for $2 from $1 to $4 from $3",
+  "not.find.transfer": "No available quotes for the requested transfer",
   "same.token": "Cannot be exchanged for the same token",
-  "need.token.chain": "Chains that need to specify tokens from both parties"
+  "need.token.chain": "Chains that need to specify tokens from both parties",
+  "cross.fee.estimate": "Inter-chain Gas fee: $1",
+  "from.token.balance.insufficient": "The $1 token balance is insufficient, please select another token"
 }

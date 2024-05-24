@@ -2,7 +2,7 @@ import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { TxLogicContext } from '@/hooks/use-swap/use-swap-confirm-logic'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { utilFmt } from '@/utils/format'
-import { Select, MenuItem } from '@mui/material'
+import { Select, MenuItem, FormControl } from '@mui/material'
 import clsx from 'clsx'
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -134,30 +134,32 @@ export const WalletList = () => {
         <div className="font-bold mb-1">
           {t('receive.wallet').replace('$1', selectToToken?.symbol || '')}
         </div>
-        <Select
-          defaultValue={receiveWallet.id}
-          size="small"
-          className={clsx('!h-full !rounded-2xl input-border-gray-300')}
-          disabled={isFinalTx}
-        >
-          {walletPlatform![platform!]?.map((wallet) => {
-            return (
-              <MenuItem
-                key={wallet.id}
-                selected={receiveWallet.id === wallet.id}
-                value={wallet.id}
-                onClick={() => onChangeToWallet(wallet)}
-              >
-                <div>
-                  <div className="max-w-[130px] truncate">{wallet.name}</div>
-                  <div className="text-sm text-gray-400">
-                    <div>{utilFmt.addr(wallet.address, 4)}</div>
+        <FormControl className="!h-full">
+          <Select
+            value={receiveWallet.id}
+            size="small"
+            className={clsx('!h-full !rounded-2xl input-border-gray-300')}
+            disabled={isFinalTx}
+          >
+            {walletPlatform![platform!]?.map((wallet) => {
+              return (
+                <MenuItem
+                  key={wallet.id}
+                  selected={receiveWallet.id === wallet.id}
+                  value={wallet.id}
+                  onClick={() => onChangeToWallet(wallet)}
+                >
+                  <div>
+                    <div className="max-w-[130px] truncate">{wallet.name}</div>
+                    <div className="text-sm text-gray-400">
+                      <div>{utilFmt.addr(wallet.address, 4)}</div>
+                    </div>
                   </div>
-                </div>
-              </MenuItem>
-            )
-          })}
-        </Select>
+                </MenuItem>
+              )
+            })}
+          </Select>
+        </FormControl>
       </div>
     )
   }
