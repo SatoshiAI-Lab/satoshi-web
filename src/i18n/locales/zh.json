@@ -257,7 +257,7 @@
   "swap": "兑换",
   "for": "成",
   "trading.timeout": "交易超时",
-  "trading.fail": "跨链交易失败",
+  "trading.fail": "交易失败",
   "trading.success": "交易成功",
   "export-wallet": "导出{}钱包私钥成功！悬浮以显示私钥（请注意您的私钥安全）",
   "delete-success": "删除成功！",
@@ -360,7 +360,7 @@
   "use.wallet": "使用这个钱包: ",
   "error.chian": "暂不支持跨链交易",
   "create.wallet.token": "这个$1代币，它在$2上。你需要先创建一个$2钱包。",
-  "create.wallet": "创建一个$1钱包",
+  "create.wallet": "创建$1钱包",
   "created.wallet.tips1": "为你创建了一个$1钱包，",
   "created.wallet.tips2": "并且已经进行了自动切换。",
   "unable.trade": "无法交易",
@@ -377,5 +377,12 @@
   "cross.chain.liquidity": "流动性不足",
   "hide.low.value.token": "隐藏低于1美元的代币",
   "cross.chain.success": "跨链交易成功",
-  "cross.chain.loading": "跨链交易中..."
+  "cross.chain.loading": "跨链交易中...",
+  "cross.chain.error": "获取交易信息失败",
+  "loading.chains": "正在获取链信息...",
+  "not.find.wallet": "你需要创建$1钱包才可以接收$2",
+  "cross.tx.sned.2": "$1链的交易记录：",
+  "not.find.transfer": "不支持$1的$2跨链到$3的$4",
+  "same.token": "不能兑换相同的代币",
+  "need.token.chain": "需要指定双方代币的链"
 }

@@ -1,4 +1,3 @@
-import { useChainsPlatforms } from '@/components/wallet/hooks/use-chains-platforms'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 import { TxLogicContext } from '@/hooks/use-swap/use-swap-confirm-logic'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
@@ -12,7 +11,6 @@ import { formatUnits } from 'viem'
 export const WalletList = () => {
   const { t } = useTranslation()
   const { isFinalTx } = useContext(TxLogicContext)
-  const { chains } = useChainsPlatforms()
   const {
     gridWalletList,
     walletPlatform,
@@ -20,6 +18,7 @@ export const WalletList = () => {
     selectFromToken,
     fromWallet,
     selectToToken,
+    chains,
     setFromWallet,
     setReceiveWallet,
   } = useContext(SwapContext)
@@ -48,16 +47,12 @@ export const WalletList = () => {
   }
 
   const fromWalletList = () => {
-    if (!selectFromToken) {
-      return <></>
-    }
-
     return (
       <div
         className={clsx(
-          'flex gap-5 mt-3 pr-5',
+          'flex gap-5 pr-5',
           isFinalTx && 'pointer-events-none',
-          !selectToToken && !selectFromToken ? 'mt-3' : 'mt-0'
+          selectToToken || selectFromToken ? 'mt-3' : 'mt-0'
         )}
       >
         {walletLength > 0 ? (
@@ -142,7 +137,7 @@ export const WalletList = () => {
         <Select
           defaultValue={receiveWallet.id}
           size="small"
-          className={clsx('!h-full  !rounded-2xl input-border-gray-300')}
+          className={clsx('!h-full !rounded-2xl input-border-gray-300')}
           disabled={isFinalTx}
         >
           {walletPlatform![platform!]?.map((wallet) => {

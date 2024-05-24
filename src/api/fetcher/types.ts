@@ -22,11 +22,13 @@ export enum ResponseCode {
 
   Auth = 401,
 
-  CrossChianLiquidity = 1004,
+  CrossChainNotFindTranfer = 1007,
 
-  CrossChianPath = 2001,
+  CrossChainLiquidity = 1004,
 
-  CrossChianMinAmout = 1005,
+  CrossChainPath = 2001,
 
-  CrossChianMaxAmout = 1006,
+  CrossChainMinAmout = 1005,
+
+  CrossChainMaxAmout = 1006,
 }

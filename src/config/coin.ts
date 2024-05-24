@@ -1,12 +1,10 @@
 export const excluedToken = [
-  'ETH',
   'DAI',
   'USDC',
   'USDT',
   'USDB',
   'FDUSD',
   'WBTC',
-  'WETH',
   'BUSD',
   'DAI.e',
 ]

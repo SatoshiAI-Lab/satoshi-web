@@ -15,6 +15,7 @@ export interface BuyTokenData {
 export interface CrossSwapData {
   hash_tx: string
   url: string
+  to_url: string
   provider: string
   minimum_amount: number
   max_amount: number
@@ -91,6 +92,14 @@ export interface CrossProviderData {
    * (必返回) 预估跨链花费的token地址
    */
   cross_chain_fee_token_address: string
+
+  cross_chain_fee_token: {
+    address: string
+    decimals: number
+    logo: string
+    name: string
+    symbol: string
+  }
   /**
    * (必返回) 目标链预估获得的数量，不包含精度
    */

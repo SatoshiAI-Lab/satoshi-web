@@ -261,7 +261,7 @@
   "swap": "swap",
   "for": "for",
   "trading.timeout": "Trading timeout",
-  "trading.fail": "Cross-chain transaction failed",
+  "trading.fail": "Transaction failed",
   "trading.success": "Successful transaction",
   "export-wallet": "Export {} private key success! hover to show private key(Attention private key security)",
   "delete-success": "Delete successful!",
@@ -382,5 +382,12 @@
   "cross.chain.liquidity": "Insufficient liquidity",
   "hide.low.value.token": "Hide tokens under $1",
   "cross.chain.success": "Successful cross-chain transaction",
-  "cross.chain.loading": "In cross-chain transactions..."
+  "cross.chain.loading": "In cross-chain transactions...",
+  "cross.chain.error": "Failed to obtain transaction information",
+  "loading.chains": "Getting chain info...",
+  "not.find.wallet": "You need to create a $1 wallet to receive $2",
+  "cross.tx.sned.2": "$1 chain transaction record:",
+  "not.find.transfer": "No support for $2 from $1 to $4 from $3",
+  "same.token": "Cannot be exchanged for the same token",
+  "need.token.chain": "Chains that need to specify tokens from both parties"
 }

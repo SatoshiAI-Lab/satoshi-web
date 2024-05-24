@@ -2,12 +2,14 @@ import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
 import { Dispatch, SetStateAction, createContext, useState } from 'react'
 import { PartialWalletRes, WalletPlatform } from '@/stores/use-wallet-store'
 import { useWalletStore } from '@/stores/use-wallet-store'
+import { useChainsPlatforms } from '../use-chains-platforms'
 import {
   TIntentTokoenInfo,
   useGetIntentTokenList,
 } from './use-get-intent-token-list'
 import { useSwapWallet } from './use-swap-wallet'
 import { useSwapSelectToken } from './use-swap-select-token'
+import { ChainResInfo } from '@/api/wallet/params'
 
 interface Options {
   data: ChatResponseTxConfrim
@@ -29,6 +31,7 @@ export interface ISwapContext {
   intentTokenInfo?: TIntentTokoenInfo
   receiveWallet?: PartialWalletRes
   walletPlatform?: WalletPlatform
+  chains: ChainResInfo[]
 
   setReceiveWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
   setFromWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
@@ -51,6 +54,7 @@ export const SwapContext = createContext<ISwapContext>({
   insufficientBalanceMsg: '',
   gridWalletList: [],
   walletList: [],
+  chains: [],
   loadingAllWallet: true,
   intentTokenInfo: undefined,
   receiveWallet: undefined,
@@ -65,7 +69,8 @@ export const SwapContext = createContext<ISwapContext>({
 })
 
 export const useSwapProviderProvider = ({ data }: Options) => {
-  const { walletList, loadingAllWallet, walletPlatform } = useWalletStore() // 所有的钱包
+  const { walletList, loadingAllWallet, walletPlatform, chains } =
+    useWalletStore() // 所有的钱包
   // 用于支付代币的钱包
   const [fromWallet, setFromWallet] = useState<PartialWalletRes | undefined>()
   // 用于接收代币的钱包
@@ -75,6 +80,7 @@ export const useSwapProviderProvider = ({ data }: Options) => {
 
   const intentTokenInfo = useGetIntentTokenList({
     data,
+    chains,
     walletList,
     walletPlatform,
     loadingAllWallet,
@@ -114,6 +120,7 @@ export const useSwapProviderProvider = ({ data }: Options) => {
     gridWalletList,
     insufficientBalanceMsg: '',
     receiveWallet,
+    chains,
     setReceiveWallet,
     setFromWallet,
     setSelectToToken,

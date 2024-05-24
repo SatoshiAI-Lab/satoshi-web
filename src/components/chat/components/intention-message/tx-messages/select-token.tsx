@@ -1,7 +1,7 @@
 import PercentTag from '@/components/percent-tag'
 
 import { clsx } from 'clsx'
-import { Avatar, Menu, MenuItem, Toolbar, Tooltip } from '@mui/material'
+import { Avatar, Menu, MenuItem } from '@mui/material'
 import { useContext, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 import { defaultImg } from '@/config/image-url'
@@ -172,7 +172,7 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
         className={clsx(
           'h-[52px] border border-neutral-300 rounded-xl py-[6px] px-5 text-sm flex-shrink-0',
           'flex items-center cursor-pointer',
-          isFinalTx && 'pointer-events-none'
+          isFinalTx && 'pointer-events-none text-gray-400'
         )}
         onClick={openMenu}
       >

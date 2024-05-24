@@ -99,8 +99,6 @@ export const utilArr = {
           .every((b) => b === true)
       })
 
-      console.log(isEqual)
-
       if (!isEqual) {
         uniqueArray.push(obj)
       }

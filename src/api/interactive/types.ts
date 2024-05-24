@@ -10,6 +10,8 @@ export interface GetCrossHashStatusReq {
 }
 export interface GetCrossHashStatusRes {
   status: 'PENDING' | 'SUCCESS' | 'FAILURE' | 'REFUND'
+  to_url: string
+  to_hash_tx: string
 }
 
 export enum TokenCreateStatus {

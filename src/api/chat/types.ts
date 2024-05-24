@@ -219,6 +219,8 @@ export interface MultiChainCoin {
   price_usd: number
   symbol: string
   holders: number
+  market_cap: string
+  liquidity: string
   amount?: number
   price_change_24h?: number
   value_usd?: number

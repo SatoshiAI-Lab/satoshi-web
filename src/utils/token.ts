@@ -1,9 +1,14 @@
-import { excluedToken, mainToken } from '@/config/coin'
+import { ChainResInfo } from '@/api/wallet/params'
+import { excluedToken } from '@/config/coin'
 
 export const utilToken = {
-  isMainToken(symbol: string) {
-    for (const name of mainToken) {
-      if (name.toUpperCase() === symbol.toUpperCase()) {
+  isMainToken(chains: ChainResInfo[], symbol: string) {
+    symbol = symbol.toUpperCase()
+    for (const name of chains) {
+      if (
+        name.token.name.toUpperCase() === symbol ||
+        name.token.symbol.toUpperCase() === symbol
+      ) {
         return true
       }
     }

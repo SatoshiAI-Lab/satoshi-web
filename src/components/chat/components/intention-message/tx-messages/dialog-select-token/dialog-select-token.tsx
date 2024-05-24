@@ -11,8 +11,7 @@ import {
 import { useWalletManage } from '@/hooks/use-wallet'
 import { useWalletList } from '@/hooks/use-wallet-list'
 import { useEffect, useState } from 'react'
-import { UserCreateWalletResp } from '@/api/wallet/params'
-import { useStorage } from '@/hooks/use-storage'
+import { useCreateWallet } from '@/hooks/use-swap/use-create-wallet'
 
 interface Props {
   isFrom: boolean
@@ -25,20 +24,17 @@ export const DialogSelectToken = (props: Props) => {
   const { show, isFrom, hidden } = props
   const { t } = useTranslation()
 
-  const [createdWallet, setCreatedWallet] = useState('')
-  const [createWalletLoading, setCraeteWalletLoading] = useState(false)
-
-  const { createWallet } = useWalletManage()
-  const { getAllWallet } = useWalletList()
+  const { loadingSearch, searchTokens, contextValue, searchValue } =
+    useDialogSelectTokenContext(isFrom)
 
   const {
-    loadingSearch,
-    searchTokens,
-    contextValue,
-    searchValue,
+    createWalletLoading,
+    createdWallet,
     createWalletInfo,
     setCreateWalletInfo,
-  } = useDialogSelectTokenContext(isFrom)
+    setCreatedWallet,
+    onCreateWallet,
+  } = useCreateWallet()
 
   useEffect(() => {
     if (createdWallet) {
@@ -80,18 +76,6 @@ export const DialogSelectToken = (props: Props) => {
 
     // 提示创建钱包
     if (createWalletInfo?.actived) {
-      const onCreateWallet = async () => {
-        try {
-          setCraeteWalletLoading(true)
-          await createWallet(createWalletInfo.platform)
-          await getAllWallet()
-          setCreateWalletInfo(undefined)
-          setCreatedWallet(createWalletInfo.chainName)
-        } catch {
-        } finally {
-          setCraeteWalletLoading(false)
-        }
-      }
       return (
         <div className="flex flex-col justify-center items-center">
           <img
@@ -108,7 +92,7 @@ export const DialogSelectToken = (props: Props) => {
             <Button
               variant="contained"
               className="!rounded-full"
-              onClick={onCreateWallet}
+              onClick={() => onCreateWallet()}
               disabled={createWalletLoading}
             >
               {createWalletLoading ? (
@@ -147,7 +131,7 @@ export const DialogSelectToken = (props: Props) => {
           </div>
         ) : null} */}
         <ChainList />
-        <TokenList />
+        <TokenList setCreateWalletInfo={setCreateWalletInfo} />
         {createdWallet !== '' ? (
           <div className="w-max mx-auto pt-2 mb-5 text-gray-400">
             <div>{t('created.wallet.tips1').replace('$1', createdWallet)}</div>

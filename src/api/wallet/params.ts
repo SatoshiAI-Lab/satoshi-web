@@ -67,6 +67,13 @@ export interface ChainResInfo {
   name: Chain
   logo: string
   platform: Platform
+  token: {
+    symbol: string
+    name: string
+    decimals: number
+    address: string
+    logo: string
+  }
 }
 
 export type {

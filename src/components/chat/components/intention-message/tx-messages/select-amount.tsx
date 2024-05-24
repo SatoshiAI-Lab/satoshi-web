@@ -43,7 +43,6 @@ export const SelectAmount = () => {
     }
 
     if (selectWalletToken && !selectWalletToken.value_usd) {
-      debugger
       return (
         <div className={clsx('text-sm text-red-500 mt-2')}>
           {t('insufficient.balance').replace(

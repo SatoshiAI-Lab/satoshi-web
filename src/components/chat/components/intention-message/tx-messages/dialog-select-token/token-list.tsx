@@ -14,7 +14,11 @@ import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { IoCopyOutline } from 'react-icons/io5'
 
-export const TokenList = () => {
+interface Props {
+  setCreateWalletInfo: (info: any) => void
+}
+
+export const TokenList = ({ setCreateWalletInfo }: Props) => {
   const {
     selectToToken,
     selectFromToken,
@@ -22,14 +26,8 @@ export const TokenList = () => {
     setSelectFromToken,
     setSelectToToken,
   } = useContext(SwapContext)
-  const {
-    isSearch,
-    searchTokens,
-    selectChainId,
-    isFrom,
-    setCreateWalletInfo,
-    closeDialog,
-  } = useContext(DialogContext)
+  const { isSearch, searchTokens, selectChainId, isFrom, closeDialog } =
+    useContext(DialogContext)
 
   const { t } = useTranslation()
   const { getSearchTokensSetting, setSerchTokensSetting } = useStorage()
@@ -63,11 +61,17 @@ export const TokenList = () => {
         if (token) {
           token.value_usd! += t.value_usd || 0
         } else {
-          tokens.push({ ...t, holders: 1000, is_supported: true })
+          tokens.push({
+            ...t,
+            holders: 1000,
+            is_supported: true,
+            market_cap: '0',
+            liquidity: '0',
+          })
         }
       })
     })
-    return tokens
+    return utilSwap.sortByMarkeCap(tokens)
   }
 
   let tokens: any[] = isSearch ? searchTokens : myTokens() || []
@@ -147,15 +151,17 @@ export const TokenList = () => {
 
   return (
     <div className="mt-2 mb-4">
-      <div className="pl-[25px] text-sm flex items-center">
-        <FormControlLabel
-          control={<Checkbox checked={isIgnoreLowValue} size="small" />}
-          label={<span className="text-sm">{t('hide.low.value.token')}</span>}
-          onClick={() => {
-            handleSearchTokensSetting()
-          }}
-        />
-      </div>
+      {!isSearch && (
+        <div className="pl-[25px] text-sm flex items-center">
+          <FormControlLabel
+            control={<Checkbox checked={isIgnoreLowValue} size="small" />}
+            label={<span className="text-sm">{t('hide.low.value.token')}</span>}
+            onClick={() => {
+              handleSearchTokensSetting()
+            }}
+          />
+        </div>
+      )}
       {tokens.map((token) => {
         return (
           <MenuItem

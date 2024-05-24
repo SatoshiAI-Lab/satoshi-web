@@ -1,47 +1,69 @@
 import { ChatResponseTxConfrim, MultiChainCoin } from '@/api/chat/types'
 import { tokenApi } from '@/api/token'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useOnlyKey } from '../use-only-key'
 import { utilSwap } from '@/utils/swap'
 import { PartialWalletRes, WalletPlatform } from '@/stores/use-wallet-store'
-import { useChainsPlatforms } from '@/components/wallet/hooks/use-chains-platforms'
 import { utilToken } from '@/utils/token'
+import { ChainResInfo } from '@/api/wallet/params'
 
 interface Options {
   data: ChatResponseTxConfrim
+  chains: ChainResInfo[]
   walletList: PartialWalletRes[]
   walletPlatform: WalletPlatform
   loadingAllWallet: boolean
 }
 export const useGetIntentTokenList = (options: Options) => {
-  const { data, walletList, walletPlatform, loadingAllWallet } = options
+  const { data, walletList, walletPlatform, loadingAllWallet, chains } = options
   const { to_token, from_token } = data
+  const isFromNotSupperChain = useRef(false)
+  const isToNotSupperChain = useRef(false)
   const [fromTokenInfo, setFromTokenInfo] = useState(from_token?.content)
   const [toTokenInfo, setToTokenInfo] = useState(to_token.content)
   const [fromIntentChain, setFromIntentChain] = useState(from_token.chain_name)
   const [toIntentChain, setToIntentChain] = useState(to_token.chain_name)
   const { onlyQueryKey: onlyFromTokenQueryKey } = useOnlyKey()
   const { onlyQueryKey: onlyToTokenQueryKey } = useOnlyKey()
-  const { chains } = useChainsPlatforms()
-
+  const isFromMainToken = utilToken.isMainToken(chains, from_token?.content)
+  const isToMainToken = utilToken.isMainToken(chains, to_token?.content)
   // 如果是主链代币那么就默认设置成''
-  const fromMainToken = utilSwap.getMainToken(walletList, fromTokenInfo)
-  if (
-    fromMainToken?.length &&
-    fromTokenInfo !== '' &&
-    utilToken.isMainToken(fromTokenInfo)
-  ) {
+  const fromMainToken = utilSwap.getMainToken(
+    walletList,
+    chains,
+    from_token?.content
+  )
+
+  if (fromMainToken?.length && fromTokenInfo !== '' && isFromMainToken) {
     setFromTokenInfo('')
+    const chain = chains.find((chain) =>
+      utilSwap.isTokenBaseInfo(
+        chain.token as MultiChainCoin,
+        from_token?.content
+      )
+    )
+
+    if (!walletPlatform[chain?.platform!]) {
+      isFromNotSupperChain.current = true
+    }
   }
 
-  const toMainToken = utilSwap.getMainToken(walletList, toTokenInfo)
-  if (
-    toMainToken?.length &&
-    toTokenInfo !== '' &&
-    utilToken.isMainToken(toTokenInfo)
-  ) {
+  const toMainToken = utilSwap.getMainToken(
+    walletList,
+    chains,
+    to_token?.content
+  )
+
+  if (toMainToken?.length && toTokenInfo !== '' && isToMainToken) {
     setToTokenInfo('')
+    const chain = chains.find((chain) =>
+      utilSwap.isTokenBaseInfo(chain.token as MultiChainCoin, to_token?.content)
+    )
+
+    if (!walletPlatform[chain?.platform!]) {
+      isToNotSupperChain.current = true
+    }
   }
 
   const handleSearchTokenData = (searchTokenList?: MultiChainCoin[]) => {
@@ -59,8 +81,8 @@ export const useGetIntentTokenList = (options: Options) => {
         })
         if (wToken) {
           return {
-            ...token,
             ...wToken,
+            ...token,
           }
         }
       }
@@ -81,12 +103,12 @@ export const useGetIntentTokenList = (options: Options) => {
       loadingAllWallet,
     ],
     queryFn: async () => {
-      if (fromTokenInfo === '' || loadingAllWallet) {
+      if (isFromMainToken || loadingAllWallet) {
         return []
       }
 
       const { data } = await tokenApi.multiCoin(fromTokenInfo)
-      return handleSearchTokenData(utilSwap.sortByHolders(data))
+      return handleSearchTokenData(utilSwap.sortByMarkeCap(data))
     },
     retry: 2,
     refetchOnWindowFocus: false,
@@ -100,12 +122,12 @@ export const useGetIntentTokenList = (options: Options) => {
       loadingAllWallet,
     ],
     queryFn: async () => {
-      if (toTokenInfo === '' || loadingAllWallet) {
+      if (isToMainToken || loadingAllWallet) {
         return []
       }
 
       const { data } = await tokenApi.multiCoin(toTokenInfo)
-      return handleSearchTokenData(utilSwap.sortByHolders(data))
+      return handleSearchTokenData(utilSwap.sortByMarkeCap(data))
     },
     retry: 2,
     refetchOnWindowFocus: false,
@@ -123,10 +145,15 @@ export const useGetIntentTokenList = (options: Options) => {
     loadingToTokenList,
     toTokenInfo,
     isSuccess,
+    isFromMainToken,
+    isToMainToken,
+    isFromNotSupperChain,
+    isToNotSupperChain,
     // 用于From/To代币余额不足，主动帮他切成ETH
     setFromTokenInfo,
     setFromIntentChain,
     setToIntentChain,
+    setToTokenInfo,
   }
 }
 

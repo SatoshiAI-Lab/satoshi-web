@@ -30,6 +30,8 @@ export const useSwapSelectToken = (options: Options) => {
     toTokenListResult,
     fromMainToken,
     toMainToken,
+    isFromMainToken,
+    isToMainToken,
   } = intentTokenInfo
 
   const includesStablecoin = (token?: MultiChainCoin | string) => {
@@ -46,8 +48,6 @@ export const useSwapSelectToken = (options: Options) => {
 
   const surceFromTokneInfo = data?.from_token.content!
   const surceToTokneInfo = data?.to_token.content!
-  const isFromMainToken = fromTokenInfo === ''
-  const isToMainToken = toTokenInfo === ''
   const isFromStableToken = includesStablecoin(fromTokenInfo)
   const isToStableToken = includesStablecoin(toTokenInfo)
 
@@ -66,7 +66,7 @@ export const useSwapSelectToken = (options: Options) => {
   const handleFromToken = () => {
     const handlMainOrStableToken = () => {
       // To是稳定币或者主代币
-      if (isToStableToken || isToMainToken) {
+      if ((isToStableToken || isToMainToken) && isFromMainToken) {
         return (fromMainToken || []).filter((t) => {
           // 存在意图
           if (fromIntentChain !== '') {
@@ -105,6 +105,12 @@ export const useSwapSelectToken = (options: Options) => {
         // 稳定币
         const tokenList = (fromTokenListResult || []).filter((t) => {
           const token = t as unknown as ChatResponseWalletListToken
+
+          // 意图链
+          if (fromIntentChain !== '') {
+            return token.chain.name === fromIntentChain
+          }
+
           return token.chain.id === toToken?.chain.id && token.value_usd
         })
 
@@ -120,7 +126,7 @@ export const useSwapSelectToken = (options: Options) => {
         }
 
         // 代币列表
-        if (!tokenList?.length && fromTokenListResult) {
+        if (!tokenList?.length && fromTokenListResult?.length) {
           return [fromTokenListResult[0]]
         }
 
@@ -128,9 +134,8 @@ export const useSwapSelectToken = (options: Options) => {
       }
     }
 
-    const isStablecoin = isFromStableToken
     let tokenList: MultiChainCoin[] =
-      (isFromMainToken || isStablecoin
+      (isFromMainToken || isFromStableToken
         ? handlMainOrStableToken()
         : fromTokenListResult) || []
 
@@ -155,6 +160,7 @@ export const useSwapSelectToken = (options: Options) => {
     if (
       isFromMainToken &&
       surceFromTokneInfo !== '' &&
+      tokenList[0] &&
       tokenList[0].name !== surceFromTokneInfo
     ) {
       tokenList.find((token) => {
@@ -200,9 +206,9 @@ export const useSwapSelectToken = (options: Options) => {
 
     // 稳定币
     if (isToStableToken) {
-      // 意图链
       const token = tokenList.find((t) => {
         if (toIntentChain !== '') {
+          // 意图链
           return t.chain.name === toIntentChain
         } else {
           return utilSwap.isTokenBaseInfo(t, surceToTokneInfo)
@@ -217,7 +223,10 @@ export const useSwapSelectToken = (options: Options) => {
 
     // 意图链
     if (toIntentChain !== '') {
-      tokenList.filter((t) => t.chain.name === toIntentChain)
+      const token = tokenList.find((t) => t.chain.name === toIntentChain)
+      setSelectToToken(token)
+      setToTokenList(tokenList)
+      return
     }
 
     // 没有匹配到合适的代币

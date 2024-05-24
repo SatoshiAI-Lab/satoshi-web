@@ -2,7 +2,7 @@ import clsx from 'clsx'
 
 import { t } from 'i18next'
 import { OutlinedInput } from '@mui/material'
-import { FaArrowRightLong } from 'react-icons/fa6'
+import { VscArrowSwap } from 'react-icons/vsc'
 import { SelectToken } from './select-token'
 import { useContext } from 'react'
 
@@ -11,10 +11,50 @@ import { TxLogicContext } from '@/hooks/use-swap/use-swap-confirm-logic'
 import { utilFmt } from '@/utils/format'
 
 export const SelectSwapRow = () => {
-  const { selectFromToken, selectToToken, intentTokenInfo } =
-    useContext(SwapContext)
-  const { buyValue, isFinalTx, crossFeeData, setBuyValue, crossFeeLoading } =
-    useContext(TxLogicContext)
+  const {
+    selectFromToken,
+    selectToToken,
+    toTokenList,
+    fromTokenList,
+    intentTokenInfo,
+    setFromTokenList,
+    setToTokenList,
+    setSelectFromToken,
+    setSelectToToken,
+  } = useContext(SwapContext)
+  const {
+    buyValue,
+    isFinalTx,
+    crossFeeData,
+    setBuyValue,
+    crossFeeLoading,
+    isCrossFeeError,
+    validateCrossErr,
+  } = useContext(TxLogicContext)
+
+  const onSwitch = () => {
+    const {
+      fromIntentChain,
+      fromTokenInfo,
+      toIntentChain,
+      toTokenInfo,
+      setFromIntentChain,
+      setFromTokenInfo,
+      setToIntentChain,
+      setToTokenInfo,
+    } = intentTokenInfo!
+
+    setSelectToToken(selectFromToken)
+    setToTokenList(fromTokenList)
+
+    setSelectFromToken(selectToToken)
+    setFromTokenList(toTokenList)
+
+    setFromIntentChain(toIntentChain)
+    setToIntentChain(fromIntentChain)
+    setFromTokenInfo(toTokenInfo)
+    setToTokenInfo(fromTokenInfo)
+  }
 
   const handleCrossPlatform = () => {
     const { provider, provider_data } = crossFeeData || {}
@@ -23,6 +63,16 @@ export const SelectSwapRow = () => {
       return (
         <div className="mt-2 text-sm text-gray-500 flicker-text">
           {t('cross.chain.quote')}
+        </div>
+      )
+    }
+
+    if (isCrossFeeError || validateCrossErr.length) {
+      return (
+        <div className="mt-2 text-sm text-red-500">
+          {validateCrossErr.length
+            ? validateCrossErr.map((item) => <div>{item.errorText}</div>)
+            : t('cross.chain.error')}
         </div>
       )
     }
@@ -70,10 +120,11 @@ export const SelectSwapRow = () => {
           disabled={isFinalTx}
           onChange={({ target }) => setBuyValue(Number(target.value))}
         ></OutlinedInput>
-        <FaArrowRightLong
+        <VscArrowSwap
           size={26}
-          className="mx-5 text-gray-700"
-        ></FaArrowRightLong>
+          className="mx-5 text-gray-700 cursor-pointer"
+          onClick={onSwitch}
+        ></VscArrowSwap>
         <SelectToken isFrom={false} isFinalTx={isFinalTx}></SelectToken>
       </div>
 

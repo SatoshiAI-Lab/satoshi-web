@@ -2,18 +2,25 @@ import { ChatResponseWalletListToken, MultiChainCoin } from '@/api/chat/types'
 import { zeroAddr } from '@/config/address'
 import { PartialWalletRes } from '@/stores/use-wallet-store'
 import { utilToken } from './token'
+import { ChainResInfo } from '@/api/wallet/params'
 
 export const utilSwap = {
-  sortByHolders: (tokenList?: MultiChainCoin[]) => {
-    return tokenList?.sort((a, b) => (b.holders || 0) - (a.holders || 0))
+  sortByMarkeCap: (tokenList?: MultiChainCoin[]) => {
+    return tokenList
+      ?.sort((a, b) => Number(b.liquidity) - Number(a.liquidity))
+      .sort((a, b) => Number(b.holders) - Number(a.holders))
   },
-  getMainToken: (walletList?: PartialWalletRes[], tokenName?: string) => {
+  getMainToken: (
+    walletList: PartialWalletRes[],
+    chains: ChainResInfo[],
+    tokenName: string
+  ) => {
     const mainTokenList: MultiChainCoin[] = []
 
     walletList?.forEach((w) => {
       return w?.tokens?.find((t) => {
         const isMainToken =
-          t.address === zeroAddr && utilToken.isMainToken(t.symbol)
+          t.address === zeroAddr && utilToken.isMainToken(chains, tokenName)
 
         if (isMainToken) {
           mainTokenList.push({
@@ -21,6 +28,8 @@ export const utilSwap = {
             is_supported: true,
             holders: 1000000,
             price_change: t.price_change_24h,
+            market_cap: '0',
+            liquidity: '0',
           })
         }
 

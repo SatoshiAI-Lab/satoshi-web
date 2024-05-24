@@ -19,6 +19,12 @@ export const ChainList = () => {
     isSearch,
   } = useContext(DialogContext)
 
+  const hasChain = tokenChain.find((chian) => chian.id == selectChainId)
+
+  if (!hasChain) {
+    setSelectChainId('-1')
+  }
+
   // NOTE: for drag by mouse
   const dragState = useRef(new DragDealer())
 

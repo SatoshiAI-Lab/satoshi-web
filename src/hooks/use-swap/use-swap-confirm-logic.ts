@@ -52,6 +52,9 @@ export interface ITxLogicContext {
   crossFeeData?: CrossFeeData
   crossFeeLoading: boolean
   isInitCrossFee: boolean
+  isCrossFeeError: boolean
+  validateCrossErr: ValidateError[]
+  setValidateCrossErr: Dispatch<SetStateAction<ValidateError[]>>
 
   onConfirm: () => any
   showSwaping: () => void
@@ -78,6 +81,9 @@ export const TxLogicContext = createContext<ITxLogicContext>({
   crossFeeData: undefined,
   crossFeeLoading: true,
   isInitCrossFee: true,
+  isCrossFeeError: false,
+  validateCrossErr: [],
+  setValidateCrossErr: () => {},
   onConfirm: () => {},
   showSwaping: () => {},
   closeSwaping: () => {},
@@ -99,14 +105,17 @@ export const useSwapConfirmLogic = ({
   const [slippage, setSlippage] = useState(5)
   const [curRate, setCurRate] = useState(20)
   const [validateErr, setValidateErr] = useState<ValidateError[]>([])
+  const [validateCrossErr, setValidateCrossErr] = useState<ValidateError[]>([])
   const [isFinalTx, setIsFinalTx] = useState(false)
   const { show: isSwaping, open: showSwaping, hidden: closeSwaping } = useShow()
 
   const { getAllWallet } = useWalletList()
   const { addMessage } = useChatStore()
 
+  // 获取跨链手续费
   const {
     data: crossFeeData,
+    isError: isCrossFeeError,
     isLoading: isInitCrossFee,
     isFetching: crossFeeLoading,
   } = useQuery({
@@ -139,51 +148,65 @@ export const useSwapConfirmLogic = ({
             tokenAddress: selectToToken.address,
           },
         })
-        return data
-      } catch (result: any) {
-        const { code, data } = result.data
-        const handleError = (errorText: string, errorType: string) => {
-          if (!validateErr.find(({ type }) => type === errorType)) {
-            validateErr.push({
+
+        const validateCrossErr: ValidateError[] = []
+
+        const pushCrossError = (errorText: string, errorType: string) => {
+          if (!validateCrossErr.find(({ type }) => type === errorType)) {
+            validateCrossErr.push({
               type: errorType,
               errorText,
             })
           }
 
-          setValidateErr(validateErr)
-        }
-        switch (code) {
-          case ResponseCode.CrossChianPath: {
-            const errorText = t('not.supported')
-              .replace('$1', selectFromToken.chain.name)
-              .replace('$2', selectToToken.chain.name)
-            handleError(errorText, SwapError.crossChainNotSupper)
-            break
-          }
-          case ResponseCode.CrossChianMaxAmout: {
-            const errorText = t('cross.chain.max')
-              .replace('$1', utilFmt.token(data.minimum_amount).toString())
-              .replace('$2', selectToToken.symbol)
-            handleError(errorText, SwapError.crossChaiMaxAmount)
-            break
-          }
-          case ResponseCode.CrossChianMinAmout: {
-            const errorText = t('cross.chain.min')
-              .replace('$1', utilFmt.token(data.minimum_amount).toString())
-              .replace('$2', selectToToken.symbol)
-            handleError(errorText, SwapError.crossChaiMinAmount)
-            break
-          }
-          case ResponseCode.CrossChianLiquidity: {
-            const errorText = t('cross.chain.liquidity')
-              .replace('$1', utilFmt.token(data.minimum_amount).toString())
-              .replace('$2', selectToToken.symbol)
-            handleError(errorText, SwapError.crossChainLiquidity)
-            break
-          }
+          setValidateCrossErr(validateCrossErr)
         }
 
-        return undefined
+        if (code === ResponseCode.CrossChainNotFindTranfer) {
+          const errorText = t('not.find.transfer')
+            .replace(
+              '$1',
+              utilFmt.fisrtCharUppercase(selectFromToken.chain.name)
+            )
+            .replace('$2', utilFmt.fisrtCharUppercase(selectFromToken.symbol))
+            .replace('$3', utilFmt.fisrtCharUppercase(selectToToken.chain.name))
+            .replace('$4', utilFmt.fisrtCharUppercase(selectToToken.symbol!))
+          pushCrossError(errorText, SwapError.crossChainNotSupper)
+        }
+
+        if (code === ResponseCode.CrossChainPath) {
+          const errorText = t('not.supported')
+            .replace('$1', selectFromToken.chain.name)
+            .replace('$2', selectToToken.chain.name)
+          pushCrossError(errorText, SwapError.crossChainNotSupper)
+        }
+
+        if (code === ResponseCode.CrossChainMaxAmout) {
+          const errorText = t('cross.chain.max')
+            .replace('$1', utilFmt.token(data.minimum_amount).toString())
+            .replace('$2', selectToToken.symbol)
+          pushCrossError(errorText, SwapError.crossChaiMaxAmount)
+        }
+
+        if (code === ResponseCode.CrossChainMinAmout) {
+          const errorText = t('cross.chain.min')
+            .replace('$1', utilFmt.token(data.minimum_amount).toString())
+            .replace('$2', selectFromToken.symbol)
+          pushCrossError(errorText, SwapError.crossChaiMinAmount)
+        }
+
+        if (code === ResponseCode.CrossChainLiquidity) {
+          const errorText = t('cross.chain.liquidity')
+            .replace('$1', utilFmt.token(data.minimum_amount).toString())
+            .replace('$2', selectFromToken.symbol)
+          pushCrossError(errorText, SwapError.crossChainLiquidity)
+        }
+
+        setValidateCrossErr(validateCrossErr)
+
+        return data
+      } catch (result) {
+        throw result
       }
     },
   })
@@ -216,36 +239,54 @@ export const useSwapConfirmLogic = ({
   }
 
   const checkForm = () => {
-    let error: ValidateError[] = []
-
+    let isError = false
     if (buyValue <= 0) {
-      error.push({
-        type: SwapError.buyCost,
-        errorText: t('tx.form.error1'),
-      })
+      pushError(t('tx.form.error1'), SwapError.buyCost)
+      isError = true
+    } else {
+      popError(SwapError.buyCost)
     }
 
     const { amount = 0, decimals = 0 } = selectWalletToken ?? {}
     const balance = +numeral(formatUnits(BigInt(amount), decimals)).format(
       '0.00000'
     )
+    console.log(buyValue, balance)
     if (buyValue > balance) {
-      error.push({
-        type: SwapError.insufficient,
-        errorText: t('tx.form.error2'),
-      })
+      pushError(t('tx.form.error2'), SwapError.insufficient)
+      isError = true
+    } else {
+      popError(SwapError.insufficient)
     }
 
     if (slippage <= 0.05) {
-      error.push({
-        type: SwapError.slippage,
-        errorText: t('tx.form.error3'),
+      pushError(t('tx.form.error3'), SwapError.slippage)
+      isError = true
+    } else {
+      popError(SwapError.slippage)
+    }
+
+    return isError
+  }
+
+  const pushError = (errorText: string, errorType: string) => {
+    if (!validateErr.find(({ type }) => type === errorType)) {
+      validateErr.push({
+        type: errorType,
+        errorText,
       })
     }
 
-    setValidateErr(error)
+    setValidateErr(validateErr)
+  }
 
-    return error.length === 0
+  const popError = (errorType: string) => {
+    const index = validateErr.findIndex(({ type }) => type === errorType)
+    if (index !== -1) {
+      validateErr.splice(index, 1)
+    }
+
+    setValidateErr(validateErr)
   }
 
   // 单链交易
@@ -334,7 +375,10 @@ export const useSwapConfirmLogic = ({
 
       addMessage({
         role: 'assistant',
-        text: `${t('tx.sned')}${data.url}`,
+        text: `${t('cross.tx.sned.2').replace(
+          '$1',
+          selectToToken.chain.name!
+        )}${data.url}`,
       })
 
       const getStatus = async () => {
@@ -353,6 +397,14 @@ export const useSwapConfirmLogic = ({
 
           if (result.status === 'SUCCESS') {
             toast.success(t('cross.chain.success'))
+            addMessage({
+              role: 'assistant',
+              text: `${t('cross.tx.sned.2').replace(
+                '$1',
+                selectToToken.chain.name!
+              )}${data.to_url}`,
+            })
+
             return
           }
 
@@ -366,40 +418,29 @@ export const useSwapConfirmLogic = ({
       }
 
       const handlerError = () => {
-        const pushError = (errorText: string, errorType: string) => {
-          if (!validateErr.find(({ type }) => type === errorType)) {
-            validateErr.push({
-              type: errorType,
-              errorText,
-            })
-          }
-
-          setValidateErr(validateErr)
-        }
-
         switch (code) {
-          case ResponseCode.CrossChianPath: {
+          case ResponseCode.CrossChainPath: {
             const errorText = t('not.supported')
               .replace('$1', selectFromToken!.chain.name)
               .replace('$2', selectToToken!.chain.name)
             pushError(errorText, SwapError.crossChainNotSupper)
             break
           }
-          case ResponseCode.CrossChianMaxAmout: {
+          case ResponseCode.CrossChainMaxAmout: {
             const errorText = t('cross.chain.max')
               .replace('$1', utilFmt.token(data.minimum_amount).toString())
               .replace('$2', selectToToken.symbol)
             pushError(errorText, SwapError.crossChaiMaxAmount)
             break
           }
-          case ResponseCode.CrossChianMinAmout: {
+          case ResponseCode.CrossChainMinAmout: {
             const errorText = t('cross.chain.min')
               .replace('$1', utilFmt.token(data.minimum_amount).toString())
               .replace('$2', selectToToken.symbol)
             pushError(errorText, SwapError.crossChaiMinAmount)
             break
           }
-          case ResponseCode.CrossChianLiquidity: {
+          case ResponseCode.CrossChainLiquidity: {
             const errorText = t('cross.chain.liquidity')
               .replace('$1', utilFmt.token(data.minimum_amount).toString())
               .replace('$2', selectToToken.symbol)
@@ -412,7 +453,7 @@ export const useSwapConfirmLogic = ({
       handlerError()
       await getStatus()
     } catch (e) {
-      toast.error(t('trading.fail'))
+      throw e
     } finally {
       toast.dismiss(loading)
     }
@@ -443,7 +484,7 @@ export const useSwapConfirmLogic = ({
 
   useEffect(() => {
     checkForm()
-  }, [selectWalletToken, buyValue, slippage])
+  }, [selectWalletToken, buyValue, slippage, setValidateErr])
 
   useEffect(() => {
     if (!selectWalletToken) return
@@ -480,6 +521,9 @@ export const useSwapConfirmLogic = ({
     crossFeeData,
     isInitCrossFee,
     crossFeeLoading,
+    isCrossFeeError,
+    validateCrossErr,
+    setValidateCrossErr,
     onConfirm,
     showSwaping,
     closeSwaping,

@@ -14,7 +14,6 @@ interface Props {
 export const SearchInput = ({ isFrom }: Props) => {
   const timer = useRef<NodeJS.Timeout>()
   const abortController = useRef<AbortController>()
-  const { selectFromToken, selectToToken, walletList } = useContext(SwapContext)
   const {
     searchValue,
     setSearchValue,
@@ -22,13 +21,12 @@ export const SearchInput = ({ isFrom }: Props) => {
     setSearchTokens,
     setLoadingSearch,
     setSelectChainId,
-    selectWallet,
   } = useContext(DialogContext)
 
   const onSearch = async (value: string) => {
     try {
       abortController.current = new AbortController()
-      const { data } = await tokenApi.multiCoin(
+      let { data } = await tokenApi.multiCoin(
         value,
         abortController.current.signal
       )
@@ -37,7 +35,7 @@ export const SearchInput = ({ isFrom }: Props) => {
         (t) => t.symbol.toLowerCase() === value.toLowerCase()
       )
 
-      utilSwap.sortByHolders(data)
+      data = utilSwap.sortByMarkeCap(data)!
 
       setIsNameSearch(isNameSearch)
       setSearchTokens(data)

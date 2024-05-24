@@ -4,10 +4,10 @@ import { SwapContext } from './use-swap-provider'
 import { WalletPlatform, useWalletStore } from '@/stores/use-wallet-store'
 import { UserCreateWalletResp } from '@/api/wallet/params'
 import { Platform } from '@/config/wallet'
-import { useChainsPlatforms } from '@/components/wallet/hooks/use-chains-platforms'
+import { useChainsPlatforms } from '@/hooks/use-chains-platforms'
 import { utilWallet } from '@/utils/wallet'
 
-interface CreatewalletInfo {
+export interface CreatewalletInfo {
   tokenName: string
   chainName: string
   platform: Platform
@@ -31,8 +31,6 @@ interface DialogContextType {
   walletPlatform?: WalletPlatform
   isSearch: boolean
   isFrom: boolean
-  createWalletInfo?: CreatewalletInfo
-  setCreateWalletInfo: (v: CreatewalletInfo) => void
   selectSearchToken?: MultiChainCoin
   setSelectSearchToken: (v: MultiChainCoin) => void
   setSelectWallet: (v?: UserCreateWalletResp) => void
@@ -58,13 +56,6 @@ export const DialogContext = createContext<DialogContextType>({
   isFrom: false,
   selectSearchToken: undefined,
   setSelectSearchToken: () => {},
-  createWalletInfo: undefined,
-  setCreateWalletInfo: (v: {
-    tokenName: string
-    chainName: string
-    platform: string
-    actived: boolean
-  }) => {},
   setSelectWallet: () => {},
   closeDialog: () => {},
 })
@@ -79,7 +70,6 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
   const [searchTokens, setSearchTokens] = useState<MultiChainCoin[]>([])
   const [isNameSearch, setIsNameSearch] = useState(false)
   const [selectSearchToken, setSelectSearchToken] = useState<MultiChainCoin>()
-  const [createWalletInfo, setCreateWalletInfo] = useState<CreatewalletInfo>()
   const [selectWallet, setSelectWallet] = useState<UserCreateWalletResp>()
   const [selectChainId, setSelectChainId] = useState<string>()
   const { getPlatformByChain } = useChainsPlatforms()
@@ -142,8 +132,6 @@ export const useDialogSelectTokenContext = (isFrom: boolean) => {
     walletPlatform,
     isSearch: searchValue.trim() !== '',
     isFrom,
-    createWalletInfo,
-    setCreateWalletInfo,
     selectSearchToken,
     setSelectSearchToken,
     setSelectWallet,
