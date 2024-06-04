@@ -12,6 +12,10 @@ interface Props {
 export const ReferenceTag = (props: Props) => {
   const { num, meta } = props
 
+  if (!meta) {
+    return <></>
+  }
+
   return (
     <Tooltip
       classes={{
@@ -24,16 +28,20 @@ export const ReferenceTag = (props: Props) => {
       TransitionComponent={Zoom}
       disableFocusListener
       title={
-        <div>
-          <p className="text-zinc-200">{meta.published_at}</p>
-          <a
-            target={meta.url && 'blank'}
-            href={meta.url || '#'}
-            className={clsx('hover:underline hover:text-secondary')}
-          >
-            {meta.content}
-          </a>
-        </div>
+        meta ? (
+          <div>
+            <p className="text-zinc-200">{meta?.published_at}</p>
+            <a
+              target={meta?.url && 'blank'}
+              href={meta?.url || '#'}
+              className={clsx('hover:underline hover:text-secondary')}
+            >
+              {meta?.content}
+            </a>
+          </div>
+        ) : (
+          <></>
+        )
       }
     >
       <sup

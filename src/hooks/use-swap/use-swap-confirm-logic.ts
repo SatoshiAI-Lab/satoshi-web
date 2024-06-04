@@ -29,6 +29,7 @@ import { SwapError } from '@/config/swap-error'
 import { ResponseCode } from '@/api/fetcher/types'
 import { utilFmt } from '@/utils/format'
 import { utilTime } from '@/utils/time'
+import { zeroAddr } from '@/config/address'
 
 interface Options {
   data: ChatResponseTxConfrim
@@ -292,9 +293,16 @@ export const useSwapConfirmLogic = ({
     setValidateErr(validateErr)
   }
 
+  const getValue = () => {
+    if (selectFromToken?.address === zeroAddr) {
+      return BigNumber(buyValue).multipliedBy(0.93).toFixed(5)
+    }
+    return `${+BigNumber(buyValue).toFixed(5)}`
+  }
+
   // 单链交易
   const baseSwap = async () => {
-    const amount = BigNumber(buyValue).multipliedBy(0.93).toFixed(5)
+    const amount = getValue()
 
     const { data } = await trandApi.swapToken(fromWallet?.id!, {
       chain: selectFromToken?.chain.name,
@@ -338,7 +346,7 @@ export const useSwapConfirmLogic = ({
 
   // 跨链交易
   const crossSwap = async () => {
-    const amount = BigNumber(buyValue).multipliedBy(0.93).toFixed(5)
+    const amount = getValue()
     if (!selectFromToken || !selectToToken || !crossFeeData || !receiveWallet) {
       console.log('Transaction parameter missing')
       return

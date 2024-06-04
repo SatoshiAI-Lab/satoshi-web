@@ -178,7 +178,7 @@ export const TokenList = ({ setCreateWalletInfo }: Props) => {
             >
               <div className="flex">
                 <Avatar src={token?.logo} className="w-[35px] h-[35px] mr-2">
-                  {token?.symbol.slice(0, 1)}
+                  {token?.symbol?.slice(0, 1)}
                 </Avatar>
                 <div className="">
                   <div className="flex items-center">

@@ -23,14 +23,16 @@ export const SwapConfirm = () => {
     onConfirm,
   } = useContext(TxLogicContext)
 
+  const isCrossErr =
+    (!!validateCrossErr.length || isInitCrossFee || isCrossFeeError) &&
+    selectFromToken?.chain.id !== selectToToken?.chain.id
+
   const unableTrade =
     !selectFromToken ||
     !selectToToken ||
     !gridWalletList.length ||
-    !!validateCrossErr.length ||
     !!validateErr.length ||
-    isInitCrossFee ||
-    isCrossFeeError
+    isCrossErr
 
   let text = t('confirm')
 
@@ -53,15 +55,19 @@ export const SwapConfirm = () => {
   const handleCrossPlatform = () => {
     const { provider, provider_data } = crossFeeData || {}
 
-    // if (crossFeeLoading) {
-    //   return (
-    //     <div className="mt-2 text-sm text-gray-500 flicker-text">
-    //       {t('cross.chain.quote')}
-    //     </div>
-    //   )
-    // }
+    if (selectFromToken?.chain.id === selectToToken?.chain.id) {
+      return <></>
+    }
 
     if (isCrossFeeError || validateCrossErr.length) {
+      // if (crossFeeLoading) {
+      //   return (
+      //     <div className="mt-2 text-sm text-gray-500 flicker-text">
+      //       {t('cross.chain.quote')}
+      //     </div>
+      //   )
+      // }
+
       return (
         <div className="mt-2 text-sm text-red-500">
           {validateCrossErr.length
@@ -117,7 +123,7 @@ export const SwapConfirm = () => {
         onClick={onConfirm}
         disabled={isSwaping || isFinalTx || unableTrade}
       >
-        {isSwaping ? (
+        {isSwaping || isInitCrossFee ? (
           <CircularProgress size={16} className="mr-2"></CircularProgress>
         ) : (
           <IoFlash></IoFlash>

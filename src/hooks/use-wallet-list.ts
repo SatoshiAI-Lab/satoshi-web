@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { useStorage } from './use-storage'
+import { utilTime } from '@/utils/time'
 
 interface Options {
   enabled?: boolean
@@ -42,6 +43,7 @@ export const useWalletList = (options?: Options) => {
       return res
     } catch {
       if (getLoginToken()) {
+        await utilTime.wait(2000)
         await getAllWallet()
       }
     } finally {
