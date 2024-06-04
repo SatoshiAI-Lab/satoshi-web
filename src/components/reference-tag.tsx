@@ -5,12 +5,12 @@ import { Tooltip, Zoom } from '@mui/material'
 import type { ChatMetaReference } from '@/api/chat/types'
 
 interface Props {
-  num: number
-  meta: ChatMetaReference
+  num: number | undefined
+  meta: ChatMetaReference | undefined
 }
 
 export const ReferenceTag = (props: Props) => {
-  const { num, meta } = props
+  const { num = 0, meta } = props
 
   if (!meta) {
     return <></>
@@ -28,20 +28,16 @@ export const ReferenceTag = (props: Props) => {
       TransitionComponent={Zoom}
       disableFocusListener
       title={
-        meta ? (
-          <div>
-            <p className="text-zinc-200">{meta?.published_at}</p>
-            <a
-              target={meta?.url && 'blank'}
-              href={meta?.url || '#'}
-              className={clsx('hover:underline hover:text-secondary')}
-            >
-              {meta?.content}
-            </a>
-          </div>
-        ) : (
-          <></>
-        )
+        <div>
+          <p className="text-zinc-200">{meta?.published_at}</p>
+          <a
+            target={meta?.url && 'blank'}
+            href={meta?.url || '#'}
+            className={clsx('hover:underline hover:text-secondary')}
+          >
+            {meta?.content}
+          </a>
+        </div>
       }
     >
       <sup

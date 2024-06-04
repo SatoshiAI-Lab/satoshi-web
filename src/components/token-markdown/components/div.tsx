@@ -11,6 +11,8 @@ interface Props extends ReactMarkdownProps {}
 const parseReference = (nodes: ReactNode[]) => {
   try {
     const metaStr = first(nodes) as string
+    // TODO: parse a tag error.
+    console.log('parse', nodes, metaStr)
     return JSON.parse(metaStr)
   } catch (error) {
     console.error('parseReference error: ', error)
