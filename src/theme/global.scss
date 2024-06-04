@@ -32,3 +32,27 @@
     background-color: transparent;
   }
 }
+
+.input-border-gray-300 {
+  fieldset {
+    border-color: rgb(229, 231, 235) !important;
+  }
+}
+
+@keyframes flicker-text {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.flicker-text {
+  animation: flicker-text 1.5s linear infinite;
+}

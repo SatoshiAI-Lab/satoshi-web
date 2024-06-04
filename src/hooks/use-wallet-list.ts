@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { walletApi } from '@/api/wallet'
 import { useWalletStore } from '@/stores/use-wallet-store'
+import { useStorage } from './use-storage'
 
 interface Options {
   enabled?: boolean
@@ -13,6 +14,7 @@ export const useWalletList = (options?: Options) => {
   const { enabled = false, refetchInterval = false } = options ?? {}
   const { selectedChain, wallets, allWallets, setWallets, setAllWallets } =
     useWalletStore()
+  const { getLoginToken } = useStorage()
 
   // Get current wallet list.
   const {
@@ -30,10 +32,20 @@ export const useWalletList = (options?: Options) => {
 
   // Get all wallet list.
   const getAllWallet = async () => {
-    const res = await walletApi.getWallets()
+    try {
+      const res = await walletApi.getWallets()
 
-    if (res.data) {
-      setAllWallets(res.data)
+      if (res.data) {
+        setAllWallets(res.data)
+      }
+
+      return res
+    } catch {
+      if (getLoginToken()) {
+        await getAllWallet()
+      }
+    } finally {
+      useWalletStore.setState({ loadingAllWallet: false })
     }
   }
 

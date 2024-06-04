@@ -1,11 +1,27 @@
-import { useContext, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { PartialWalletRes, useWalletStore } from '@/stores/use-wallet-store'
-import { SwapContext } from './use-swap-provider'
+import { MultiChainCoin } from '@/api/chat/types'
 
-export const useSwapWallet = () => {
+interface Options {
+  selectFromToken?: MultiChainCoin
+  selectToToken?: MultiChainCoin
+  fromWallet?: PartialWalletRes
+  receiveWallet?: PartialWalletRes
+  setFromWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
+  setReceiveWallet: Dispatch<SetStateAction<PartialWalletRes | undefined>>
+}
+
+export const useSwapWallet = (options: Options) => {
   const { walletList } = useWalletStore()
-  const { selectFromToken, currentWallet, setCurrentWallet } =
-    useContext(SwapContext)
+  const {
+    selectFromToken,
+    selectToToken,
+    fromWallet,
+    setFromWallet,
+    setReceiveWallet,
+  } = options
+  const [shouldCreateReceiveWallet, setShouldCreateReceiveWallet] =
+    useState(false)
   const [gridWalletList, setGridWalletList] = useState<PartialWalletRes[][]>([])
 
   const findTokenUsd = (wallet: PartialWalletRes) => {
@@ -17,55 +33,86 @@ export const useSwapWallet = () => {
 
   const handleWallet = () => {
     let count = 0
-    const gridWalletList = walletList
-      // 筛选出和FromToken同一条链的钱包
-      .filter(
-        (w) =>
-          w?.chain?.id == selectFromToken?.chain?.id &&
-          w.tokens?.some(
-            (t) => t.value_usd > 1 && t.address == selectFromToken?.address
-          )
-      )
-      // 按照余额最高的往下排
-      .sort((a, b) => findTokenUsd(a) - findTokenUsd(b))
-      // 格式化数据成九宫格
-      .reduce<PartialWalletRes[][]>((cur, next) => {
-        if (count % 3 == 0) {
-          cur.push([])
-        }
-        cur[cur.length - 1].push(next)
-        count++
-        return cur
-      }, [])
 
-    const defaultWallet = gridWalletList[0][0]
+    // 筛选出和FromToken同一条链的钱包
+    let wallets = walletList.filter(
+      (w) => w?.chain?.id === selectFromToken?.chain?.id
+    )
 
-    if (
-      defaultWallet &&
-      // 链ID和钱包ID都必须是不一致的
-      // 这里和跨不跨链无关，因为选择的代币必须用这条链的钱包支付
-      (defaultWallet.id !== currentWallet?.id ||
-        defaultWallet.chain?.id != currentWallet?.chain?.id)
-    ) {
-      setGridWalletList(gridWalletList)
+    setFromWallet(wallets[0])
 
-      if (defaultWallet?.chain?.id !== currentWallet?.chain?.id) {
-        setCurrentWallet(defaultWallet)
+    // 格式化数据成九宫格
+    wallets = wallets.filter((w) => {
+      return w.tokens?.some((t) => {
+        return t.value_usd > 0 && t.address === selectFromToken?.address
+      })
+    })
+
+    const gridWalletList = wallets.reduce<PartialWalletRes[][]>((cur, next) => {
+      if (count % 3 == 0) {
+        cur.push([])
       }
+      cur[cur.length - 1].push(next)
+      count++
+      return cur
+    }, [])
+
+    const defaultWallet = gridWalletList[0]?.[0]
+
+    setGridWalletList(gridWalletList || [])
+    setFromWallet(defaultWallet)
+  }
+
+  const handleReceiveWallet = () => {
+    const wallets = walletList.filter(
+      (w) => w?.chain?.id === selectToToken?.chain?.id
+    )
+
+    if (!wallets.length) {
+      setShouldCreateReceiveWallet(true)
+      return
     }
+
+    wallets.sort((a, b) => {
+      let x = 0
+      let y = 0
+
+      a.tokens?.find((t) => {
+        if (t.address === selectToToken?.address && t.amount) {
+          x = t.value_usd
+          return true
+        }
+      })
+
+      b.tokens?.find((t) => {
+        if (t.address === selectToToken?.address && t.amount) {
+          y = t.value_usd
+          return true
+        }
+      })
+
+      return y - x
+    })
+
+    setReceiveWallet(wallets[0])
   }
 
   useEffect(() => {
     if (selectFromToken) {
       handleWallet()
     }
-  }, [walletList, selectFromToken])
+  }, [selectFromToken])
+
+  useEffect(() => {
+    if (selectToToken) {
+      handleReceiveWallet()
+    }
+  }, [selectToToken])
 
   return {
-    currentWallet,
     gridWalletList,
     selectFromToken,
-    setCurrentWallet,
+    shouldCreateReceiveWallet,
     findTokenUsd,
   }
 }

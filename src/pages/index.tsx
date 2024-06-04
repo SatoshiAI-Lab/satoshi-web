@@ -24,9 +24,9 @@ export default function Home() {
     refetchInterval: 15_000,
   })
 
-  useChatMonitorMsg()
+  // useChatMonitorMsg()
 
-  // Refresh monitor config every 15s.
+  // // Refresh monitor config every 15s.
   useQuery({
     queryKey: [monitorApi.getConfig.name, isLogined],
     queryFn: async () => {
@@ -40,10 +40,11 @@ export default function Home() {
     refetchInterval: 15_000,
   })
 
-  // By default, get all wallets once on background.
-  useEffect(() => {
-    getAllWallet()
-  }, [])
+  useQuery({
+    queryKey: [getAllWallet.name],
+    queryFn: getAllWallet,
+    refetchInterval: 15_000,
+  })
 
   return (
     <main className="flex flex-col h-screen !overflow-hidden">

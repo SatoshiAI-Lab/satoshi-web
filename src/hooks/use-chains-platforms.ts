@@ -17,6 +17,10 @@ export const useChainsPlatforms = (enabled = false) => {
     queryFn: () => walletApi.getChains(),
   })
 
+  const getPlatformByChain = (chianName: string) => {
+    return chains.find((c) => c.name === chianName)?.platform
+  }
+
   // If you need, handle default select here.
   // const defaultSelect = () => {}
 
@@ -33,6 +37,7 @@ export const useChainsPlatforms = (enabled = false) => {
     chains,
     platforms,
     isFetchingChains,
+    getPlatformByChain,
     refetchChains,
   }
 }

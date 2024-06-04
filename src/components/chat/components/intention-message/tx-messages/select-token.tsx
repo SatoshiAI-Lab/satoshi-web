@@ -4,7 +4,7 @@ import { clsx } from 'clsx'
 import { Avatar, Menu, MenuItem } from '@mui/material'
 import { useContext, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
-import { defaultImg } from '@/config/imageUrl'
+import { defaultImg } from '@/config/image-url'
 import { utilFmt } from '@/utils/format'
 import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
 
@@ -26,7 +26,6 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
     hidden: hiddenDialog,
   } = useShow(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
 
   const {
     fromTokenList,
@@ -41,18 +40,30 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
   const tokenList = isFrom ? fromTokenList : toTokenList
   const selectToken = isFrom ? selectFromToken : selectToToken
 
-  // console.log(open)
   const handleClick = (token: MultiChainCoin) => {
     switchToken(token)
     onCloseMenu()
   }
 
-  const onSwitch = (event: any) => {
-    setAnchorEl(event.currentTarget)
+  const openMenu = (event: any) => {
+    if (toTokenList && toTokenList?.length > 1) {
+      setAnchorEl(event.currentTarget)
+    } else {
+      openDialog()
+    }
+  }
+
+  const onSwitch = () => {
+    openDialog()
   }
 
   const onCloseMenu = () => {
     setAnchorEl(null)
+  }
+
+  const handleOpenDialog = () => {
+    openDialog()
+    onCloseMenu()
   }
 
   const tokenMenu = () => {
@@ -60,17 +71,12 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
       <>
         <Menu
           anchorEl={anchorEl}
-          open={open}
+          open={!!anchorEl}
           onClose={onCloseMenu}
           MenuListProps={{
             'aria-labelledby': 'basic-button',
           }}
         >
-          {/* <MenuItem className="dark:text-white">
-        <div className="h-[35px] flex items-center underline">
-          {t('select.token')}
-        </div>
-      </MenuItem> */}
           {tokenList?.map((item, i) => {
             return (
               <MenuItem
@@ -87,7 +93,9 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
                   <div className="flex">
                     <div className="min-w-[60px]">
                       <div>{`${item.symbol}`}</div>
-                      <div className="text-xs text-gray-500">{`${item.chain.name}`}</div>
+                      <div className="text-xs text-gray-500">{`${utilFmt.fisrtCharUppercase(
+                        item.chain.name
+                      )}`}</div>
                     </div>
                     <div className="ml-3">
                       <div className="">
@@ -107,12 +115,13 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
               </MenuItem>
             )
           })}
-          <MenuItem onClick={openDialog}>{t('select.token')}</MenuItem>
+          <MenuItem onClick={handleOpenDialog}>{t('select.token')}</MenuItem>
         </Menu>
         <DialogSelectToken
           show={showDialog}
           open={openDialog}
           hidden={hiddenDialog}
+          isFrom={isFrom}
         ></DialogSelectToken>
       </>
     )
@@ -123,23 +132,30 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
       <>
         <div
           className={clsx(
-            'h-full cursor-pointer leading-none py-[12px] text-sm border-l-2 text-nowrap pl-3 flex-shrink-0',
+            'cursor-pointer leading-none py-[6px] text-sm border-l-2 text-nowrap pl-3 flex-shrink-0 h-[52px]',
             'flex items-center cursor-pointer',
             isFinalTx && 'pointer-events-none'
           )}
           onClick={onSwitch}
         >
-          <img
-            src={selectToken?.logo || defaultImg}
-            alt="chain-slogo"
-            width={30}
-            height={30}
-            className="w-[30px] h-[30px] mr-1"
-          ></img>
+          {selectToken ? (
+            <Avatar
+              src={selectToken?.logo}
+              className="!w-[35px] !h-[35px] mr-1 rounded-full"
+            >
+              {selectToken?.symbol?.slice(0, 1).toUpperCase()}
+            </Avatar>
+          ) : (
+            <span>{t('select.a.token')}</span>
+          )}
           {selectToken && (
             <div className="mx-1">
-              <div>{`${selectToken?.symbol}`}</div>
-              <div className="text-xs text-gray-400">{`${selectToken?.chain.name}`}</div>
+              <div className="max-w-[110px] truncate leading-5">{`${utilFmt.fisrtCharUppercase(
+                selectToken?.symbol
+              )}`}</div>
+              <div className="text-xs text-gray-400">{`${utilFmt.fisrtCharUppercase(
+                selectToken?.chain.name
+              )}`}</div>
             </div>
           )}
           <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
@@ -149,32 +165,34 @@ export const SelectToken: React.FC<Props> = ({ isFrom, isFinalTx }: Props) => {
     )
   }
 
-  // const toToken = data?.to_token_info.find(
-  //   (t) => t.platform_id == selectToken?.platform_id
-  // )
-
   return (
     <>
       <div
         className={clsx(
-          'border border-neutral-300 rounded-xl py-[6px] px-5 text-sm flex-shrink-0',
+          'h-[52px] border border-neutral-300 rounded-xl py-[6px] px-5 text-sm flex-shrink-0',
           'flex items-center cursor-pointer',
-          isFinalTx && 'pointer-events-none'
+          isFinalTx && 'pointer-events-none text-gray-400'
         )}
-        onClick={onSwitch}
+        onClick={openMenu}
       >
-        <>
-          <Avatar src={selectToToken?.logo || defaultImg} sizes="30">
-            {selectToToken?.symbol?.slice(0, 1).toUpperCase() ?? '-'}
-          </Avatar>
-          <div className="mx-1">
-            <div>{selectToToken?.symbol}</div>
-            <div className="text-xs text-gray-400">
-              {selectToToken?.chain.name}
+        {selectToToken ? (
+          <>
+            <Avatar src={selectToToken?.logo} className="!w-[35px] !h-[35px]">
+              {selectToToken?.symbol?.slice(0, 1).toUpperCase()}
+            </Avatar>
+            <div className="mx-2">
+              <div className="max-w-[110px] truncate">
+                {utilFmt.fisrtCharUppercase(selectToToken?.symbol)}
+              </div>
+              <div className="text-xs text-gray-400">
+                {utilFmt.fisrtCharUppercase(selectToToken?.chain.name)}
+              </div>
             </div>
-          </div>
-          <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
-        </>
+          </>
+        ) : (
+          <span>{t('select.a.token')}</span>
+        )}
+        <IoIosArrowDown className="ml-1" size={20}></IoIosArrowDown>
       </div>
       {tokenMenu()}
     </>

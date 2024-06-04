@@ -111,18 +111,7 @@ export enum MetaTypeCategory {
 }
 
 export type MetaTypeData = {
-  [MetaType.Tx]: {
-    from_token: {
-      type: string
-      content: string
-    }
-    to_token: {
-      type: string
-      content: string
-    }
-    amount: number
-    chain_name: string
-  }
+  [MetaType.Tx]: ChatResponseTxConfrim
 
   [MetaType.WalletCreate]: {
     platform_name: Platform
@@ -203,16 +192,20 @@ export interface ChatResponseMetaBalance {
 }
 
 export interface ChatResponseTxConfrim {
+  minimum_amount: string | number | undefined
+  from_token_info: any
+  to_token_name: any
   from_token: {
     type: string
     content: string
+    chain_name: string
   }
   to_token: {
     type: string
     content: string
+    chain_name: string
   }
   amount: number
-  chain_name: string
 }
 
 export interface MultiChainCoin {
@@ -221,12 +214,18 @@ export interface MultiChainCoin {
   decimals: number
   is_supported: boolean
   logo: string
-  name: null | string
-  price_change: number | null
+  name: string
+  price_change?: number
   price_usd: number
   symbol: string
   holders: number
+  market_cap: string
+  liquidity: string
+  amount?: number
+  price_change_24h?: number
+  value_usd?: number
 }
+
 export interface ChainInfo {
   id: string
   logo: string
@@ -273,11 +272,12 @@ export interface ChatResponseWalletList {
 }
 
 export interface ChatResponseWalletListToken {
+  chain_name: any
   address: string
   amount: number
   chain: ChainInfo
   decimals: number
-  logoUrl: string
+  logo: string
   name: string
   price_usd: number
   price_change_24h: number
@@ -300,6 +300,7 @@ export interface ChatResponseTokenDetail {
   twitter: string
   volume: string
   websites: string[]
+  platform: Platform
 }
 
 export interface ChatResponseMetaLabel {

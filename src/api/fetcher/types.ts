@@ -21,4 +21,14 @@ export enum ResponseCode {
   Err = 400,
 
   Auth = 401,
+
+  CrossChainNotFindTranfer = 1007,
+
+  CrossChainLiquidity = 1004,
+
+  CrossChainPath = 2001,
+
+  CrossChainMinAmout = 1005,
+
+  CrossChainMaxAmout = 1006,
 }

@@ -1,78 +1,119 @@
-import { useSwapWallet } from '@/hooks/use-swap/use-swap-wallet'
-import { TxLogicContext } from '@/hooks/use-swap/use-tx-from-token'
-import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
-import BigNumber from 'bignumber.js'
+import React, { useContext } from 'react'
 import clsx from 'clsx'
+
 import { t } from 'i18next'
-import numeral from 'numeral'
-import { useContext } from 'react'
 import { formatUnits } from 'viem'
+import { utilFmt } from '@/utils/format'
+import { SwapContext } from '@/hooks/use-swap/use-swap-provider'
+import { TxLogicContext, rates } from '@/hooks/use-swap/use-swap-confirm-logic'
 
-const rates = [20, 50, 100]
 export const SelectAmount = () => {
-  const { selectFromToken } = useContext(SwapContext)
-  const { isFinalTx, curRate, setCurRate, setBuyValue, getSelectTokenInfo } =
-    useContext(TxLogicContext)
+  const {
+    selectFromToken,
+    fromWallet,
+    gridWalletList,
+    selectToToken,
+    intentTokenInfo,
+  } = useContext(SwapContext)
+  const {
+    isFinalTx,
+    curRate,
+    validateErr,
+    handleRateClick,
+    getSelectTokenInfo,
+  } = useContext(TxLogicContext)
 
-  const { currentWallet } = useSwapWallet()
+  const walletLength = gridWalletList[0]?.length
+  const selectWalletToken = getSelectTokenInfo(fromWallet, selectFromToken)
 
-  const selectWalletToken = getSelectTokenInfo(currentWallet, selectFromToken)
+  const handleFromTokenError = () => {
+    if (selectWalletToken?.symbol === selectToToken?.symbol) {
+      return <></>
+    }
 
-  const getTokenBalance = () => {
-    return currentWallet?.tokens?.find(
-      (t) => t.address === selectFromToken?.address
-    )
+    if (!selectWalletToken && selectToToken) {
+      return (
+        <div className={clsx('text-sm text-red-500 mt-2')}>
+          {t('from.token.balance.insufficient').replace(
+            '$1',
+            intentTokenInfo?.fromTokenInfo || ''
+          )}
+        </div>
+      )
+    }
+
+    if (selectWalletToken && !selectWalletToken.value_usd) {
+      return (
+        <div className={clsx('text-sm text-red-500 mt-2')}>
+          {t('insufficient.balance').replace(
+            '$1',
+            selectWalletToken?.symbol || intentTokenInfo?.fromTokenInfo || ''
+          )}
+        </div>
+      )
+    }
   }
 
-  const handleRateClick = (rate: number) => {
-    const balance = getTokenBalance()
-
-    if (!balance) return
-    const { amount, decimals } = balance
-    const balanceFmt = +numeral(formatUnits(BigInt(amount), decimals)).format(
-      '0.00000'
-    )
-    const buyAmount = BigNumber(balanceFmt).multipliedBy(rate / 100)
-    setCurRate(rate)
-    setBuyValue(+buyAmount.toFixed(5))
+  const handleToTokenError = () => {
+    if (!selectToToken) {
+      return (
+        <div className={clsx('text-sm text-red-500 mt-2')}>
+          {t('not.find.token').replace(
+            '$1',
+            intentTokenInfo?.toTokenInfo || ''
+          )}
+        </div>
+      )
+    }
   }
 
   return (
-    <div
-      className={clsx(
-        'flex items-center mt-3 text-sm text-gray-500',
-        isFinalTx && 'pointer-events-none'
-      )}
-    >
-      <div className="inline-flex justify-start border rounded-xl overflow-hidden">
-        {rates.map((rate, i) => {
-          return (
-            <div
-              key={i}
-              className={clsx(
-                'py-2 px-4 cursor-pointer transition-all hover:bg-slate-100',
-                rate == curRate ? '!bg-slate-200' : '',
-                i == 1 ? 'border-x' : ''
-              )}
-              onClick={() => handleRateClick(rate)}
-            >
-              {rate}%
-            </div>
-          )
-        })}
-      </div>
-      <div className="ml-2">
-        {t('total')}
-        {Number(
-          numeral(
-            formatUnits(
-              BigInt(selectWalletToken?.amount ?? 0),
-              selectWalletToken?.decimals ?? 0
-            )
-          ).format('0.0000')
-        )}
-        {selectWalletToken?.symbol}
-      </div>
-    </div>
+    <React.Fragment>
+      {/* From的错误提示 */}
+      {handleFromTokenError()}
+
+      {/* To的错误提示 */}
+      {handleToTokenError()}
+
+      {walletLength ? (
+        <div
+          className={clsx(
+            'flex items-center text-sm text-gray-500',
+            isFinalTx && 'pointer-events-none',
+            selectToToken ? 'mt-4' : 'mt-3'
+          )}
+        >
+          <div className="inline-flex justify-start border rounded-xl overflow-hidden">
+            {rates.map((rate, i) => {
+              return (
+                <div
+                  key={i}
+                  className={clsx(
+                    'py-2 px-4 cursor-pointer transition-all hover:bg-slate-100',
+                    rate == curRate ? '!bg-slate-200' : '',
+                    i == 1 ? 'border-x' : ''
+                  )}
+                  onClick={() => handleRateClick(rate)}
+                >
+                  {rate}%
+                </div>
+              )
+            })}
+          </div>
+          <div className="ml-2">
+            {t('total')}
+            {utilFmt.token(
+              Number(
+                formatUnits(
+                  BigInt(selectWalletToken?.amount ?? 0),
+                  selectWalletToken?.decimals ?? 0
+                )
+              )
+            )}
+            {selectWalletToken?.symbol}
+          </div>
+        </div>
+      ) : null}
+    </React.Fragment>
   )
 }

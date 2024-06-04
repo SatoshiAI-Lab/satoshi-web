@@ -16,12 +16,13 @@ export const useTokenSearcher = () => {
   const { data: searchResult, isFetching: isSearching } = useQuery({
     enabled: !!keyword.trim(),
     queryKey: [tokenApi.search.name, keyword],
-    queryFn: () => {
-      if (!keyword.trim()) return null
-      return tokenApi.search(keyword)
+    queryFn: async () => {
+      if (!keyword.trim()) return { coin: [] }
+      const { data } = await tokenApi.search(keyword)
+      return data
     },
   })
-  const coinsList = searchResult?.data?.coin ?? []
+  const coinsList = searchResult?.coin ?? []
 
   const clearSearch = () => {
     search('')

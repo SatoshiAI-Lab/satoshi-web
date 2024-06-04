@@ -70,4 +70,40 @@ export const utilArr = {
 
     return [objResult, mapResult]
   },
+
+  removeDuplicates<T extends object>(
+    arr: T[],
+    keys: (keyof T | string)[]
+  ): T[] {
+    const uniqueArray: T[] = []
+
+    function isObjectEqual(obj1: T, obj2: T, key: keyof T | string) {
+      const keys = key.toString().split('.')
+      if (keys.length > 0) {
+        const value1 = keys.reduce((o, k) => o[k as keyof T], obj1 as any) // Explicitly specify the type of the accumulator
+        const value2 = keys.reduce((o, k) => o[k as keyof T], obj2 as any) // Explicitly specify the type of the accumulator
+        return value1 === value2
+      } else {
+        return obj1[key as keyof T] === obj2[key as keyof T]
+      }
+    }
+
+    arr.forEach((obj, i) => {
+      if (i === 0) {
+        return uniqueArray.push(obj)
+      }
+
+      const isEqual = uniqueArray.some((uniqueObj) => {
+        return keys
+          .map((key) => isObjectEqual(uniqueObj, obj, key))
+          .every((b) => b === true)
+      })
+
+      if (!isEqual) {
+        uniqueArray.push(obj)
+      }
+    })
+
+    return uniqueArray
+  },
 }

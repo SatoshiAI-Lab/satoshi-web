@@ -27,13 +27,14 @@ export const tokenApi = {
   queryAddr(params: QueryAddrReq) {
     return fetchSatoshi.get<QueryAddrRes>('/api/v1/address/query/', params)
   },
-  queryToken(kw: string) {
-    return fetchSatoshi.get<QueryAddrToken[]>('/api/v1/coin/query/', { kw })
-  },
   info(req: TokenInfoReq) {
     return fetchSatoshi.get<TokenInfoRes>('/api/v1/coin/info/', req)
   },
-  multiCoin(kw: string) {
-    return fetchSatoshi.get<MultiChainCoin[]>('/api/v1/coin/query/', { kw })
+  multiCoin(kw: string, signal?: AbortSignal) {
+    return fetchSatoshi.get<MultiChainCoin[]>(
+      '/api/v1/coin/query/',
+      { kw },
+      signal
+    )
   },
 }

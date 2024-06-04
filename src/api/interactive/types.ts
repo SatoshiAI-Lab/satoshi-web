@@ -1,6 +1,17 @@
 export interface GetHashStatusReq {
   chain?: string // Default: Solana
   hash_tx: string
+  provider?: string
+}
+export interface GetCrossHashStatusReq {
+  chain?: string // Default: Solana
+  hash_tx: string
+  provider?: string
+}
+export interface GetCrossHashStatusRes {
+  status: 'PENDING' | 'SUCCESS' | 'FAILURE' | 'REFUND' | 'NOT_FOUND'
+  to_url: string
+  to_hash_tx: string
 }
 
 export enum TokenCreateStatus {

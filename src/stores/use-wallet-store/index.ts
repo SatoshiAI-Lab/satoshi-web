@@ -1,16 +1,25 @@
 import { create } from 'zustand'
 
-import { WALLET_CONFIG, Chain } from '@/config/wallet'
+import { WALLET_CONFIG, Chain, Platform } from '@/config/wallet'
 
 import type { GetChainsRes, GetWalletsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
+import { utilWallet } from '@/utils/wallet'
 
 export interface PartialWalletRes extends Partial<UserCreateWalletResp> {}
 
+export interface WalletPlatform {
+  // [Platform.Bear]?: UserCreateWalletResp[]
+  [Platform.Evm]?: UserCreateWalletResp[]
+  [Platform.Sol]?: UserCreateWalletResp[]
+}
+
 interface States {
+  loadingAllWallet: boolean
   wallets: PartialWalletRes[]
   allWallets: GetWalletsRes
   walletList: PartialWalletRes[]
+  walletPlatform: WalletPlatform
   chains: GetChainsRes['chains']
   platforms: GetChainsRes['platforms']
   currentWallet?: PartialWalletRes
@@ -21,7 +30,6 @@ interface States {
 interface Actions {
   setWallets(wallets: PartialWalletRes[]): void
   setAllWallets(wallets: GetWalletsRes): void
-  setWalletList(wallets: PartialWalletRes[]): void
   setChains(chains: GetChainsRes['chains']): void
   setPlatforms(platforms: GetChainsRes['platforms']): void
   setCurrentWallet(wallet: PartialWalletRes): void
@@ -36,6 +44,7 @@ interface Actions {
 }
 
 export const useWalletStore = create<States & Actions>((set, get) => ({
+  loadingAllWallet: true,
   wallets: [],
   allWallets: {} as GetWalletsRes,
   walletList: [],
@@ -44,6 +53,7 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
   currentWallet: undefined,
   selectedChain: WALLET_CONFIG.defaultChain,
   selectedPlatform: WALLET_CONFIG.defaultPlatform,
+  walletPlatform: {},
 
   setWallets: (wallets) => set({ wallets }),
   setAllWallets: (allWallets) => {
@@ -52,12 +62,40 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
       walletList.push(...allWallets[key as Chain])
     }
 
+    utilWallet.sortWalletByCreated(walletList)
+
+    let walletPlatform: WalletPlatform = {}
+    walletList.forEach((walletItem) => {
+      // 把代币的链补充上
+      walletItem.tokens = walletItem.tokens.map((t) => {
+        t.chain = walletItem.chain
+        return t
+      })
+
+      const wallets = walletPlatform[walletItem.platform]
+
+      if (wallets?.length) {
+        // 找出相同ID的钱包
+        const wallet = wallets.find((w) => w.id === walletItem.id)
+        if (!wallet) {
+          // 新的钱包
+          wallets.push({ ...walletItem })
+        } else {
+          // 已经存在的钱包直接放代币进去
+          wallet.tokens?.push(...walletItem.tokens)
+        }
+      } else {
+        // 没有平台就初始化
+        walletPlatform[walletItem.platform] = [{ ...walletItem }]
+      }
+    })
+
     set({
       allWallets,
       walletList,
+      walletPlatform,
     })
   },
-  setWalletList: (walletList) => set({ walletList }),
   setChains: (chains) => {
     // Pin the scroll chain to top.
     const scrollIdx = chains.findIndex((c) => c.name === Chain.Scroll)

@@ -108,11 +108,12 @@ export class Fetcher<R = ReadableStream<Uint8Array>> {
     this.baseURL = baseURL
   }
 
-  get<T = R>(path: string, query?: AnyObject) {
+  get<T = R>(path: string, query?: AnyObject, signal?: AbortSignal) {
     return fetcher<FetcherResponse<T>>(path, {
       method: 'GET',
       baseURL: this.baseURL,
       query,
+      signal,
     })
   }
 

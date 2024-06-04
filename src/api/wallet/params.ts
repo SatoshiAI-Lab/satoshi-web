@@ -15,7 +15,7 @@ interface UserCreateWalletResp {
   id: string
   name: string
   address: string
-  platform: string
+  platform: Platform
   added_at: string
   user: string
   value: string
@@ -66,6 +66,14 @@ interface GetChainsRes {
 export interface ChainResInfo {
   name: Chain
   logo: string
+  platform: Platform
+  token: {
+    symbol: string
+    name: string
+    decimals: number
+    address: string
+    logo: string
+  }
 }
 
 export type {

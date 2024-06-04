@@ -13,6 +13,7 @@ import { useTokenCreateConfig } from '@/hooks/use-token-create-config'
 import { useWalletStore } from '@/stores/use-wallet-store'
 import { Chain } from '@/config/wallet'
 import { CopyAddr } from '@/components/copy-addr'
+import { defaultImg } from '@/config/image-url'
 
 interface Props extends React.ComponentProps<'div'> {
   chain: Chain
@@ -78,7 +79,7 @@ export const TokenCreateWallets = (props: Props) => {
             'inline-flex items-center p-2'
           )}
         >
-          <img src="/images/logos/t.png" alt="Logo" className="w-10 h-10" />
+          <img src={defaultImg} alt="Logo" className="w-10 h-10" />
           <div className="flex flex-col text-primary text-sm ml-1">
             <span>
               {t('create-token.no-wallet').replace('{}', nativeTokenTip)}

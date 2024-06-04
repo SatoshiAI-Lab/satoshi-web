@@ -20,9 +20,10 @@ import { CustomSuspense } from '../custom-suspense'
 import { Platform } from '@/config/wallet'
 import { useClipboard } from '@/hooks/use-clipboard'
 import { WalletSkeleton } from './components/skeleton'
-import { useChainsPlatforms } from './hooks/use-chains-platforms'
+import { useChainsPlatforms } from '../../hooks/use-chains-platforms'
 import { WalletSearch } from './components/wallet-search'
 import { useWalletList } from '@/hooks/use-wallet-list'
+import { utilWallet } from '@/utils/wallet'
 
 const dyNamicPop: { [key: number]: FC<WalletDialogProps> } = {
   0: WalletExportKeyPop,
@@ -66,12 +67,12 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
       content: t('evm-support'),
       disable: false,
     },
-    {
-      id: Platform.Bear,
-      title: t('bear-wallet'),
-      content: '',
-      disable: true,
-    },
+    // {
+    //   id: Platform.Bear,
+    //   title: t('bear-wallet'),
+    //   content: '',
+    //   disable: true,
+    // },
     // {
     //   id: 'icp',
     //   title: 'ICP Wallet',
@@ -135,12 +136,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
 
   // Sort by date DESC
   const sortWallets = () => {
-    wallets.sort((a, b) => {
-      const tsA = new Date(a.added_at ?? '').getTime()
-      const tsB = new Date(b.added_at ?? '').getTime()
-
-      return tsB - tsA
-    })
+    utilWallet.sortWalletByCreated(wallets)
   }
 
   // Request chains & platforms when mounted.
@@ -202,8 +198,8 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                     >
                       {walletMenu.map((item) => (
                         <MenuItem
-                          disabled={item.disable}
                           key={item.id}
+                          disabled={item.disable}
                           className={clsx(
                             'w-[295px] h-[65px] flex flex-col !items-start !justify-center',
                             'not-used-dark:!text-gray-300'
@@ -270,6 +266,7 @@ export const Wallet: FC<WalletDialogProps> = memo((props) => {
                   renameWallet={renameWallet}
                   exportKey={exportWalletPrivateKey}
                   deleteWallet={deleteWallet}
+                  chain={undefined}
                 />
               ))
             ) : (
