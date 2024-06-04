@@ -55,10 +55,9 @@ export const TokenList = ({ setCreateWalletInfo }: Props) => {
         : w.tokens
 
       tokneBalance?.forEach((t) => {
-        const token = tokens.find(
-          (token) =>
-            token.address === t.address && token.chain.id === t.chain.id
-        )
+        const token = tokens.find((token) => {
+          return token.address === t.address && token.chain.id === t.chain.id
+        })
 
         if (token) {
           token.value_usd! += t.value_usd || 0
@@ -78,41 +77,45 @@ export const TokenList = ({ setCreateWalletInfo }: Props) => {
 
   let tokens: any[] = isSearch ? searchTokens : myTokens() || []
 
-  tokens = (tokens || [])
-    .filter((t) => {
-      const eqChain = t.chain.id === selectChainId
-      // const eqAddress = t.address !== atherToken?.address
-      return eqChain || selectChainId === '-1'
-    })
-    // 搜索的代币如果有余额则替换成钱包余额的代币
-    .map((token) => {
-      if (isSearch) {
-        let activeToken: ChatResponseWalletListToken | undefined = undefined
-        // 查找钱包
-        walletList.forEach((w) => {
-          if (token.chain.id != w?.chain?.id) return
-          // 查找钱包内对应代币
-          const t = w?.tokens?.find((t) => {
-            return token.address === t.address && token.chain.id === t.chain.id
-          })
-
-          if (t) {
-            if (!activeToken) {
-              activeToken = { ...t, ...token }
-            } else {
-              activeToken.value_usd += t.value_usd
-            }
-          }
+  tokens = isSearch
+    ? tokens
+    : (tokens || [])
+        .filter((t) => {
+          const eqChain = t.chain.id === selectChainId
+          // const eqAddress = t.address !== atherToken?.address
+          return eqChain || selectChainId === '-1'
         })
+        // 搜索的代币如果有余额则替换成钱包余额的代币
+        .map((token) => {
+          if (isSearch) {
+            let activeToken: ChatResponseWalletListToken | undefined
+            // 查找钱包
+            walletList.forEach((w) => {
+              if (token.chain.id != w?.chain?.id) return
+              // 查找钱包内对应代币
+              const t = w?.tokens?.find((t) => {
+                return (
+                  token.address === t.address && token.chain.id === t.chain.id
+                )
+              })
 
-        if (activeToken) return activeToken
-      }
-      return token
-    })
-    //  按照余额来排序搜索到的结果
-    .sort((a, b) => {
-      return (b.value_usd || 0) - (a.value_usd || 0)
-    })
+              if (t) {
+                if (!activeToken) {
+                  activeToken = { ...t, ...token }
+                } else {
+                  activeToken.value_usd += t.value_usd
+                }
+              }
+            })
+
+            if (activeToken) return activeToken
+          }
+          return token
+        })
+        //  按照余额来排序搜索到的结果
+        .sort((a, b) => {
+          return (b.value_usd || 0) - (a.value_usd || 0)
+        })
 
   const onSelectToken = (token: any) => {
     // 还没有创建对应平台的钱包

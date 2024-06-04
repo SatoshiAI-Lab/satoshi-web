@@ -5,6 +5,7 @@ import { WALLET_CONFIG, Chain, Platform } from '@/config/wallet'
 import type { GetChainsRes, GetWalletsRes } from '@/api/wallet/params'
 import type { UserCreateWalletResp } from '@/api/wallet/params'
 import { utilWallet } from '@/utils/wallet'
+import { cloneDeep } from 'lodash'
 
 export interface PartialWalletRes extends Partial<UserCreateWalletResp> {}
 
@@ -86,7 +87,7 @@ export const useWalletStore = create<States & Actions>((set, get) => ({
         }
       } else {
         // 没有平台就初始化
-        walletPlatform[walletItem.platform] = [{ ...walletItem }]
+        walletPlatform[walletItem.platform] = [cloneDeep(walletItem)]
       }
     })
 

@@ -24,7 +24,7 @@ export default function Home() {
     refetchInterval: 15_000,
   })
 
-  // useChatMonitorMsg()
+  useChatMonitorMsg()
 
   // // Refresh monitor config every 15s.
   useQuery({
